@@ -1,8 +1,9 @@
 package com.company;
 
+// Custom Pair class b/c apparently Java doesn't natively support Tuples
 public class Pair {
 
-    int left, right;
+    private int left, right;
 
     Pair( int left, int right ) {
 
@@ -11,8 +12,12 @@ public class Pair {
 
     }
 
-    public static void main(String[] args) {
+    public int getLeft() {
+        return this.left;
+    }
 
+    public int getRight() {
+        return this.right;
     }
 
 }
