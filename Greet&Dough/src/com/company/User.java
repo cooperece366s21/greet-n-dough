@@ -6,9 +6,9 @@ import java.util.HashSet;
 public class User {
 
     ////////////////// Members //////////////////
-    public String name;
+    private String name;
     protected int id;                   // Stores unique id for a given user
-    public Feed userFeed;
+    private Feed userFeed;
 
     // Stores a list of a user's subscriptions
     // < Content_Creator_ID, Subscription_Tier >
@@ -35,6 +35,10 @@ public class User {
 
         return 1;
 
+    }
+
+    public String getName() {
+        return this.name;
     }
 
     public void makePost( String contents ) {

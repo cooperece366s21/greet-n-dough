@@ -19,6 +19,7 @@ public class Feed {
     // Should set number of references to 0
     // Only works if no other variables reference the post
     // Might be ??
+    // Also think about using hashmap to identify posts
     public void deletePost( Post target ) {
         target = null;
     }
