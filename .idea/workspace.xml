@@ -5,62 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0ebab55d-1568-4489-8adc-a803fb33abdb" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/Greet-Dough/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Greet-Dough/.idea/codeStyles/Project.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Greet-Dough/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Greet-Dough/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Greet-Dough/.idea/jarRepositories.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Greet-Dough/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Greet-Dough/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Greet-Dough/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Greet-Dough/Greet-Dough.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Greet-Dough/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Greet-Dough/src/main/java/Feed.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Greet-Dough/src/main/java/Main.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Greet-Dough/src/main/java/Pair.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Greet-Dough/src/main/java/Post.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Greet-Dough/src/main/java/Server.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Greet-Dough/src/main/java/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Greet&amp;Dough/.idea/workspace.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Maven/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Maven/.idea/compiler.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Maven/.idea/jarRepositories.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Maven/.idea/libraries/Maven__com_sparkjava_spark_core_2_9_3.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Maven/.idea/libraries/Maven__javax_servlet_javax_servlet_api_3_1_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Maven/.idea/libraries/Maven__org_eclipse_jetty_jetty_client_9_4_31_v20200723.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Maven/.idea/libraries/Maven__org_eclipse_jetty_jetty_http_9_4_31_v20200723.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Maven/.idea/libraries/Maven__org_eclipse_jetty_jetty_io_9_4_31_v20200723.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Maven/.idea/libraries/Maven__org_eclipse_jetty_jetty_security_9_4_31_v20200723.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Maven/.idea/libraries/Maven__org_eclipse_jetty_jetty_server_9_4_31_v20200723.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Maven/.idea/libraries/Maven__org_eclipse_jetty_jetty_servlet_9_4_31_v20200723.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Maven/.idea/libraries/Maven__org_eclipse_jetty_jetty_util_9_4_31_v20200723.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Maven/.idea/libraries/Maven__org_eclipse_jetty_jetty_webapp_9_4_31_v20200723.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Maven/.idea/libraries/Maven__org_eclipse_jetty_jetty_xml_9_4_31_v20200723.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Maven/.idea/libraries/Maven__org_eclipse_jetty_websocket_websocket_api_9_4_31_v20200723.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Maven/.idea/libraries/Maven__org_eclipse_jetty_websocket_websocket_client_9_4_31_v20200723.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Maven/.idea/libraries/Maven__org_eclipse_jetty_websocket_websocket_common_9_4_31_v20200723.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Maven/.idea/libraries/Maven__org_eclipse_jetty_websocket_websocket_server_9_4_31_v20200723.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Maven/.idea/libraries/Maven__org_eclipse_jetty_websocket_websocket_servlet_9_4_31_v20200723.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Maven/.idea/libraries/Maven__org_slf4j_slf4j_api_1_7_25.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Maven/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Maven/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Maven/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Maven/Maven.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Maven/pom.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Maven/src/main/java/Feed.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Maven/src/main/java/Main.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Maven/src/main/java/Pair.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Maven/src/main/java/Post.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Maven/src/main/java/Server.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Maven/src/main/java/User.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Maven/target/classes/Feed.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Maven/target/classes/Main.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Maven/target/classes/Pair.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Maven/target/classes/Post.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Maven/target/classes/Server.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Maven/target/classes/User.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Greet-Dough/src/main/java/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/Greet-Dough/src/main/java/Server.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Greet-Dough/target/classes/User.class" beforeDir="false" afterPath="$PROJECT_DIR$/Greet-Dough/target/classes/User.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -86,6 +33,20 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/Greet-Dough" />
   </component>
+  <component name="RunManager">
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Main" />
+      <module name="Greet-Dough" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.Main" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -96,5 +57,16 @@
       <updated>1612759446828</updated>
     </task>
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>
