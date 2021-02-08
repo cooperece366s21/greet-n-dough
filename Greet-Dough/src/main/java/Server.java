@@ -27,12 +27,12 @@ public class Server {
 
         put("/users/:id", (req,res) -> {
             // Update the user. Needs a lot of options.
-           return "Updating a user: " + req.params(":id");
+            return "Updating a user: " + req.params(":id");
         });
 
         delete( "/users/:id", (req,res) -> {
             // Deletes user
-           return "Deleting a user: " + req.params(":id");
+            return "Deleting a user: " + req.params(":id");
         });
 
     }

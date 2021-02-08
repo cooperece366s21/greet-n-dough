@@ -30,9 +30,7 @@ public class User {
     ////////////////// Functions //////////////////
     // NEED TO WRITE THIS
     private static int hashName( String name ) {
-
-        return 1;
-
+        return 0;
     }
 
     public String getName() {
