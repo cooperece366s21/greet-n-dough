@@ -42,7 +42,7 @@ public class User {
     }
 
     public void checkFeed() {
-        this.userFeed.view();
+        this.userFeed.display();
     }
 
 }

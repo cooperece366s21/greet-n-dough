@@ -3,6 +3,7 @@ public class Pair {
 
     private int left, right;
 
+    Pair() {}
     Pair( int left, int right ) {
 
         this.left = left;

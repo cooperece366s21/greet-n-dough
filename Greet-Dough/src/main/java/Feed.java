@@ -1,12 +1,12 @@
-import java.util.ArrayList;
+import java.util.HashSet;
 
 public class Feed {
 
-    public ArrayList<Post> posts;
+    public HashSet<Post> posts;
 
     // Constructor
     Feed() {
-        this.posts = new ArrayList<>();
+        this.posts = new HashSet<>();
     }
 
     public void addPost( String contents ) {
@@ -22,10 +22,24 @@ public class Feed {
         target = null;
     }
 
-    public void view() {
+    public HashSet<String> retrieveContents() {
+
+        HashSet<String> feedContents = new HashSet<>();
 
         for ( Post tempPost : this.posts ) {
-            System.out.println( tempPost.contents );
+            feedContents.add( tempPost.contents );
+        }
+
+        return feedContents;
+
+    }
+
+    public void display() {
+
+        HashSet<String> feedContents = this.retrieveContents();
+
+        for ( String postContents : feedContents ) {
+            System.out.println( postContents );
         }
 
     }
