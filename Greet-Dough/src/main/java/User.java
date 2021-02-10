@@ -1,8 +1,10 @@
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.io.Serializable;
 
-public class User {
+public class User implements Serializable{
 
+    private static final long serialVersionUID = 1L;
     ////////////////// Members //////////////////
     private String name;
     protected int id;                   // Stores unique id for a given user
@@ -44,5 +46,4 @@ public class User {
     public void checkFeed() {
         this.userFeed.display();
     }
-
 }

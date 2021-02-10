@@ -1,5 +1,7 @@
+import java.io.Serializable;
+
 // Custom Pair class b/c apparently Java doesn't natively support Tuples
-public class Pair {
+public class Pair implements Serializable {
 
     private int left, right;
 

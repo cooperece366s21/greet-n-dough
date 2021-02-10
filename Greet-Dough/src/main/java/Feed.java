@@ -1,6 +1,7 @@
+import java.io.Serializable;
 import java.util.HashSet;
 
-public class Feed {
+public class Feed implements Serializable {
 
     public HashSet<Post> posts;
 
