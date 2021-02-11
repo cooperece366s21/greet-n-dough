@@ -14,7 +14,6 @@ class PairTest extends Pair {
         assert myPair.getLeft() == leftVal;
         assert myPair.getRight() == rightVal;
 
-
     }
 
 }
