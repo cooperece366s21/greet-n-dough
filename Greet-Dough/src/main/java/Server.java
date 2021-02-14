@@ -12,53 +12,24 @@ public class Server {
     private static final String PATH_TO_USER_ID = PATH_TO_USER + ":id";
 
     ////////////////// Members //////////////////
-    // Uses a stack to keep track of deleted accounts
-    //      to reuse the IDs
-    // Bottom of stack will always contain the largest free ID
-    ///////// NEED TO STORE IDS IN SORTED ORDER???
-    private static Stack<Integer> freeUserIDs = new Stack<>();
-    private static Stack<Integer> freePostIDs = new Stack<>();
     private static ObjectMapper mapper = new ObjectMapper();
+    private static UtilityID recordID = new UtilityID();
 
     ////////////////// Functions //////////////////
-    Server() {
-
-        // Initialize the stacks
-        freeUserIDs.push(0);
-        freePostIDs.push(0);
-
-    }
-
-    public static int getID( Stack<Integer> IDs ) {
-
-        // Checking for safety
-        assert IDs.size() > 0;
-
-        int newID = IDs.pop();
-
-        // If newID is the largest free ID, push the next largest
-        if ( IDs.size() == 0 ) {
-            IDs.push(newID+1);
-        }
-
-        return newID;
-
-    }
-
     public static int getUnusedUserID() {
-        return Server.getID( Server.freeUserIDs );
+        return recordID.getUnusedUserID();
     }
 
     public static int getUnusedPostID() {
-        return Server.getID( Server.freePostIDs );
+        return recordID.getUnusedPostID();
     }
 
     public static void addUnusedUserID( int ID ) {
-        Server.freeUserIDs.push(ID);
+        recordID.addUnusedUserID(ID);
     }
 
     public static void addUnusedPostID( int ID ) {
-        Server.freePostIDs.push(ID);
+        recordID.addUnusedPostID(ID);
     }
 
 
@@ -66,14 +37,18 @@ public class Server {
     /////////// NEED TO SAVE STACKS BEFORE SERVER SHUTDOWN
     public static void main(String[] args) {
 
-        new Server();
-
         initExceptionHandler((e) -> {
             System.out.println("Could not start server on port 9999");
             System.exit(100);
         });
         port(9999);
         init();
+
+        // Load the saved users
+        Server.loadUsers();
+
+        ////// Also need to load the stacks
+        ////// Alternatively, can iterate thru all saved users and push missing IDs
 
         // you can send requests with curls.
         // curl -X POST localhost:9999/users/*id*
@@ -97,19 +72,10 @@ public class Server {
             String name = req.queryParams("name");
             User tempUser = new User(name);
             System.out.println( "Creating a user: " + tempUser.getName() + ", " + tempUser.getID() );
+
+            // Save target user to server
             HashMap<Integer,User> userHashMap = loadUsers();
-
-//            // Check uniqueness
-//            for ( User user : userArrayList ) {
-//                if (user.getName().equals(tempUser.getName())) {  // Java doesn't like ==?
-//                    System.out.println("Username is already taken.");
-//                    return -1;
-//                }
-//            }
-
-            userHashMap.put(tempUser.getID(),tempUser);
-
-            // Save to file
+            userHashMap.put( tempUser.getID(), tempUser );
             saveUsers(userHashMap);
 
             return Server.mapper.writeValueAsString(userHashMap);
