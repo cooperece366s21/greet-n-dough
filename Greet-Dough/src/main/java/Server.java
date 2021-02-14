@@ -14,6 +14,8 @@ public class Server {
     ////////////////// Members //////////////////
     private static ObjectMapper mapper = new ObjectMapper();
     private static UtilityID recordID = new UtilityID();
+    private static HashMap<Integer, User> userHash = new HashMap<Integer, User>();
+
 
     ////////////////// Functions //////////////////
     public static int getUnusedUserID() {
@@ -46,7 +48,7 @@ public class Server {
 
         // Load the saved users
         recordID = Server.loadStack();
-//        Server.loadUsers(); // Do we even do anything with this return value?
+        userHash = Server.loadUsers();
 
         ////// Also need to load the stacks
         ////// Alternatively, can iterate thru all saved users and push missing IDs
@@ -58,10 +60,8 @@ public class Server {
         // Returns the user given an id
         get( Server.PATH_TO_USER_ID, (req, res) -> {
 
-            HashMap<Integer,User> userHashMap = loadUsers();
             int id = Integer.parseInt( req.params(":id") );
-
-            return userHashMap.get(id);
+            return userHash.get(id);
 
         });
 
@@ -75,11 +75,10 @@ public class Server {
             System.out.println( "Creating a user: " + tempUser.getName() + ", " + tempUser.getID() );
 
             // Save target user to server
-            HashMap<Integer,User> userHashMap = loadUsers();
-            userHashMap.put( tempUser.getID(), tempUser );
-            saveUsers(userHashMap);
+            userHash.put( tempUser.getID(), tempUser );
+            saveUsers(userHash);
 
-            return Server.mapper.writeValueAsString(userHashMap);
+            return Server.mapper.writeValueAsString(userHash);
 
         });
 
@@ -91,24 +90,23 @@ public class Server {
         // Deletes user
         delete( Server.PATH_TO_USER_ID, (req,res) -> {
 
-            HashMap<Integer,User> userHashMap = loadUsers();
             int id = Integer.parseInt( req.params(":id") );
 
             // Check if the ID is valid
             assert id >= 0: "Invalid ID.";
-            assert userHashMap.containsKey(id): "User does not exist.";
+            assert userHash.containsKey(id): "User does not exist.";
 
             // Delete target user dependencies
-            User targetUser = userHashMap.get(id);
+            User targetUser = userHash.get(id);
             targetUser.deleteUser();
 
             // Remove target user from server
-            userHashMap.remove(id);
-            saveUsers(userHashMap);
+            userHash.remove(id);
+            saveUsers(userHash);
 
             System.out.println( "Deleted a user: " + targetUser.getName() + ", " + targetUser.getID() );
 
-            return Server.mapper.writeValueAsString(userHashMap);
+            return Server.mapper.writeValueAsString(userHash);
 
         });
 
