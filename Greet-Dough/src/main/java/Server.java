@@ -45,7 +45,8 @@ public class Server {
         init();
 
         // Load the saved users
-        Server.loadUsers();
+        recordID = Server.loadStack();
+//        Server.loadUsers(); // Do we even do anything with this return value?
 
         ////// Also need to load the stacks
         ////// Alternatively, can iterate thru all saved users and push missing IDs
@@ -153,7 +154,50 @@ public class Server {
             return -1;
         }
 
+        Server.saveStack();
         return 0;
+    }
+
+    // largely copy paste from two above functions
+    private static Integer saveStack (){
+
+        try {
+
+            FileOutputStream fo = new FileOutputStream(new File("data/stack.txt"), false);
+            ObjectOutputStream oo = new ObjectOutputStream(fo);
+
+            oo.writeObject( recordID );
+            oo.flush();
+            oo.close();
+            fo.close();
+
+        } catch ( Exception ex ) {
+            ex.printStackTrace();
+            return -1;
+        }
+
+        return 0;
+    }
+
+    private static UtilityID loadStack(){
+        UtilityID stackToLoad = new UtilityID();
+
+        try {
+
+            FileInputStream fi = new FileInputStream( new File("data/stack.txt") );
+            ObjectInputStream oi = new ObjectInputStream(fi);
+
+            if( fi.available() != 0 ) {
+                stackToLoad = (UtilityID) oi.readObject();
+                oi.close();
+                fi.close();
+            }
+
+        } catch( Exception ex ) {
+            ex.printStackTrace();
+        }
+
+        return stackToLoad;
     }
 
 

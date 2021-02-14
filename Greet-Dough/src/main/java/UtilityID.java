@@ -1,8 +1,9 @@
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.Serializable;
 import java.util.Stack;
 
-public class UtilityID {
+public class UtilityID implements Serializable {
 
     ////////////////// Members //////////////////
     // Uses a stack to keep track of deleted accounts
