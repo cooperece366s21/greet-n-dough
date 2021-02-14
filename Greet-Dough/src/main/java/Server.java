@@ -54,7 +54,7 @@ public class Server {
         // curl -X POST localhost:9999/users/*id*
 
         // USER ROUTES
-        // Returns the user id
+        // Returns the user given an id
         get( Server.PATH_TO_USER_ID, (req, res) -> {
 
             HashMap<Integer,User> userHashMap = loadUsers();
@@ -67,7 +67,7 @@ public class Server {
         post( Server.PATH_TO_USER, (req, res) -> {
 
             // Creates a new user into database or wherever
-            // curl -d “name=Tony Belladonna” -X post localhost:9999/users/
+            // curl -d "name=Tony Belladonna" -X post localhost:9999/users/
 
             String name = req.queryParams("name");
             User tempUser = new User(name);
