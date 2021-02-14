@@ -2,42 +2,39 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.io.Serializable;
 
-public class User implements Serializable{
+public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
     ////////////////// Members //////////////////
     private String name;
-    protected int id;                   // Stores unique id for a given user
+    private int id;                   // Stores unique id for a given user
     private Feed userFeed;
 
     // Stores a list of a user's subscriptions
     // < Content_Creator_ID, Subscription_Tier >
-    protected ArrayList<Pair> subscribedTo;
+    protected ArrayList<Pair> subscriptions;
 
     // Stores a list of a user's followers
     // Used to send notifications, emails, etc.
-    protected HashSet<Integer> subscribers;
+    protected HashSet<Integer> followers;
 
     ////////////////// Constructor //////////////////
     User( String name ) {
 
         this.name = name;
-        this.id = User.hashName(name);
+        this.id = Server.getUnusedUserID();
         this.userFeed = new Feed();
-        this.subscribedTo = new ArrayList<>();
-        this.subscribers = new HashSet<>();
+        this.subscriptions = new ArrayList<>();
+        this.followers = new HashSet<>();
 
     }
 
     ////////////////// Functions //////////////////
-    // NEED TO WRITE THIS
-    private static int hashName( String name ) {
-        return 0;
-    }
-
     public String getName() {
         return this.name;
     }
+
+    public int getID() { return this.id; }
 
     public void makePost( String contents ) {
         this.userFeed.addPost( contents );
@@ -46,4 +43,31 @@ public class User implements Serializable{
     public void checkFeed() {
         this.userFeed.display();
     }
+
+    // Deletes this user
+    public void deleteUser() {
+
+        // Delete all of this user's subscriptions
+        for ( Pair subscribed : subscriptions) {
+
+            int ID = subscribed.getLeft();
+
+            // Access user thru id and update subscription's followers
+
+
+        }
+
+        // Delete this user from all of this user's followers
+        // Potentially notify them??
+        for ( int ID : followers ) {
+
+            // Access user thru id and update follower's subscriptions
+
+        }
+
+        // This user's ID is now unused, so add to stack
+        Server.addUnusedUserID(id);
+
+    }
+
 }
