@@ -13,8 +13,7 @@ public class Server {
     ////////////////// Members //////////////////
     private static ObjectMapper mapper = new ObjectMapper();
     private static UtilityID recordID = new UtilityID();
-    private static HashMap<Integer, User> userHash = new HashMap<Integer, User>();
-
+    private static HashMap<Integer, User> userHash = new HashMap<>();
 
     ////////////////// Functions //////////////////
     public static int getUnusedUserID() {
@@ -153,10 +152,11 @@ public class Server {
 
         Server.saveStack();
         return 0;
+
     }
 
     // largely copy paste from two above functions
-    private static Integer saveStack (){
+    private static Integer saveStack () {
 
         try {
 
@@ -174,9 +174,11 @@ public class Server {
         }
 
         return 0;
+
     }
 
-    private static UtilityID loadStack(){
+    private static UtilityID loadStack() {
+
         UtilityID stackToLoad = new UtilityID();
 
         try {
@@ -195,6 +197,7 @@ public class Server {
         }
 
         return stackToLoad;
+
     }
 
 
