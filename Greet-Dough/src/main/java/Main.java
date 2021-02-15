@@ -9,6 +9,12 @@ public class Main {
         me.makePost( "Hi guys, now wouldn't be a bad time to Belladonate to my channel" );
         me.checkFeed();
 
+        User him = new User( "Josh" );
+        System.out.println( me.getFollowers().size() );
+        me.subscribe( him.getID() );
+        System.out.println( me.getFollowers().size() );
+
+
     }
 
 }

@@ -9,6 +9,7 @@ public class User implements Serializable {
     private String name;
     private int id;                   // Stores unique id for a given user
     private Feed userFeed;
+    private int wallet;
 
     // Stores a list of a user's subscriptions
     // < Content_Creator_ID, Subscription_Tier >
@@ -26,6 +27,7 @@ public class User implements Serializable {
         this.userFeed = new Feed();
         this.subscriptions = new ArrayList<>();
         this.followers = new HashSet<>();
+        this.wallet = 0;
 
     }
 
@@ -35,6 +37,12 @@ public class User implements Serializable {
     }
 
     public int getID() { return this.id; }
+
+    public ArrayList<Pair> getSubscriptions() {
+        return this.subscriptions;
+    }
+
+    public HashSet<Integer> getFollowers() { return this.followers; }
 
     public void makePost( String contents ) {
         this.userFeed.addPost( contents );
@@ -67,6 +75,21 @@ public class User implements Serializable {
 
         // This user's ID is now unused, so add to stack
         Server.addUnusedUserID(id);
+
+    }
+
+    // Subscribes to the target user given by ID
+    // NEED TO CHECK THAT USER ISNT TRYING TO SUBSCRIBE TO SELF
+    //      AND ISNT ALREADY SUBSCRIBED
+    public void subscribe( int ID ) {
+
+        // Adds the current user to the target user's followers
+        User targetUser = Server.getUser(ID);
+        targetUser.followers.add( this.id );
+
+        // Add the target user to the current user's subscriptions
+        Pair subInfo = new Pair( targetUser.getID(), 0 );
+        this.subscriptions.add( subInfo );
 
     }
 

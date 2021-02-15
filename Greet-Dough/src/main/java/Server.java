@@ -14,8 +14,17 @@ public class Server {
     private static ObjectMapper mapper = new ObjectMapper();
     private static UtilityID recordID = new UtilityID();
     private static HashMap<Integer, User> userHash = new HashMap<>();
+    private static HashMap<Integer, Post> postHash = new HashMap<>();
 
     ////////////////// Functions //////////////////
+    public static User getUser( int ID ) {
+        return userHash.get(ID);
+    }
+
+    public static Post getPost( int ID ) {
+        return postHash.get(ID);
+    }
+
     public static int getUnusedUserID() {
         return recordID.getUnusedUserID();
     }
@@ -31,8 +40,6 @@ public class Server {
     public static void addUnusedPostID( int ID ) {
         recordID.addUnusedPostID(ID);
     }
-
-
 
     /////////// NEED TO SAVE STACKS BEFORE SERVER SHUTDOWN
     public static void main(String[] args) {
@@ -82,7 +89,15 @@ public class Server {
 
         // Update the user. Needs a lot of options.
         put( Server.PATH_TO_USER_ID, (req,res) -> {
-            return "Updating a user: " + req.params(":id");
+
+            int id = Integer.parseInt( req.params(":id") );
+            User tempUser = Server.getUser(id);
+            System.out.println( tempUser.getFollowers().size() );
+            tempUser.subscribe(0);
+            System.out.println( tempUser.getFollowers().size() );
+
+            return "Updating a user: " + id;
+
         });
 
         // Deletes user
@@ -156,7 +171,7 @@ public class Server {
     }
 
     // largely copy paste from two above functions
-    private static Integer saveStack () {
+    private static Integer saveStack() {
 
         try {
 

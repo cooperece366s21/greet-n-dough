@@ -11,16 +11,12 @@ public class Post {
 
     Post( String contents ) {
 
+        this.id = Server.getUnusedPostID();
         this.contents = contents;
         this.timeCreated = LocalDateTime.now();
         this.likes = 0;
         this.comments = new ArrayList<>();
-        this.id = this.genID();
 
-    }
-
-    private static int genID() {
-        return 0;
     }
 
     public int getID() {

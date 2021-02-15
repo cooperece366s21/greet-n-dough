@@ -40,11 +40,11 @@ public class UtilityID implements Serializable {
 
     }
 
-    public Stack<Integer> getUserIDs() {
+    public Stack<Integer> getUserStack() {
         return this.freeUserIDs;
     }
 
-    public Stack<Integer> getPostIDs() {
+    public Stack<Integer> getPostStack() {
         return this.freePostIDs;
     }
 

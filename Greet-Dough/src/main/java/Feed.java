@@ -14,13 +14,12 @@ public class Feed implements Serializable {
         this.posts.add( new Post( contents ) );
     }
 
-    // NEED TO TEST THIS
-    // Should set number of references to 0
-    // Only works if no other variables reference the post
-    // Might be ??
-    // Also think about using hashmap to identify posts
-    public void deletePost( Post target ) {
-        target = null;
+    // Might need to delete references to the post?
+    //      E.g. when sharing someone else's post
+    // Can alternatively check if post still exists before displaying,
+    //      and if deleted, show message that it was deleted
+    public void deletePost( int ID ) {
+        posts.remove(ID);
     }
 
     public HashSet<String> retrieveContents() {
