@@ -7,7 +7,7 @@ public class User implements Serializable {
     private static final long serialVersionUID = 1L;
     ////////////////// Members //////////////////
     private String name;
-    private int id;                   // Stores unique id for a given user
+    private int ID;                   // Stores unique id for a given user
     private Feed userFeed;
     private int wallet;
 
@@ -23,7 +23,7 @@ public class User implements Serializable {
     User( String name ) {
 
         this.name = name;
-        this.id = Server.getUnusedUserID();
+        this.ID = Server.getUnusedUserID();
         this.userFeed = new Feed();
         this.subscriptions = new ArrayList<>();
         this.followers = new HashSet<>();
@@ -36,7 +36,7 @@ public class User implements Serializable {
         return this.name;
     }
 
-    public int getID() { return this.id; }
+    public int getID() { return this.ID; }
 
     public ArrayList<Pair> getSubscriptions() {
         return this.subscriptions;
@@ -56,7 +56,7 @@ public class User implements Serializable {
     public void deleteUser() {
 
         // Delete all of this user's subscriptions
-        for ( Pair subscribed : subscriptions) {
+        for ( Pair subscribed : subscriptions ) {
 
             int ID = subscribed.getLeft();
 
@@ -74,7 +74,7 @@ public class User implements Serializable {
         }
 
         // This user's ID is now unused, so add to stack
-        Server.addUnusedUserID(id);
+        Server.addUnusedUserID( this.getID() );
 
     }
 
@@ -85,7 +85,7 @@ public class User implements Serializable {
 
         // Adds the current user to the target user's followers
         User targetUser = Server.getUser(ID);
-        targetUser.followers.add( this.id );
+        targetUser.followers.add( this.getID() );
 
         // Add the target user to the current user's subscriptions
         Pair subInfo = new Pair( targetUser.getID(), 0 );

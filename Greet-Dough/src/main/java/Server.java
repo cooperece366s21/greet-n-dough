@@ -33,6 +33,8 @@ public class Server {
         return recordID.getUnusedPostID();
     }
 
+    public static int getUnusedImageID() { return recordID.getUnusedImageID(); }
+
     public static void addUnusedUserID( int ID ) {
         recordID.addUnusedUserID(ID);
     }
@@ -40,6 +42,8 @@ public class Server {
     public static void addUnusedPostID( int ID ) {
         recordID.addUnusedPostID(ID);
     }
+
+    public static void addUnusedImageID( int ID ) { recordID.addUnusedImageID(ID); }
 
     /////////// NEED TO SAVE STACKS BEFORE SERVER SHUTDOWN
     public static void main(String[] args) {

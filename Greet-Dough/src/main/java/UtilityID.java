@@ -12,6 +12,7 @@ public class UtilityID implements Serializable {
     ///////// NEED TO STORE IDS IN SORTED ORDER???
     private Stack<Integer> freeUserIDs = new Stack<>();
     private Stack<Integer> freePostIDs = new Stack<>();
+    private Stack<Integer> freeImageIDs = new Stack<>();
 
     ////////////////// Functions //////////////////
     UtilityID() {
@@ -19,6 +20,7 @@ public class UtilityID implements Serializable {
         // Initialize the stacks
         freeUserIDs.push(0);
         freePostIDs.push(0);
+        freeImageIDs.push(0);
 
     }
 
@@ -64,6 +66,8 @@ public class UtilityID implements Serializable {
         return UtilityID.getID(this.freePostIDs);
     }
 
+    public int getUnusedImageID() { return UtilityID.getID(this.freeImageIDs); }
+
     // Maybe need to ensure ID is non-negative?
     public void addUnusedUserID( int ID ) {
         this.freeUserIDs.push(ID);
@@ -72,5 +76,7 @@ public class UtilityID implements Serializable {
     public void addUnusedPostID( int ID ) {
         this.freePostIDs.push(ID);
     }
+
+    public void addUnusedImageID( int ID ) { this.freeImageIDs.push(ID); }
 
 }
