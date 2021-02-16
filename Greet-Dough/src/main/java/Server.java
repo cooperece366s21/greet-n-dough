@@ -9,6 +9,8 @@ public class Server {
     ////////////////// File Paths //////////////////
     private static final String PATH_TO_USER = "/users/";
     private static final String PATH_TO_USER_ID = PATH_TO_USER + ":id";
+//    private static final String PATH_TO_POST = "/posts/";
+//    private static final String PATH_TO_POST_ID = PATH_TO_POST + ":id";
 
     ////////////////// Members //////////////////
     private static ObjectMapper mapper = new ObjectMapper();
@@ -56,8 +58,8 @@ public class Server {
         init();
 
         // Load the saved users
-        recordID = Server.loadStack();
-        userHash = Server.loadUsers();
+        recordID = (UtilityID) Server.loadObject( "data/stack.txt");
+        userHash = (HashMap<Integer, User>) Server.loadObject( "data/users.txt" );
 
         ////// Also need to load the stacks
         ////// Alternatively, can iterate thru all saved users and push missing IDs
@@ -66,7 +68,7 @@ public class Server {
         // curl -X POST localhost:9999/users/*id*
 
         // USER ROUTES
-        // Returns the user given an id
+        // Returns user given an id
         get( Server.PATH_TO_USER_ID, (req, res) -> {
 
             int id = Integer.parseInt( req.params(":id") );
@@ -74,9 +76,9 @@ public class Server {
 
         });
 
+        // Creates a new user into database or wherever
         post( Server.PATH_TO_USER, (req, res) -> {
 
-            // Creates a new user into database or wherever
             // curl -d "name=Tony Belladonna" -X post localhost:9999/users/
 
             String name = req.queryParams("name");
@@ -85,7 +87,8 @@ public class Server {
 
             // Save target user to server
             userHash.put( tempUser.getID(), tempUser );
-            saveUsers(userHash);
+            saveObject(userHash, "data/users.txt");
+            saveObject(recordID, "data/stack.txt");
 
             return Server.mapper.writeValueAsString(userHash);
 
@@ -119,7 +122,8 @@ public class Server {
 
             // Remove target user from server
             userHash.remove(id);
-            saveUsers(userHash);
+            saveObject(userHash, "data/users.txt");
+            saveObject(recordID, "data/stack.txt");
 
             System.out.println( "Deleted a user: " + targetUser.getName() + ", " + targetUser.getID() );
 
@@ -127,62 +131,41 @@ public class Server {
 
         });
 
+        // POST ROUTES
+
+        //  Creates a new post. Data query must include the ID of the user who is posting.
+        //  Updates the user's feed to include the postID.
+
+//        post(Server.PATH_TO_POST, (req, res) -> {
+//            int userID = Integer.parseInt( req.queryParams("userID") );
+//            Post tempPost = new Post( req.queryParams("contents") );
+//            User tempUser = userHash.get( userID );
+//
+//            postHash.put(tempPost.getID(), tempPost);
+//            // ** update tempUser to contain new post in feed here.
+//            // Need to change the feed data structure s.t it is a list of post ID's rather than content
+//            userHash.put( userID, tempUser );
+//
+//
+//            save(userHash, "data/users.txt");
+//            save(recordID, "data/stack.txt");
+//            return Server.mapper.writeValueAsString(tempPost);
+//
+//
+//        });
+
     }
 
-    // Helper Functions
-    private static HashMap<Integer,User> loadUsers() {
+    // IO Helper Functions
 
-        HashMap<Integer,User> userHashMap = new HashMap<>();
+    private static Integer saveObject( Object objToSave, String fileName ){
 
         try {
 
-            FileInputStream fi = new FileInputStream( new File("data/users.txt") );
-            ObjectInputStream oi = new ObjectInputStream(fi);
-
-            if( fi.available() != 0 ) {
-                userHashMap = (HashMap<Integer,User>) oi.readObject();
-                oi.close();
-                fi.close();
-            }
-
-        } catch( Exception ex ) {
-            ex.printStackTrace();
-        }
-
-        return userHashMap;
-    }
-
-    private static Integer saveUsers( HashMap<Integer,User> mapToSave ) {
-
-        try {
-
-            FileOutputStream fo = new FileOutputStream(new File("data/users.txt"), false);
+            FileOutputStream fo = new FileOutputStream(new File(fileName), false);
             ObjectOutputStream oo = new ObjectOutputStream(fo);
 
-            oo.writeObject(mapToSave);
-            oo.flush();
-            oo.close();
-            fo.close();
-
-        } catch ( Exception ex ) {
-            ex.printStackTrace();
-            return -1;
-        }
-
-        Server.saveStack();
-        return 0;
-
-    }
-
-    // largely copy paste from two above functions
-    private static Integer saveStack() {
-
-        try {
-
-            FileOutputStream fo = new FileOutputStream(new File("data/stack.txt"), false);
-            ObjectOutputStream oo = new ObjectOutputStream(fo);
-
-            oo.writeObject( recordID );
+            oo.writeObject( objToSave );
             oo.flush();
             oo.close();
             fo.close();
@@ -196,17 +179,18 @@ public class Server {
 
     }
 
-    private static UtilityID loadStack() {
+    // Generalized Load Function. Requires casting on call.
+    private static Object loadObject( String fileName ){
 
-        UtilityID stackToLoad = new UtilityID();
+        Object objToLoad = new Object();
 
         try {
 
-            FileInputStream fi = new FileInputStream( new File("data/stack.txt") );
+            FileInputStream fi = new FileInputStream( new File( fileName ) );
             ObjectInputStream oi = new ObjectInputStream(fi);
 
             if( fi.available() != 0 ) {
-                stackToLoad = (UtilityID) oi.readObject();
+                objToLoad = oi.readObject();
                 oi.close();
                 fi.close();
             }
@@ -215,9 +199,7 @@ public class Server {
             ex.printStackTrace();
         }
 
-        return stackToLoad;
-
+        return objToLoad;
     }
-
 
 }
