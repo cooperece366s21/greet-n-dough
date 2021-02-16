@@ -7,7 +7,7 @@ public class User implements Serializable {
     private static final long serialVersionUID = 1L;
     ////////////////// Members //////////////////
     private String name;
-    private int ID;                   // Stores unique id for a given user
+    private final int ID;                   // Stores unique id for a given user
     private Feed userFeed;
     private int wallet;
 
