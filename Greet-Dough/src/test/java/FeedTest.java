@@ -20,7 +20,15 @@ class FeedTest extends Feed {
         assert myPosts.size() == 1;
         assert myPosts.contains( myContents );
 
-        // REMOVE A POST
+        // Delete all posts
+        HashSet<Integer> myPostIDs = myFeed.getPosts();
+        for ( int ID : myPostIDs ) {
+            myFeed.deletePost(ID);
+        }
+
+        // Ensure number of posts is 0
+        HashSet<Integer> newPostIDs = myFeed.getPosts();
+        assert newPostIDs.size() == 0;
 
     }
 

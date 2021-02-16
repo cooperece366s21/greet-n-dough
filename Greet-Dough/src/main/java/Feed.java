@@ -10,15 +10,30 @@ public class Feed implements Serializable {
         this.posts = new HashSet<>();
     }
 
-    public void addPost( String contents ) {
+    public HashSet<Integer> getPosts() {
+        return this.posts;
+    }
 
-        Post newPost = new Post( contents );
+    private void savePost( Post newPost ) {
 
         // Save the post to the feed
         this.posts.add( newPost.getID() );
 
         // Save the post to the server
         Server.addPost( newPost );
+
+    }
+    public void addPost( String contents ) {
+
+        Post newPost = new Post( contents );
+        this.savePost( newPost );
+
+    }
+
+    public void addPost( String contents, int imageID ) {
+
+        Post newPost = new Post( contents, imageID );
+        this.savePost( newPost );
 
     }
 
