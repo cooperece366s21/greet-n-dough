@@ -36,6 +36,7 @@ public class Server {
         if ( postHash.containsKey(ID) ) {
 
             postHash.remove(ID);
+            addUnusedPostID(ID);
             return true;
 
         } else {
