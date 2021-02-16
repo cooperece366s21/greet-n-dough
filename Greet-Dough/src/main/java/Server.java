@@ -31,7 +31,8 @@ public class Server {
 
     public static void addPost( Post newPost ) { postHash.put( newPost.getID(), newPost ); }
 
-    public static <T> boolean removeFromMap( HashMap<Integer,T> map, int ID ) {
+    // Removes a given ID from a given map
+    public static <T> boolean removeFromMap( HashMap<Integer, T> map, int ID ) {
 
         if ( map.containsKey(ID) ) {
 

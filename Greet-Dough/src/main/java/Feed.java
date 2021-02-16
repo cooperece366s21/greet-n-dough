@@ -52,7 +52,7 @@ public class Feed implements Serializable {
         HashSet<String> feedContents = new HashSet<>();
 
         for ( int ID : this.posts ) {
-            feedContents.add( Server.getPost(ID).contents );
+            feedContents.add( Server.getPost(ID).getContents() );
         }
 
         return feedContents;
