@@ -25,6 +25,23 @@ public class Server {
         return postHash.get(ID);
     }
 
+    public static void addPost( Post newPost ) { postHash.put( newPost.getID(), newPost ); }
+
+    // Returns true if successful;
+    //         false otherwise.
+    public static boolean removePost( int ID ) {
+
+        if ( postHash.containsKey(ID) ) {
+
+            postHash.remove(ID);
+            return true;
+
+        } else {
+            return false;
+        }
+
+    }
+
     public static int getUnusedUserID() {
         return recordID.getUnusedUserID();
     }
