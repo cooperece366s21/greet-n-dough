@@ -73,9 +73,6 @@ public class User implements Serializable {
 
         }
 
-        // This user's ID is now unused, so add to stack
-        Server.addUnusedUserID( this.getID() );
-
     }
 
     // Subscribes to the target user given by ID

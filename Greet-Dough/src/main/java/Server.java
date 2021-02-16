@@ -27,7 +27,26 @@ public class Server {
         return postHash.get(ID);
     }
 
+    public static void addUser( User newUser ) { userHash.put( newUser.getID(), newUser ); }
+
     public static void addPost( Post newPost ) { postHash.put( newPost.getID(), newPost ); }
+
+    // Figure out how to write template function for this
+    // Returns true if successful;
+    //         false otherwise.
+    public static boolean removeUser( int ID ) {
+
+        if ( userHash.containsKey(ID) ) {
+
+            userHash.remove(ID);
+            Server.addUnusedUserID(ID); // This user's ID is now unused, so add to stack
+            return true;
+
+        } else {
+            return false;
+        }
+
+    }
 
     // Returns true if successful;
     //         false otherwise.
@@ -36,7 +55,7 @@ public class Server {
         if ( postHash.containsKey(ID) ) {
 
             postHash.remove(ID);
-            addUnusedPostID(ID);
+            Server.addUnusedPostID(ID);
             return true;
 
         } else {
@@ -75,12 +94,9 @@ public class Server {
         port(9999);
         init();
 
-        // Load the saved users
+        // Load the saved stack and users
         recordID = (UtilityID) Server.loadObject( "data/stack.txt");
         userHash = (HashMap<Integer, User>) Server.loadObject( "data/users.txt" );
-
-        ////// Also need to load the stacks
-        ////// Alternatively, can iterate thru all saved users and push missing IDs
 
         // you can send requests with curls.
         // curl -X POST localhost:9999/users/*id*
@@ -104,7 +120,7 @@ public class Server {
             System.out.println( "Creating a user: " + tempUser.getName() + ", " + tempUser.getID() );
 
             // Save target user to server
-            userHash.put( tempUser.getID(), tempUser );
+            Server.addUser( tempUser );
             saveObject(userHash, "data/users.txt");
             saveObject(recordID, "data/stack.txt");
 
@@ -128,18 +144,18 @@ public class Server {
         // Deletes user
         delete( Server.PATH_TO_USER_ID, (req,res) -> {
 
-            int id = Integer.parseInt( req.params(":id") );
+            int ID = Integer.parseInt( req.params(":id") );
 
             // Check if the ID is valid
-            assert id >= 0: "Invalid ID.";
-            assert userHash.containsKey(id): "User does not exist.";
+            assert ID >= 0: "Invalid ID.";
+            assert userHash.containsKey(ID): "User does not exist.";
 
             // Delete target user dependencies
-            User targetUser = userHash.get(id);
+            User targetUser = userHash.get(ID);
             targetUser.deleteUser();
 
             // Remove target user from server
-            userHash.remove(id);
+            Server.removeUser(ID);
             saveObject(userHash, "data/users.txt");
             saveObject(recordID, "data/stack.txt");
 
@@ -175,7 +191,6 @@ public class Server {
     }
 
     // IO Helper Functions
-
     private static Integer saveObject( Object objToSave, String fileName ){
 
         try {
