@@ -31,14 +31,25 @@ public class Server {
 
     public static void addPost( Post newPost ) { postHash.put( newPost.getID(), newPost ); }
 
-    // Figure out how to write template function for this
+    public static <T> boolean removeFromMap( HashMap<Integer,T> map, int ID ) {
+
+        if ( map.containsKey(ID) ) {
+
+            map.remove(ID);
+            return true;
+
+        } else {
+            return false;
+        }
+
+    }
+
     // Returns true if successful;
     //         false otherwise.
     public static boolean removeUser( int ID ) {
 
-        if ( userHash.containsKey(ID) ) {
+        if ( Server.removeFromMap( Server.userHash, ID ) ) {
 
-            userHash.remove(ID);
             Server.addUnusedUserID(ID); // This user's ID is now unused, so add to stack
             return true;
 
@@ -52,10 +63,9 @@ public class Server {
     //         false otherwise.
     public static boolean removePost( int ID ) {
 
-        if ( postHash.containsKey(ID) ) {
+        if ( Server.removeFromMap( Server.postHash, ID ) ) {
 
-            postHash.remove(ID);
-            Server.addUnusedPostID(ID);
+            Server.addUnusedPostID(ID); // This post's ID is now unused, so add to stack
             return true;
 
         } else {
