@@ -36,6 +36,8 @@ public class User implements Serializable {
         return this.name;
     }
 
+    public Feed getFeed() { return  this.userFeed; }
+
     public int getID() { return this.ID; }
 
     public ArrayList<Pair> getSubscriptions() {

@@ -1,7 +1,8 @@
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-public class Post {
+public class Post implements Serializable {
 
     private final int ID;   // ID for this post
     private int imageID;    // Optional field to store an image ID

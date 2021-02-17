@@ -9,8 +9,8 @@ public class Server {
     ////////////////// File Paths //////////////////
     private static final String PATH_TO_USER = "/users/";
     private static final String PATH_TO_USER_ID = PATH_TO_USER + ":id";
-//    private static final String PATH_TO_POST = "/posts/";
-//    private static final String PATH_TO_POST_ID = PATH_TO_POST + ":id";
+    private static final String PATH_TO_POST = "/posts/";
+    private static final String PATH_TO_POST_ID = PATH_TO_POST + ":id";
 
     ////////////////// Members //////////////////
     private static ObjectMapper mapper = new ObjectMapper();
@@ -108,11 +108,14 @@ public class Server {
         // Load the saved stack and users
         recordID = (UtilityID) Server.loadObject( "data/stack.txt");
         userHash = (HashMap<Integer, User>) Server.loadObject( "data/users.txt" );
+        postHash = (HashMap<Integer, Post>) Server.loadObject( "data/posts.txt" );
 
         // you can send requests with curls.
         // curl -X POST localhost:9999/users/*id*
 
         // USER ROUTES
+        /////////////////
+
         // Returns user given an id
         get( Server.PATH_TO_USER_ID, (req, res) -> {
 
@@ -177,27 +180,42 @@ public class Server {
         });
 
         // POST ROUTES
+        ////////////////////
+
+        // Returns post object
+        get(Server.PATH_TO_POST_ID, (req,res) -> {
+
+            int ID = Integer.parseInt( req.params( ":id" ) );
+            System.out.println(
+                    mapper.writeValueAsString( Server.getPost( ID ) )
+            );
+            return Server.getPost( ID );
+
+        });
 
         //  Creates a new post. Data query must include the ID of the user who is posting.
         //  Updates the user's feed to include the postID.
+        post(Server.PATH_TO_POST, (req, res) -> {
+            // curl -d "userID=0&contents=hello world" -X post localhost:9999/posts/
+            int userID = Integer.parseInt( req.queryParams( "userID" ) );
+            String imageQuery = req.queryParams( "imageID" );
+            String contentQuery = req.queryParams( "contents" );
+            int imageID = imageQuery!=null ? Integer.parseInt( imageQuery ) : -1;
 
-//        post(Server.PATH_TO_POST, (req, res) -> {
-//            int userID = Integer.parseInt( req.queryParams("userID") );
-//            Post tempPost = new Post( req.queryParams("contents") );
-//            User tempUser = userHash.get( userID );
-//
-//            postHash.put(tempPost.getID(), tempPost);
-//            // ** update tempUser to contain new post in feed here.
-//            // Need to change the feed data structure s.t it is a list of post ID's rather than content
-//            userHash.put( userID, tempUser );
-//
-//
-//            save(userHash, "data/users.txt");
-//            save(recordID, "data/stack.txt");
-//            return Server.mapper.writeValueAsString(tempPost);
-//
-//
-//        });
+            User tempUser = userHash.get( userID );
+
+            tempUser.getFeed().addPost( contentQuery, imageID );
+            System.out.println( "Added posts" );
+
+
+            saveObject( userHash, "data/users.txt" );
+            saveObject( recordID, "data/stack.txt" );
+            saveObject( postHash, "data/posts.txt" );
+            System.out.println( "Saving all files" );
+
+            return mapper.writeValueAsString( postHash );
+
+        });
 
     }
 
@@ -238,6 +256,7 @@ public class Server {
                 oi.close();
                 fi.close();
             }
+            else { System.out.println("Empty file " + fileName); }
 
         } catch( Exception ex ) {
             ex.printStackTrace();
