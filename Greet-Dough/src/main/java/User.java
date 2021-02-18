@@ -36,15 +36,21 @@ public class User implements Serializable {
         return this.name;
     }
 
-    public Feed getFeed() { return  this.userFeed; }
+    public int getID() {
+        return this.ID;
+    }
 
-    public int getID() { return this.ID; }
+    public Feed getFeed() {
+        return this.userFeed;
+    }
 
     public ArrayList<Pair> getSubscriptions() {
         return this.subscriptions;
     }
 
-    public HashSet<Integer> getFollowers() { return this.followers; }
+    public HashSet<Integer> getFollowers() {
+        return this.followers;
+    }
 
     public void makePost( String contents ) {
         this.userFeed.addPost( contents );

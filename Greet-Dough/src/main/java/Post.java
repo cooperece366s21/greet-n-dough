@@ -7,7 +7,7 @@ public class Post implements Serializable {
     private final int ID;   // ID for this post
     private int imageID;    // Optional field to store an image ID
     private String contents;
-    private LocalDateTime timeCreated;
+    private final LocalDateTime timeCreated;
     private int likes;
     private ArrayList<String> comments;
 

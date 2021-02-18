@@ -6,6 +6,7 @@ public class Pair implements Serializable {
     private int left, right;
 
     Pair() {}
+
     Pair( int left, int right ) {
 
         this.left = left;

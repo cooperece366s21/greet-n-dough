@@ -4,6 +4,7 @@ import static spark.Spark.*;
 import java.io.*;
 import java.util.HashMap;
 
+// IMPLEMENT A PREFIX TRIE TO ALLOW SEARCHING FOR USERS
 public class Server {
 
     ////////////////// File Paths //////////////////
@@ -27,9 +28,13 @@ public class Server {
         return postHash.get(ID);
     }
 
-    public static void addUser( User newUser ) { userHash.put( newUser.getID(), newUser ); }
+    public static void addUser( User newUser ) {
+        userHash.put( newUser.getID(), newUser );
+    }
 
-    public static void addPost( Post newPost ) { postHash.put( newPost.getID(), newPost ); }
+    public static void addPost( Post newPost ) {
+        postHash.put( newPost.getID(), newPost );
+    }
 
     // Removes a given ID from a given map
     public static <T> boolean removeFromMap( HashMap<Integer, T> map, int ID ) {
@@ -83,7 +88,9 @@ public class Server {
         return recordID.getUnusedPostID();
     }
 
-    public static int getUnusedImageID() { return recordID.getUnusedImageID(); }
+    public static int getUnusedImageID() {
+        return recordID.getUnusedImageID();
+    }
 
     public static void addUnusedUserID( int ID ) {
         recordID.addUnusedUserID(ID);
@@ -93,7 +100,9 @@ public class Server {
         recordID.addUnusedPostID(ID);
     }
 
-    public static void addUnusedImageID( int ID ) { recordID.addUnusedImageID(ID); }
+    public static void addUnusedImageID( int ID ) {
+        recordID.addUnusedImageID(ID);
+    }
 
     /////////// NEED TO SAVE STACKS BEFORE SERVER SHUTDOWN
     public static void main(String[] args) {
@@ -196,6 +205,7 @@ public class Server {
         //  Creates a new post. Data query must include the ID of the user who is posting.
         //  Updates the user's feed to include the postID.
         post(Server.PATH_TO_POST, (req, res) -> {
+
             // curl -d "userID=0&contents=hello world" -X post localhost:9999/posts/
             int userID = Integer.parseInt( req.queryParams( "userID" ) );
             String imageQuery = req.queryParams( "imageID" );
@@ -206,7 +216,6 @@ public class Server {
 
             tempUser.getFeed().addPost( contentQuery, imageID );
             System.out.println( "Added posts" );
-
 
             saveObject( Server.userHash, "data/users.txt" );
             saveObject( Server.recordID, "data/stack.txt" );
@@ -251,14 +260,16 @@ public class Server {
             FileInputStream fi = new FileInputStream( new File( fileName ) );
             ObjectInputStream oi = new ObjectInputStream(fi);
 
-            if( fi.available() != 0 ) {
+            if ( fi.available() != 0 ) {
                 objToLoad = oi.readObject();
                 oi.close();
                 fi.close();
             }
-            else { System.out.println("Empty file " + fileName); }
+            else {
+                System.out.println("Empty file " + fileName);
+            }
 
-        } catch( Exception ex ) {
+        } catch ( Exception ex ) {
             ex.printStackTrace();
         }
 
