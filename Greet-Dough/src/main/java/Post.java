@@ -16,6 +16,7 @@ public class Post implements Serializable {
     Post( String contents, int userID ) {
 
         this.ID = Server.getUnusedPostID();
+        this.userID = userID;
         this.imageID = -1;
         this.contents = contents;
         this.timeCreated = LocalDateTime.now();
