@@ -115,9 +115,24 @@ public class Server {
         init();
 
         // Load the saved stack and users
-        Server.recordID = (UtilityID) Server.loadObject( "data/stack.txt");
-        Server.userHash = (HashMap<Integer, User>) Server.loadObject( "data/users.txt" );
-        Server.postHash = (HashMap<Integer, Post>) Server.loadObject( "data/posts.txt" );
+        try {
+            Server.recordID = (UtilityID) Server.loadObject("data/stack.txt");
+        } catch( ClassCastException e) {
+            System.out.println("(Stack load) Empty file or wrong class cast");
+        }
+
+        try {
+            Server.userHash = (HashMap<Integer, User>) Server.loadObject("data/users.txt");
+        } catch ( ClassCastException e ) {
+            System.out.println("(User load) Empty file or wrong class cast");
+        }
+
+        try {
+            Server.postHash = (HashMap<Integer, Post>) Server.loadObject("data/posts.txt");
+        } catch ( ClassCastException e ) {
+            System.out.println("(Post load) Empty file or wrong class cast");
+        }
+
 
         // you can send requests with curls.
         // curl -X POST localhost:9999/users/*id*
@@ -226,6 +241,11 @@ public class Server {
 
         });
 
+//        delete(Server.PATH_TO_POST_ID, (req,res) -> {
+//            int userID = Integer.parseInt( req.params( ":id" ) );
+//
+//        });
+
     }
 
     // IO Helper Functions
@@ -269,7 +289,11 @@ public class Server {
                 System.out.println("Empty file " + fileName);
             }
 
-        } catch ( Exception ex ) {
+        }
+        catch ( EOFException e ){
+            System.out.println( fileName + " Is empty");
+        }
+        catch ( Exception ex ) {
             ex.printStackTrace();
         }
 

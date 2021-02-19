@@ -3,6 +3,7 @@ import java.util.HashSet;
 
 public class Feed implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     public HashSet<Integer> posts;
 
     // Constructor
