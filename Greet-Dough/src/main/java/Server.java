@@ -229,7 +229,7 @@ public class Server {
 
             User tempUser = Server.userHash.get( userID );
 
-            tempUser.getFeed().addPost( contentQuery, imageID );
+            tempUser.getFeed().addPost( contentQuery, userID, imageID );
             System.out.println( "Added posts" );
 
             saveObject( Server.userHash, "data/users.txt" );
@@ -242,8 +242,14 @@ public class Server {
         });
 
 //        delete(Server.PATH_TO_POST_ID, (req,res) -> {
+//            // curl -d "userID=0&postID=0" -X post localhost:9999/posts/
 //            int userID = Integer.parseInt( req.params( ":id" ) );
 //
+//            saveObject( Server.userHash, "data/users.txt" );
+//            saveObject( Server.recordID, "data/stack.txt" );
+//            saveObject( Server.postHash, "data/posts.txt" );
+//
+//            return Server.mapper.writeValueAsString( Server.postHash );
 //        });
 
     }

@@ -53,7 +53,7 @@ public class User implements Serializable {
     }
 
     public void makePost( String contents ) {
-        this.userFeed.addPost( contents );
+        this.userFeed.addPost( contents, this.getID() );
     }
 
     public void checkFeed() {

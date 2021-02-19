@@ -24,14 +24,14 @@ public class Feed implements Serializable {
         Server.addPost( newPost );
 
     }
-    public void addPost( String contents ) {
+    public void addPost( String contents, int userID ) {
 
-        Post newPost = new Post( contents );
+        Post newPost = new Post( contents, userID );
         this.savePost( newPost );
 
     }
 
-    public void addPost( String contents, int imageID ) {
+    public void addPost( String contents, int userID, int imageID ) {
 
         Post newPost = new Post( contents, imageID );
         this.savePost( newPost );

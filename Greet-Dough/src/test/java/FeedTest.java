@@ -13,7 +13,7 @@ class FeedTest extends Feed {
 
         // Add a single post
         String myContents = "Testing 1,2,3";
-        myFeed.addPost( myContents );
+        myFeed.addPost( myContents, 0 );
         HashSet<String> myPosts = myFeed.retrieveContents();
 
         // Ensure number of posts is 1 and the post contains the correct information
