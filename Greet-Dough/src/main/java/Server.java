@@ -67,16 +67,27 @@ public class Server {
 
     // Returns true if successful;
     //         false otherwise.
-    public static boolean removePost( int ID ) {
+    public static boolean removePost( int postID ) {
 
-        if ( Server.removeFromMap( Server.postHash, ID ) ) {
+            Post tempPost = Server.postHash.get( postID );
+            User tempUser = Server.userHash.get( tempPost.getUserID() );
 
-            Server.addUnusedPostID(ID); // This post's ID is now unused, so add to stack
-            return true;
+            if ( tempUser.getFeed().deletePost(postID) ){
+                Server.addUnusedPostID(postID);
+                return true;
+            }
+            else {
+                return false;
+            }
 
-        } else {
-            return false;
-        }
+//        if ( Server.removeFromMap( Server.postHash, ID ) ) {
+//
+//            Server.addUnusedPostID(ID); // This post's ID is now unused, so add to stack
+//            return true;
+//
+//        } else {
+//            return false;
+//        }
 
     }
 
@@ -147,6 +158,9 @@ public class Server {
             return Server.userHash.get(id);
 
         });
+
+        // Prints all users, for debugging only!
+        get( Server.PATH_TO_USER, (req,res) -> mapper.writeValueAsString( userHash ));
 
         // Creates a new user into database or wherever
         post( Server.PATH_TO_USER, (req, res) -> {
@@ -241,16 +255,25 @@ public class Server {
 
         });
 
-//        delete(Server.PATH_TO_POST_ID, (req,res) -> {
-//            // curl -d "userID=0&postID=0" -X post localhost:9999/posts/
-//            int userID = Integer.parseInt( req.params( ":id" ) );
-//
-//            saveObject( Server.userHash, "data/users.txt" );
-//            saveObject( Server.recordID, "data/stack.txt" );
-//            saveObject( Server.postHash, "data/posts.txt" );
-//
-//            return Server.mapper.writeValueAsString( Server.postHash );
-//        });
+        delete(Server.PATH_TO_POST_ID, (req,res) -> {
+            // curl -X delete localhost:9999/posts/0
+
+            int postID = Integer.parseInt( req.params( ":id" ) );
+
+            if ( Server.removePost( postID ) ) {
+
+                saveObject(Server.userHash, "data/users.txt");
+                saveObject(Server.recordID, "data/stack.txt");
+                saveObject(Server.postHash, "data/posts.txt");
+
+            }
+            else {
+                System.out.println( "Error deleting a post");
+            }
+
+            return Server.mapper.writeValueAsString( Server.postHash );
+
+        });
 
     }
 
