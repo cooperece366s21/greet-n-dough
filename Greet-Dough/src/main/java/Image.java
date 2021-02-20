@@ -20,6 +20,7 @@ public class Image implements Serializable {
 
         // Get image ID
             // Post class
+            // Rename each image to it's ID so each function call creates a new arbitrary image.png file
         // Get User ID
             // have to be logged in
             // return from the get user id function
@@ -33,25 +34,27 @@ public class Image implements Serializable {
         // img id is how many places
         // post id is how many places
 
-        Image() {}
-            public static String getImage() {
+        Image() {
+            
+        }
+            public String getImage() {
                 Scanner myObj = new Scanner(System.in);  // Create a Scanner object
                 System.out.println("Enter filepath");
 
-                String imagePath = myObj.nextLine();  // Read user input
+                String path = myObj.nextLine();  // Read user input
                 String extension = "";
-                int i = imagePath.lastIndexOf('.');
-                if (i >= 0) { extension = imagePath.substring(i+1); }
+                int i = path.lastIndexOf('.');
+                if (i >= 0) { extension = path.substring(i+1); }
 
                 String validTypes = "jpg png jpeg";
                 if (!(validTypes.contains(extension))){
                     System.out.println("Invalid Input, Please Input a Valid Image!");
-                    imagePath = getImage();
+                    path = getImage();
                 }
-                return imagePath;
+                return path;
             }
 
-            public static void moveImage() {
+            public void moveImage() {
                 FileSystem fileSys = FileSystems.getDefault();
                 Path srcPath = fileSys.getPath(getImage());
                 //change this abomination if you are testing it (for now)
