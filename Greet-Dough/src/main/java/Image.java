@@ -37,36 +37,42 @@ public class Image implements Serializable {
         Image() {
             
         }
-            public String getImage() {
-                Scanner myObj = new Scanner(System.in);  // Create a Scanner object
-                System.out.println("Enter filepath");
 
-                String path = myObj.nextLine();  // Read user input
-                String extension = "";
-                int i = path.lastIndexOf('.');
-                if (i >= 0) { extension = path.substring(i+1); }
+        public String getImage() {
 
-                String validTypes = "jpg png jpeg";
-                if (!(validTypes.contains(extension))){
-                    System.out.println("Invalid Input, Please Input a Valid Image!");
-                    path = getImage();
-                }
-                return path;
+            Scanner myObj = new Scanner(System.in);  // Create a Scanner object
+            System.out.println("Enter filepath");
+
+            String path = myObj.nextLine();  // Read user input
+            String extension = "";
+            int i = path.lastIndexOf('.');
+            if (i >= 0) { extension = path.substring(i+1); }
+
+            String validTypes = "jpg png jpeg";
+            if (!(validTypes.contains(extension))){
+                System.out.println("Invalid Input, Please Input a Valid Image!");
+                path = getImage();
+            }
+            return path;
+
+        }
+
+        public void moveImage() {
+
+            FileSystem fileSys = FileSystems.getDefault();
+            Path srcPath = fileSys.getPath(getImage());
+            //change this abomination if you are testing it (for now)
+            //NEED TO EDIT LATER
+            Path destPath = fileSys.getPath("c:\\Users\\brian\\OneDrive\\Documents\\Github\\Lee-Ko\\Greet-Dough\\data\\images.png");
+            try {
+                //COPY image from source to destination folder
+                Files.copy(srcPath, destPath, StandardCopyOption.REPLACE_EXISTING);
+
+
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
             }
 
-            public void moveImage() {
-                FileSystem fileSys = FileSystems.getDefault();
-                Path srcPath = fileSys.getPath(getImage());
-                //change this abomination if you are testing it (for now)
-                //NEED TO EDIT LATER
-                Path destPath = fileSys.getPath("c:\\Users\\brian\\OneDrive\\Documents\\Github\\Lee-Ko\\Greet-Dough\\data\\images.png");
-                try {
-                    //COPY image from source to destination folder
-                    Files.copy(srcPath, destPath, StandardCopyOption.REPLACE_EXISTING);
+        }
 
-
-                } catch (IOException ioe) {
-                    ioe.printStackTrace();
-                }
-            }
 }

@@ -33,7 +33,7 @@ public class Feed implements Serializable {
 
     public void addPost( String contents, int userID, int imageID ) {
 
-        Post newPost = new Post( contents, imageID );
+        Post newPost = new Post( contents, userID, imageID );
         this.savePost( newPost );
 
     }
