@@ -46,10 +46,12 @@ public class Image implements Serializable {
             String path = myObj.nextLine();  // Read user input
             String extension = "";
             int i = path.lastIndexOf('.');
-            if (i >= 0) { extension = path.substring(i+1); }
+            if (i >= 0) {
+                extension = path.substring(i+1);
+            }
 
             String validTypes = "jpg png jpeg";
-            if (!(validTypes.contains(extension))){
+            if ( !(validTypes.contains(extension)) ) {
                 System.out.println("Invalid Input, Please Input a Valid Image!");
                 path = getImage();
             }
@@ -60,7 +62,7 @@ public class Image implements Serializable {
         public void moveImage() {
 
             FileSystem fileSys = FileSystems.getDefault();
-            Path srcPath = fileSys.getPath(getImage());
+            Path srcPath = fileSys.getPath( getImage() );
             //change this abomination if you are testing it (for now)
             //NEED TO EDIT LATER
             Path destPath = fileSys.getPath("c:\\Users\\brian\\OneDrive\\Documents\\Github\\Lee-Ko\\Greet-Dough\\data\\images.png");
