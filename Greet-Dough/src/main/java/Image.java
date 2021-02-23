@@ -41,7 +41,7 @@ public class Image implements Serializable {
         public String getImage() {
 
             Scanner myObj = new Scanner(System.in);  // Create a Scanner object
-            System.out.println("Enter filepath");
+            System.out.println("Enter filepath: ");
 
             String path = myObj.nextLine();  // Read user input
             String extension = "";
