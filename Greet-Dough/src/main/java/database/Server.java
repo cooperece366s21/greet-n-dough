@@ -1,8 +1,10 @@
 package database;
 
 import model.Post;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import model.User;
 import utility.UtilityID;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static spark.Spark.*;
 import java.io.*;
@@ -40,32 +42,19 @@ public class Server {
         postHash.put( newPost.getID(), newPost );
     }
 
-    // Removes a given ID from a given map
-    public static <T> boolean removeFromMap( HashMap<Integer, T> map, int ID ) {
-
-        if ( map.containsKey(ID) ) {
-
-            map.remove(ID);
-            return true;
-
-        } else {
-            return false;
-        }
-
-    }
-
     // Returns true if successful;
     //         false otherwise.
     public static boolean removeUser( int ID ) {
 
-        if ( Server.removeFromMap( Server.userHash, ID ) ) {
-
-            Server.addUnusedUserID(ID); // This user's ID is now unused, so add to stack
-            return true;
-
-        } else {
-            return false;
-        }
+        return ( Server.userHash.remove(ID) != null );
+//        if ( Server.removeFromMap( Server.userHash, ID ) ) {
+//
+//            Server.addUnusedUserID(ID); // This user's ID is now unused, so add to stack
+//            return true;
+//
+//        } else {
+//            return false;
+//        }
 
     }
 
@@ -76,22 +65,13 @@ public class Server {
             Post tempPost = Server.postHash.get( postID );
             User tempUser = Server.userHash.get( tempPost.getUserID() );
 
-            if ( tempUser.getFeed().deletePost(postID) ){
-                Server.addUnusedPostID(postID);
-                return true;
-            }
-            else {
-                return false;
-            }
-
-//        if ( database.Server.removeFromMap( database.Server.postHash, ID ) ) {
-//
-//            database.Server.addUnusedPostID(ID); // This post's ID is now unused, so add to stack
-//            return true;
-//
-//        } else {
-//            return false;
-//        }
+//            if ( tempUser.getFeed().deletePost(postID) ){
+//                Server.addUnusedPostID(postID);
+//                return true;
+//            }
+//            else {
+//                return false;
+//            }
 
     }
 
@@ -107,17 +87,17 @@ public class Server {
         return recordID.getUnusedImageID();
     }
 
-    public static void addUnusedUserID( int ID ) {
-        recordID.addUnusedUserID(ID);
-    }
-
-    public static void addUnusedPostID( int ID ) {
-        recordID.addUnusedPostID(ID);
-    }
-
-    public static void addUnusedImageID( int ID ) {
-        recordID.addUnusedImageID(ID);
-    }
+//    public static void addUnusedUserID( int ID ) {
+//        recordID.addUnusedUserID(ID);
+//    }
+//
+//    public static void addUnusedPostID( int ID ) {
+//        recordID.addUnusedPostID(ID);
+//    }
+//
+//    public static void addUnusedImageID( int ID ) {
+//        recordID.addUnusedImageID(ID);
+//    }
 
     /////////// NEED TO SAVE STACKS BEFORE SERVER SHUTDOWN
     public static void main(String[] args) {

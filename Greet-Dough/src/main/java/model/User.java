@@ -13,7 +13,6 @@ public class User implements Serializable {
     ////////////////// Members //////////////////
     private String name;
     private final int ID;                   // Stores unique id for a given user
-    private Feed userFeed;
     private int wallet;
 
     // Stores a list of a user's subscriptions
@@ -25,11 +24,10 @@ public class User implements Serializable {
     protected HashSet<Integer> followers;
 
     ////////////////// Constructor //////////////////
-    User( String name ) {
+    public User( String name ) {
 
         this.name = name;
         this.ID = Server.getUnusedUserID();
-        this.userFeed = new Feed();
         this.subscriptions = new ArrayList<>();
         this.followers = new HashSet<>();
         this.wallet = 0;
@@ -45,24 +43,12 @@ public class User implements Serializable {
         return this.ID;
     }
 
-    public Feed getFeed() {
-        return this.userFeed;
-    }
-
     public ArrayList<Pair> getSubscriptions() {
         return this.subscriptions;
     }
 
     public HashSet<Integer> getFollowers() {
         return this.followers;
-    }
-
-    public void makePost( String contents ) {
-        this.userFeed.addPost( contents, this.getID() );
-    }
-
-    public void checkFeed() {
-        this.userFeed.display();
     }
 
     // Deletes this user

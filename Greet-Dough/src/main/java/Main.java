@@ -8,10 +8,6 @@ public class Main {
         User me = new User("Tony");
         System.out.println( "My name is " + me.getName() );
 
-        me.makePost( "Hi guys, make sure to Belladonate to my channel" );
-        me.makePost( "Hi guys, now wouldn't be a bad time to Belladonate to my channel" );
-        me.checkFeed();
-
         Post myPost = new Post( "Hi", 0 );
         System.out.println( myPost.getImageID() );
 
