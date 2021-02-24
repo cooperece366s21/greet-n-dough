@@ -11,9 +11,9 @@ public class Post {
     private String contents;
     private final LocalDateTime timeCreated;
 
-    public Post( String contents, int userID ) {
+    public Post( String contents, int userID, int postID ) {
 
-        this.ID = Server.getUnusedPostID();
+        this.ID = postID;
         this.userID = userID;
         this.imageID = -1;
         this.contents = contents;
@@ -21,11 +21,11 @@ public class Post {
 
     }
 
-    public Post( String contents, int userID, int imageID ) {
+    public Post( String contents, int userID, int postID, int imageID ) {
 
         // Constructor Chaining
         // Uses above constructor
-        this(contents, userID);
+        this(contents, userID, postID);
         this.imageID = imageID;
 
     }

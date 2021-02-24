@@ -1,12 +1,13 @@
 package utility;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public abstract class Store<T> {
+public abstract class Store<T> implements Serializable {
 
     private AtomicInteger freeIDs;
-    private HashMap<Integer, T> items;
+    private HashMap<Integer, T> items = new HashMap<>();
 
     protected Store() {
         this(0);

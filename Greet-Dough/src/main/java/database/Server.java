@@ -2,6 +2,10 @@ package database;
 
 import model.Post;
 import model.User;
+import store.PostStore;
+import store.PostStoreImpl;
+import store.UserStore;
+import store.UserStoreImpl;
 import utility.IOservice;
 import utility.UtilityID;
 
@@ -9,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static spark.Spark.*;
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 // IMPLEMENT A PREFIX TRIE TO ALLOW SEARCHING FOR USERS
 public class Server {
@@ -21,14 +26,14 @@ public class Server {
 
     ////////////////// Members //////////////////
     private static ObjectMapper mapper = new ObjectMapper();
-    private static UtilityID recordID = new UtilityID();
-    private static HashMap<Integer, User> userHash = new HashMap<>();
-    private static HashMap<Integer, Post> postHash = new HashMap<>();
+    private static UserStoreImpl userStore = new UserStoreImpl();
+//    private static HashMap<Integer, Post> postHash = new HashMap<>();
 
 
     ////////////////// Functions //////////////////
+    /*
     public static User getUser(int ID) {
-        return userHash.get(ID);
+        return userStore.getUser(ID);
     }
 
     public static Post getPost(int ID) {
@@ -100,7 +105,8 @@ public class Server {
 //        recordID.addUnusedImageID(ID);
 //    }
 
-    /////////// NEED TO SAVE STACKS BEFORE SERVER SHUTDOWN
+     */
+
     public static void main(String[] args) {
 
         initExceptionHandler((e) -> {
@@ -110,31 +116,19 @@ public class Server {
         port(9999);
         init();
 
-        // Load the saved stack and users
         try {
-            Server.recordID = (UtilityID)
-                    IOservice.loadObject("data/stack.txt");
-        } catch (ClassCastException e) {
-            System.out.println("(Stack load) Empty file or wrong class cast");
-        }
-
-        try {
-            Server.userHash = (HashMap<Integer, User>)
+            Server.userStore = (UserStoreImpl)
                     IOservice.loadObject("data/users.txt");
         } catch (ClassCastException e) {
             System.out.println("(model.User load) Empty file or wrong class cast");
         }
 
-        try {
-            Server.postHash = (HashMap<Integer, Post>)
-                    IOservice.loadObject("data/posts.txt");
-        } catch (ClassCastException e) {
-            System.out.println("(base.Post load) Empty file or wrong class cast");
-        }
-
-
-        // you can send requests with curls.
-        // curl -X POST localhost:9999/users/*id*
+//        try {
+//            Server.postHash = (HashMap<Integer, Post>)
+//                    IOservice.loadObject("data/posts.txt");
+//        } catch (ClassCastException e) {
+//            System.out.println("(base.Post load) Empty file or wrong class cast");
+//        }
 
         // USER ROUTES
         /////////////////
@@ -143,12 +137,12 @@ public class Server {
         get(Server.PATH_TO_USER_ID, (req, res) -> {
 
             int id = Integer.parseInt(req.params(":id"));
-            return Server.userHash.get(id);
+            return Server.userStore.getUser(id);
 
         });
 
         // Prints all users, for debugging only!
-        get(Server.PATH_TO_USER, (req, res) -> mapper.writeValueAsString(userHash));
+        get(Server.PATH_TO_USER, (req, res) -> mapper.writeValueAsString(userStore));
 
         // Creates a new user into database or wherever
         post(Server.PATH_TO_USER, (req, res) -> {
@@ -156,15 +150,13 @@ public class Server {
             // curl -d "name=Tony Belladonna" -X post localhost:9999/users/
 
             String name = req.queryParams("name");
-            User tempUser = new User(name);
-            System.out.println("Creating a user: " + tempUser.getName() + ", " + tempUser.getID());
+            User tempUser = new User( name, userStore.getFreeID() );
 
-            // Save target user to server
-            Server.addUser(tempUser);
-            IOservice.saveObject(Server.userHash, "data/users.txt");
-            IOservice.saveObject(Server.recordID, "data/stack.txt");
+            Server.userStore.addUser( tempUser );
 
-            return Server.mapper.writeValueAsString(Server.userHash);
+            IOservice.saveObject(Server.userStore, "data/users.txt");
+
+            return "User Created: " + tempUser.getName() + ", " + tempUser.getID();
 
         });
 
@@ -172,10 +164,11 @@ public class Server {
         put(Server.PATH_TO_USER_ID, (req, res) -> {
 
             int id = Integer.parseInt(req.params(":id"));
-            User tempUser = Server.getUser(id);
-            System.out.println(tempUser.getFollowers().size());
-            tempUser.subscribe(0);
-            System.out.println(tempUser.getFollowers().size());
+            // idk whats this, but comment it out for now to rfctr all else
+//            User tempUser = Server.getUser(id);
+//            System.out.println(tempUser.getFollowers().size());
+//            tempUser.subscribe(0);
+//            System.out.println(tempUser.getFollowers().size());
 
             return "Updating a user: " + id;
 
@@ -186,29 +179,24 @@ public class Server {
 
             int ID = Integer.parseInt(req.params(":id"));
 
-            // Check if the ID is valid
-            assert ID >= 0 : "Invalid ID.";
-            assert Server.userHash.containsKey(ID) : "model.User does not exist.";
+            if ( Server.userStore.deleteUser(ID) ){
+                System.out.println( "User successfully deleted" );
+            }
+            else{
+                System.out.println( "Nae u've got a wrong user ID aye?" );
+                return "NO USER DELETED";
+            }
 
-            // Delete target user dependencies
-            User targetUser = Server.userHash.get(ID);
-            targetUser.deleteUser();
-
-            // Remove target user from server
-            Server.removeUser(ID);
-            IOservice.saveObject(Server.userHash, "data/users.txt");
-            IOservice.saveObject(Server.recordID, "data/stack.txt");
-
-            System.out.println("Deleted a user: " + targetUser.getName() + ", " + targetUser.getID());
-
-            return Server.mapper.writeValueAsString(Server.userHash);
+            IOservice.saveObject(Server.userStore, "data/users.txt");
+            return "User Deleted";
 
         });
 
         // POST ROUTES
         ////////////////////
+        /*
 
-        // Returns post object
+        //  Returns post object
         get(Server.PATH_TO_POST_ID, (req, res) -> {
 
             int ID = Integer.parseInt(req.params(":id"));
@@ -219,8 +207,7 @@ public class Server {
 
         });
 
-        //  Creates a new post. Data query must include the ID of the user who is posting.
-        //  Updates the user's feed to include the postID.
+        //  Creates a new post
         post(Server.PATH_TO_POST, (req, res) -> {
 
             // curl -d "userID=0&contents=hello world" -X post localhost:9999/posts/
@@ -243,6 +230,7 @@ public class Server {
 
         });
 
+        //  Deletes post by given postID
         delete(Server.PATH_TO_POST_ID, (req, res) -> {
             // curl -X delete localhost:9999/posts/0
 
@@ -262,5 +250,6 @@ public class Server {
 
         });
 
+        */
     }
 }

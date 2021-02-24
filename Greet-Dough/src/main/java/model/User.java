@@ -10,10 +10,10 @@ public class User implements Serializable {
     private final int ID;                   // Stores unique id for a given user
     private int wallet;
 
-    public User( String name ) {
+    public User( String name, Integer ID ) {
 
         this.name = name;
-        this.ID = Server.getUnusedUserID();
+        this.ID = ID;
         this.wallet = 0;
 
     }
