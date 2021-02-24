@@ -1,11 +1,47 @@
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import static spark.Spark.*;
-import java.io.*;
+import java.io.EOFException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.HashMap;
+
+import static spark.Spark.delete;
+import static spark.Spark.get;
+import static spark.Spark.init;
+import static spark.Spark.initExceptionHandler;
+import static spark.Spark.port;
+import static spark.Spark.post;
+import static spark.Spark.put;
 
 // IMPLEMENT A PREFIX TRIE TO ALLOW SEARCHING FOR USERS
 public class Server {
+  /* potential structure
+      encapsulate the hashmaps into a Store interface (or several) UserStore, PostStore
+      encapsulate higher level functionality into a "Service" kind of class Service.java
+        for example, construct a Feed object by fetching the user, using the user to fetch posts, and use posts to make Feed
+      model for User.java and Post.java should be independent of the storage
+
+      Delete a post - DELETE /posts/:postId
+        postStore.deletePost(postId);
+
+        down the road, you only want the post author to be allowed to delete
+
+        ...
+        Post post = postStore.getPost(postId);
+        // check the author
+        User user = userStore.getUser(post.getUserId());
+        if (currentUser != user ) {
+          throw
+        }
+        postStore.deletePost(postId);
+
+      When separating things, try to think about what's the base model that you would store in a database vs
+        what you could derive from the data.
+        For example, Posts and Users are base model material, but a "Feed" seems like it could be derived.
+   */
 
     ////////////////// File Paths //////////////////
     private static final String PATH_TO_USER = "/users/";

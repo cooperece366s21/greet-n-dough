@@ -1,7 +1,7 @@
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.io.Serializable;
 import java.util.Stack;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class UtilityID implements Serializable {
 
@@ -41,6 +41,10 @@ public class UtilityID implements Serializable {
         return newID;
 
     }
+
+    // use AtomicInteger or UUID
+    public AtomicInteger userIds = new AtomicInteger(0);
+    public String exampleUserId = UUID.randomUUID().toString();
 
     public Stack<Integer> getUserStack() {
         return this.freeUserIDs;
