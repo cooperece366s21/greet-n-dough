@@ -2,12 +2,12 @@ package database;
 
 import model.Post;
 import model.User;
+import utility.IOservice;
 import utility.UtilityID;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static spark.Spark.*;
-import java.io.*;
 import java.util.HashMap;
 
 // IMPLEMENT A PREFIX TRIE TO ALLOW SEARCHING FOR USERS
@@ -25,28 +25,29 @@ public class Server {
     private static HashMap<Integer, User> userHash = new HashMap<>();
     private static HashMap<Integer, Post> postHash = new HashMap<>();
 
+
     ////////////////// Functions //////////////////
-    public static User getUser(int ID ) {
+    public static User getUser(int ID) {
         return userHash.get(ID);
     }
 
-    public static Post getPost(int ID ) {
+    public static Post getPost(int ID) {
         return postHash.get(ID);
     }
 
-    public static void addUser( User newUser ) {
-        userHash.put( newUser.getID(), newUser );
+    public static void addUser(User newUser) {
+        userHash.put(newUser.getID(), newUser);
     }
 
-    public static void addPost( Post newPost ) {
-        postHash.put( newPost.getID(), newPost );
+    public static void addPost(Post newPost) {
+        postHash.put(newPost.getID(), newPost);
     }
 
     // Returns true if successful;
     //         false otherwise.
-    public static boolean removeUser( int ID ) {
+    public static boolean removeUser(int ID) {
 
-        return ( Server.userHash.remove(ID) != null );
+        return (Server.userHash.remove(ID) != null);
 //        if ( Server.removeFromMap( Server.userHash, ID ) ) {
 //
 //            Server.addUnusedUserID(ID); // This user's ID is now unused, so add to stack
@@ -60,10 +61,10 @@ public class Server {
 
     // Returns true if successful;
     //         false otherwise.
-    public static boolean removePost( int postID ) {
+    public static boolean removePost(int postID) {
 
-            Post tempPost = Server.postHash.get( postID );
-            User tempUser = Server.userHash.get( tempPost.getUserID() );
+        Post tempPost = Server.postHash.get(postID);
+        User tempUser = Server.userHash.get(tempPost.getUserID());
 
 //            if ( tempUser.getFeed().deletePost(postID) ){
 //                Server.addUnusedPostID(postID);
@@ -111,20 +112,23 @@ public class Server {
 
         // Load the saved stack and users
         try {
-            Server.recordID = (UtilityID) Server.loadObject("data/stack.txt");
-        } catch( ClassCastException e) {
+            Server.recordID = (UtilityID)
+                    IOservice.loadObject("data/stack.txt");
+        } catch (ClassCastException e) {
             System.out.println("(Stack load) Empty file or wrong class cast");
         }
 
         try {
-            Server.userHash = (HashMap<Integer, User>) Server.loadObject("data/users.txt");
-        } catch ( ClassCastException e ) {
+            Server.userHash = (HashMap<Integer, User>)
+                    IOservice.loadObject("data/users.txt");
+        } catch (ClassCastException e) {
             System.out.println("(model.User load) Empty file or wrong class cast");
         }
 
         try {
-            Server.postHash = (HashMap<Integer, Post>) Server.loadObject("data/posts.txt");
-        } catch ( ClassCastException e ) {
+            Server.postHash = (HashMap<Integer, Post>)
+                    IOservice.loadObject("data/posts.txt");
+        } catch (ClassCastException e) {
             System.out.println("(base.Post load) Empty file or wrong class cast");
         }
 
@@ -136,55 +140,55 @@ public class Server {
         /////////////////
 
         // Returns user given an id
-        get( Server.PATH_TO_USER_ID, (req, res) -> {
+        get(Server.PATH_TO_USER_ID, (req, res) -> {
 
-            int id = Integer.parseInt( req.params(":id") );
+            int id = Integer.parseInt(req.params(":id"));
             return Server.userHash.get(id);
 
         });
 
         // Prints all users, for debugging only!
-        get( Server.PATH_TO_USER, (req,res) -> mapper.writeValueAsString( userHash ));
+        get(Server.PATH_TO_USER, (req, res) -> mapper.writeValueAsString(userHash));
 
         // Creates a new user into database or wherever
-        post( Server.PATH_TO_USER, (req, res) -> {
+        post(Server.PATH_TO_USER, (req, res) -> {
 
             // curl -d "name=Tony Belladonna" -X post localhost:9999/users/
 
             String name = req.queryParams("name");
             User tempUser = new User(name);
-            System.out.println( "Creating a user: " + tempUser.getName() + ", " + tempUser.getID() );
+            System.out.println("Creating a user: " + tempUser.getName() + ", " + tempUser.getID());
 
             // Save target user to server
-            Server.addUser( tempUser );
-            saveObject(Server.userHash, "data/users.txt");
-            saveObject(Server.recordID, "data/stack.txt");
+            Server.addUser(tempUser);
+            IOservice.saveObject(Server.userHash, "data/users.txt");
+            IOservice.saveObject(Server.recordID, "data/stack.txt");
 
             return Server.mapper.writeValueAsString(Server.userHash);
 
         });
 
         // Update the user. Needs a lot of options.
-        put( Server.PATH_TO_USER_ID, (req,res) -> {
+        put(Server.PATH_TO_USER_ID, (req, res) -> {
 
-            int id = Integer.parseInt( req.params(":id") );
+            int id = Integer.parseInt(req.params(":id"));
             User tempUser = Server.getUser(id);
-            System.out.println( tempUser.getFollowers().size() );
+            System.out.println(tempUser.getFollowers().size());
             tempUser.subscribe(0);
-            System.out.println( tempUser.getFollowers().size() );
+            System.out.println(tempUser.getFollowers().size());
 
             return "Updating a user: " + id;
 
         });
 
         // Deletes user
-        delete( Server.PATH_TO_USER_ID, (req,res) -> {
+        delete(Server.PATH_TO_USER_ID, (req, res) -> {
 
-            int ID = Integer.parseInt( req.params(":id") );
+            int ID = Integer.parseInt(req.params(":id"));
 
             // Check if the ID is valid
-            assert ID >= 0: "Invalid ID.";
-            assert Server.userHash.containsKey(ID): "model.User does not exist.";
+            assert ID >= 0 : "Invalid ID.";
+            assert Server.userHash.containsKey(ID) : "model.User does not exist.";
 
             // Delete target user dependencies
             User targetUser = Server.userHash.get(ID);
@@ -192,10 +196,10 @@ public class Server {
 
             // Remove target user from server
             Server.removeUser(ID);
-            saveObject(Server.userHash, "data/users.txt");
-            saveObject(Server.recordID, "data/stack.txt");
+            IOservice.saveObject(Server.userHash, "data/users.txt");
+            IOservice.saveObject(Server.recordID, "data/stack.txt");
 
-            System.out.println( "Deleted a user: " + targetUser.getName() + ", " + targetUser.getID() );
+            System.out.println("Deleted a user: " + targetUser.getName() + ", " + targetUser.getID());
 
             return Server.mapper.writeValueAsString(Server.userHash);
 
@@ -205,13 +209,13 @@ public class Server {
         ////////////////////
 
         // Returns post object
-        get(Server.PATH_TO_POST_ID, (req,res) -> {
+        get(Server.PATH_TO_POST_ID, (req, res) -> {
 
-            int ID = Integer.parseInt( req.params( ":id" ) );
+            int ID = Integer.parseInt(req.params(":id"));
             System.out.println(
-                    Server.mapper.writeValueAsString( Server.getPost( ID ) )
+                    Server.mapper.writeValueAsString(Server.getPost(ID))
             );
-            return Server.getPost( ID );
+            return Server.getPost(ID);
 
         });
 
@@ -220,97 +224,43 @@ public class Server {
         post(Server.PATH_TO_POST, (req, res) -> {
 
             // curl -d "userID=0&contents=hello world" -X post localhost:9999/posts/
-            int userID = Integer.parseInt( req.queryParams( "userID" ) );
-            String imageQuery = req.queryParams( "imageID" );
-            String contentQuery = req.queryParams( "contents" );
-            int imageID = imageQuery!=null ? Integer.parseInt( imageQuery ) : -1;
+            int userID = Integer.parseInt(req.queryParams("userID"));
+            String imageQuery = req.queryParams("imageID");
+            String contentQuery = req.queryParams("contents");
+            int imageID = imageQuery != null ? Integer.parseInt(imageQuery) : -1;
 
-            User tempUser = Server.userHash.get( userID );
+            User tempUser = Server.userHash.get(userID);
 
-            tempUser.getFeed().addPost( contentQuery, userID, imageID );
-            System.out.println( "Added posts" );
+            tempUser.getFeed().addPost(contentQuery, userID, imageID);
+            System.out.println("Added posts");
 
-            saveObject( Server.userHash, "data/users.txt" );
-            saveObject( Server.recordID, "data/stack.txt" );
-            saveObject( Server.postHash, "data/posts.txt" );
-            System.out.println( "Saving all files" );
+            IOservice.saveObject(Server.userHash, "data/users.txt");
+            IOservice.saveObject(Server.recordID, "data/stack.txt");
+            IOservice.saveObject(Server.postHash, "data/posts.txt");
+            System.out.println("Saving all files");
 
-            return Server.mapper.writeValueAsString( Server.postHash );
+            return Server.mapper.writeValueAsString(Server.postHash);
 
         });
 
-        delete(Server.PATH_TO_POST_ID, (req,res) -> {
+        delete(Server.PATH_TO_POST_ID, (req, res) -> {
             // curl -X delete localhost:9999/posts/0
 
-            int postID = Integer.parseInt( req.params( ":id" ) );
+            int postID = Integer.parseInt(req.params(":id"));
 
-            if ( Server.removePost( postID ) ) {
+            if (Server.removePost(postID)) {
 
-                saveObject(Server.userHash, "data/users.txt");
-                saveObject(Server.recordID, "data/stack.txt");
-                saveObject(Server.postHash, "data/posts.txt");
+                IOservice.saveObject(Server.userHash, "data/users.txt");
+                IOservice.saveObject(Server.recordID, "data/stack.txt");
+                IOservice.saveObject(Server.postHash, "data/posts.txt");
 
+            } else {
+                System.out.println("Error deleting a post");
             }
-            else {
-                System.out.println( "Error deleting a post");
-            }
 
-            return Server.mapper.writeValueAsString( Server.postHash );
+            return Server.mapper.writeValueAsString(Server.postHash);
 
         });
 
     }
-
-    // IO Helper Functions
-    private static Integer saveObject( Object objToSave, String fileName ){
-
-        try {
-
-            FileOutputStream fo = new FileOutputStream(new File(fileName), false);
-            ObjectOutputStream oo = new ObjectOutputStream(fo);
-
-            oo.writeObject( objToSave );
-            oo.flush();
-            oo.close();
-            fo.close();
-
-        } catch ( Exception ex ) {
-            ex.printStackTrace();
-            return -1;
-        }
-
-        return 0;
-
-    }
-
-    // Generalized Load Function. Requires casting on call.
-    private static Object loadObject( String fileName ){
-
-        Object objToLoad = new Object();
-
-        try {
-
-            FileInputStream fi = new FileInputStream( new File( fileName ) );
-            ObjectInputStream oi = new ObjectInputStream(fi);
-
-            if ( fi.available() != 0 ) {
-                objToLoad = oi.readObject();
-                oi.close();
-                fi.close();
-            }
-            else {
-                System.out.println("Empty file " + fileName);
-            }
-
-        }
-        catch ( EOFException e ){
-            System.out.println( fileName + " Is empty");
-        }
-        catch ( Exception ex ) {
-            ex.printStackTrace();
-        }
-
-        return objToLoad;
-    }
-
 }
