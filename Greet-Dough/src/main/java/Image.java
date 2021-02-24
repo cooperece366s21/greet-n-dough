@@ -19,13 +19,13 @@ public class Image implements Serializable {
 
 
         // Get image ID
-            // Post class
+            // base.Post class
             // Rename each image to it's ID so each function call creates a new arbitrary image.png file
-        // Get User ID
+        // Get model.User ID
             // have to be logged in
             // return from the get user id function
             // associate the image id with the user id
-        // Get Post ID
+        // Get base.Post ID
             //once post is created, exist a post ID
             //associate the image id with the post ID
 

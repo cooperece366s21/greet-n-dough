@@ -1,3 +1,6 @@
+import model.Post;
+import model.User;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -12,7 +15,7 @@ public class Main {
         Post myPost = new Post( "Hi", 0 );
         System.out.println( myPost.getImageID() );
 
-//        User him = new User( "Josh" );
+//        model.User him = new model.User( "Josh" );
 //        System.out.println( me.getFollowers().size() );
 //        me.subscribe( him.getID() );
 //        System.out.println( me.getFollowers().size() );

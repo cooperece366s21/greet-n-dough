@@ -1,3 +1,8 @@
+package model;
+
+import utility.Pair;
+import database.Server;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.io.Serializable;

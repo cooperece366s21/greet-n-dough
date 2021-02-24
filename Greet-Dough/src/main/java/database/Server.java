@@ -1,4 +1,8 @@
+package database;
+
+import model.Post;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import utility.UtilityID;
 
 import static spark.Spark.*;
 import java.io.*;
@@ -20,11 +24,11 @@ public class Server {
     private static HashMap<Integer, Post> postHash = new HashMap<>();
 
     ////////////////// Functions //////////////////
-    public static User getUser( int ID ) {
+    public static User getUser(int ID ) {
         return userHash.get(ID);
     }
 
-    public static Post getPost( int ID ) {
+    public static Post getPost(int ID ) {
         return postHash.get(ID);
     }
 
@@ -80,9 +84,9 @@ public class Server {
                 return false;
             }
 
-//        if ( Server.removeFromMap( Server.postHash, ID ) ) {
+//        if ( database.Server.removeFromMap( database.Server.postHash, ID ) ) {
 //
-//            Server.addUnusedPostID(ID); // This post's ID is now unused, so add to stack
+//            database.Server.addUnusedPostID(ID); // This post's ID is now unused, so add to stack
 //            return true;
 //
 //        } else {
@@ -135,13 +139,13 @@ public class Server {
         try {
             Server.userHash = (HashMap<Integer, User>) Server.loadObject("data/users.txt");
         } catch ( ClassCastException e ) {
-            System.out.println("(User load) Empty file or wrong class cast");
+            System.out.println("(model.User load) Empty file or wrong class cast");
         }
 
         try {
             Server.postHash = (HashMap<Integer, Post>) Server.loadObject("data/posts.txt");
         } catch ( ClassCastException e ) {
-            System.out.println("(Post load) Empty file or wrong class cast");
+            System.out.println("(base.Post load) Empty file or wrong class cast");
         }
 
 
@@ -200,7 +204,7 @@ public class Server {
 
             // Check if the ID is valid
             assert ID >= 0: "Invalid ID.";
-            assert Server.userHash.containsKey(ID): "User does not exist.";
+            assert Server.userHash.containsKey(ID): "model.User does not exist.";
 
             // Delete target user dependencies
             User targetUser = Server.userHash.get(ID);
