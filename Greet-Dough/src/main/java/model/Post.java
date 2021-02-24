@@ -34,7 +34,9 @@ public class Post {
         return this.ID;
     }
 
-    public int getUserID() { return this.userID; }
+    public int getUserID() {
+        return this.userID;
+    }
 
     public int getImageID() {
         return this.imageID;

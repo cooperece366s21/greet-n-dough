@@ -1,8 +1,9 @@
 package store;
 
 import model.Post;
+import utility.TrackerID;
 
-public interface PostStore {
+public interface PostStore extends TrackerID {
 
     Post getPost( int postID );
 
