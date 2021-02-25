@@ -1,5 +1,6 @@
 package database;
 
+import com.google.gson.Gson;
 import model.Post;
 import model.User;
 import store.PostStoreImpl;
@@ -23,7 +24,7 @@ public class Server {
     private static ObjectMapper mapper = new ObjectMapper();
     private static UserStoreImpl userStore = new UserStoreImpl();
     private static PostStoreImpl postStore = new PostStoreImpl();
-
+    private static Gson gson = new Gson();
 
     ////////////////// Functions //////////////////
     /*
@@ -132,7 +133,10 @@ public class Server {
         get(Server.PATH_TO_USER_ID, (req, res) -> {
 
             int id = Integer.parseInt( req.params(":id") );
-            return Server.userStore.getUser(id);
+            User tempUser = Server.userStore.getUser(id);
+            res.body( gson.toJson(tempUser) );
+
+            return res.body();
 
         });
 
@@ -171,13 +175,14 @@ public class Server {
         delete(Server.PATH_TO_USER_ID, (req, res) -> {
 
             int ID = Integer.parseInt(req.params(":id"));
+            User tempUser = Server.userStore.getUser(ID);
 
             if ( Server.userStore.deleteUser(ID) ){
-                res.body( "User Successfully deleted" );
+                res.body( gson.toJson(tempUser) );
                 IOservice.saveObject(Server.userStore, "data/users.txt");
             }
             else{
-                res.body( "Error deleting User" );
+                res.body( "-1" );
             }
 
             return res.body();
@@ -190,11 +195,10 @@ public class Server {
         //  Returns post object
         get(Server.PATH_TO_POST_ID, (req, res) -> {
 
-            int ID = Integer.parseInt(req.params(":id"));
-            System.out.println(
-                    Server.mapper.writeValueAsString(Server.postStore.getPost(ID))
-            );
-            return Server.postStore.getPost(ID);
+            int ID = Integer.parseInt( req.params(":id") );
+            Post tempPost = Server.postStore.getPost(ID);
+            res.body( gson.toJson(tempPost) );
+            return res.body();
 
         });
 
@@ -223,12 +227,13 @@ public class Server {
             // curl -X delete localhost:9999/posts/0
 
             int postID = Integer.parseInt( req.params(":id") );
+            Post tempPost = Server.postStore.getPost(postID);
 
             if ( Server.postStore.deletePost( postID ) ) {
                 IOservice.saveObject (Server.postStore, "data/posts.txt" );
-                res.body( "Post successfully deleted" );
+                res.body( gson.toJson(tempPost) );
             } else {
-                res.body( "Error deleting post" );
+                res.body( "-1" );
             }
 
             return res.body();
