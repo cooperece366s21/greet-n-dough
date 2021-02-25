@@ -1,9 +1,11 @@
 package model;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class Post {
+public class Post implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     private final int ID;   // ID for this post
     private int userID;
     private int imageID;    // Optional field to store an image ID

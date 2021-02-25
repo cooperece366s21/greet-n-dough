@@ -131,27 +131,26 @@ public class Server {
         // Returns user given an id
         get(Server.PATH_TO_USER_ID, (req, res) -> {
 
-            int id = Integer.parseInt(req.params(":id"));
+            int id = Integer.parseInt( req.params(":id") );
             return Server.userStore.getUser(id);
 
         });
 
         // Prints all users, for debugging only!
-        get(Server.PATH_TO_USER, (req, res) -> mapper.writeValueAsString(userStore));
+//        get(Server.PATH_TO_USER, (req, res) -> mapper.writeValueAsString(userStore));
 
-        // Creates a new user into database or wherever
+        // Creates a new user
         post(Server.PATH_TO_USER, (req, res) -> {
 
             // curl -d "name=Tony Belladonna" -X post localhost:9999/users/
 
-            String name = req.queryParams("name");
-            User tempUser = new User( name, userStore.getFreeID() );
-
+            User tempUser = new User( req.queryParams("name"), userStore.getFreeID() );
             Server.userStore.addUser( tempUser );
 
             IOservice.saveObject(Server.userStore, "data/users.txt");
+            res.body( "User Created: " + tempUser.getName() + ", " + tempUser.getID() );
 
-            return "User Created: " + tempUser.getName() + ", " + tempUser.getID();
+            return res.body();
 
         });
 
@@ -159,7 +158,6 @@ public class Server {
         put(Server.PATH_TO_USER_ID, (req, res) -> {
 
             int id = Integer.parseInt(req.params(":id"));
-            // idk whats this, but comment it out for now to rfctr all else
 //            User tempUser = Server.getUser(id);
 //            System.out.println(tempUser.getFollowers().size());
 //            tempUser.subscribe(0);
@@ -169,27 +167,25 @@ public class Server {
 
         });
 
-        // Deletes user
+        // Deletes user given UserID
         delete(Server.PATH_TO_USER_ID, (req, res) -> {
 
             int ID = Integer.parseInt(req.params(":id"));
 
             if ( Server.userStore.deleteUser(ID) ){
-                System.out.println( "User successfully deleted" );
+                res.body( "User Successfully deleted" );
+                IOservice.saveObject(Server.userStore, "data/users.txt");
             }
             else{
-                System.out.println( "Nae u've got a wrong user ID aye?" );
-                return "NO USER DELETED";
+                res.body( "Error deleting User" );
             }
 
-            IOservice.saveObject(Server.userStore, "data/users.txt");
-            return "User Deleted";
+            return res.body();
 
         });
 
         // POST ROUTES
         ////////////////////
-
 
         //  Returns post object
         get(Server.PATH_TO_POST_ID, (req, res) -> {
@@ -201,50 +197,43 @@ public class Server {
             return Server.postStore.getPost(ID);
 
         });
-        /*
+
         //  Creates a new post
         post(Server.PATH_TO_POST, (req, res) -> {
 
             // curl -d "userID=0&contents=hello world" -X post localhost:9999/posts/
-            int userID = Integer.parseInt(req.queryParams("userID"));
+            int userID = Integer.parseInt( req.queryParams("userID") );
             String imageQuery = req.queryParams("imageID");
             String contentQuery = req.queryParams("contents");
             int imageID = imageQuery != null ? Integer.parseInt(imageQuery) : -1;
 
-            User tempUser = Server.userHash.get(userID);
+            Post tempPost = new Post( contentQuery, postStore.getFreeID(), userID, imageID );
 
-            tempUser.getFeed().addPost(contentQuery, userID, imageID);
-            System.out.println("Added posts");
+            Server.postStore.addPost( tempPost );
 
-            IOservice.saveObject(Server.userHash, "data/users.txt");
-            IOservice.saveObject(Server.recordID, "data/stack.txt");
-            IOservice.saveObject(Server.postHash, "data/posts.txt");
-            System.out.println("Saving all files");
+            IOservice.saveObject( Server.postStore, "data/posts.txt" );
+            res.body( "Added post: " + mapper.writeValueAsString( tempPost ) );
 
-            return Server.mapper.writeValueAsString(Server.postHash);
+            return res.body();
 
         });
 
-        //  Deletes post by given postID
+        //  Deletes post given postID
         delete(Server.PATH_TO_POST_ID, (req, res) -> {
             // curl -X delete localhost:9999/posts/0
 
-            int postID = Integer.parseInt(req.params(":id"));
+            int postID = Integer.parseInt( req.params(":id") );
 
-            if (Server.removePost(postID)) {
-
-                IOservice.saveObject(Server.userHash, "data/users.txt");
-                IOservice.saveObject(Server.recordID, "data/stack.txt");
-                IOservice.saveObject(Server.postHash, "data/posts.txt");
-
+            if ( Server.postStore.deletePost( postID ) ) {
+                IOservice.saveObject (Server.postStore, "data/posts.txt" );
+                res.body( "Post successfully deleted" );
             } else {
-                System.out.println("Error deleting a post");
+                res.body( "Error deleting post" );
             }
 
-            return Server.mapper.writeValueAsString(Server.postHash);
+            return res.body();
 
         });
 
-        */
     }
 }
