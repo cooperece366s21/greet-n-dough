@@ -7,14 +7,17 @@ import java.util.concurrent.atomic.AtomicInteger;
 public abstract class Store<T> implements Serializable {
 
     private AtomicInteger freeIDs;
-    private HashMap<Integer, T> items = new HashMap<>();
+    private HashMap<Integer, T> items;
 
     protected Store() {
         this(0);
     }
 
     protected Store( int start ) {
+
         this.freeIDs = new AtomicInteger(start);
+        this.items = new HashMap<>();
+
     }
 
     public int getFreeID() {

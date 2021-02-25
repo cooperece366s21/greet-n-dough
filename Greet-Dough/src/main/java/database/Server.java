@@ -2,18 +2,13 @@ package database;
 
 import model.Post;
 import model.User;
-import store.PostStore;
 import store.PostStoreImpl;
-import store.UserStore;
 import store.UserStoreImpl;
 import utility.IOservice;
-import utility.UtilityID;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static spark.Spark.*;
-import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 // IMPLEMENT A PREFIX TRIE TO ALLOW SEARCHING FOR USERS
 public class Server {
@@ -27,7 +22,7 @@ public class Server {
     ////////////////// Members //////////////////
     private static ObjectMapper mapper = new ObjectMapper();
     private static UserStoreImpl userStore = new UserStoreImpl();
-//    private static HashMap<Integer, Post> postHash = new HashMap<>();
+    private static PostStoreImpl postStore = new PostStoreImpl();
 
 
     ////////////////// Functions //////////////////
@@ -120,15 +115,15 @@ public class Server {
             Server.userStore = (UserStoreImpl)
                     IOservice.loadObject("data/users.txt");
         } catch (ClassCastException e) {
-            System.out.println("(model.User load) Empty file or wrong class cast");
+            System.out.println("(User load) Empty file or wrong class cast");
         }
 
-//        try {
-//            Server.postHash = (HashMap<Integer, Post>)
-//                    IOservice.loadObject("data/posts.txt");
-//        } catch (ClassCastException e) {
-//            System.out.println("(base.Post load) Empty file or wrong class cast");
-//        }
+        try {
+            Server.postStore = (PostStoreImpl)
+                    IOservice.loadObject("data/posts.txt");
+        } catch (ClassCastException e) {
+            System.out.println("(Post load) Empty file or wrong class cast");
+        }
 
         // USER ROUTES
         /////////////////

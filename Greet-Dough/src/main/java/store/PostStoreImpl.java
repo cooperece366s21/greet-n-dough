@@ -1,44 +1,29 @@
 package store;
 
 import model.Post;
-import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicInteger;
+import utility.Store;
 
-public class PostStoreImpl implements PostStore {
-
-    private AtomicInteger freeIDs;
-    private final HashMap<Integer, Post> posts;
+public class PostStoreImpl extends Store<Post> {
 
     public PostStoreImpl() {
-        this(0);
+        super();
     }
 
     public PostStoreImpl( int start ) {
-
-        this.freeIDs = new AtomicInteger(start);
-        this.posts = new HashMap<>();
-
+        super( start );
     }
 
-    @Override
-    public int getFreeID() {
-        return freeIDs.getAndIncrement();
+    public Post getPost( int ID ) {
+        return super.get(ID);
     }
 
-    @Override
-    public Post getPost( int postID ) {
-        return this.posts.get( postID );
-    }
-
-    @Override
     public void addPost( Post newPost ) {
-        this.posts.put( newPost.getID(), newPost );
+        super.add( newPost.getID(), newPost );
     }
 
     // Later on, check if user owns the post before deleting
-    @Override
-    public boolean deletePost( int postID ) {
-        return ( this.posts.remove( postID ) != null );
+    public boolean deletePost( int ID ) {
+        return super.delete(ID);
     }
 
 }
