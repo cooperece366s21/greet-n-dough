@@ -189,19 +189,19 @@ public class Server {
 
         // POST ROUTES
         ////////////////////
-        /*
+
 
         //  Returns post object
         get(Server.PATH_TO_POST_ID, (req, res) -> {
 
             int ID = Integer.parseInt(req.params(":id"));
             System.out.println(
-                    Server.mapper.writeValueAsString(Server.getPost(ID))
+                    Server.mapper.writeValueAsString(Server.postStore.getPost(ID))
             );
-            return Server.getPost(ID);
+            return Server.postStore.getPost(ID);
 
         });
-
+        /*
         //  Creates a new post
         post(Server.PATH_TO_POST, (req, res) -> {
 

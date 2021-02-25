@@ -2,8 +2,6 @@ package store;
 
 import model.User;
 import utility.Store;
-import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class UserStoreImpl extends Store<User> {
 

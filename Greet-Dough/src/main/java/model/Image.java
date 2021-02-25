@@ -1,4 +1,4 @@
-// Import the Scanner class
+package model;// Import the Scanner class
 import java.util.Scanner;
 
 // Move file libraries
@@ -17,6 +17,7 @@ public class Image implements Serializable {
         // Copy the image from the path to the data directory
             // os.system("mv 'picture.png' "")
 
+        private int ID;
 
         // Get image ID
             // base.Post class
@@ -36,6 +37,10 @@ public class Image implements Serializable {
 
         Image() {
             
+        }
+
+        public int getID() {
+            return this.ID;
         }
 
         public String getImage() {

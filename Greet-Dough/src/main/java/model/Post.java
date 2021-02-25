@@ -1,7 +1,6 @@
 package model;
 
 import java.time.LocalDateTime;
-import database.Server;
 
 public class Post {
 
@@ -11,7 +10,7 @@ public class Post {
     private String contents;
     private final LocalDateTime timeCreated;
 
-    public Post( String contents, int userID, int postID ) {
+    public Post( String contents, int postID, int userID ) {
 
         this.ID = postID;
         this.userID = userID;
@@ -21,11 +20,11 @@ public class Post {
 
     }
 
-    public Post( String contents, int userID, int postID, int imageID ) {
+    public Post( String contents, int postID, int userID, int imageID ) {
 
         // Constructor Chaining
         // Uses above constructor
-        this(contents, userID, postID);
+        this(contents, postID, userID );
         this.imageID = imageID;
 
     }
