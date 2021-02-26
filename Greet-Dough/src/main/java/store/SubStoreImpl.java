@@ -5,9 +5,9 @@ import java.util.ArrayList;
 
 // Store subscriptions as ArrayList or HashMap?
 // A single user's subscriptions probably won't be so large that a linear search will take very long
-public class SubStore extends Relation {
+public class SubStoreImpl extends Relation {
 
-    public SubStore() {
+    public SubStoreImpl() {
         super();
     }
 

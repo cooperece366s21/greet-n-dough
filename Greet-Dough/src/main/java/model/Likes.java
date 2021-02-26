@@ -4,25 +4,37 @@ import java.io.Serializable;
 import java.util.*;
 
 public class Likes implements Serializable {
-    private int likeCount;
+
     private int userID;
     private int postID;
+    private int likeCount;
     private List<Integer> userLikes;
 
-    public Likes(int postID, int userID) {
-        this.postID = postID;
+    public Likes( int postID, int userID ) {
+
         this.userID = userID;
+        this.postID = postID;
+        this.likeCount = 0;
+
     }
 
-    public int getUserID() { return this.userID; }
+    public int getUserID() {
+        return this.userID;
+    }
 
-    public int getPostID() { return this.postID; }
+    public int getPostID() {
+        return this.postID;
+    }
 
     // Check list of users, if user already liked
-    public boolean checkID() { return this.userLikes.contains(this.userID); }
+    public boolean checkID() {
+        return this.userLikes.contains(this.userID);
+    }
 
     // If user did not like, add 1 to the like count
-    public int addLike() { return this.likeCount++; }
+    public int addLike() {
+        return this.likeCount++;
+    }
 
     // From checkID() if false append userID to list
 
