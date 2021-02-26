@@ -3,7 +3,7 @@ package utility;
 import java.io.Serializable;
 import java.util.HashMap;
 
-public class StorageRetrieval<T> implements Serializable {
+public abstract class StorageRetrieval<T> implements Serializable {
 
     private HashMap<Integer, T> items;
 
