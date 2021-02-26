@@ -9,16 +9,20 @@ public class Likes implements Serializable {
     private int postID;
     private List<Integer> userLikes;
 
-    public Likes(int postID, int userID){
+    public Likes(int postID, int userID) {
         this.postID = postID;
         this.userID = userID;
     }
 
+    public int getUserID() { return this.userID; }
+
+    public int getPostID() { return this.postID; }
+
     // Check list of users, if user already liked
-    public boolean checkID(){ return this.userLikes.contains(this.userID); }
+    public boolean checkID() { return this.userLikes.contains(this.userID); }
 
     // If user did not like, add 1 to the like count
-    public int addLike(){ return this.likeCount++;}
+    public int addLike() { return this.likeCount++; }
 
     // From checkID() if false append userID to list
 
