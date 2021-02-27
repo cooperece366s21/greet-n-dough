@@ -3,8 +3,10 @@ package database;
 import com.google.gson.Gson;
 import model.Post;
 import model.User;
+import model.Image;
 import store.model.PostStoreImpl;
 import store.model.UserStoreImpl;
+import store.model.ImageStoreImpl;
 import utility.IOservice;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,6 +26,7 @@ public class Server {
     private static ObjectMapper mapper = new ObjectMapper();
     private static UserStoreImpl userStore = new UserStoreImpl();
     private static PostStoreImpl postStore = new PostStoreImpl();
+    private static ImageStoreImpl imageStore = new ImageStoreImpl();
     private static Gson gson = new Gson();
 
     ////////////////// Functions //////////////////

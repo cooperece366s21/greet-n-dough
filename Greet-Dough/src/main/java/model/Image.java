@@ -1,4 +1,6 @@
-package model;// Import the Scanner class
+package model;
+
+// Import the Scanner class
 import java.util.Scanner;
 
 // Move file libraries
@@ -17,7 +19,10 @@ public class Image implements Serializable {
         // Copy the image from the path to the data directory
             // os.system("mv 'picture.png' "")
 
-        private int ID;
+        private int imageID;
+        private String path;
+        private int userID;
+        private int postID;
 
         // Get image ID
             // base.Post class
@@ -35,51 +40,18 @@ public class Image implements Serializable {
         // img id is how many places
         // post id is how many places
 
-        Image() {
-            
+        public void Image(String path) {
+            this.path = path;
         }
 
         public int getID() {
-            return this.ID;
+            return this.imageID;
         }
 
-        public String getImage() {
-
-            Scanner myObj = new Scanner(System.in);  // Create a Scanner object
-            System.out.println("Enter filepath: ");
-
-            String path = myObj.nextLine();  // Read user input
-            String extension = "";
-            int i = path.lastIndexOf('.');
-            if (i >= 0) {
-                extension = path.substring(i+1);
-            }
-
-            String validTypes = "jpg png jpeg";
-            if ( !(validTypes.contains(extension)) ) {
-                System.out.println("Invalid Input, Please Input a Valid Image!");
-                path = getImage();
-            }
-            return path;
-
+        public String getPath() {
+            return this.path;
         }
 
-        public void moveImage() {
 
-            FileSystem fileSys = FileSystems.getDefault();
-            Path srcPath = fileSys.getPath( getImage() );
-            //change this abomination if you are testing it (for now)
-            //NEED TO EDIT LATER
-            Path destPath = fileSys.getPath("c:\\Users\\brian\\OneDrive\\Documents\\Github\\Lee-Ko\\Greet-Dough\\data\\images.png");
-            try {
-                //COPY image from source to destination folder
-                Files.copy(srcPath, destPath, StandardCopyOption.REPLACE_EXISTING);
-
-
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
-            }
-
-        }
 
 }

@@ -9,7 +9,7 @@ public class PostStoreImpl extends Store<Post> {
     }
 
     public PostStoreImpl( int start ) {
-        super( start );
+        super(start);
     }
 
     public Post getPost( int ID ) {
