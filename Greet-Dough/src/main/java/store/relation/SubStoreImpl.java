@@ -1,6 +1,5 @@
-package store;
+package store.relation;
 
-import utility.Relation;
 import java.util.ArrayList;
 
 // Store subscriptions as ArrayList or HashMap?

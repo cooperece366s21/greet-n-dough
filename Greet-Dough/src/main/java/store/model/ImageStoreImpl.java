@@ -1,7 +1,6 @@
-package store;
+package store.model;
 
 import model.Image;
-import utility.Store;
 
 public class ImageStoreImpl extends Store<Image> {
 

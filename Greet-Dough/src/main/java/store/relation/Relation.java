@@ -1,5 +1,6 @@
-package utility;
+package store.relation;
 
+import store.StorageRetrieval;
 import java.util.ArrayList;
 
 public abstract class Relation extends StorageRetrieval< ArrayList<Integer> > {
@@ -12,7 +13,7 @@ public abstract class Relation extends StorageRetrieval< ArrayList<Integer> > {
     //      Default is an empty ArrayList
     private ArrayList<Integer> getAttempt( int ID ) {
 
-        ArrayList<Integer> tempList = this.get(ID);
+        ArrayList<Integer> tempList = super.get(ID);
         return ( tempList != null ? tempList : new ArrayList<>() );
 
     }

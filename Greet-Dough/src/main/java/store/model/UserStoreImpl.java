@@ -1,7 +1,6 @@
-package store;
+package store.model;
 
 import model.User;
-import utility.Store;
 
 public class UserStoreImpl extends Store<User> {
 

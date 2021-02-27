@@ -3,8 +3,8 @@ package database;
 import com.google.gson.Gson;
 import model.Post;
 import model.User;
-import store.PostStoreImpl;
-import store.UserStoreImpl;
+import store.model.PostStoreImpl;
+import store.model.UserStoreImpl;
 import utility.IOservice;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -76,30 +76,6 @@ public class Server {
 //            }
 
     }
-
-    public static int getUnusedUserID() {
-        return recordID.getUnusedUserID();
-    }
-
-    public static int getUnusedPostID() {
-        return recordID.getUnusedPostID();
-    }
-
-    public static int getUnusedImageID() {
-        return recordID.getUnusedImageID();
-    }
-
-//    public static void addUnusedUserID( int ID ) {
-//        recordID.addUnusedUserID(ID);
-//    }
-//
-//    public static void addUnusedPostID( int ID ) {
-//        recordID.addUnusedPostID(ID);
-//    }
-//
-//    public static void addUnusedImageID( int ID ) {
-//        recordID.addUnusedImageID(ID);
-//    }
 
      */
 

@@ -1,5 +1,6 @@
-package utility;
+package store.model;
 
+import store.StorageRetrieval;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class Store<T> extends StorageRetrieval<T> {

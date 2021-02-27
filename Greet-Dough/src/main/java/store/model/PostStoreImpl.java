@@ -1,7 +1,6 @@
-package store;
+package store.model;
 
 import model.Post;
-import utility.Store;
 
 public class PostStoreImpl extends Store<Post> {
 
