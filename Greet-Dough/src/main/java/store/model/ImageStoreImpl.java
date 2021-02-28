@@ -58,7 +58,7 @@ public class ImageStoreImpl extends Store<Image> {
     }
 
     public void addImage( Image newImage ) {
-        super.add( newImage.getID(), newImage );
+        super.add( newImage.getImageID(), newImage );
     }
 
     public boolean deleteImage( int ID ) {
