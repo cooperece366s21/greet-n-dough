@@ -36,7 +36,7 @@ public class ImageStoreImpl extends Store<Image> {
             System.out.println("Invalid Input, Please Input a Valid Image!");
             path = uploadImage(newImage);
         }
-        newImage.Image(path);
+        newImage.setPath(path);
         return path;
     }
 
