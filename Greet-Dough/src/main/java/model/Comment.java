@@ -2,27 +2,27 @@ package model;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class Comment implements Serializable {
 
-    private final int ID;
+    // private final int ID;
     private int userID;
     private int postID;
-    private String comment;
-    private final LocalDateTime commentTime;
+    private String commentContent;
+    private LocalDateTime commentTime;
+    private HashMap<LocalDateTime, List> comment;
 
-    public Comment( int ID, int postID, int userID, String comment ) {
+    public Comment(int postID, int userID) {
 
-        this.ID = ID;
         this.postID = postID;
         this.userID = userID;
-        this.comment = comment;
+        this.commentContent = "";
         this.commentTime = LocalDateTime.now();
+        this.comment = new HashMap<LocalDateTime, List> ();
 
-    }
-
-    public int getCommentID() {
-        return this.ID;
     }
 
     public int getUserID() {
@@ -37,8 +37,23 @@ public class Comment implements Serializable {
         return this.commentTime;
     }
 
-    // Supports multiple comments, no directly reply
-    // No comment like
+    public void addComment(String commentContent, int currentUser) {
+        this.commentTime = LocalDateTime.now();
+        List<String> value = new ArrayList<String>();
+        value.add(Integer.toString(currentUser));
+        value.add(commentContent);
+        this.comment.put(this.commentTime, value);
+    }
 
+    public HashMap<LocalDateTime, List> getComment() {
+        return comment;
+    }
+
+    // Supports multiple comments, no directly reply
+    // No comment likes
+    // Author of post can comment on their own post
+    // Comment is defined by time created (commentID), user who comments, and post the comment is under
+
+    // Delete comment????????? Anything you post stays there
 
 }
