@@ -18,9 +18,9 @@ public class Server {
 
     ////////////////// File Paths //////////////////
     private static final String PATH_TO_USER = "/users/";
-    private static final String PATH_TO_USER_ID = PATH_TO_USER + ":id";
+    private static final String PATH_TO_USER_ID = "/users/:id";
     private static final String PATH_TO_POST = "/posts/";
-    private static final String PATH_TO_POST_ID = PATH_TO_POST + ":id";
+    private static final String PATH_TO_POST_ID = "/posts/:id";
 
     ////////////////// Members //////////////////
     private static ObjectMapper mapper = new ObjectMapper();
