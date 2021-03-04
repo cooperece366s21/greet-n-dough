@@ -79,5 +79,11 @@ public class Server {
         // curl -X delete localhost:9999/posts/0
         delete("/posts/:id/", (req, res) -> handler.deletePost(req));
 
+        // FEED ROUTES
+        ////////////////
+
+        // curl localhost:9999/users/0/feed/
+        get( "/users/:id/feed/", (req,res) -> handler.getFeed(req), gson::toJson );
+
     }
 }

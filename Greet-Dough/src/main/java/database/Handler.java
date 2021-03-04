@@ -9,6 +9,8 @@ import store.model.PostStoreImpl;
 import store.model.UserStoreImpl;
 import utility.IOservice;
 
+import java.util.List;
+
 public class Handler {
 
     private final UserStoreImpl userStore;
@@ -92,6 +94,18 @@ public class Handler {
         }
 
         return 0;
+    }
+
+    public List<Post> getFeed(Request req ){
+        // code here to authenticate who is requesting
+        int id = Integer.parseInt( req.params(":id") );
+
+        if ( userStore.getUser(id) == null ){
+            System.out.println("User does not exist");
+            return null;
+        }
+
+        return postStore.makeFeed(id);
     }
 
 }
