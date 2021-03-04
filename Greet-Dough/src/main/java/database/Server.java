@@ -13,7 +13,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static spark.Spark.*;
 
-// IMPLEMENT A PREFIX TRIE TO ALLOW SEARCHING FOR USERS
 public class Server {
 
     ////////////////// File Paths //////////////////
