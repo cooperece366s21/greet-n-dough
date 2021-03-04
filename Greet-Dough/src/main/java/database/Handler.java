@@ -7,6 +7,7 @@ import spark.Response;
 import store.model.ImageStoreImpl;
 import store.model.PostStoreImpl;
 import store.model.UserStoreImpl;
+import store.relation.SubStoreImpl;
 import utility.IOservice;
 
 import java.util.List;
@@ -15,13 +16,18 @@ public class Handler {
 
     private final UserStoreImpl userStore;
     private final PostStoreImpl postStore;
+    private final SubStoreImpl subStore;
     private final ImageStoreImpl imageStore;
     private final Gson gson = new Gson();
 
-    public Handler( UserStoreImpl userStore, PostStoreImpl postStore, ImageStoreImpl imageStore  ) {
+    public Handler( UserStoreImpl userStore,
+                    PostStoreImpl postStore,
+                    ImageStoreImpl imageStore,
+                    SubStoreImpl subStore ) {
         this.userStore = userStore;
         this.postStore = postStore;
         this.imageStore = imageStore;
+        this.subStore = subStore;
     }
 
     public User getUser( Request req ) {
@@ -96,16 +102,79 @@ public class Handler {
         return 0;
     }
 
-    public List<Post> getFeed(Request req ){
-        // code here to authenticate who is requesting
-        int id = Integer.parseInt( req.params(":id") );
+    public List<Post> getFeed( Request req ) {
+        int curUser = Integer.parseInt( req.queryParams("curUser") );
+        int targetUser = Integer.parseInt( req.params(":id") );
+        List<Integer> curSubs = subStore.getSubscriptions(curUser);
 
-        if ( userStore.getUser(id) == null ){
-            System.out.println("User does not exist");
+        if ( userStore.getUser(targetUser) == null ){
+            System.out.println("Target user does not exist");
             return null;
         }
 
-        return postStore.makeFeed(id);
+        if ( (curSubs==null) || (!curSubs.contains(targetUser)) ){
+            System.out.println("Current user does not have permission to this feed");
+            return null;
+        }
+
+        return postStore.makeFeed(targetUser);
+    }
+
+    public Integer subscribe( Request req ) {
+        int curUser = Integer.parseInt( req.queryParams("curUser") );
+        int targetUser = Integer.parseInt( req.params(":id") );
+
+        if( userStore.getUser(curUser) == null ){
+            System.out.println("Current user "+curUser+" does not exist");
+            return  null;
+        }
+        if( userStore.getUser(targetUser) == null ){
+            System.out.println("Target user "+targetUser+" does not exist");
+            return  null;
+        }
+
+        if( (subStore.getSubscriptions(curUser) !=null)
+                && (subStore.getSubscriptions(curUser).contains(targetUser)) ){
+            System.out.println("Current User already is subscribed");
+            return null;
+        }
+
+        subStore.addSubscription( curUser, targetUser );
+        System.out.println( "current subs: " + subStore.getSubscriptions(curUser) );
+        IOservice.saveObject(subStore, "data/subs.txt");
+
+        return 0;
+    }
+
+    public Integer unsubscribe( Request req ) {
+        int curUser = Integer.parseInt( req.queryParams("curUser") );
+        int targetUser = Integer.parseInt( req.params(":id") );
+        List<Integer> curSubs = subStore.getSubscriptions(curUser);
+
+        if( userStore.getUser(curUser) == null ){
+            System.out.println("Current user "+curUser+" does not exist");
+            return  null;
+        }
+
+        if( userStore.getUser(targetUser) == null ){
+            System.out.println("Target user "+targetUser+" does not exist");
+            return  null;
+        }
+
+        if( curSubs==null ){
+            System.out.println("User not subscribed to anyone");
+            return null;
+        }
+
+        if( !curSubs.contains(targetUser) ){
+            System.out.println("Current user not subscribed to target user");
+        }
+
+        subStore.removeSubscription( curUser, targetUser );
+        IOservice.saveObject(subStore, "data/subs.txt");
+        System.out.println( subStore.getSubscriptions(curUser) );
+
+        return 0;
     }
 
 }
