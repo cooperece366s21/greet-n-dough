@@ -14,13 +14,13 @@ public class SubStoreImpl extends Relation {
         return super.get(ID);
     }
 
-    public int addSubscription( int curUser, int targetUser ) {
-        return super.add( curUser, targetUser );
+    public void addSubscription( int curUser, int targetUser ) {
+        super.add( curUser, targetUser );
     }
 
     // Removes targetUser from curUser's subscriptions
-    public int removeSubscription( int curUser, int targetUser ) {
-        return super.remove( curUser, targetUser );
+    public void removeSubscription( int curUser, int targetUser ) {
+        super.remove( curUser, targetUser );
     }
 
     // Deletes user along with all subscriptions

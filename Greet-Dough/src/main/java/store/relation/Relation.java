@@ -18,17 +18,16 @@ public abstract class Relation extends StorageRetrieval< ArrayList<Integer> > {
 
     }
 
-    /////////////////////////////////////////////// Check if targetUser is already related??
     // Relates curUser to targetUser
     //      curUser : [ User_1, User_2, ..., targetUser ]
-    // Returns:
-    //      0   if successful
-    //      -1  if curUser == targetUser
-    protected int add( int curUser, int targetUser ) {
+    protected void add( int curUser, int targetUser ) {
 
+        ///////////////////// REMOVE THIS LATER
+        ///////////////////// CHECK FOR THIS AT A HIGHER LEVEL
+        ///////////////////// Check if targetUser is already related??
         // Cannot subscribe to self
         if ( curUser == targetUser ) {
-            return -1;
+            return;
         }
 
         // Get the current list and add the new user
@@ -37,25 +36,22 @@ public abstract class Relation extends StorageRetrieval< ArrayList<Integer> > {
 
         // Update the database
         super.add( curUser, curList );
-        return 0;
 
     }
 
-    // Returns:
-    //      0   if successful
-    //      -1  if targetUser is not in the list
-    protected int remove( int curUser, int targetUser ) {
+    ///////////////////// CHECK FOR THIS AT A HIGHER LEVEL
+    ///////////////////// if targetUser is not in the list
+    protected void remove( int curUser, int targetUser ) {
 
         // Get the current list
         ArrayList<Integer> curList = this.getAttempt( curUser );
 
         // Removes targetUser if possible
         //      Uses a wrapper Integer object b/c ArrayList.remove() requires an object
-        boolean success = curList.remove( Integer.valueOf(targetUser) );
+        curList.remove( Integer.valueOf(targetUser) );
 
         // Update the database
         super.add( curUser, curList );
-        return ( success ? 0 : -1 );
 
     }
 

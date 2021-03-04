@@ -12,12 +12,12 @@ public class FollowStoreImpl extends Relation {
         return super.get(ID);
     }
 
-    public int addFollower( int curUser, int targetUser ) {
-        return super.add( curUser, targetUser );
+    public void addFollower( int curUser, int targetUser ) {
+        super.add( curUser, targetUser );
     }
 
-    public int removeFollower( int curUser, int targetUser ) {
-        return super.remove( curUser, targetUser );
+    public void removeFollower( int curUser, int targetUser ) {
+        super.remove( curUser, targetUser );
     }
 
     // Deletes user along with all followers
