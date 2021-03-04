@@ -1,6 +1,5 @@
 package model;
 
-import database.Server;
 import java.io.Serializable;
 
 public class User implements Serializable {

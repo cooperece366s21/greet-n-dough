@@ -21,6 +21,7 @@ public class ImageStoreImpl extends Store<Image> {
     }
 
     private static String uploadImage(Image newImage) {
+
         Scanner myObj = new Scanner(System.in);  // Create a Scanner object
         System.out.println("Enter filepath: ");
 
@@ -38,6 +39,7 @@ public class ImageStoreImpl extends Store<Image> {
         }
         newImage.setPath(path);
         return path;
+
     }
 
     public static void moveImage(Image newImage) {
