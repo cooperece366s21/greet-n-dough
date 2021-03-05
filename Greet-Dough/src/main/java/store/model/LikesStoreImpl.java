@@ -12,9 +12,9 @@ public class LikesStoreImpl extends Store<Likes> {
         super(start);
     }
 
-    //public Likes getID(Likes NewLikes ) {
-    //    return ;
-    //}
+    public Likes getID( int ID ) {
+        return super.get(ID);
+    }
 
     public void attemptLike(Likes currentPost, int currentUser) {
         if (currentPost.checkID(currentUser)){

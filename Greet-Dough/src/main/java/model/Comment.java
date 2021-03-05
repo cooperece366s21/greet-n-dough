@@ -11,15 +11,13 @@ public class Comment implements Serializable {
     // private final int ID;
     private int userID;
     private int postID;
-    private String commentContent;
-    private LocalDateTime commentTime;
-    private HashMap<LocalDateTime, List> comment;
+    public LocalDateTime commentTime;
+    public HashMap<LocalDateTime, List> comment;
 
     public Comment(int postID, int userID) {
 
         this.postID = postID;
         this.userID = userID;
-        this.commentContent = "";
         this.commentTime = LocalDateTime.now();
         this.comment = new HashMap<LocalDateTime, List> ();
 
@@ -35,14 +33,6 @@ public class Comment implements Serializable {
 
     public LocalDateTime getCommentTime() {
         return this.commentTime;
-    }
-
-    public void addComment(String commentContent, int currentUser) {
-        this.commentTime = LocalDateTime.now();
-        List<String> value = new ArrayList<String>();
-        value.add(Integer.toString(currentUser));
-        value.add(commentContent);
-        this.comment.put(this.commentTime, value);
     }
 
     public HashMap<LocalDateTime, List> getComment() {
