@@ -2,13 +2,10 @@ import com.google.gson.Gson;
 import store.model.PostStoreImpl;
 import store.model.UserStoreImpl;
 import store.model.ImageStoreImpl;
+import store.relation.FollowStoreImpl;
 import store.relation.SubStoreImpl;
 import utility.IOservice;
 import database.Handler;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.security.PrivateKey;
 
 import static spark.Spark.*;
 
@@ -19,6 +16,7 @@ public class Server {
     private static PostStoreImpl postStore = new PostStoreImpl();
     private static ImageStoreImpl imageStore = new ImageStoreImpl();
     private static SubStoreImpl subStore = new SubStoreImpl();
+    private  static FollowStoreImpl followStore = new FollowStoreImpl();
     private static Gson gson = new Gson();
 
     public static void main(String[] args) {
@@ -47,13 +45,18 @@ public class Server {
         } catch (ClassCastException e) {
             System.out.println("(Sub load) Empty file or wrong class cast");
         }
+        try {
+            Server.followStore = (FollowStoreImpl) IOservice.loadObject("data/follows.txt");
+        } catch (ClassCastException e) {
+            System.out.println("(Follow load) Empty file or wrong class cast");
+        }
 
         Handler handler = new Handler(
                 Server.userStore,
                 Server.postStore,
                 Server.imageStore,
-                Server.subStore
-        );
+                Server.subStore,
+                Server.followStore);
 
         // USER ROUTES
         /////////////////
@@ -75,6 +78,21 @@ public class Server {
 
         // Deletes user given UserID
         delete("/users/:id/", (req, res) -> handler.deleteUser(req));
+        
+        // USER RELATION ROUTES
+        ///////////////////////
+
+            // curl -d "curUser=2" -X post localhost:9999/users/0/subscribe/
+            post( "/users/:id/subscribe/", (req,res) -> handler.subscribe(req), gson::toJson );
+
+            // curl -d "curUser=2" -X post localhost:9999/users/0/unsubscribe/
+            post( "/users/:id/unsubscribe/", (req,res) -> handler.unsubscribe(req), gson::toJson );
+
+            // curl -d "curUser=2" -X post localhost:9999/users/0/follow/
+            post( "/users/:id/follow/", (req,res) -> handler.follow(req), gson::toJson );
+
+            // curl -d "curUser=2" -X post localhost:9999/users/0/unfollow/
+            post( "/users/:id/unfollow/", (req,res) -> handler.unfollow(req), gson::toJson );
 
         // POST ROUTES
         ////////////////////
@@ -94,14 +112,6 @@ public class Server {
         // returns feed if user is subscribed.
         // curl -d "curUser=2" -X post localhost:9999/users/0/feed/
         post( "/users/:id/feed/", (req,res) -> handler.getFeed(req), gson::toJson );
-
-        // curl -d "curUser=2" -X post localhost:9999/users/0/subscribe/
-        post( "/users/:id/subscribe/", (req,res) -> handler.subscribe(req), gson::toJson );
-
-        // curl -d "curUser=2" -X post localhost:9999/users/0/unsubscribe/
-        post( "/users/:id/unsubscribe/", (req,res) -> handler.unsubscribe(req), gson::toJson );
-
-
 
     }
 }

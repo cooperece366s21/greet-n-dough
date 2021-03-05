@@ -3,12 +3,13 @@ package database;
 import com.google.gson.Gson;
 import spark.Request;
 import model.*;
-import spark.Response;
 import store.model.ImageStoreImpl;
 import store.model.PostStoreImpl;
 import store.model.UserStoreImpl;
+import store.relation.FollowStoreImpl;
 import store.relation.SubStoreImpl;
 import utility.IOservice;
+import utility.Pair;
 
 import java.util.List;
 
@@ -18,20 +19,25 @@ public class Handler {
     private final PostStoreImpl postStore;
     private final SubStoreImpl subStore;
     private final ImageStoreImpl imageStore;
+    private final FollowStoreImpl followStore;
+
     private final Gson gson = new Gson();
 
-    public Handler( UserStoreImpl userStore,
-                    PostStoreImpl postStore,
-                    ImageStoreImpl imageStore,
-                    SubStoreImpl subStore ) {
-
+    public Handler(UserStoreImpl userStore,
+                   PostStoreImpl postStore,
+                   ImageStoreImpl imageStore,
+                   SubStoreImpl subStore,
+                   FollowStoreImpl followStore) {
+                       
         this.userStore = userStore;
         this.postStore = postStore;
         this.imageStore = imageStore;
         this.subStore = subStore;
+        this.followStore = followStore;
 
     }
 
+    // USER ACTIONS
     public User getUser( Request req ) {
 
         int id = Integer.parseInt( req.params(":id") );
@@ -66,6 +72,100 @@ public class Handler {
 
     }
 
+    // USER RELATION ACTIONS
+    private Pair grabUserPair(Request req ){
+        int curUser = Integer.parseInt( req.queryParams("curUser") );
+        int targetUser = Integer.parseInt( req.params(":id") );
+
+        if( userStore.getUser(curUser) == null ){
+            System.out.println("Current user "+curUser+" does not exist");
+            return  null;
+        }
+        if( userStore.getUser(targetUser) == null ){
+            System.out.println("Target user "+targetUser+" does not exist");
+            return  null;
+        }
+        return new Pair(curUser, targetUser);
+    }
+
+    public Integer subscribe( Request req ) {
+        Pair userPair = this.grabUserPair(req);
+        if (userPair == null) { return null; }
+        List<Integer> curSubs = subStore.getSubscriptions(userPair.getLeft());
+
+        if( curSubs !=null && curSubs.contains( userPair.getRight() ) ){
+            System.out.println("Current User already is subscribed");
+            return null;
+        }
+
+        subStore.addSubscription( userPair.getLeft(), userPair.getRight() );
+        System.out.println( "current subs: " + subStore.getSubscriptions(userPair.getLeft()) );
+        IOservice.saveObject(subStore, "data/subs.txt");
+
+        return 0;
+    }
+
+    public Integer unsubscribe( Request req ) {
+        Pair userPair = this.grabUserPair(req);
+        if (userPair == null) { return null; }
+        List<Integer> curSubs = subStore.getSubscriptions( userPair.getLeft() );
+
+        if( curSubs==null ){
+            System.out.println("User not subscribed to anyone");
+            return null;
+        }
+
+        if( !curSubs.contains(userPair.getRight()) ){
+            System.out.println("Current user not subscribed to target user");
+        }
+
+        subStore.removeSubscription( userPair.getLeft(), userPair.getRight() );
+        IOservice.saveObject(subStore, "data/subs.txt");
+        System.out.println( subStore.getSubscriptions(userPair.getRight()) );
+
+        return 0;
+    }
+
+    public Integer follow( Request req ) {
+        Pair userPair = this.grabUserPair(req);
+        if (userPair == null) { return null; }
+        List<Integer> curFollows = followStore.getFollowers(userPair.getLeft());
+
+        if( curFollows!=null && curFollows.contains( userPair.getRight() ) ){
+            System.out.println("Current user is already following the target user");
+            return null;
+        }
+
+        followStore.addFollower( userPair.getLeft(), userPair.getRight() );
+        IOservice.saveObject(followStore, "data/follows.txt");
+        System.out.println("Currently following: " + followStore.getFollowers( userPair.getLeft() ) );
+
+        return 0;
+    }
+
+    public Integer unfollow( Request req ) {
+        Pair userPair = this.grabUserPair(req);
+        if (userPair == null) { return null; }
+        List<Integer> curFollows = followStore.getFollowers( userPair.getLeft() );
+
+        if( curFollows==null ) {
+            System.out.println("Current user not following anyone");
+            return null;
+        }
+
+        if( !curFollows.contains( userPair.getRight()) ) {
+            System.out.println("Current user not following target user");
+            return null;
+        }
+
+        followStore.removeFollower( userPair.getLeft(), userPair.getRight() );
+        IOservice.saveObject(followStore, "data/follows.txt");
+        System.out.println("Currently following: " + followStore.getFollowers( userPair.getLeft() ) );
+
+        return 0;
+    }
+
+    // POST ACTIONS
     public Post getPost( Request req ) {
 
         int ID = Integer.parseInt( req.params(":id") );
@@ -122,62 +222,9 @@ public class Handler {
         return postStore.makeFeed(targetUser);
     }
 
-    public Integer subscribe( Request req ) {
-        int curUser = Integer.parseInt( req.queryParams("curUser") );
-        int targetUser = Integer.parseInt( req.params(":id") );
 
-        if( userStore.getUser(curUser) == null ){
-            System.out.println("Current user "+curUser+" does not exist");
-            return  null;
-        }
-        if( userStore.getUser(targetUser) == null ){
-            System.out.println("Target user "+targetUser+" does not exist");
-            return  null;
-        }
 
-        if( (subStore.getSubscriptions(curUser) !=null)
-                && (subStore.getSubscriptions(curUser).contains(targetUser)) ){
-            System.out.println("Current User already is subscribed");
-            return null;
-        }
 
-        subStore.addSubscription( curUser, targetUser );
-        System.out.println( "current subs: " + subStore.getSubscriptions(curUser) );
-        IOservice.saveObject(subStore, "data/subs.txt");
-
-        return 0;
-    }
-
-    public Integer unsubscribe( Request req ) {
-        int curUser = Integer.parseInt( req.queryParams("curUser") );
-        int targetUser = Integer.parseInt( req.params(":id") );
-        List<Integer> curSubs = subStore.getSubscriptions(curUser);
-
-        if( userStore.getUser(curUser) == null ){
-            System.out.println("Current user "+curUser+" does not exist");
-            return  null;
-        }
-
-        if( userStore.getUser(targetUser) == null ){
-            System.out.println("Target user "+targetUser+" does not exist");
-            return  null;
-        }
-
-        if( curSubs==null ){
-            System.out.println("User not subscribed to anyone");
-            return null;
-        }
-
-        if( !curSubs.contains(targetUser) ){
-            System.out.println("Current user not subscribed to target user");
-        }
-
-        subStore.removeSubscription( curUser, targetUser );
-        IOservice.saveObject(subStore, "data/subs.txt");
-        System.out.println( subStore.getSubscriptions(curUser) );
-
-        return 0;
-    }
 
 }
 
