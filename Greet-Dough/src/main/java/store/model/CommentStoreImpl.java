@@ -5,6 +5,7 @@ import model.Image;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class CommentStoreImpl extends Store<Comment> {
@@ -22,11 +23,13 @@ public class CommentStoreImpl extends Store<Comment> {
     }
 
     public void addComment(String commentContent, int currentUser, Comment newComment) {
-        newComment.commentTime = LocalDateTime.now();
+        LocalDateTime commentTime = LocalDateTime.now();
+        HashMap<LocalDateTime, List> comment = newComment.getComment();
         List<String> value = new ArrayList<String>();
         value.add(Integer.toString(currentUser));
         value.add(commentContent);
-        newComment.comment.put(newComment.commentTime, value);
+        comment.put(commentTime, value);
+        newComment.setComment(comment);
     }
 
 }

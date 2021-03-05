@@ -11,14 +11,13 @@ public class Comment implements Serializable {
     // private final int ID;
     private int userID;
     private int postID;
-    public LocalDateTime commentTime;
-    public HashMap<LocalDateTime, List> comment;
+
+    private HashMap<LocalDateTime, List> comment;
 
     public Comment(int postID, int userID) {
 
         this.postID = postID;
         this.userID = userID;
-        this.commentTime = LocalDateTime.now();
         this.comment = new HashMap<LocalDateTime, List> ();
 
     }
@@ -31,12 +30,12 @@ public class Comment implements Serializable {
         return this.postID;
     }
 
-    public LocalDateTime getCommentTime() {
-        return this.commentTime;
-    }
-
     public HashMap<LocalDateTime, List> getComment() {
         return comment;
+    }
+
+    public void setComment(HashMap<LocalDateTime, List> comment) {
+        this.comment = comment;
     }
 
     // Supports multiple comments, no directly reply

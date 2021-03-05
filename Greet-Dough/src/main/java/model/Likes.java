@@ -27,28 +27,20 @@ public class Likes implements Serializable {
         return this.postID;
     }
 
+    public ArrayList<Integer> getUserLikes() {
+        return userLikes;
+    }
+
     public int getLikeCount() {
         return this.likeCount;
     }
 
-    // Check list of users, if user already liked
-    public boolean checkID(int currentUser) {
-        return this.userLikes.contains(currentUser);
+    public void setLikeCount(int likeCount) {
+        this.likeCount = likeCount;
     }
 
-    // If user did not like, add 1 to the like count
-    // From checkID() if false append userID to list
-    public void addLike(int currentUser) {
-        this.userLikes.add(likeCount - 1, currentUser);
-        this.likeCount++;
-    }
-
-    // From checkID() if true
-        // removes like by decrementing likeCount
-        // deletes userID from userLikes list
-    public void removeLike(int currentUser) {
-        this.likeCount--;
-        this.userLikes.remove(userLikes.indexOf(currentUser));
+    public void setUserLikes(ArrayList<Integer> userLikes) {
+        this.userLikes = userLikes;
     }
 
     // No dislike option
