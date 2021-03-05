@@ -24,10 +24,12 @@ public class Handler {
                     PostStoreImpl postStore,
                     ImageStoreImpl imageStore,
                     SubStoreImpl subStore ) {
+
         this.userStore = userStore;
         this.postStore = postStore;
         this.imageStore = imageStore;
         this.subStore = subStore;
+
     }
 
     public User getUser( Request req ) {
