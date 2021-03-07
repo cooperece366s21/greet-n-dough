@@ -1,13 +1,8 @@
 package database;
 
 import model.*;
-import store.model.LikeStoreImpl;
 import utility.*;
-import store.model.ImageStoreImpl;
-import store.model.PostStoreImpl;
-import store.model.UserStoreImpl;
-import store.relation.FollowStoreImpl;
-import store.relation.SubStoreImpl;
+import store.model.*;
 
 import java.util.HashSet;
 import java.util.List;
@@ -16,27 +11,27 @@ import spark.Request;
 
 public class Handler {
 
-    private final UserStoreImpl userStore;
-    private final PostStoreImpl postStore;
-    private final SubStoreImpl subStore;
-    private final ImageStoreImpl imageStore;
-    private final FollowStoreImpl followStore;
-    private final LikeStoreImpl likeStore;
+    private final UserStore userStore;
+    private final PostStore postStore;
+    private final ImageStore imageStore;
+    private final LikeStore likeStore;
+    private final SubStore subStore;
+    private final FollowStore followStore;
     private final Gson gson = new Gson();
 
-    public Handler( UserStoreImpl userStore,
-                    PostStoreImpl postStore,
-                    ImageStoreImpl imageStore,
-                    SubStoreImpl subStore,
-                    FollowStoreImpl followStore,
-                    LikeStoreImpl likeStore ) {
+    public Handler( UserStore userStore,
+                    PostStore postStore,
+                    ImageStore imageStore,
+                    LikeStore likeStore,
+                    SubStore subStore,
+                    FollowStore followStore ) {
                        
         this.userStore = userStore;
         this.postStore = postStore;
         this.imageStore = imageStore;
+        this.likeStore = likeStore;
         this.subStore = subStore;
         this.followStore = followStore;
-        this.likeStore = likeStore;
 
     }
 

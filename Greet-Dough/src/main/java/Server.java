@@ -1,10 +1,11 @@
 import com.google.gson.Gson;
-import store.model.LikeStoreImpl;
-import store.model.PostStoreImpl;
-import store.model.UserStoreImpl;
-import store.model.ImageStoreImpl;
+import store.impl.LikeStoreImpl;
+import store.impl.PostStoreImpl;
+import store.impl.UserStoreImpl;
+import store.impl.ImageStoreImpl;
 import store.relation.FollowStoreImpl;
 import store.relation.SubStoreImpl;
+import store.model.*;
 import utility.IOservice;
 import database.Handler;
 
@@ -13,12 +14,12 @@ import static spark.Spark.*;
 public class Server {
 
     ////////////////// Members //////////////////
-    private static UserStoreImpl userStore = new UserStoreImpl();
-    private static PostStoreImpl postStore = new PostStoreImpl();
-    private static ImageStoreImpl imageStore = new ImageStoreImpl();
-    private static SubStoreImpl subStore = new SubStoreImpl();
-    private static FollowStoreImpl followStore = new FollowStoreImpl();
-    private static LikeStoreImpl likeStore = new LikeStoreImpl();
+    private static UserStore userStore = new UserStoreImpl();
+    private static PostStore postStore = new PostStoreImpl();
+    private static ImageStore imageStore = new ImageStoreImpl();
+    private static LikeStore likeStore = new LikeStoreImpl();
+    private static SubStore subStore = new SubStoreImpl();
+    private static FollowStore followStore = new FollowStoreImpl();
     private static Gson gson = new Gson();
 
     public static void main(String[] args) {
@@ -43,12 +44,12 @@ public class Server {
         }
 
         try {
-            Server.subStore = (SubStoreImpl) IOservice.loadObject("data/subs.txt");
+            Server.subStore = (SubStore) IOservice.loadObject("data/subs.txt");
         } catch (ClassCastException e) {
             System.out.println("(Sub load) Empty file or wrong class cast");
         }
         try {
-            Server.followStore = (FollowStoreImpl) IOservice.loadObject("data/follows.txt");
+            Server.followStore = (FollowStore) IOservice.loadObject("data/follows.txt");
         } catch (ClassCastException e) {
             System.out.println("(Follow load) Empty file or wrong class cast");
         }
@@ -57,9 +58,9 @@ public class Server {
                 Server.userStore,
                 Server.postStore,
                 Server.imageStore,
+                Server.likeStore,
                 Server.subStore,
-                Server.followStore,
-                Server.likeStore );
+                Server.followStore );
 
         // USER ROUTES
         /////////////////

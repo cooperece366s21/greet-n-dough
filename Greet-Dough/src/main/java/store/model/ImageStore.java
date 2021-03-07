@@ -3,24 +3,19 @@ package store.model;
 import model.Image;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.file.*;
 import java.util.Scanner;
 
-public class ImageStoreImpl extends StoreWithID<Image> {
+public interface ImageStore extends Serializable {
 
-    public ImageStoreImpl() {
-        super();
-    }
+    Image getImage( int ID );
 
-    public ImageStoreImpl(int start ) {
-        super(start);
-    }
+    void addImage( Image newImage );
 
-    public Image getImage( int ID ) {
-        return super.get(ID);
-    }
+    boolean deleteImage( int ID );
 
-    private static String uploadImage(Image newImage) {
+    static String uploadImage( Image newImage ) {
 
         Scanner myObj = new Scanner(System.in);  // Create a Scanner object
         System.out.println("Enter filepath: ");
@@ -28,8 +23,8 @@ public class ImageStoreImpl extends StoreWithID<Image> {
         String path = myObj.nextLine();  // Read user input
         String extension = "";
         int i = path.lastIndexOf('.');
-        if (i >= 0) {
-            extension = path.substring(i+1);
+        if ( i >= 0 ) {
+            extension = path.substring(i + 1);
         }
 
         String validTypes = "jpg png jpeg";
@@ -42,10 +37,10 @@ public class ImageStoreImpl extends StoreWithID<Image> {
 
     }
 
-    public static void moveImage(Image newImage) {
+    static void moveImage( Image newImage ) {
 
         FileSystem fileSys = FileSystems.getDefault();
-        Path srcPath = fileSys.getPath( uploadImage(newImage) );
+        Path srcPath = fileSys.getPath(uploadImage(newImage));
         //change this abomination if you are testing it (for now)
         //NEED TO EDIT LATER
         Path destPath = fileSys.getPath("c:\\Users\\brian\\OneDrive\\Documents\\Github\\Lee-Ko\\Greet-Dough\\data\\images.png");
@@ -57,14 +52,6 @@ public class ImageStoreImpl extends StoreWithID<Image> {
             ioe.printStackTrace();
         }
 
-    }
-
-    public void addImage( Image newImage ) {
-        super.add( newImage.getImageID(), newImage );
-    }
-
-    public boolean deleteImage( int ID ) {
-        return super.delete(ID);
     }
 
 }
