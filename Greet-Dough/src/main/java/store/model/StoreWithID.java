@@ -3,15 +3,15 @@ package store.model;
 import store.StorageRetrieval;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public abstract class Store<T> extends StorageRetrieval<T> {
+public abstract class StoreWithID<T> extends StorageRetrieval<T> {
 
     private AtomicInteger freeIDs;
 
-    protected Store() {
+    protected StoreWithID() {
         this(0);
     }
 
-    protected Store( int start ) {
+    protected StoreWithID(int start ) {
 
         super();
         this.freeIDs = new AtomicInteger(start);

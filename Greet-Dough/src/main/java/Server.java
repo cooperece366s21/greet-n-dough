@@ -1,4 +1,5 @@
 import com.google.gson.Gson;
+import store.model.LikeStoreImpl;
 import store.model.PostStoreImpl;
 import store.model.UserStoreImpl;
 import store.model.ImageStoreImpl;
@@ -16,7 +17,8 @@ public class Server {
     private static PostStoreImpl postStore = new PostStoreImpl();
     private static ImageStoreImpl imageStore = new ImageStoreImpl();
     private static SubStoreImpl subStore = new SubStoreImpl();
-    private  static FollowStoreImpl followStore = new FollowStoreImpl();
+    private static FollowStoreImpl followStore = new FollowStoreImpl();
+    private static LikeStoreImpl likeStore = new LikeStoreImpl();
     private static Gson gson = new Gson();
 
     public static void main(String[] args) {
@@ -56,7 +58,8 @@ public class Server {
                 Server.postStore,
                 Server.imageStore,
                 Server.subStore,
-                Server.followStore);
+                Server.followStore,
+                Server.likeStore );
 
         // USER ROUTES
         /////////////////

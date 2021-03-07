@@ -3,13 +3,13 @@ package store.model;
 import model.User;
 
 // IMPLEMENT A PREFIX TRIE TO ALLOW SEARCHING FOR USERS
-public class UserStoreImpl extends Store<User> {
+public class UserStoreImpl extends StoreWithID<User> {
 
     public UserStoreImpl() {
         super();
     }
 
-    public UserStoreImpl( int start ) {
+    public UserStoreImpl(int start ) {
         super(start);
     }
 

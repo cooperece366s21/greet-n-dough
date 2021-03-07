@@ -1,18 +1,17 @@
 package store.model;
 
 import model.Post;
-import store.StorageRetrieval;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PostStoreImpl extends Store<Post> {
+public class PostStoreImpl extends StoreWithID<Post> {
 
     public PostStoreImpl() {
         super();
     }
 
-    public PostStoreImpl( int start ) {
+    public PostStoreImpl(int start ) {
         super(start);
     }
 

@@ -1,20 +1,19 @@
 package store.model;
 
 import model.Comment;
-import model.Image;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class CommentStoreImpl extends Store<Comment> {
+public class CommentStoreImpl extends StoreWithID<Comment> {
 
     public CommentStoreImpl() {
         super();
     }
 
-    public CommentStoreImpl( int start ) {
+    public CommentStoreImpl(int start ) {
         super(start);
     }
 

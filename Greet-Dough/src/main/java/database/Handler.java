@@ -1,17 +1,18 @@
 package database;
 
-import com.google.gson.Gson;
-import spark.Request;
 import model.*;
+import store.model.LikeStoreImpl;
+import utility.*;
 import store.model.ImageStoreImpl;
 import store.model.PostStoreImpl;
 import store.model.UserStoreImpl;
 import store.relation.FollowStoreImpl;
 import store.relation.SubStoreImpl;
-import utility.IOservice;
-import utility.Pair;
 
+import java.util.HashSet;
 import java.util.List;
+import com.google.gson.Gson;
+import spark.Request;
 
 public class Handler {
 
@@ -20,20 +21,22 @@ public class Handler {
     private final SubStoreImpl subStore;
     private final ImageStoreImpl imageStore;
     private final FollowStoreImpl followStore;
-
+    private final LikeStoreImpl likeStore;
     private final Gson gson = new Gson();
 
-    public Handler(UserStoreImpl userStore,
-                   PostStoreImpl postStore,
-                   ImageStoreImpl imageStore,
-                   SubStoreImpl subStore,
-                   FollowStoreImpl followStore) {
+    public Handler( UserStoreImpl userStore,
+                    PostStoreImpl postStore,
+                    ImageStoreImpl imageStore,
+                    SubStoreImpl subStore,
+                    FollowStoreImpl followStore,
+                    LikeStoreImpl likeStore ) {
                        
         this.userStore = userStore;
         this.postStore = postStore;
         this.imageStore = imageStore;
         this.subStore = subStore;
         this.followStore = followStore;
+        this.likeStore = likeStore;
 
     }
 
@@ -73,27 +76,32 @@ public class Handler {
     }
 
     // USER RELATION ACTIONS
-    private Pair grabUserPair(Request req ){
+    private Pair grabUserPair(Request req ) {
+
         int curUser = Integer.parseInt( req.queryParams("curUser") );
         int targetUser = Integer.parseInt( req.params(":id") );
 
-        if( userStore.getUser(curUser) == null ){
+        if ( userStore.getUser(curUser) == null ){
             System.out.println("Current user "+curUser+" does not exist");
             return  null;
         }
-        if( userStore.getUser(targetUser) == null ){
+        if ( userStore.getUser(targetUser) == null ){
             System.out.println("Target user "+targetUser+" does not exist");
             return  null;
         }
         return new Pair(curUser, targetUser);
+
     }
 
     public Integer subscribe( Request req ) {
+
         Pair userPair = this.grabUserPair(req);
-        if (userPair == null) { return null; }
+        if ( userPair == null ) {
+            return null;
+        }
         List<Integer> curSubs = subStore.getSubscriptions(userPair.getLeft());
 
-        if( curSubs !=null && curSubs.contains( userPair.getRight() ) ){
+        if ( curSubs != null && curSubs.contains( userPair.getRight() ) ) {
             System.out.println("Current User already is subscribed");
             return null;
         }
@@ -103,19 +111,23 @@ public class Handler {
         IOservice.saveObject(subStore, "data/subs.txt");
 
         return 0;
+
     }
 
     public Integer unsubscribe( Request req ) {
+
         Pair userPair = this.grabUserPair(req);
-        if (userPair == null) { return null; }
+        if ( userPair == null ) {
+            return null;
+        }
         List<Integer> curSubs = subStore.getSubscriptions( userPair.getLeft() );
 
-        if( curSubs==null ){
+        if ( curSubs == null ) {
             System.out.println("User not subscribed to anyone");
             return null;
         }
 
-        if( !curSubs.contains(userPair.getRight()) ){
+        if ( !curSubs.contains(userPair.getRight()) ) {
             System.out.println("Current user not subscribed to target user");
         }
 
@@ -127,11 +139,14 @@ public class Handler {
     }
 
     public Integer follow( Request req ) {
+
         Pair userPair = this.grabUserPair(req);
-        if (userPair == null) { return null; }
+        if ( userPair == null ) {
+            return null;
+        }
         List<Integer> curFollows = followStore.getFollowers(userPair.getLeft());
 
-        if( curFollows!=null && curFollows.contains( userPair.getRight() ) ){
+        if ( curFollows!=null && curFollows.contains( userPair.getRight() ) ) {
             System.out.println("Current user is already following the target user");
             return null;
         }
@@ -141,19 +156,23 @@ public class Handler {
         System.out.println("Currently following: " + followStore.getFollowers( userPair.getLeft() ) );
 
         return 0;
+
     }
 
     public Integer unfollow( Request req ) {
+
         Pair userPair = this.grabUserPair(req);
-        if (userPair == null) { return null; }
+        if ( userPair == null ) {
+            return null;
+        }
         List<Integer> curFollows = followStore.getFollowers( userPair.getLeft() );
 
-        if( curFollows==null ) {
+        if ( curFollows == null ) {
             System.out.println("Current user not following anyone");
             return null;
         }
 
-        if( !curFollows.contains( userPair.getRight()) ) {
+        if ( !curFollows.contains( userPair.getRight()) ) {
             System.out.println("Current user not following target user");
             return null;
         }
@@ -163,6 +182,7 @@ public class Handler {
         System.out.println("Currently following: " + followStore.getFollowers( userPair.getLeft() ) );
 
         return 0;
+
     }
 
     // POST ACTIONS
@@ -214,7 +234,7 @@ public class Handler {
             return null;
         }
 
-        if ( (curSubs==null) || (!curSubs.contains(targetUser)) ){
+        if ( (curSubs == null) || (!curSubs.contains(targetUser)) ){
             System.out.println("Current user does not have permission to this feed");
             return null;
         }
@@ -222,6 +242,25 @@ public class Handler {
         return postStore.makeFeed(targetUser);
     }
 
+
+    public void likePost( Post curPost, int curUser ) {
+
+        Likes postLikes = this.likeStore.getID( curPost.getID() );
+        HashSet<Integer> userLikes = postLikes.getUserLikes();
+
+        // Check list of users, if user already liked
+        // If user did not like, add 1 to the like count
+        // From checkID() if false append userID to list
+        // From checkID() if true
+        // removes like by decrementing likeCount
+        // deletes userID from userLikes list
+        if ( userLikes.contains(curUser) ) {
+            postLikes.decrementLike(curUser);
+        } else {
+            postLikes.incrementLike(curUser);
+        }
+
+    }
 
 
 

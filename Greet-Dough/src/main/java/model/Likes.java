@@ -1,16 +1,20 @@
 package model;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.HashSet;
 
 public class Likes implements Serializable {
 
     private int userID;
     private int postID;
     private int likeCount;
-    private ArrayList<Integer> userLikes;
+    private HashSet<Integer> userLikes;
 
-    public Likes( int postID, int userID , ArrayList<Integer> userLikes) {
+    public Likes( int postID, int userID ) {
+        this( postID, userID, new HashSet<>() );
+    }
+
+    public Likes( int postID, int userID, HashSet<Integer> userLikes ) {
 
         this.userID = userID;
         this.postID = postID;
@@ -27,7 +31,7 @@ public class Likes implements Serializable {
         return this.postID;
     }
 
-    public ArrayList<Integer> getUserLikes() {
+    public HashSet<Integer> getUserLikes() {
         return userLikes;
     }
 
@@ -35,11 +39,25 @@ public class Likes implements Serializable {
         return this.likeCount;
     }
 
-    public void setLikeCount(int likeCount) {
+    public void incrementLike( int userID ) {
+
+        this.likeCount++;
+        this.userLikes.add(userID);
+
+    }
+
+    public void decrementLike( int userID ) {
+
+        this.likeCount--;
+        this.userLikes.remove(userID);
+
+    }
+
+    public void setLikeCount( int likeCount ) {
         this.likeCount = likeCount;
     }
 
-    public void setUserLikes(ArrayList<Integer> userLikes) {
+    public void setUserLikes( HashSet<Integer> userLikes ) {
         this.userLikes = userLikes;
     }
 

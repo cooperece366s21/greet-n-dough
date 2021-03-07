@@ -6,13 +6,13 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.util.Scanner;
 
-public class ImageStoreImpl extends Store<Image> {
+public class ImageStoreImpl extends StoreWithID<Image> {
 
     public ImageStoreImpl() {
         super();
     }
 
-    public ImageStoreImpl( int start ) {
+    public ImageStoreImpl(int start ) {
         super(start);
     }
 
