@@ -5,9 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0ebab55d-1568-4489-8adc-a803fb33abdb" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/Greet-Dough/src/main/java/model/CommentContent.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Greet-Dough/src/main/java/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/Greet-Dough/src/main/java/Server.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Greet-Dough/target/classes/User.class" beforeDir="false" afterPath="$PROJECT_DIR$/Greet-Dough/target/classes/User.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Greet-Dough/src/main/java/database/Handler.java" beforeDir="false" afterPath="$PROJECT_DIR$/Greet-Dough/src/main/java/database/Handler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Greet-Dough/src/main/java/model/Comment.java" beforeDir="false" afterPath="$PROJECT_DIR$/Greet-Dough/src/main/java/model/Comment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Greet-Dough/src/main/java/store/impl/CommentStoreImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Greet-Dough/src/main/java/store/impl/CommentStoreImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,8 +20,18 @@
   <component name="CodeStyleSettingsInfer">
     <option name="done" value="true" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="jar://$PROJECT_DIR$/../../../../../../Program Files/Java/jdk-11.0.10/lib/src.zip!/java.base/java/nio/file/Files.java" root0="SKIP_INSPECTION" />
   </component>
   <component name="ProjectCodeStyleSettingsMigration">
     <option name="version" value="1" />
@@ -37,6 +50,17 @@
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Main" />
       <module name="Greet-Dough" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -68,5 +92,6 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
 </project>

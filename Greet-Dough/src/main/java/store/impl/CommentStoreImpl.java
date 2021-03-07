@@ -1,6 +1,7 @@
 package store.impl;
 
 import model.Comment;
+import model.CommentContent;
 import store.model.StoreWithID;
 import store.model.CommentStore;
 
@@ -28,11 +29,13 @@ public class CommentStoreImpl extends StoreWithID<Comment> implements CommentSto
     public void addComment( String commentContent, int currentUser, Comment newComment ) {
 
         LocalDateTime commentTime = LocalDateTime.now();
-        HashMap<LocalDateTime, List> comment = newComment.getComment();
-        List<String> value = new ArrayList<String>();
-        value.add(Integer.toString(currentUser));
-        value.add(commentContent);
-        comment.put(commentTime, value);
+        HashMap<LocalDateTime, CommentContent> comment = newComment.getComment();
+        //get this using hash atomic integer? ask derek when he is free, should be ez?
+
+        int commentID = 0;
+
+        CommentContent tempContent = new CommentContent(currentUser, commentContent, commentID);
+        comment.put(commentTime, tempContent);
         newComment.setComment(comment);
 
     }

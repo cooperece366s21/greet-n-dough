@@ -5,6 +5,7 @@ import store.impl.UserStoreImpl;
 import store.impl.ImageStoreImpl;
 import store.relation.FollowStoreImpl;
 import store.relation.SubStoreImpl;
+import store.impl.CommentStoreImpl;
 import store.model.*;
 import utility.IOservice;
 import database.Handler;
@@ -20,6 +21,7 @@ public class Server {
     private static LikeStore likeStore = new LikeStoreImpl();
     private static SubStore subStore = new SubStoreImpl();
     private static FollowStore followStore = new FollowStoreImpl();
+    private static CommentStore commentStore = new CommentStoreImpl();
     private static Gson gson = new Gson();
 
     public static void main(String[] args) {
@@ -53,6 +55,11 @@ public class Server {
         } catch (ClassCastException e) {
             System.out.println("(Follow load) Empty file or wrong class cast");
         }
+        try {
+            Server.commentStore = (CommentStore) IOservice.loadObject(("data/comment.txt");
+        } catch (ClassCastException e) {
+            System.out.println("(Follow load) Empty file or wrong class cast");
+        }
 
         Handler handler = new Handler(
                 Server.userStore,
@@ -60,7 +67,8 @@ public class Server {
                 Server.imageStore,
                 Server.likeStore,
                 Server.subStore,
-                Server.followStore );
+                Server.followStore,
+                Server.commentStore);
 
         // USER ROUTES
         /////////////////

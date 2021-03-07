@@ -17,6 +17,7 @@ public class Handler {
     private final LikeStore likeStore;
     private final SubStore subStore;
     private final FollowStore followStore;
+    private final CommentStore commentStore;
     private final Gson gson = new Gson();
 
     public Handler( UserStore userStore,
@@ -24,7 +25,9 @@ public class Handler {
                     ImageStore imageStore,
                     LikeStore likeStore,
                     SubStore subStore,
-                    FollowStore followStore ) {
+                    FollowStore followStore,
+                    CommentStore commentStore
+    ) {
                        
         this.userStore = userStore;
         this.postStore = postStore;
@@ -32,6 +35,7 @@ public class Handler {
         this.likeStore = likeStore;
         this.subStore = subStore;
         this.followStore = followStore;
+        this.commentStore = commentStore;
 
     }
 
