@@ -15,7 +15,9 @@ public abstract class StorageRetrieval<T> implements Serializable {
         return this.items.get(ID);
     }
 
-    protected HashMap<Integer, T> getItems() { return this.items; }
+    protected HashMap<Integer, T> getItems() {
+        return this.items;
+    }
 
     protected void add( int key, T newItem ) {
         this.items.put( key, newItem );

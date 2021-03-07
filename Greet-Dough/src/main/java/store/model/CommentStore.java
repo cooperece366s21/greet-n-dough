@@ -2,9 +2,7 @@ package store.model;
 
 import model.Comment;
 
-import java.io.Serializable;
-
-public interface CommentStore extends Serializable {
+public interface CommentStore {
 
     Comment getPostID( int ID );
 

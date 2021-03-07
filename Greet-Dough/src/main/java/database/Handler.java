@@ -71,7 +71,7 @@ public class Handler {
     }
 
     // USER RELATION ACTIONS
-    private Pair grabUserPair(Request req ) {
+    private Pair grabUserPair( Request req ) {
 
         int curUser = Integer.parseInt( req.queryParams("curUser") );
         int targetUser = Integer.parseInt( req.params(":id") );

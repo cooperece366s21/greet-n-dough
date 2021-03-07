@@ -2,9 +2,7 @@ package store.model;
 
 import model.User;
 
-import java.io.Serializable;
-
-public interface UserStore extends Serializable {
+public interface UserStore {
 
     User getUser( int ID );
 

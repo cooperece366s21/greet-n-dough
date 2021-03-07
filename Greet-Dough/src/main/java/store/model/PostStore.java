@@ -2,10 +2,9 @@ package store.model;
 
 import model.Post;
 
-import java.io.Serializable;
 import java.util.List;
 
-public interface PostStore extends Serializable {
+public interface PostStore {
 
     Post getPost( int ID );
 

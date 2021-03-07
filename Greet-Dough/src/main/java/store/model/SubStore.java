@@ -1,9 +1,8 @@
 package store.model;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
-public interface SubStore extends Serializable {
+public interface SubStore {
 
     ArrayList<Integer> getSubscriptions( int ID );
 

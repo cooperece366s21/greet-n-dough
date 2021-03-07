@@ -3,11 +3,10 @@ package store.model;
 import model.Image;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.nio.file.*;
 import java.util.Scanner;
 
-public interface ImageStore extends Serializable {
+public interface ImageStore {
 
     Image getImage( int ID );
 

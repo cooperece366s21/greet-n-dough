@@ -1,9 +1,8 @@
 package store.model;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
-public interface FollowStore extends Serializable {
+public interface FollowStore {
 
     ArrayList<Integer> getFollowers( int ID) ;
 
