@@ -1,3 +1,5 @@
+package utility;
+
 import java.io.Serializable;
 
 // Custom Pair class b/c apparently Java doesn't natively support Tuples
@@ -5,9 +7,9 @@ public class Pair implements Serializable {
 
     private int left, right;
 
-    Pair() {}
+    public Pair() {}
 
-    Pair( int left, int right ) {
+    public Pair( int left, int right ) {
 
         this.left = left;
         this.right = right;
