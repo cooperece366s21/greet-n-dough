@@ -125,5 +125,17 @@ public class Server {
         // curl -d "curUser=2" -X post localhost:9999/users/0/feed/
         post( "/users/:id/feed/", (req,res) -> handler.getFeed(req), gson::toJson );
 
+        // Comment, post for now, put request since we are updating something about the post??
+        // curl -d "curUser=0&postID=0&commentContent=chata" -X post localhost:9999/posts/
+        post("/posts/:id/", (req, res) -> handler.createComment(req), gson::toJson);
+
+        // Like, put request
+        // curl -d "postID=0&curUser=0" -X put localhost:9999/posts/
+        put("/posts/:id/", (req, res) -> handler.tryLike(req), gson::toJson);
+
+        // Upload Image, which is createPost but imageID exists
+        // curl -d "userID=0&contents=hello world&imageID=0" -X post localhost:9999/posts/
+        // uploadImage() will prompt user for a path
+
     }
 }

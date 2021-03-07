@@ -199,10 +199,19 @@ public class Handler {
         String contentQuery = req.queryParams("contents");
         int imageID = (imageQuery != null) ? Integer.parseInt(imageQuery) : -1;
 
-        Post tempPost = new Post( contentQuery, postStore.getFreeID(), userID, imageID );
+        int postID = postStore.getFreeID();
+        Post tempPost = new Post( contentQuery, postID, userID, imageID );
+
+        Image imagePath = new Image(postID, userID);
+        // this.imageStore.moveImage(imagePath);
+        // interface 5head facepalm
+
         this.postStore.addPost( tempPost );
         IOservice.saveObject( this.postStore, "data/posts.txt" );
         System.out.println( gson.toJson(tempPost) );
+
+        IOservice.saveObject( this.imageStore, "data/posts.txt" );
+        System.out.println( gson.toJson(imagePath) );
 
         return 0;
 
@@ -241,6 +250,12 @@ public class Handler {
         return postStore.makeFeed(targetUser);
     }
 
+    public void tryLike( Request req ){
+        int postID = Integer.parseInt( req.queryParams("postID") );
+        Post temp = this.postStore.getPost(postID);
+        int userID = Integer.parseInt( req.queryParams("curUser") );
+        likePost(temp, userID);
+    }
 
     public void likePost( Post curPost, int curUser ) {
 
@@ -258,6 +273,22 @@ public class Handler {
         } else {
             postLikes.incrementLike(curUser);
         }
+
+        IOservice.saveObject( this.likeStore, "data/posts.txt" );
+        System.out.println( gson.toJson(postLikes) );
+
+    }
+
+    public void createComment( Request req ){
+        int postID = Integer.parseInt( req.queryParams("postID") );
+        int userID = Integer.parseInt( req.queryParams("curUser") );
+        String contentQuery = req.queryParams("commentContent");
+
+        Comment comment = new Comment(postID, userID);
+        this.commentStore.addComment(contentQuery, userID, comment);
+
+        IOservice.saveObject( this.commentStore, "data/posts.txt" );
+        System.out.println( gson.toJson(comment) );
 
     }
 

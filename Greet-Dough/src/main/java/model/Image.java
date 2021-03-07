@@ -73,14 +73,8 @@ public class Image implements Serializable {
         this.imageID = imageID;
     }
 
-    /**
-     *
-     * @param path  path is path to image file
-     */
-
-
-    public Image(String path, int imageID, int postID) {
-        this.setPath(path);
+    public Image(int imageID, int postID) {
+        this.path = "";
         this.setPostID(postID);
         this.setImageID(imageID);
     }
