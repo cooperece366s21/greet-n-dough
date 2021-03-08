@@ -32,8 +32,7 @@ public class CommentStoreImpl extends StoreWithID<Comment> implements CommentSto
         HashMap<LocalDateTime, CommentContent> comment = newComment.getComment();
         //get this using hash atomic integer? ask derek when he is free, should be ez?
 
-        int commentID = 0;
-
+        int commentID = super.getFreeID();
         CommentContent tempContent = new CommentContent(currentUser, commentContent, commentID);
         comment.put(commentTime, tempContent);
         newComment.setComment(comment);
