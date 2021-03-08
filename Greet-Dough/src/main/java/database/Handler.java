@@ -17,6 +17,7 @@ public class Handler {
     private final LikeStore likeStore;
     private final SubStore subStore;
     private final FollowStore followStore;
+    private final PostCommentStore postCommentStore;
     private final CommentStore commentStore;
     private final Gson gson = new Gson();
 
@@ -24,18 +25,20 @@ public class Handler {
                     PostStore postStore,
                     ImageStore imageStore,
                     LikeStore likeStore,
+                    CommentStore commentStore,
                     SubStore subStore,
                     FollowStore followStore,
-                    CommentStore commentStore
+                    PostCommentStore postCommentStore
     ) {
                        
         this.userStore = userStore;
         this.postStore = postStore;
         this.imageStore = imageStore;
         this.likeStore = likeStore;
+        this.commentStore = commentStore;
         this.subStore = subStore;
         this.followStore = followStore;
-        this.commentStore = commentStore;
+        this.postCommentStore = postCommentStore;
 
     }
 
@@ -279,16 +282,22 @@ public class Handler {
 
     }
 
-    public void createComment( Request req ){
+    public void createComment( Request req ) {
+
+        int commentID = this.commentStore.getFreeID();
         int postID = Integer.parseInt( req.queryParams("postID") );
         int userID = Integer.parseInt( req.queryParams("curUser") );
         String contentQuery = req.queryParams("commentContent");
 
-        Comment comment = new Comment(postID, userID);
-        this.commentStore.addComment(contentQuery, userID, comment);
+        Comment newComment = new Comment( userID, contentQuery, commentID );
+
+        this.commentStore.addComment( newComment );
+        this.postCommentStore.addComment( postID, commentID );
+//        NestedComment comment = new NestedComment(postID, userID);
+//        this.commentStore.addComment(contentQuery, userID, comment);
 
         IOservice.saveObject( this.commentStore, "data/posts.txt" );
-        System.out.println( gson.toJson(comment) );
+        System.out.println( gson.toJson(newComment) );
 
     }
 

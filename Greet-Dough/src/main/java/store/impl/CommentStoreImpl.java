@@ -1,14 +1,12 @@
 package store.impl;
 
+import model.NestedComment;
 import model.Comment;
-import model.CommentContent;
 import store.model.StoreWithID;
 import store.model.CommentStore;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class CommentStoreImpl extends StoreWithID<Comment> implements CommentStore {
 
@@ -21,22 +19,23 @@ public class CommentStoreImpl extends StoreWithID<Comment> implements CommentSto
     }
 
     @Override
-    public Comment getPostID( int ID ) {
+    public Comment getComment( int ID ) {
         return super.get(ID);
     }
 
     @Override
-    public void addComment( String commentContent, int currentUser, Comment newComment ) {
+    public void addComment( Comment newComment ) {
 
-        LocalDateTime commentTime = LocalDateTime.now();
-        HashMap<LocalDateTime, CommentContent> comment = newComment.getComment();
+//        LocalDateTime commentTime = LocalDateTime.now();
+//        HashMap<LocalDateTime, Comment> comment = newComment.getComment();
         //get this using hash atomic integer? ask derek when he is free, should be ez?
+//
+//        int commentID = 0;
 
-        int commentID = 0;
-
-        CommentContent tempContent = new CommentContent(currentUser, commentContent, commentID);
-        comment.put(commentTime, tempContent);
-        newComment.setComment(comment);
+//        Comment tempContent = new Comment(currentUser, commentContent, commentID);
+//        comment.put(commentTime, tempContent);
+//        newComment.setComment(comment);
+        super.add( newComment.getID(), newComment );
 
     }
 

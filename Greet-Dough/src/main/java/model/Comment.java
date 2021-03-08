@@ -1,48 +1,37 @@
 package model;
-
 import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 public class Comment implements Serializable {
 
-    // private final int ID;
-    private int userID;
-    private int postID;
+    private final int ID;
+    private final int userID;
+    private String content;
 
-    private HashMap<LocalDateTime, CommentContent> comment;
+    public Comment( int userID, String content, int commentID ) {
 
-    public Comment(int postID, int userID) {
-
-        this.postID = postID;
+        this.ID = commentID;
         this.userID = userID;
-        this.comment = new HashMap<LocalDateTime, CommentContent> ();
+        this.content = content;
 
+    }
+
+    public int getID() {
+        return this.ID;
     }
 
     public int getUserID() {
         return this.userID;
     }
 
-    public int getPostID() {
-        return this.postID;
+    public String getContent() {
+        return this.content;
     }
 
-    public HashMap<LocalDateTime, CommentContent> getComment() {
-        return comment;
+    //Edited out due to not being used, can be used if we are going to implement edit comment option
+
+    /*
+    public void setContent(String content) {
+        this.content = content;
     }
-
-    public void setComment(HashMap<LocalDateTime, CommentContent> comment) {
-        this.comment = comment;
-    }
-
-    // Supports multiple comments, no directly reply
-    // No comment likes
-    // Author of post can comment on their own post
-    // Comment is defined by time created (commentID), user who comments, and post the comment is under
-
-    // Delete comment????????? Anything you post stays there
-
+    */
 }

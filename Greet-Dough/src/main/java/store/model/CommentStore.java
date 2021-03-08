@@ -4,8 +4,10 @@ import model.Comment;
 
 public interface CommentStore {
 
-    Comment getPostID( int ID );
+    Comment getComment( int ID );
 
-    void addComment( String commentContent, int currentUser, Comment newComment );
+    void addComment( Comment newComment );
+
+    int getFreeID();
 
 }

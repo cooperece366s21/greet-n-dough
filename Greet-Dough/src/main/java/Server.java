@@ -4,6 +4,7 @@ import store.impl.PostStoreImpl;
 import store.impl.UserStoreImpl;
 import store.impl.ImageStoreImpl;
 import store.relation.FollowStoreImpl;
+import store.relation.PostCommentStoreImpl;
 import store.relation.SubStoreImpl;
 import store.impl.CommentStoreImpl;
 import store.model.*;
@@ -19,9 +20,11 @@ public class Server {
     private static PostStore postStore = new PostStoreImpl();
     private static ImageStore imageStore = new ImageStoreImpl();
     private static LikeStore likeStore = new LikeStoreImpl();
+    private static CommentStore commentStore = new CommentStoreImpl();
     private static SubStore subStore = new SubStoreImpl();
     private static FollowStore followStore = new FollowStoreImpl();
-    private static CommentStore commentStore = new CommentStoreImpl();
+    private static PostCommentStore postCommentStore = new PostCommentStoreImpl();
+
     private static Gson gson = new Gson();
 
     public static void main(String[] args) {
@@ -66,9 +69,10 @@ public class Server {
                 Server.postStore,
                 Server.imageStore,
                 Server.likeStore,
+                Server.commentStore,
                 Server.subStore,
                 Server.followStore,
-                Server.commentStore);
+                Server.postCommentStore );
 
         // USER ROUTES
         /////////////////
