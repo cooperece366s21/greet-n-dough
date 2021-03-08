@@ -65,7 +65,7 @@ public class Handler {
         int ID = Integer.parseInt( req.params(":id") );
         User tempUser = this.userStore.getUser(ID);
 
-        if ( this.userStore.deleteUser(ID) ){
+        if ( this.userStore.deleteUser(ID) ) {
             System.out.println( gson.toJson(tempUser) );
             IOservice.saveObject(this.userStore, "data/users.txt");
         }
@@ -83,13 +83,13 @@ public class Handler {
         int curUser = Integer.parseInt( req.queryParams("curUser") );
         int targetUser = Integer.parseInt( req.params(":id") );
 
-        if ( userStore.getUser(curUser) == null ){
+        if ( userStore.getUser(curUser) == null ) {
             System.out.println("Current user "+curUser+" does not exist");
-            return  null;
+            return null;
         }
-        if ( userStore.getUser(targetUser) == null ){
+        if ( userStore.getUser(targetUser) == null ) {
             System.out.println("Target user "+targetUser+" does not exist");
-            return  null;
+            return null;
         }
         return new Pair(curUser, targetUser);
 
@@ -146,7 +146,7 @@ public class Handler {
         if ( userPair == null ) {
             return null;
         }
-        List<Integer> curFollows = followStore.getFollowers(userPair.getLeft());
+        List<Integer> curFollows = followStore.getFollowers( userPair.getLeft() );
 
         if ( curFollows!=null && curFollows.contains( userPair.getRight() ) ) {
             System.out.println("Current user is already following the target user");
