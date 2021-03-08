@@ -206,8 +206,7 @@ public class Handler {
         Post tempPost = new Post( contentQuery, postID, userID, imageID );
 
         Image imagePath = new Image(postID, userID);
-        // this.imageStore.moveImage(imagePath);
-        // interface 5head facepalm
+        ImageStore.moveImage(imagePath);
 
         this.postStore.addPost( tempPost );
         IOservice.saveObject( this.postStore, "data/posts.txt" );
