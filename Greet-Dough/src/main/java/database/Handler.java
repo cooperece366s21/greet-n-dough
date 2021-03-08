@@ -4,6 +4,7 @@ import model.*;
 import utility.*;
 import store.model.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import com.google.gson.Gson;
@@ -197,7 +198,7 @@ public class Handler {
 
     public Integer createPost( Request req ) {
 
-        int userID = Integer.parseInt( req.queryParams("userID") );
+        int userID = Integer.parseInt( req.queryParams("curUser") );
         String imageQuery = req.queryParams("imageID");
         String contentQuery = req.queryParams("contents");
         int imageID = (imageQuery != null) ? Integer.parseInt(imageQuery) : -1;
@@ -205,15 +206,19 @@ public class Handler {
         int postID = postStore.getFreeID();
         Post tempPost = new Post( contentQuery, postID, userID, imageID );
 
-        Image imagePath = new Image(postID, userID);
-        ImageStore.moveImage(imagePath);
+//        Image imagePath = new Image(postID, userID);
+//        ImageStore.moveImage(imagePath);
 
         this.postStore.addPost( tempPost );
         IOservice.saveObject( this.postStore, "data/posts.txt" );
+
+        Likes tempLike = new Likes(postID, userID);
+        this.likeStore.addLikes( tempLike );
+
         System.out.println( gson.toJson(tempPost) );
 
-        IOservice.saveObject( this.imageStore, "data/posts.txt" );
-        System.out.println( gson.toJson(imagePath) );
+//        IOservice.saveObject( this.imageStore, "data/posts.txt" );
+//        System.out.println( gson.toJson(imagePath) );
 
         return 0;
 
@@ -225,7 +230,13 @@ public class Handler {
         Post tempPost = this.postStore.getPost(postID);
 
         if ( this.postStore.deletePost( postID ) ) {
+
+            this.postCommentStore.deletePost( postID );
+            this.likeStore.deleteLikes( postID );
+
             IOservice.saveObject (this.postStore, "data/posts.txt" );
+            IOservice.saveObject (this.postCommentStore, "data/postsComments.txt");
+            IOservice.saveObject (this.likeStore, "data/likes.txt");
             System.out.println( gson.toJson(tempPost) );
         } else {
             return -1;
@@ -252,16 +263,20 @@ public class Handler {
         return postStore.makeFeed(targetUser);
     }
 
-    public void tryLike( Request req ){
-        int postID = Integer.parseInt( req.queryParams("postID") );
-        Post temp = this.postStore.getPost(postID);
-        int userID = Integer.parseInt( req.queryParams("curUser") );
-        likePost(temp, userID);
+    public Likes getLikes( Request req ) {
+
+        int postID = Integer.parseInt( req.params(":postID") );
+        return this.likeStore.getID( postID );
+
     }
 
-    public void likePost( Post curPost, int curUser ) {
+    public Integer likePost( Request req ) {
 
-        Likes postLikes = this.likeStore.getID( curPost.getID() );
+        int postID = Integer.parseInt( req.params(":postID") );
+        Likes postLikes = this.likeStore.getID( postID );
+
+        int userID = Integer.parseInt( req.queryParams("curUser") );
+
         HashSet<Integer> userLikes = postLikes.getUserLikes();
 
         // Check list of users, if user already liked
@@ -270,38 +285,59 @@ public class Handler {
         // From checkID() if true
         // removes like by decrementing likeCount
         // deletes userID from userLikes list
-        if ( userLikes.contains(curUser) ) {
-            postLikes.decrementLike(curUser);
+
+        if ( userLikes.contains(userID) ) {
+            postLikes.decrementLike(userID);
         } else {
-            postLikes.incrementLike(curUser);
+            postLikes.incrementLike(userID);
         }
 
-        IOservice.saveObject( this.likeStore, "data/posts.txt" );
+        IOservice.saveObject( this.likeStore, "data/likes.txt" );
         System.out.println( gson.toJson(postLikes) );
+        return 0;
 
     }
 
-    public void createComment( Request req ) {
+    public Integer createComment( Request req ) {
 
         int commentID = this.commentStore.getFreeID();
-        int postID = Integer.parseInt( req.queryParams("postID") );
+
+        int postID = Integer.parseInt( req.params(":postID") );
         int userID = Integer.parseInt( req.queryParams("curUser") );
-        String contentQuery = req.queryParams("commentContent");
+        String contentQuery = req.queryParams("content");
 
         Comment newComment = new Comment( userID, contentQuery, commentID );
+
 
         this.commentStore.addComment( newComment );
         this.postCommentStore.addComment( postID, commentID );
 //        NestedComment comment = new NestedComment(postID, userID);
 //        this.commentStore.addComment(contentQuery, userID, comment);
 
-        IOservice.saveObject( this.commentStore, "data/posts.txt" );
+        IOservice.saveObject( this.commentStore, "data/comments.txt" );
+        IOservice.saveObject( this.postCommentStore, "data/postsComments.txt");
         System.out.println( gson.toJson(newComment) );
+
+        return 0;
 
     }
 
+    public List<Comment> getComments( Request req ) {
 
+        int postID = Integer.parseInt( req.params(":postID") );
+        List<Comment> comments = new ArrayList<>();
+        List<Integer> commentIDs = this.postCommentStore.getComments(postID);
 
+        System.out.println( "Looking for postID: " + postID );
+        System.out.println( gson.toJson(commentIDs) );
+
+        for ( Integer ID : commentIDs ) {
+            comments.add( this.commentStore.getComment(ID) );
+        }
+
+        return comments;
+
+    }
 
 }
 

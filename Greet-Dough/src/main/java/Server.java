@@ -1,12 +1,6 @@
 import com.google.gson.Gson;
-import store.impl.LikeStoreImpl;
-import store.impl.PostStoreImpl;
-import store.impl.UserStoreImpl;
-import store.impl.ImageStoreImpl;
-import store.relation.FollowStoreImpl;
-import store.relation.PostCommentStoreImpl;
-import store.relation.SubStoreImpl;
-import store.impl.CommentStoreImpl;
+import store.impl.*;
+import store.relation.*;
 import store.model.*;
 import utility.IOservice;
 import database.Handler;
@@ -37,13 +31,13 @@ public class Server {
         init();
 
         try {
-            Server.userStore = (UserStoreImpl) IOservice.loadObject("data/users.txt");
+            Server.userStore = (UserStore) IOservice.loadObject("data/users.txt");
         } catch (ClassCastException e) {
             System.out.println("(User load) Empty file or wrong class cast");
         }
 
         try {
-            Server.postStore = (PostStoreImpl) IOservice.loadObject("data/posts.txt");
+            Server.postStore = (PostStore) IOservice.loadObject("data/posts.txt");
         } catch (ClassCastException e) {
             System.out.println("(Post load) Empty file or wrong class cast");
         }
@@ -53,15 +47,29 @@ public class Server {
         } catch (ClassCastException e) {
             System.out.println("(Sub load) Empty file or wrong class cast");
         }
+
         try {
             Server.followStore = (FollowStore) IOservice.loadObject("data/follows.txt");
         } catch (ClassCastException e) {
             System.out.println("(Follow load) Empty file or wrong class cast");
         }
+
         try {
-            Server.commentStore = (CommentStore) IOservice.loadObject(("data/comment.txt");
+            Server.likeStore = (LikeStore) IOservice.loadObject("data/likes.txt");
         } catch (ClassCastException e) {
-            System.out.println("(Follow load) Empty file or wrong class cast");
+            System.out.println("(Like load) Empty file or wrong class cast");
+        }
+
+        try {
+            Server.commentStore = (CommentStore) IOservice.loadObject("data/comments.txt");
+        } catch (ClassCastException e) {
+            System.out.println("(Comment load) Empty file or wrong class cast");
+        }
+
+        try {
+            Server.postCommentStore = (PostCommentStore) IOservice.loadObject("data/postsComments.txt");
+        } catch (ClassCastException e) {
+            System.out.println("(PostComment load) Empty file or wrong class cast");
         }
 
         Handler handler = new Handler(
@@ -118,7 +126,7 @@ public class Server {
         get("/posts/:id/", (req, res) -> handler.getPost(req), gson::toJson);
 
         //  Creates a new post
-        // curl -d "userID=0&contents=hello world" -X post localhost:9999/posts/
+        // curl -d "curUser=0&contents=hello world" -X post localhost:9999/posts/
         post("/posts/", (req, res) -> handler.createPost(req));
 
         //  Deletes post given postID
@@ -129,13 +137,24 @@ public class Server {
         // curl -d "curUser=2" -X post localhost:9999/users/0/feed/
         post( "/users/:id/feed/", (req,res) -> handler.getFeed(req), gson::toJson );
 
-        // Comment, post for now, put request since we are updating something about the post??
-        // curl -d "curUser=0&postID=0&commentContent=chata" -X post localhost:9999/posts/
-        post("/posts/:id/", (req, res) -> handler.createComment(req), gson::toJson);
+        // LIKES ROUTES
+        ////////////////////
+
+        // curl localhost:9999/posts/0/like/
+        get("/posts/:postID/likes/", (req,res) -> handler.getLikes(req), gson::toJson);
 
         // Like, put request
-        // curl -d "postID=0&curUser=0" -X put localhost:9999/posts/
-        put("/posts/:id/", (req, res) -> handler.tryLike(req), gson::toJson);
+        // curl -d "curUser=0" -X post localhost:9999/posts/0/like/
+        post("/posts/:postID/likes/", (req, res) -> handler.likePost(req), gson::toJson);
+
+        // COMMENTS ROUTES
+        /////////////////////
+        get("/posts/:postID/comments/", (req,res) -> handler.getComments(req), gson::toJson);
+
+        // Comment, post for now, put request since we are updating something about the post??
+        // curl -d "curUser=1&content=ok post!" -X post localhost:9999/posts/0/comments/
+        post("/posts/:postID/comments/", (req, res) -> handler.createComment(req), gson::toJson);
+
 
         // Upload Image, which is createPost but imageID exists
         // curl -d "userID=0&contents=hello world&imageID=0" -X post localhost:9999/posts/
