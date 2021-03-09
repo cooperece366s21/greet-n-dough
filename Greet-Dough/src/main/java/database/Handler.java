@@ -246,6 +246,7 @@ public class Handler {
     }
 
     public List<Post> getFeed( Request req ) {
+
         int curUser = Integer.parseInt( req.queryParams("curUser") );
         int targetUser = Integer.parseInt( req.params(":id") );
         List<Integer> curSubs = subStore.getSubscriptions(curUser);
@@ -261,6 +262,7 @@ public class Handler {
         }
 
         return postStore.makeFeed(targetUser);
+
     }
 
     public Likes getLikes( Request req ) {
@@ -280,12 +282,12 @@ public class Handler {
         HashSet<Integer> userLikes = postLikes.getUserLikes();
 
         // Check list of users, if user already liked
-        // If user did not like, add 1 to the like count
-        // From checkID() if false append userID to list
-        // From checkID() if true
-        // removes like by decrementing likeCount
-        // deletes userID from userLikes list
-
+        // If user did not like
+        //      Add 1 to the like count
+        //      Add user to userLikes
+        // Otherwise
+        //      Subtract 1 from like count
+        //      Remove user from userLikes
         if ( userLikes.contains(userID) ) {
             postLikes.decrementLike(userID);
         } else {
@@ -307,12 +309,8 @@ public class Handler {
         String contentQuery = req.queryParams("content");
 
         Comment newComment = new Comment( userID, contentQuery, commentID );
-
-
         this.commentStore.addComment( newComment );
         this.postCommentStore.addComment( postID, commentID );
-//        NestedComment comment = new NestedComment(postID, userID);
-//        this.commentStore.addComment(contentQuery, userID, comment);
 
         IOservice.saveObject( this.commentStore, "data/comments.txt" );
         IOservice.saveObject( this.postCommentStore, "data/postsComments.txt");
