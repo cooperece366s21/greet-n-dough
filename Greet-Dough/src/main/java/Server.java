@@ -24,12 +24,13 @@ public class Server {
     public static void main(String[] args) {
 
         initExceptionHandler((e) -> {
-            System.out.println("Could not start server on port 9999");
+            System.out.println("Could not start server on port 4321");
             System.exit(100);
         });
-        port(9999);
+        port(4321);
         init();
 
+        /*
         try {
             Server.userStore = (UserStore) IOservice.loadObject("data/users.txt");
         } catch (ClassCastException e) {
@@ -71,6 +72,7 @@ public class Server {
         } catch (ClassCastException e) {
             System.out.println("(PostComment load) Empty file or wrong class cast");
         }
+        */
 
         Handler handler = new Handler(
                 Server.userStore,
@@ -89,7 +91,7 @@ public class Server {
         get("/users/:id/", (req, res) -> handler.getUser(req), gson::toJson);
 
         // Creates a new user
-        // curl -d "name=Tony" -X post localhost:9999/users/
+        // curl -d "name=Tony" -X post localhost:4321/users/
         post("/users/", (req, res) -> handler.createUser(req) );
 
         // Update the user. Needs a lot of options.
@@ -106,45 +108,45 @@ public class Server {
         // USER RELATION ROUTES
         ///////////////////////
 
-            // curl -d "curUser=2" -X post localhost:9999/users/0/subscribe/
+            // curl -d "uid=2" -X post localhost:4321/users/0/subscribe/
             post( "/users/:id/subscribe/", (req,res) -> handler.subscribe(req), gson::toJson );
 
-            // curl -d "curUser=2" -X post localhost:9999/users/0/unsubscribe/
+            // curl -d "uid=2" -X post localhost:4321/users/0/unsubscribe/
             post( "/users/:id/unsubscribe/", (req,res) -> handler.unsubscribe(req), gson::toJson );
 
-            // curl -d "curUser=2" -X post localhost:9999/users/0/follow/
+            // curl -d "uid=2" -X post localhost:4321/users/0/follow/
             post( "/users/:id/follow/", (req,res) -> handler.follow(req), gson::toJson );
 
-            // curl -d "curUser=2" -X post localhost:9999/users/0/unfollow/
+            // curl -d "uid=2" -X post localhost:4321/users/0/unfollow/
             post( "/users/:id/unfollow/", (req,res) -> handler.unfollow(req), gson::toJson );
 
         // POST ROUTES
         ////////////////////
 
         //  Returns post object
-        // curl localhost:9999/posts/0/
+        // curl localhost:4321/posts/0/
         get("/posts/:id/", (req, res) -> handler.getPost(req), gson::toJson);
 
         //  Creates a new post
-        // curl -d "curUser=0&contents=hello world" -X post localhost:9999/posts/
+        // curl -d "uid=0&contents=hello world" -X post localhost:4321/posts/
         post("/posts/", (req, res) -> handler.createPost(req));
 
         //  Deletes post given postID
-        // curl -X delete localhost:9999/posts/0
+        // curl -X delete localhost:4321/posts/0
         delete("/posts/:id/", (req, res) -> handler.deletePost(req));
 
         // returns feed if user is subscribed.
-        // curl -d "curUser=2" -X post localhost:9999/users/0/feed/
+        // curl -d "uid=2" -X post localhost:4321/users/0/feed/
         post( "/users/:id/feed/", (req,res) -> handler.getFeed(req), gson::toJson );
 
         // LIKES ROUTES
         ////////////////////
 
-        // curl localhost:9999/posts/0/like/
+        // curl localhost:4321/posts/0/like/
         get("/posts/:postID/likes/", (req,res) -> handler.getLikes(req), gson::toJson);
 
         // Like, put request
-        // curl -d "curUser=0" -X post localhost:9999/posts/0/like/
+        // curl -d "uid=0" -X post localhost:4321/posts/0/like/
         post("/posts/:postID/likes/", (req, res) -> handler.likePost(req), gson::toJson);
 
         // COMMENTS ROUTES
@@ -152,12 +154,12 @@ public class Server {
         get("/posts/:postID/comments/", (req,res) -> handler.getComments(req), gson::toJson);
 
         // Comment, post for now, put request since we are updating something about the post??
-        // curl -d "curUser=1&content=ok post!" -X post localhost:9999/posts/0/comments/
+        // curl -d "uid=1&content=ok post!" -X post localhost:4321/posts/0/comments/
         post("/posts/:postID/comments/", (req, res) -> handler.createComment(req), gson::toJson);
 
 
         // Upload Image, which is createPost but imageID exists
-        // curl -d "userID=0&contents=hello world&imageID=0" -X post localhost:9999/posts/
+        // curl -d "userID=0&contents=hello world&imageID=0" -X post localhost:4321/posts/
         // uploadImage() will prompt user for a path
 
     }

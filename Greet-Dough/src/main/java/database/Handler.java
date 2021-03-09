@@ -81,18 +81,18 @@ public class Handler {
     // USER RELATION ACTIONS
     private Pair grabUserPair( Request req ) {
 
-        int curUser = Integer.parseInt( req.queryParams("curUser") );
+        int uid = Integer.parseInt( req.queryParams("uid") );
         int targetUser = Integer.parseInt( req.params(":id") );
 
-        if ( userStore.getUser(curUser) == null ) {
-            System.out.println("Current user "+curUser+" does not exist");
+        if ( userStore.getUser(uid) == null ) {
+            System.out.println("Current user "+uid+" does not exist");
             return null;
         }
         if ( userStore.getUser(targetUser) == null ) {
             System.out.println("Target user "+targetUser+" does not exist");
             return null;
         }
-        return new Pair(curUser, targetUser);
+        return new Pair(uid, targetUser);
 
     }
 
@@ -198,7 +198,7 @@ public class Handler {
 
     public Integer createPost( Request req ) {
 
-        int userID = Integer.parseInt( req.queryParams("curUser") );
+        int userID = Integer.parseInt( req.queryParams("uid") );
         String imageQuery = req.queryParams("imageID");
         String contentQuery = req.queryParams("contents");
         int imageID = (imageQuery != null) ? Integer.parseInt(imageQuery) : -1;
@@ -247,9 +247,9 @@ public class Handler {
 
     public List<Post> getFeed( Request req ) {
 
-        int curUser = Integer.parseInt( req.queryParams("curUser") );
+        int uid = Integer.parseInt( req.queryParams("uid") );
         int targetUser = Integer.parseInt( req.params(":id") );
-        List<Integer> curSubs = subStore.getSubscriptions(curUser);
+        List<Integer> curSubs = subStore.getSubscriptions(uid);
 
         if ( userStore.getUser(targetUser) == null ){
             System.out.println("Target user does not exist");
@@ -277,7 +277,7 @@ public class Handler {
         int postID = Integer.parseInt( req.params(":postID") );
         Likes postLikes = this.likeStore.getID( postID );
 
-        int userID = Integer.parseInt( req.queryParams("curUser") );
+        int userID = Integer.parseInt( req.queryParams("uid") );
 
         HashSet<Integer> userLikes = postLikes.getUserLikes();
 
@@ -305,7 +305,7 @@ public class Handler {
         int commentID = this.commentStore.getFreeID();
 
         int postID = Integer.parseInt( req.params(":postID") );
-        int userID = Integer.parseInt( req.queryParams("curUser") );
+        int userID = Integer.parseInt( req.queryParams("uid") );
         String contentQuery = req.queryParams("content");
 
         Comment newComment = new Comment( userID, contentQuery, commentID );
@@ -313,7 +313,7 @@ public class Handler {
         this.postCommentStore.addComment( postID, commentID );
 
         IOservice.saveObject( this.commentStore, "data/comments.txt" );
-        IOservice.saveObject( this.postCommentStore, "data/postsComments.txt");
+        IOservice.saveObject( this.postCommentStore, "data/postsComments.txt" );
         System.out.println( gson.toJson(newComment) );
 
         return 0;
@@ -326,8 +326,8 @@ public class Handler {
         List<Comment> comments = new ArrayList<>();
         List<Integer> commentIDs = this.postCommentStore.getComments(postID);
 
-        System.out.println( "Looking for postID: " + postID );
-        System.out.println( gson.toJson(commentIDs) );
+//        System.out.println( "Looking for postID: " + postID );
+//        System.out.println( gson.toJson(commentIDs) );
 
         for ( Integer ID : commentIDs ) {
             comments.add( this.commentStore.getComment(ID) );
