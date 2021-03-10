@@ -11,12 +11,18 @@ public class LikeStoreImpl extends StorageRetrieval<Likes> implements LikeStore 
     }
 
     @Override
-    public Likes getID(int ID) {return super.get(ID); }
+    public Likes getID(int ID) {
+        return super.get(ID);
+    }
 
     @Override
-    public void addLikes( Likes newLikes ) { super.add( newLikes.getPostID(), newLikes ); }
+    public void addLikes( Likes newLikes ) {
+        super.add( newLikes.getPostID(), newLikes );
+    }
 
     @Override
-    public void deleteLikes( Integer ID ) { super.delete( ID ); }
+    public void deleteLikes( Integer ID ) {
+        super.delete( ID );
+    }
 
 }

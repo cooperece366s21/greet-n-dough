@@ -320,11 +320,11 @@ public class Handler {
 
     }
 
-    public List<Comment> getComments( Request req ) {
+    public ArrayList<Comment> getComments( Request req ) {
 
         int postID = Integer.parseInt( req.params(":postID") );
-        List<Comment> comments = new ArrayList<>();
-        List<Integer> commentIDs = this.postCommentStore.getComments(postID);
+        ArrayList<Comment> comments = new ArrayList<>();
+        ArrayList<Integer> commentIDs = this.postCommentStore.getComments(postID);
 
 //        System.out.println( "Looking for postID: " + postID );
 //        System.out.println( gson.toJson(commentIDs) );

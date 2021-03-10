@@ -108,17 +108,17 @@ public class Server {
         // USER RELATION ROUTES
         ///////////////////////
 
-            // curl -d "uid=2" -X post localhost:4321/users/0/subscribe/
-            post( "/users/:id/subscribe/", (req,res) -> handler.subscribe(req), gson::toJson );
+        // curl -d "uid=2" -X post localhost:4321/users/0/subscribe/
+        post( "/users/:id/subscribe/", (req,res) -> handler.subscribe(req), gson::toJson );
 
-            // curl -d "uid=2" -X post localhost:4321/users/0/unsubscribe/
-            post( "/users/:id/unsubscribe/", (req,res) -> handler.unsubscribe(req), gson::toJson );
+        // curl -d "uid=2" -X post localhost:4321/users/0/unsubscribe/
+        post( "/users/:id/unsubscribe/", (req,res) -> handler.unsubscribe(req), gson::toJson );
 
-            // curl -d "uid=2" -X post localhost:4321/users/0/follow/
-            post( "/users/:id/follow/", (req,res) -> handler.follow(req), gson::toJson );
+        // curl -d "uid=2" -X post localhost:4321/users/0/follow/
+        post( "/users/:id/follow/", (req,res) -> handler.follow(req), gson::toJson );
 
-            // curl -d "uid=2" -X post localhost:4321/users/0/unfollow/
-            post( "/users/:id/unfollow/", (req,res) -> handler.unfollow(req), gson::toJson );
+        // curl -d "uid=2" -X post localhost:4321/users/0/unfollow/
+        post( "/users/:id/unfollow/", (req,res) -> handler.unfollow(req), gson::toJson );
 
         // POST ROUTES
         ////////////////////
@@ -151,6 +151,7 @@ public class Server {
 
         // COMMENTS ROUTES
         /////////////////////
+
         get("/posts/:postID/comments/", (req,res) -> handler.getComments(req), gson::toJson);
 
         // Comment, post for now, put request since we are updating something about the post??
