@@ -1,11 +1,29 @@
 import com.google.gson.Gson;
-import store.impl.*;
-import store.relation.*;
-import store.model.*;
-import utility.IOservice;
 import database.Handler;
+import store.impl.CommentStoreImpl;
+import store.impl.ImageStoreImpl;
+import store.impl.LikeStoreImpl;
+import store.impl.PostStoreImpl;
+import store.impl.UserStoreImpl;
+import store.model.CommentStore;
+import store.model.FollowStore;
+import store.model.ImageStore;
+import store.model.LikeStore;
+import store.model.PostCommentStore;
+import store.model.PostStore;
+import store.model.SubStore;
+import store.model.UserStore;
+import store.relation.FollowStoreImpl;
+import store.relation.PostCommentStoreImpl;
+import store.relation.SubStoreImpl;
 
-import static spark.Spark.*;
+import static spark.Spark.delete;
+import static spark.Spark.get;
+import static spark.Spark.init;
+import static spark.Spark.initExceptionHandler;
+import static spark.Spark.port;
+import static spark.Spark.post;
+import static spark.Spark.put;
 
 public class Server {
 

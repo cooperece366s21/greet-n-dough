@@ -4,6 +4,12 @@ import store.model.SubStore;
 
 import java.util.ArrayList;
 
+// create table users
+// create table subscriptions ( ... foreign key blah(users) refers ...)
+// delete from users where id = 1 --> cascade the delete to anywhere this user was referenced
+// "soft delete" -- if deleting a user, set a boolean flag indicating the account is inactive
+// count subs --> select * from subs join users where user.active = true
+
 // Store subscriptions as ArrayList or HashMap?
 // A single user's subscriptions probably won't be so large that a linear search will take very long
 public class SubStoreImpl extends Relation implements SubStore {
