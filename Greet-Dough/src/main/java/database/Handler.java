@@ -306,7 +306,7 @@ public class Handler {
 
         int postID = Integer.parseInt( req.params(":postID") );
         int userID = Integer.parseInt( req.queryParams("uid") );
-        String contentQuery = req.queryParams("content");
+        String contentQuery = req.queryParams("contents");
 
         Comment newComment = new Comment( userID, contentQuery, commentID );
         this.commentStore.addComment( newComment );
