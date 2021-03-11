@@ -21,6 +21,11 @@ public class UserStoreImpl extends StoreWithID<User> implements UserStore {
     }
 
     @Override
+    public boolean hasUser( int ID ){
+        return super.has(ID);
+    }
+
+    @Override
     public void addUser( User newUser ) {
         super.add( newUser.getID(), newUser );
     }

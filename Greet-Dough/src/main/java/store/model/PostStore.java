@@ -8,6 +8,8 @@ public interface PostStore {
 
     Post getPost( int ID );
 
+    boolean hasPost( int ID );
+
     void addPost( Post newPost );
 
     boolean deletePost( int ID );

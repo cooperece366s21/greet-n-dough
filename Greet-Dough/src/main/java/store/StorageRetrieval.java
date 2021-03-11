@@ -25,6 +25,10 @@ public abstract class StorageRetrieval<T> implements Serializable {
         this.items.put( key, newItem );
     }
 
+    protected boolean has( int ID ) {
+        return this.items.containsKey(ID);
+    }
+
     // Returns:
     //      1   if successful
     //      0   if unsuccessful

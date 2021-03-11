@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import com.google.gson.Gson;
 import spark.Request;
+import spark.Response;
 
 public class Handler {
 
@@ -43,42 +44,7 @@ public class Handler {
 
     }
 
-    // USER ACTIONS
-    public User getUser( Request req ) {
-
-        int id = Integer.parseInt( req.params(":id") );
-        return this.userStore.getUser(id);
-
-    }
-
-    public Integer createUser( Request req ) {
-
-        User tempUser = new User( req.queryParams("name"), userStore.getFreeID() );
-        this.userStore.addUser( tempUser );
-        IOservice.saveObject(this.userStore, "data/users.txt");
-        System.out.println( "User Created: " + tempUser.getName() + ", " + tempUser.getID() );
-        return 0;
-
-    }
-
-    public Integer deleteUser( Request req ) {
-
-        int ID = Integer.parseInt( req.params(":id") );
-        User tempUser = this.userStore.getUser(ID);
-
-        if ( this.userStore.deleteUser(ID) ) {
-            System.out.println( gson.toJson(tempUser) );
-            IOservice.saveObject(this.userStore, "data/users.txt");
-        }
-        else{
-            return -1;
-        }
-
-        return 0;
-
-    }
-
-    // USER RELATION ACTIONS
+    // PRIVATE HELPER FUNCTIONS
     private Pair grabUserPair( Request req ) {
 
         int uid = Integer.parseInt( req.queryParams("uid") );
@@ -96,17 +62,92 @@ public class Handler {
 
     }
 
-    public Integer subscribe( Request req ) {
+    private int checkUserPostPerms( int uid, int pid ) {
 
-        Pair userPair = this.grabUserPair(req);
-        if ( userPair == null ) {
+        if( !postStore.hasPost(pid) ) {
+            System.out.println("Post does not exist");
+            return 404;
+        }
+
+        if( !userStore.hasUser(uid) ) {
+            System.out.println("User does not exist");
+            return 404;
+        }
+
+
+        ArrayList<Integer> subs = subStore.getSubscriptions(uid);
+        int tuid = postStore.getPost(pid).getUserID();
+
+        return ( (subs != null) && (subs.contains(tuid)) ? 200 : 403 );
+
+    }
+
+    // USER ACTIONS
+    public User getUser( Request req, Response res ) {
+
+        int uid = Integer.parseInt( req.params(":id") );
+
+        if( userStore.hasUser(uid) ) {
+            res.status(200);
+            return userStore.getUser(uid);
+        } else {
+            res.status(404);
             return null;
         }
+
+    }
+
+    public Integer createUser( Request req, Response res ) {
+
+        User tempUser = new User( req.queryParams("name"), userStore.getFreeID() );
+        this.userStore.addUser( tempUser );
+
+        IOservice.saveObject(this.userStore, "data/users.txt");
+        System.out.println( "User Created: " + tempUser.getName() + ", " + tempUser.getID() );
+
+        res.status(200);
+        return 0;
+
+    }
+
+    public int deleteUser( Request req, Response res ) {
+
+        int uid = Integer.parseInt( req.params(":id") );
+        User tempUser = this.userStore.getUser(uid);
+
+        if ( this.userStore.deleteUser(uid) ) {
+
+            System.out.println( gson.toJson(tempUser) );
+            IOservice.saveObject(this.userStore, "data/users.txt");
+            res.status(200);
+            return 200;
+
+        } else {
+
+            res.status(404);
+            return 404;
+
+        }
+
+    }
+
+    // USER RELATION ACTIONS
+
+    public int subscribe( Request req, Response res ) {
+
+        Pair userPair = this.grabUserPair(req);
+
+        if ( userPair == null ) {
+            res.status(404);
+            return 404;
+        }
+
         List<Integer> curSubs = subStore.getSubscriptions(userPair.getLeft());
 
         if ( curSubs != null && curSubs.contains( userPair.getRight() ) ) {
             System.out.println("Current User already is subscribed");
-            return null;
+            res.status(404);
+            return 404;
         }
 
         subStore.addSubscription( userPair.getLeft(), userPair.getRight() );
@@ -117,17 +158,20 @@ public class Handler {
 
     }
 
-    public Integer unsubscribe( Request req ) {
+    public int unsubscribe( Request req, Response res ) {
 
         Pair userPair = this.grabUserPair(req);
         if ( userPair == null ) {
-            return null;
+            res.status(404);
+            return 404;
         }
+
         List<Integer> curSubs = subStore.getSubscriptions( userPair.getLeft() );
 
         if ( curSubs == null ) {
             System.out.println("User not subscribed to anyone");
-            return null;
+            res.status(404);
+            return 404;
         }
 
         if ( !curSubs.contains(userPair.getRight()) ) {
@@ -137,10 +181,11 @@ public class Handler {
         subStore.removeSubscription( userPair.getLeft(), userPair.getRight() );
         IOservice.saveObject(subStore, "data/subs.txt");
         System.out.println( subStore.getSubscriptions(userPair.getRight()) );
-
+        res.status(200);
         return 0;
     }
 
+/*
     public Integer follow( Request req ) {
 
         Pair userPair = this.grabUserPair(req);
@@ -188,23 +233,39 @@ public class Handler {
 
     }
 
-    // POST ACTIONS
-    public Post getPost( Request req ) {
+ */
 
-        int ID = Integer.parseInt( req.params(":id") );
-        return this.postStore.getPost(ID);
+    // POST ACTIONS
+    public Post getPost( Request req, Response res ) {
+
+        int pid = Integer.parseInt( req.params(":id") );
+
+        if ( postStore.hasPost(pid) ){
+            res.status(200);
+            System.out.println("Post does not exist");
+            return this.postStore.getPost(pid);
+        } else {
+            res.status(404);
+            return null;
+        }
 
     }
 
-    public Integer createPost( Request req ) {
+    public int createPost( Request req, Response res ) {
 
-        int userID = Integer.parseInt( req.queryParams("uid") );
+        int uid = Integer.parseInt( req.queryParams("uid") );
         String imageQuery = req.queryParams("imageID");
         String contentQuery = req.queryParams("contents");
         int imageID = (imageQuery != null) ? Integer.parseInt(imageQuery) : -1;
 
+        if( !userStore.hasUser(uid) ) {
+            res.status(404);
+            System.out.println("User does not exist");
+            return 404;
+        }
+
         int postID = postStore.getFreeID();
-        Post tempPost = new Post( contentQuery, postID, userID, imageID );
+        Post tempPost = new Post( contentQuery, postID, uid, imageID );
 
 //        Image imagePath = new Image(postID, userID);
 //        ImageStore.moveImage(imagePath);
@@ -212,19 +273,19 @@ public class Handler {
         this.postStore.addPost( tempPost );
         IOservice.saveObject( this.postStore, "data/posts.txt" );
 
-        Likes tempLike = new Likes(postID, userID);
+        Likes tempLike = new Likes(postID, uid);
         this.likeStore.addLikes( tempLike );
 
         System.out.println( gson.toJson(tempPost) );
 
 //        IOservice.saveObject( this.imageStore, "data/posts.txt" );
 //        System.out.println( gson.toJson(imagePath) );
-
-        return 0;
+        res.status(200);
+        return 200;
 
     }
 
-    public Integer deletePost( Request req ) {
+    public Integer deletePost( Request req, Response res ) {
 
         int postID = Integer.parseInt( req.params(":id") );
         Post tempPost = this.postStore.getPost(postID);
@@ -238,89 +299,110 @@ public class Handler {
             IOservice.saveObject (this.postCommentStore, "data/postsComments.txt");
             IOservice.saveObject (this.likeStore, "data/likes.txt");
             System.out.println( gson.toJson(tempPost) );
+
         } else {
-            return -1;
+            res.status(404);
+            return 404;
         }
 
-        return 0;
+        res.status(200);
+        return 200;
+
     }
 
-    public List<Post> getFeed( Request req ) {
+    public List<Post> getFeed( Request req, Response res ) {
 
         int uid = Integer.parseInt( req.queryParams("uid") );
-        int targetUser = Integer.parseInt( req.params(":id") );
+        int tuid = Integer.parseInt( req.params(":id") );
         List<Integer> curSubs = subStore.getSubscriptions(uid);
 
-        if ( userStore.getUser(targetUser) == null ){
-            System.out.println("Target user does not exist");
+        if ( !userStore.hasUser(uid) || !userStore.hasUser(tuid) ) {
+            res.status(404);
             return null;
         }
 
-        if ( (curSubs == null) || (!curSubs.contains(targetUser)) ){
+        if ( (curSubs == null) || (!curSubs.contains(tuid)) ){
             System.out.println("Current user does not have permission to this feed");
+            res.status(403);
             return null;
         }
 
-        return postStore.makeFeed(targetUser);
+        return postStore.makeFeed(tuid);
 
     }
 
-    public Likes getLikes( Request req ) {
+    public Likes getLikes( Request req, Response res ) {
 
-        int postID = Integer.parseInt( req.params(":postID") );
-        return this.likeStore.getID( postID );
+        int uid = Integer.parseInt( req.queryParams("uid") );
+        int pid = Integer.parseInt( req.params(":postID") );
+        int status = checkUserPostPerms(uid, pid);
+        res.status(status);
 
-    }
-
-    public Integer likePost( Request req ) {
-
-        int postID = Integer.parseInt( req.params(":postID") );
-        Likes postLikes = this.likeStore.getID( postID );
-
-        int userID = Integer.parseInt( req.queryParams("uid") );
-
-        HashSet<Integer> userLikes = postLikes.getUserLikes();
-
-        // Check list of users, if user already liked
-        // If user did not like
-        //      Add 1 to the like count
-        //      Add user to userLikes
-        // Otherwise
-        //      Subtract 1 from like count
-        //      Remove user from userLikes
-        if ( userLikes.contains(userID) ) {
-            postLikes.decrementLike(userID);
-        } else {
-            postLikes.incrementLike(userID);
+        if (res.status() == 200) {
+            return this.likeStore.getID(pid);
         }
 
-        IOservice.saveObject( this.likeStore, "data/likes.txt" );
-        System.out.println( gson.toJson(postLikes) );
-        return 0;
+        System.out.println("Error code: " + res.status() );
+        return null;
 
     }
 
-    public Integer createComment( Request req ) {
+    public Integer likePost( Request req, Response res ) {
+
+        int pid = Integer.parseInt( req.params(":postID") );
+        int uid = Integer.parseInt( req.queryParams("uid") );
+        int status = checkUserPostPerms(uid, pid);
+        Likes postLikes = this.likeStore.getID( pid );
+        res.status(status);
+
+        if ( res.status()==200 ) {
+
+            HashSet<Integer> userLikes = postLikes.getUserLikes();
+
+            if ( !userLikes.contains(uid) ) {
+                postLikes.incrementLike(uid);
+                IOservice.saveObject( this.likeStore, "data/likes.txt" );
+                System.out.println( gson.toJson(postLikes) );
+            }
+
+        } else {
+            System.out.println("Error code: " + res.status());
+        }
+
+        return res.status();
+
+    }
+
+    public Integer createComment( Request req, Response res ) {
 
         int commentID = this.commentStore.getFreeID();
-
-        int postID = Integer.parseInt( req.params(":postID") );
-        int userID = Integer.parseInt( req.queryParams("uid") );
+        int pid = Integer.parseInt( req.params(":postID") );
+        int uid = Integer.parseInt( req.queryParams("uid") );
         String contentQuery = req.queryParams("contents");
+        int status = checkUserPostPerms(uid, pid);
 
-        Comment newComment = new Comment( userID, contentQuery, commentID );
-        this.commentStore.addComment( newComment );
-        this.postCommentStore.addComment( postID, commentID );
+        if ( res.status() == 200 ){
 
-        IOservice.saveObject( this.commentStore, "data/comments.txt" );
-        IOservice.saveObject( this.postCommentStore, "data/postsComments.txt" );
-        System.out.println( gson.toJson(newComment) );
+            Comment newComment = new Comment( uid, contentQuery, commentID );
+            this.commentStore.addComment( newComment );
+            this.postCommentStore.addComment( pid, commentID );
 
-        return 0;
+            IOservice.saveObject( this.commentStore, "data/comments.txt" );
+            IOservice.saveObject( this.postCommentStore, "data/postsComments.txt" );
+            System.out.println( gson.toJson(newComment) );
+
+        } else {
+            System.out.println("Error code: " + res.status());
+        }
+
+        return res.status();
+
+
 
     }
 
-    public ArrayList<Comment> getComments( Request req ) {
+    // havent checked permissions for this yet
+    public ArrayList<Comment> getComments( Request req, Response res ) {
 
         int postID = Integer.parseInt( req.params(":postID") );
         ArrayList<Comment> comments = new ArrayList<>();

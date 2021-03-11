@@ -88,75 +88,67 @@ public class Server {
         /////////////////
 
         // Returns user given an id
-        get("/users/:id/", (req, res) -> handler.getUser(req), gson::toJson);
+        get("/users/:id/", handler::getUser, gson::toJson);
 
         // Creates a new user
         // curl -d "name=Tony" -X post localhost:4321/users/
-        post("/users/", (req, res) -> handler.createUser(req) );
-
-        // Update the user. Needs a lot of options.
-        put("/users/:id/", (req, res) -> {
-
-            int id = Integer.parseInt(req.params(":id"));
-            return "Updating a user: " + id;
-
-        });
+        post("/users/", handler::createUser, gson::toJson );
 
         // Deletes user given UserID
-        delete("/users/:id/", (req, res) -> handler.deleteUser(req));
+        delete("/users/:id/", handler::deleteUser, gson::toJson);
         
         // USER RELATION ROUTES
         ///////////////////////
 
         // curl -d "uid=2" -X post localhost:4321/users/0/subscribe/
-        post( "/users/:id/subscribe/", (req,res) -> handler.subscribe(req), gson::toJson );
+        post( "/users/:id/subscribe/", handler::subscribe, gson::toJson );
 
         // curl -d "uid=2" -X post localhost:4321/users/0/unsubscribe/
-        post( "/users/:id/unsubscribe/", (req,res) -> handler.unsubscribe(req), gson::toJson );
+        post( "/users/:id/unsubscribe/", handler::unsubscribe, gson::toJson );
 
-        // curl -d "uid=2" -X post localhost:4321/users/0/follow/
-        post( "/users/:id/follow/", (req,res) -> handler.follow(req), gson::toJson );
-
-        // curl -d "uid=2" -X post localhost:4321/users/0/unfollow/
-        post( "/users/:id/unfollow/", (req,res) -> handler.unfollow(req), gson::toJson );
+//        // curl -d "uid=2" -X post localhost:4321/users/0/follow/
+//        post( "/users/:id/follow/", (req,res) -> handler.follow(req), gson::toJson );
+//
+//        // curl -d "uid=2" -X post localhost:4321/users/0/unfollow/
+//        post( "/users/:id/unfollow/", (req,res) -> handler.unfollow(req), gson::toJson );
 
         // POST ROUTES
         ////////////////////
 
         //  Returns post object
         // curl localhost:4321/posts/0/
-        get("/posts/:id/", (req, res) -> handler.getPost(req), gson::toJson);
+        get("/posts/:id/", handler::getPost, gson::toJson);
 
         //  Creates a new post
         // curl -d "uid=0&contents=hello world" -X post localhost:4321/posts/
-        post("/posts/", (req, res) -> handler.createPost(req));
+        post("/posts/", handler::createPost, gson::toJson);
 
         //  Deletes post given postID
         // curl -X delete localhost:4321/posts/0
-        delete("/posts/:id/", (req, res) -> handler.deletePost(req));
+        delete("/posts/:id/", handler::deletePost, gson::toJson);
 
         // returns feed if user is subscribed.
         // curl -d "uid=2" -X post localhost:4321/users/0/feed/
-        post( "/users/:id/feed/", (req,res) -> handler.getFeed(req), gson::toJson );
+        post( "/users/:id/feed/", handler::getFeed, gson::toJson );
 
         // LIKES ROUTES
         ////////////////////
 
         // curl localhost:4321/posts/0/likes/
-        get("/posts/:postID/likes/", (req,res) -> handler.getLikes(req), gson::toJson);
+        post("/posts/:postID/likes/", handler::getLikes, gson::toJson);
 
         // Like, put request
-        // curl -d "uid=0" -X post localhost:4321/posts/0/likes/
-        post("/posts/:postID/likes/", (req, res) -> handler.likePost(req), gson::toJson);
+        // curl -d "uid=0" -X post localhost:4321/posts/0/addLike/
+        post("/posts/:postID/addLike/", handler::likePost, gson::toJson);
 
         // COMMENTS ROUTES
         /////////////////////
 
-        get("/posts/:postID/comments/", (req,res) -> handler.getComments(req), gson::toJson);
+        get("/posts/:postID/comments/", handler::getComments, gson::toJson);
 
         // Comment, post for now, put request since we are updating something about the post??
         // curl -d "uid=1&contents=ok post!" -X post localhost:4321/posts/0/comments/
-        post("/posts/:postID/comments/", (req, res) -> handler.createComment(req), gson::toJson);
+        post("/posts/:postID/comments/", handler::createComment, gson::toJson);
 
 
         // Upload Image, which is createPost but imageID exists
