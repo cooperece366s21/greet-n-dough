@@ -128,8 +128,8 @@ public class Server {
         delete("/posts/:id/", handler::deletePost, gson::toJson);
 
         // returns feed if user is subscribed.
-        // curl -d "uid=2" -X post localhost:4321/users/0/feed/
-        post( "/users/:id/feed/", handler::getFeed, gson::toJson );
+        // curl -G -d "uid=1" -X post localhost:4321/users/0/feed/
+        get("/users/:id/feed/", handler::getFeed, gson::toJson );
 
         // LIKES ROUTES
         ////////////////////
