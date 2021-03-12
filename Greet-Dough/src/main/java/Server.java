@@ -134,8 +134,8 @@ public class Server {
         // LIKES ROUTES
         ////////////////////
 
-        // curl localhost:4321/posts/0/likes/
-        post("/posts/:postID/likes/", handler::getLikes, gson::toJson);
+        // curl -G -d "uid=1" localhost:4321/posts/0/likes/
+        get("/posts/:postID/likes/", handler::getLikes, gson::toJson);
 
         // Like, put request
         // curl -d "uid=0" -X post localhost:4321/posts/0/addLike/
@@ -144,6 +144,7 @@ public class Server {
         // COMMENTS ROUTES
         /////////////////////
 
+        // curl -G -d "uid=1" localhost:4321/posts/0/comments/
         get("/posts/:postID/comments/", handler::getComments, gson::toJson);
 
         // Comment, post for now, put request since we are updating something about the post??

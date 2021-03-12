@@ -380,6 +380,7 @@ public class Handler {
         int uid = Integer.parseInt( req.queryParams("uid") );
         String contentQuery = req.queryParams("contents");
         int status = checkUserPostPerms(uid, pid);
+        res.status(status);
 
         if ( res.status() == 200 ){
 
@@ -396,29 +397,30 @@ public class Handler {
         }
 
         return res.status();
-
-
-
     }
 
     // havent checked permissions for this yet
     public ArrayList<Comment> getComments( Request req, Response res ) {
 
-        int postID = Integer.parseInt( req.params(":postID") );
+        int pid = Integer.parseInt( req.params(":postID") );
+        int uid = Integer.parseInt( req.queryParams("uid") );
+        int status = checkUserPostPerms(uid, pid);
         ArrayList<Comment> comments = new ArrayList<>();
-        ArrayList<Integer> commentIDs = this.postCommentStore.getComments(postID);
+        res.status(status);
 
-//        System.out.println( "Looking for postID: " + postID );
-//        System.out.println( gson.toJson(commentIDs) );
+        if ( res.status() == 200 ) {
 
-        for ( Integer ID : commentIDs ) {
-            comments.add( this.commentStore.getComment(ID) );
+            ArrayList<Integer> commentIDs = this.postCommentStore.getComments(pid);
+            for ( Integer ID : commentIDs ) {
+                comments.add( this.commentStore.getComment(ID) );
+            }
+
+        } else {
+            System.out.println("Error code: " + res.status());
         }
 
         return comments;
-
     }
-
 }
 
 
