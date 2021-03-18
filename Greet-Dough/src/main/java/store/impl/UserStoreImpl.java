@@ -31,6 +31,19 @@ public class UserStoreImpl extends StoreWithID<User> implements UserStore {
     }
 
     @Override
+    public User addUser( String name ) {
+
+        // Create the user
+        int userID = super.getFreeID();
+        User tempUser = new User( name, userID );
+
+        // Add the user
+        this.addUser( tempUser );
+        return tempUser;
+
+    }
+
+    @Override
     public boolean deleteUser( int ID ) {
         return super.delete(ID);
     }

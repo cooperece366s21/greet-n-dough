@@ -32,6 +32,24 @@ public class PostStoreImpl extends StoreWithID<Post> implements PostStore {
         super.add( newPost.getID(), newPost );
     }
 
+    @Override
+    public Post addPost( String contents, int userID ) {
+        return this.addPost( contents, userID, -1 );
+    }
+
+    @Override
+    public Post addPost( String contents, int userID, int imageID ) {
+
+        // Create the post
+        int postID = super.getFreeID();
+        Post tempPost = new Post( contents, postID, userID, imageID );
+
+        // Add the post
+        this.addPost( tempPost );
+        return tempPost;
+
+    }
+
     // Later on, check if user owns the post before deleting
     @Override
     public boolean deletePost( int ID ) {

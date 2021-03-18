@@ -97,10 +97,10 @@ public class Handler {
 
     public Integer createUser( Request req, Response res ) {
 
-        User tempUser = new User( req.queryParams("name"), userStore.getFreeID() );
-        this.userStore.addUser( tempUser );
+        String name = req.queryParams("name");
+        User tempUser = userStore.addUser(name);
 
-        IOservice.saveObject(this.userStore, "data/users.txt");
+        IOservice.saveObject(userStore, "data/users.txt");
         System.out.println( "User Created: " + tempUser.getName() + ", " + tempUser.getID() );
 
         res.status(200);
@@ -111,12 +111,12 @@ public class Handler {
     public int deleteUser( Request req, Response res ) {
 
         int uid = Integer.parseInt( req.params(":id") );
-        User tempUser = this.userStore.getUser(uid);
+        User tempUser = userStore.getUser(uid);
 
-        if ( this.userStore.deleteUser(uid) ) {
+        if ( userStore.deleteUser(uid) ) {
 
             System.out.println( gson.toJson(tempUser) );
-            IOservice.saveObject(this.userStore, "data/users.txt");
+            IOservice.saveObject(userStore, "data/users.txt");
             res.status(200);
             return 200;
 
@@ -167,9 +167,11 @@ public class Handler {
         List<Integer> curSubs = subStore.getSubscriptions( userPair.getLeft() );
 
         if ( curSubs == null ) {
+
             System.out.println("User not subscribed to anyone");
             res.status(404);
             return 404;
+
         }
 
         if ( !curSubs.contains(userPair.getRight()) ) {
@@ -181,6 +183,7 @@ public class Handler {
         System.out.println( subStore.getSubscriptions(userPair.getRight()) );
         res.status(200);
         return 0;
+
     }
 
 /*
@@ -238,10 +241,12 @@ public class Handler {
 
         int pid = Integer.parseInt( req.params(":id") );
 
-        if ( postStore.hasPost(pid) ){
+        if ( postStore.hasPost(pid) ) {
+
             res.status(200);
             System.out.println("Post does not exist");
-            return this.postStore.getPost(pid);
+            return postStore.getPost(pid);
+
         } else {
             res.status(404);
             return null;
@@ -257,21 +262,20 @@ public class Handler {
         int imageID = (imageQuery != null) ? Integer.parseInt(imageQuery) : -1;
 
         if( !userStore.hasUser(uid) ) {
+
             res.status(404);
             System.out.println("User does not exist");
             return 404;
+
         }
 
-        int postID = postStore.getFreeID();
-        Post tempPost = new Post( contentQuery, postID, uid, imageID );
+        Post tempPost = postStore.addPost( contentQuery, uid, imageID );
+        IOservice.saveObject( postStore, "data/posts.txt" );
 
 //        Image imagePath = new Image(postID, userID);
 //        ImageStore.moveImage(imagePath);
 
-        this.postStore.addPost( tempPost );
-        IOservice.saveObject( this.postStore, "data/posts.txt" );
-
-        Likes tempLike = new Likes(postID, uid);
+        Likes tempLike = new Likes( tempPost.getID(), uid );
         this.likeStore.addLikes( tempLike );
 
         System.out.println( gson.toJson(tempPost) );
@@ -286,16 +290,16 @@ public class Handler {
     public Integer deletePost( Request req, Response res ) {
 
         int postID = Integer.parseInt( req.params(":id") );
-        Post tempPost = this.postStore.getPost(postID);
+        Post tempPost = postStore.getPost( postID );
 
-        if ( this.postStore.deletePost( postID ) ) {
+        if ( postStore.deletePost( postID ) ) {
 
-            this.postCommentStore.deletePost( postID );
-            this.likeStore.deleteLikes( postID );
+            postCommentStore.deletePost( postID );
+            likeStore.deleteLikes( postID );
 
-            IOservice.saveObject (this.postStore, "data/posts.txt" );
-            IOservice.saveObject (this.postCommentStore, "data/postsComments.txt");
-            IOservice.saveObject (this.likeStore, "data/likes.txt");
+            IOservice.saveObject (postStore, "data/posts.txt" );
+            IOservice.saveObject (postCommentStore, "data/postsComments.txt");
+            IOservice.saveObject (likeStore, "data/likes.txt");
             System.out.println( gson.toJson(tempPost) );
 
         } else {
@@ -319,10 +323,12 @@ public class Handler {
             return null;
         }
 
-        if ( (curSubs == null) || (!curSubs.contains(tuid)) ){
+        if ( (curSubs == null) || (!curSubs.contains(tuid)) ) {
+
             System.out.println("Current user does not have permission to this feed");
             res.status(403);
             return null;
+
         }
 
         return postStore.makeFeed(tuid);
@@ -336,8 +342,8 @@ public class Handler {
         int status = checkUserPostPerms(uid, pid);
         res.status(status);
 
-        if (res.status() == 200) {
-            return this.likeStore.getID(pid);
+        if ( res.status() == 200 ) {
+            return likeStore.getID(pid);
         }
 
         System.out.println("Error code: " + res.status() );
@@ -350,7 +356,7 @@ public class Handler {
         int pid = Integer.parseInt( req.params(":postID") );
         int uid = Integer.parseInt( req.queryParams("uid") );
         int status = checkUserPostPerms(uid, pid);
-        Likes postLikes = this.likeStore.getID( pid );
+        Likes postLikes = likeStore.getID( pid );
         res.status(status);
 
         if ( res.status()==200 ) {
@@ -358,9 +364,11 @@ public class Handler {
             HashSet<Integer> userLikes = postLikes.getUserLikes();
 
             if ( !userLikes.contains(uid) ) {
+
                 postLikes.incrementLike(uid);
-                IOservice.saveObject( this.likeStore, "data/likes.txt" );
+                IOservice.saveObject( likeStore, "data/likes.txt" );
                 System.out.println( gson.toJson(postLikes) );
+
             }
 
         } else {
@@ -373,7 +381,7 @@ public class Handler {
 
     public Integer createComment( Request req, Response res ) {
 
-        int commentID = this.commentStore.getFreeID();
+        int commentID = commentStore.getFreeID();
         int pid = Integer.parseInt( req.params(":postID") );
         int uid = Integer.parseInt( req.queryParams("uid") );
         String contentQuery = req.queryParams("contents");
@@ -383,11 +391,11 @@ public class Handler {
         if ( res.status() == 200 ){
 
             Comment newComment = new Comment( uid, contentQuery, commentID );
-            this.commentStore.addComment( newComment );
-            this.postCommentStore.addComment( pid, commentID );
+            commentStore.addComment( newComment );
+            postCommentStore.addComment( pid, commentID );
 
-            IOservice.saveObject( this.commentStore, "data/comments.txt" );
-            IOservice.saveObject( this.postCommentStore, "data/postsComments.txt" );
+            IOservice.saveObject( commentStore, "data/comments.txt" );
+            IOservice.saveObject( postCommentStore, "data/postsComments.txt" );
             System.out.println( gson.toJson(newComment) );
 
         } else {
@@ -408,9 +416,9 @@ public class Handler {
 
         if ( res.status() == 200 ) {
 
-            ArrayList<Integer> commentIDs = this.postCommentStore.getComments(pid);
+            ArrayList<Integer> commentIDs = postCommentStore.getComments(pid);
             for ( Integer ID : commentIDs ) {
-                comments.add( this.commentStore.getComment(ID) );
+                comments.add( commentStore.getComment(ID) );
             }
 
         } else {
@@ -419,6 +427,7 @@ public class Handler {
 
         return comments;
     }
+
 }
 
 

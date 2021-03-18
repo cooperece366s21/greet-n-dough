@@ -12,6 +12,10 @@ public interface PostStore {
 
     void addPost( Post newPost );
 
+    Post addPost( String contents, int userID );
+
+    Post addPost( String contents, int userID, int imageID );
+
     boolean deletePost( int ID );
 
     List<Post> makeFeed( int userID );
