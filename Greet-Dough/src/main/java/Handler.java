@@ -49,12 +49,16 @@ public class Handler {
         int targetUser = Integer.parseInt( req.params(":id") );
 
         if ( userStore.getUser(uid) == null ) {
+
             System.out.println("Current user "+uid+" does not exist");
             return null;
+
         }
         if ( userStore.getUser(targetUser) == null ) {
+
             System.out.println("Target user "+targetUser+" does not exist");
             return null;
+
         }
         return new Pair(uid, targetUser);
 
@@ -62,14 +66,18 @@ public class Handler {
 
     private int checkUserPostPerms( int uid, int pid ) {
 
-        if( !postStore.hasPost(pid) ) {
+        if ( !postStore.hasPost(pid) ) {
+
             System.out.println("Post does not exist");
             return 404;
+
         }
 
-        if( !userStore.hasUser(uid) ) {
+        if ( !userStore.hasUser(uid) ) {
+
             System.out.println("User does not exist");
             return 404;
+
         }
 
 
@@ -85,12 +93,16 @@ public class Handler {
 
         int uid = Integer.parseInt( req.params(":id") );
 
-        if( userStore.hasUser(uid) ) {
+        if ( userStore.hasUser(uid) ) {
+
             res.status(200);
             return userStore.getUser(uid);
+
         } else {
+
             res.status(404);
             return null;
+
         }
 
     }
@@ -136,16 +148,20 @@ public class Handler {
         Pair userPair = this.grabUserPair(req);
 
         if ( userPair == null ) {
+
             res.status(404);
             return 404;
+
         }
 
         List<Integer> curSubs = subStore.getSubscriptions(userPair.getLeft());
 
         if ( curSubs != null && curSubs.contains( userPair.getRight() ) ) {
+
             System.out.println("Current User already is subscribed");
             res.status(404);
             return 404;
+
         }
 
         subStore.addSubscription( userPair.getLeft(), userPair.getRight() );
@@ -160,8 +176,10 @@ public class Handler {
 
         Pair userPair = this.grabUserPair(req);
         if ( userPair == null ) {
+
             res.status(404);
             return 404;
+
         }
 
         List<Integer> curSubs = subStore.getSubscriptions( userPair.getLeft() );
@@ -248,8 +266,10 @@ public class Handler {
             return postStore.getPost(pid);
 
         } else {
+
             res.status(404);
             return null;
+
         }
 
     }
@@ -261,7 +281,7 @@ public class Handler {
         String contentQuery = req.queryParams("contents");
         int imageID = (imageQuery != null) ? Integer.parseInt(imageQuery) : -1;
 
-        if( !userStore.hasUser(uid) ) {
+        if ( !userStore.hasUser(uid) ) {
 
             res.status(404);
             System.out.println("User does not exist");
@@ -303,8 +323,10 @@ public class Handler {
             System.out.println( gson.toJson(tempPost) );
 
         } else {
+
             res.status(404);
             return 404;
+
         }
 
         res.status(200);
@@ -319,8 +341,10 @@ public class Handler {
         List<Integer> curSubs = subStore.getSubscriptions(uid);
 
         if ( !userStore.hasUser(uid) || !userStore.hasUser(tuid) ) {
+
             res.status(404);
             return null;
+
         }
 
         if ( (curSubs == null) || (!curSubs.contains(tuid)) ) {
@@ -356,7 +380,7 @@ public class Handler {
         int pid = Integer.parseInt( req.params(":postID") );
         int uid = Integer.parseInt( req.queryParams("uid") );
         int status = checkUserPostPerms(uid, pid);
-        Likes postLikes = likeStore.getID( pid );
+        Likes postLikes = likeStore.getID(pid);
         res.status(status);
 
         if ( res.status()==200 ) {
