@@ -6,7 +6,7 @@
     width:100%;
     height:8%;
     overflow: hidden;
-    padding: 10px 10px;
+    padding: 10px 10px 10px 10px;
 }
 
 .inner{  /* To split up the header into 3 parts */
@@ -23,12 +23,12 @@
 }
 
 .mid{
-    width:60%;
+    width:55%;
     /*background-color: lightgray;*/
 }
 
 .right{
-    width:20%;
+    width:25%;
     /*background-color: #ff8bd9;*/
 }
 
@@ -92,9 +92,10 @@
 .search_container{
     display: table;
     height: 100%;
-    float: right;
-    margin: 0 120px 0 0;
+    float: left;
+    margin-left: 50px;
 }
+
 .search{
     display:  table-cell;
     vertical-align: middle;
@@ -108,11 +109,10 @@
 }
 
 .user_container{
-    display: table;
+    display: block;
     height: 100%;
     float: left;
-    margin: 0 100px 0 0;
-
+    margin-right: 100px;
 }
 
 
