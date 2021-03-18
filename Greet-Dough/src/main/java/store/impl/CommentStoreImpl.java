@@ -24,4 +24,17 @@ public class CommentStoreImpl extends StoreWithID<Comment> implements CommentSto
         super.add( newComment.getID(), newComment );
     }
 
+    @Override
+    public Comment addComment( String contents, int uid ) {
+
+        // Create the comment
+        int commentID = super.getFreeID();
+        Comment tempComment = new Comment( contents, commentID, uid );
+
+        // Add the comment
+        this.addComment( tempComment );
+        return tempComment;
+
+    }
+
 }

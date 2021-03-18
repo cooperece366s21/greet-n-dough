@@ -7,7 +7,7 @@ public class Comment implements Serializable {
     private final int userID;
     private String content;
 
-    public Comment( int userID, String content, int commentID ) {
+    public Comment( String content, int commentID, int userID ) {
 
         this.ID = commentID;
         this.userID = userID;

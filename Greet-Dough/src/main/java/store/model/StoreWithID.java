@@ -18,7 +18,7 @@ public abstract class StoreWithID<T> extends StorageRetrieval<T> {
 
     }
 
-    public int getFreeID() {
+    protected int getFreeID() {
         return this.freeIDs.getAndIncrement();
     }
 

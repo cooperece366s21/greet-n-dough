@@ -381,18 +381,16 @@ public class Handler {
 
     public Integer createComment( Request req, Response res ) {
 
-        int commentID = commentStore.getFreeID();
         int pid = Integer.parseInt( req.params(":postID") );
         int uid = Integer.parseInt( req.queryParams("uid") );
         String contentQuery = req.queryParams("contents");
         int status = checkUserPostPerms(uid, pid);
         res.status(status);
 
-        if ( res.status() == 200 ){
+        if ( res.status() == 200 ) {
 
-            Comment newComment = new Comment( uid, contentQuery, commentID );
-            commentStore.addComment( newComment );
-            postCommentStore.addComment( pid, commentID );
+            Comment newComment = commentStore.addComment( contentQuery, uid );
+            postCommentStore.addComment( pid, newComment.getID() );
 
             IOservice.saveObject( commentStore, "data/comments.txt" );
             IOservice.saveObject( postCommentStore, "data/postsComments.txt" );

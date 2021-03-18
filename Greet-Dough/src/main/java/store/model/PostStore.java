@@ -20,6 +20,4 @@ public interface PostStore {
 
     List<Post> makeFeed( int userID );
 
-    int getFreeID();
-
 }

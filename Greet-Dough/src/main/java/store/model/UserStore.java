@@ -14,6 +14,4 @@ public interface UserStore {
 
     boolean deleteUser( int ID );
 
-    int getFreeID();
-
 }
