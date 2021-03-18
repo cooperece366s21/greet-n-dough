@@ -1,15 +1,26 @@
 package database;
 
-import model.*;
-import utility.*;
-import store.model.*;
+import com.google.gson.Gson;
+import model.Comment;
+import model.Likes;
+import model.Post;
+import model.User;
+import spark.Request;
+import spark.Response;
+import store.model.CommentStore;
+import store.model.FollowStore;
+import store.model.ImageStore;
+import store.model.LikeStore;
+import store.model.PostCommentStore;
+import store.model.PostStore;
+import store.model.SubStore;
+import store.model.UserStore;
+import utility.IOservice;
+import utility.Pair;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import com.google.gson.Gson;
-import spark.Request;
-import spark.Response;
 
 public class Handler {
 
@@ -32,7 +43,7 @@ public class Handler {
                     FollowStore followStore,
                     PostCommentStore postCommentStore
     ) {
-                       
+
         this.userStore = userStore;
         this.postStore = postStore;
         this.imageStore = imageStore;
@@ -383,8 +394,9 @@ public class Handler {
         res.status(status);
 
         if ( res.status() == 200 ){
+           Comment newComment = commentStore.addComment(uid, contentQuery);// --> store will (a) create comment object and (b) assign id
 
-            Comment newComment = new Comment( uid, contentQuery, commentID );
+//            Comment newComment = new Comment( uid, contentQuery, commentID );
             this.commentStore.addComment( newComment );
             this.postCommentStore.addComment( pid, commentID );
 

@@ -8,6 +8,8 @@ public interface CommentStore {
 
     void addComment( Comment newComment );
 
+    Comment addComment( int uid, String content );
+
     int getFreeID();
 
 }

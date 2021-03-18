@@ -8,6 +8,12 @@ public interface LikeStore {
 
     void addLikes( Likes newLikes );
 
+    // like
+    void like(int uid, int ID);
+
+    // dislike
+    void dislike(int uid, int ID);
+
     void deleteLikes( Integer ID );
 
 }
