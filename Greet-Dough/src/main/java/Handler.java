@@ -1,5 +1,3 @@
-package database;
-
 import model.*;
 import utility.*;
 import store.model.*;
