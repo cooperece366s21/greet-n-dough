@@ -1,0 +1,119 @@
+.header{
+    position:absolute;
+    display:block;
+    top:0;
+    background-color: #fff463;
+    width:100%;
+    height:8%;
+    overflow: hidden;
+    padding: 10px 10px;
+}
+
+.inner{  /* To split up the header into 3 parts */
+    display: table;
+    float: left;
+    height: 100%;
+    margin: 0 0;
+    padding: 0 0;
+}
+
+.left{
+    width:20%;
+        /*background-color: aqua;*/
+}
+
+.mid{
+    width:60%;
+    /*background-color: lightgray;*/
+}
+
+.right{
+    width:20%;
+    /*background-color: #ff8bd9;*/
+}
+
+.logo_container{
+    display: table;
+    float: left;
+    height: 100%;
+    padding-left: 30px;
+}
+
+.logo_container h1{
+    display: table-cell;
+    vertical-align: middle;
+    height: 100%;
+
+    color: #162404;
+    font-weight: bold;
+    font-size: 45px;
+}
+
+.table{
+    display: block;
+    height: 100%;
+    width: auto;
+    padding: 0 0;
+    margin: 0 0;
+    /*background-color: lightblue;*/
+}
+
+.cell{
+    display: table-cell;
+    height: 100%;
+    vertical-align: middle;
+}
+
+.table a{
+    display: table;
+    height: 100%;
+    float: left;
+    padding: 0 20px;
+    margin: 0 10px;
+}
+
+.table li{
+    display : table-cell;
+    vertical-align: middle;
+    text-decoration: none;
+    color: black;
+    font-size: 25px;
+    font-weight: 500;
+}
+
+.table a:hover{
+    color: red;
+}
+
+.table li:hover{
+    font-weight: 700;
+}
+
+.search_container{
+    display: table;
+    height: 100%;
+    float: right;
+    margin: 0 120px 0 0;
+}
+.search{
+    display:  table-cell;
+    vertical-align: middle;
+}
+
+.search input{
+    margin: auto;
+    height:30px;
+    border-radius: 30px;
+    text-align: center;
+}
+
+.user_container{
+    display: table;
+    height: 100%;
+    float: left;
+    margin: 0 100px 0 0;
+
+}
+
+
+
