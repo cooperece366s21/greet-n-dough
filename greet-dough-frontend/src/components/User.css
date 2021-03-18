@@ -1,0 +1,47 @@
+.User{
+    display: table;
+    height: 100%;
+    padding-right: 50px;
+    float:right;
+    /*background-color: dimgray;*/
+}
+
+.image-container{
+    display: table-cell;
+    vertical-align: middle;
+    height: 100%;
+    /*background-color: #61dafb;*/
+    padding: 0 20px 0 0;
+}
+
+.image-container img{
+    width:60px;
+    border-radius: 60px;
+}
+
+.text-container{
+    display: table-cell;
+    height: 100%;
+    /*background-color: red;*/
+}
+
+.welcome-container{
+    display: block;
+    /*background-color: lightblue;*/
+    font-size: 18px;
+}
+
+.bold{
+    font-weight: 600;
+}
+
+.logout-container{
+    display: block;
+    padding: 10px 0 0 0;
+    color: #29009a;
+    float: right;
+    cursor: pointer;
+
+    /*background-color: darkslategray;*/
+}
+

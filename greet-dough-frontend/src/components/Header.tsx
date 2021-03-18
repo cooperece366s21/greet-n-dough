@@ -1,5 +1,6 @@
 import React from 'react';
 import './Header.css';
+import User from './User';
 
 function Header() {
 
@@ -29,13 +30,7 @@ function Header() {
                 </div>
 
                 <div className="inner right">
-                    <div className="table">
-                        <div className="user_container">
-                            <div className="cell">
-                                USER OBJECT HERE
-                            </div>
-                        </div>
-                    </div>
+                    <User/>
                 </div>
 
             </div>
