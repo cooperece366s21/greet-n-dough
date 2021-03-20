@@ -1,5 +1,13 @@
 import React from 'react';
-import './User.css'
+import './User.css';
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Link
+} from "react-router-dom";
+
+
 
 function User() {
     const isLoggedIn = checkIfLogged()
@@ -7,6 +15,7 @@ function User() {
 
 
     if ( isLoggedIn ) return (
+
         <div className="User">
 
             <div className="image-container">
@@ -26,11 +35,33 @@ function User() {
 
             </div>
 
-
         </div>
+
     );
     else return (
         <div className="User">
+
+            <div className="text-container">
+
+                <div className="welcome-container">
+                    <span className="bold"> User not logged in </span>
+                </div>
+
+                <div className="logout-container">
+
+
+                        <span style={{ marginRight: "20px" }}>
+                            <Link to="/login"> Login </Link>
+                        </span>
+
+                        <span>
+                            <Link to="/register"> Register </Link>
+                        </span>
+
+                </div>
+
+            </div>
+
 
         </div>
     );
@@ -38,11 +69,12 @@ function User() {
 
 function checkIfLogged(){
     // API code to check if someone is logged in here!
-    return true;
+    return false;
 }
 
 function logout(){
     alert("Logging out!");
 }
+
 
 export default User;

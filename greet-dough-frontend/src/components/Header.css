@@ -1,5 +1,5 @@
 .header{
-    position:absolute;
+    position:relative;
     display:block;
     top:0;
     background-color: #fff463;
@@ -24,6 +24,7 @@
 
 .mid{
     width:55%;
+    margin-top: 15px;
     /*background-color: lightgray;*/
 }
 
@@ -49,7 +50,7 @@
     font-size: 45px;
 }
 
-.table{
+.navigation{
     display: block;
     height: 100%;
     width: auto;
@@ -64,7 +65,7 @@
     vertical-align: middle;
 }
 
-.table a{
+.navigation a{
     display: table;
     height: 100%;
     float: left;
@@ -72,7 +73,7 @@
     margin: 0 10px;
 }
 
-.table li{
+.navigation li{
     display : table-cell;
     vertical-align: middle;
     text-decoration: none;
@@ -81,12 +82,8 @@
     font-weight: 500;
 }
 
-.table a:hover{
+.navigation a:hover{
     color: red;
-}
-
-.table li:hover{
-    font-weight: 700;
 }
 
 .search_container{

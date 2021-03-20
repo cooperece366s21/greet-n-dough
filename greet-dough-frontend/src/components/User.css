@@ -1,7 +1,8 @@
 .User{
     display: table;
+    overflow: hidden;
     height: 100%;
-    padding-right: 50px;
+    padding-right: 70px;
     float:right;
     /*background-color: dimgray;*/
 }
@@ -41,7 +42,13 @@
     color: #29009a;
     float: right;
     cursor: pointer;
-
+    font-size: 18px;
     /*background-color: darkslategray;*/
+}
+
+.logout-container a{
+    text-decoration: none;
+    font-weight: 500;
+    color: #1989ff;
 }
 

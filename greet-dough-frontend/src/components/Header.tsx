@@ -1,6 +1,12 @@
 import React from 'react';
 import './Header.css';
 import User from './User';
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Link
+} from "react-router-dom";
 
 function Header() {
 
@@ -14,10 +20,11 @@ function Header() {
                 </div>
 
                 <div className="inner mid">
-                    <ul className="table">
-                        <a href=""> <li> Home </li> </a>
-                        <a href=""> <li> Feed </li> </a>
-                        <a href=""> <li> About </li> </a>
+                    <ul className="navigation">
+
+                        <Link to="/"> <li> Home </li></Link>
+                        <Link to="/feed"> <li> Feed </li></Link>
+                        <Link to="/about"> <li> About </li></Link>
 
                         <div className="search_container">
                             <div className="search">
