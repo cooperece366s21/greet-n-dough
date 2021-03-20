@@ -10,4 +10,5 @@ public interface LikeStore {
 
     void deleteLikes( Integer ID );
 
+    Likes addLikes( int postID, int uid);
 }
