@@ -12,6 +12,8 @@ public interface ImageStore {
 
     void addImage( Image newImage );
 
+    Image addImage( Image path, int postID, int uid);
+
     boolean deleteImage( int ID );
 
     static String uploadImage( Image newImage ) {

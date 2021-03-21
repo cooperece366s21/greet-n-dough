@@ -29,4 +29,15 @@ public class ImageStoreImpl extends StoreWithID<Image> implements ImageStore {
         return super.delete(ID);
     }
 
+    @Override
+    public Image addImage(Image path, int postID, int uid) {
+
+        // Create image
+        int ImageID = super.getFreeID();
+        Image tempImage = new Image(ImageID, postID);
+
+        // Add image
+        this.addImage(tempImage);
+        return tempImage;
+    }
 }

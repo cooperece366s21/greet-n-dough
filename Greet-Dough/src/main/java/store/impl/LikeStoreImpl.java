@@ -1,5 +1,6 @@
 package store.impl;
 
+import model.Comment;
 import model.Likes;
 import store.StorageRetrieval;
 import store.model.LikeStore;
@@ -25,4 +26,14 @@ public class LikeStoreImpl extends StorageRetrieval<Likes> implements LikeStore 
         super.delete( ID );
     }
 
+    @Override
+    public Likes addLikes(int postID, int uid){
+        // Create the like
+        Likes tempLike = new Likes( postID, uid );
+
+        // Add the like
+        this.addLikes( tempLike );
+        return tempLike;
+
+    }
 }
