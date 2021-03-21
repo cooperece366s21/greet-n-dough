@@ -20,7 +20,7 @@ public class ImageStoreImpl extends StoreWithID<Image> implements ImageStore {
     }
 
     @Override
-    public void addImage(Image newImage) {
+    public void addImage( Image newImage ) {
         super.add( newImage.getImageID(), newImage );
     }
 
@@ -30,14 +30,16 @@ public class ImageStoreImpl extends StoreWithID<Image> implements ImageStore {
     }
 
     @Override
-    public Image addImage(Image path, int postID, int uid) {
+    public Image addImage( Image path, int postID, int uid ) {
 
         // Create image
-        int ImageID = super.getFreeID();
-        Image tempImage = new Image(ImageID, postID);
+        int imageID = super.getFreeID();
+        Image tempImage = new Image(imageID, postID);
 
         // Add image
         this.addImage(tempImage);
         return tempImage;
+
     }
+
 }

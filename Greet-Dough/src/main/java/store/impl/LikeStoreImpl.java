@@ -27,7 +27,8 @@ public class LikeStoreImpl extends StorageRetrieval<Likes> implements LikeStore 
     }
 
     @Override
-    public Likes addLikes(int postID, int uid){
+    public Likes addLikes( int postID, int uid ) {
+
         // Create the like
         Likes tempLike = new Likes( postID, uid );
 
