@@ -8,13 +8,11 @@ public class User implements Serializable {
 
     private String name;
     private final int ID;                   // Stores unique id for a given user
-    private int wallet;
 
     public User( String name, Integer ID ) {
 
         this.name = name;
         this.ID = ID;
-        this.wallet = 0;
 
     }
 

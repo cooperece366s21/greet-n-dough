@@ -1,8 +1,8 @@
-import com.google.gson.Gson;
 import store.impl.*;
 import store.relation.*;
 import store.model.*;
 
+import com.google.gson.Gson;
 import static spark.Spark.*;
 
 public class Server {
@@ -19,7 +19,7 @@ public class Server {
 
     private static Gson gson = new Gson();
 
-    public static void main(String[] args) {
+    public static void main( String[] args ) {
 
         initExceptionHandler((e) -> {
             System.out.println("Could not start server on port 4321");
