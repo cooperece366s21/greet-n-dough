@@ -5,6 +5,7 @@ import model.User;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.mapper.RowMapper;
 import org.jdbi.v3.core.statement.StatementContext;
+import org.jdbi.v3.postgres.PostgresPlugin;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 
 import java.sql.ResultSet;
@@ -14,7 +15,8 @@ public class GreetDoughJdbi {
 
     public static Jdbi create( String url ) {
 
-        Jdbi jdbi = Jdbi.create( url, BaseDAO.name, BaseDAO.password );
+        Jdbi jdbi = Jdbi.create( url, BaseDAO.name, BaseDAO.password )
+                .installPlugin( new PostgresPlugin() );
         jdbi.installPlugin( new SqlObjectPlugin() );
 //        jdbi.registerRowMapper(
 //

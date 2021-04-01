@@ -1,4 +1,7 @@
+import org.jdbi.v3.core.Jdbi;
 import store.impl.*;
+import store.postgres.GreetDoughJdbi;
+import store.postgres.UserStorePostgres;
 import store.relation.*;
 import store.model.*;
 
@@ -8,7 +11,7 @@ import static spark.Spark.*;
 public class Server {
 
     ////////////////// Members //////////////////
-    private static UserStore userStore = new UserStoreImpl();
+    private static UserStore userStore;
     private static PostStore postStore = new PostStoreImpl();
     private static ImageStore imageStore = new ImageStoreImpl();
     private static LikeStore likeStore = new LikeStoreImpl();
@@ -21,12 +24,20 @@ public class Server {
 
     public static void main( String[] args ) {
 
-        initExceptionHandler((e) -> {
-            System.out.println("Could not start server on port 4321");
-            System.exit(100);
-        });
-        port(4321);
-        init();
+        // root is 'src/main/resources', so put files in 'src/main/resources/public'
+        staticFiles.location("/public");
+
+//        initExceptionHandler((e) -> {
+//            System.out.println("Could not start server on port 4321");
+//            System.exit(100);
+//        });
+//        port(4321);
+//        init();
+
+        String jdbcUrl = "jdbc:mysql://localhost:3306/coopflix?serverTimezone=UTC";
+        Jdbi jdbi = GreetDoughJdbi.create( jdbcUrl );
+
+        userStore = new UserStorePostgres(jdbi);
 
         /*
         try {
