@@ -1,11 +1,12 @@
 import React from 'react'
 import Header from "../components/Header";
+import HeaderChakra from "../components/HeaderChakra";
 
 function Feed(){
     return (
 
         <>
-            <Header/>
+            <HeaderChakra/>
             <h1> Feed page goes here</h1>
         </>
 

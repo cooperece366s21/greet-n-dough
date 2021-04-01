@@ -1,10 +1,11 @@
-import React from 'react';
+import * as React from 'react';
 import './App.css';
 import Home from './pages/Home';
 import About from './pages/About';
 import Feed from './pages/Feed';
 import Login from './pages/Login';
 import Register from "./pages/Register";
+import { ChakraProvider } from "@chakra-ui/react";
 
 import {
   BrowserRouter as Router,
@@ -15,25 +16,27 @@ import {
 
 function App() {
   return (
-      <Router>
+      <ChakraProvider>
 
-        <Switch>
+          <Router>
 
+            <Switch>
 
-            <Route exact path="/login" component={Login} />
+                <Route exact path="/login" component={Login} />
 
-            <Route exact path="/register" component={Register}/>
+                <Route exact path="/register" component={Register}/>
 
-            <Route exact path="/about" component={About} />
+                <Route exact path="/about" component={About} />
 
-            <Route exact path="/feed" component={Feed} />
+                <Route exact path="/feed" component={Feed} />
 
-            <Route exact path="/" component={Home} />
+                <Route exact path="/" component={Home} />
 
-        </Switch>
+            </Switch>
 
-      </Router>
+          </Router>
 
+      </ChakraProvider>
   )
 }
 
