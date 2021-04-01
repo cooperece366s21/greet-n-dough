@@ -22,14 +22,16 @@ class HeaderChakra extends React.Component<any, any>{
     render() {
         return(
             <>
-                <Box w={'100%'} position={'relative'} top={'0'} h={'90'} pt={'5px'} bg={'#fff463'}>
+                <Box w={'100%'} position={'relative'} top={'0'} h={'90'} pt={'5px'} mb={'30px'} bg={'#fff463'}>
 
                     <HStack p={0} m={0}>
 
                         {/*Logo*/}
                         <Box w={'15%'} h={'100%'}>
                             <Center>
-                                <Text fontSize={'5xl'} fontWeight={800}> G&D </Text>
+                                <Link to={'/'}>
+                                    <Text fontSize={'5xl'} fontWeight={800}> G&D </Text>
+                                </Link>
                             </Center>
                         </Box>
 
