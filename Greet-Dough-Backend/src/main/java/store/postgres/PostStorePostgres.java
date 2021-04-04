@@ -20,8 +20,8 @@ public class PostStorePostgres implements PostStore {
                 new PostStorePostgres(
                         GreetDoughJdbi.create("jdbc:postgresql://localhost:4321/greetdough"));
 
-//        PostStorePostgres.reset();
-//        PostStorePostgres.init();
+        PostStorePostgres.reset();
+        PostStorePostgres.init();
 
         User yeet = UserStorePostgres.addUser("yeet");
         Post yeetPost = PostStorePostgres.addPost( "first!", yeet.getID() );
@@ -36,6 +36,12 @@ public class PostStorePostgres implements PostStore {
         PostStorePostgres.addPost( "lol", yeet.getID() );
         PostStorePostgres.addPost( "haha very cool!", yeet.getID() );
         System.out.println( PostStorePostgres.makeFeed( yeet.getID() ) );
+
+        // Test deleting the user
+        //      Should cascade delete the posts
+        UserStorePostgres.deleteUser(yeet.getID());
+        System.out.println( PostStorePostgres.makeFeed( yeet.getID() ) );
+        System.out.println( PostStorePostgres.getPost() );
 
     }
 

@@ -22,7 +22,7 @@ public interface PostDao {
             "contents TEXT " + "NULL, " +
             "PRIMARY KEY(post_id), " +
             "CONSTRAINT fk_user " + "FOREIGN KEY(user_id) " +
-                "REFERENCES users(user_id), " +
+                "REFERENCES users(user_id) ON DELETE CASCADE, " +
             "CONSTRAINT fk_image " + "FOREIGN KEY(image_id) " +
                 "REFERENCES images(image_id)" +
             ");")
