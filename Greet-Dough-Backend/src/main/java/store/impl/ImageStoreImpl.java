@@ -19,12 +19,12 @@ public class ImageStoreImpl extends StoreWithID<Image> implements ImageStore {
     }
 
     @Override
-    public Image getImage(int ID) {
+    public Image getImage( int ID ) {
         return super.get(ID);
     }
 
     @Override
-    public boolean deleteImage(int ID) {
+    public boolean deleteImage( int ID ) {
         return super.delete(ID);
     }
 

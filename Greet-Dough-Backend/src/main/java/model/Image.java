@@ -63,4 +63,8 @@ public class Image implements Serializable {
         return userID;
     }
 
+    public void setPath( String path ) {
+        this.path = path;
+    }
+
 }
