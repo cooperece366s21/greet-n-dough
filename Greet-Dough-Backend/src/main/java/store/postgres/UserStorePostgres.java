@@ -19,12 +19,13 @@ public class UserStorePostgres implements UserStore {
 //        UserStorePostgres.reset();
 //        UserStorePostgres.init();
 
+        // Test adding and retrieving a user
         User yeet = UserStorePostgres.addUser("yeet");
-
         User userAfterWrite = UserStorePostgres.getUser( yeet.getID() );
         System.out.println( userAfterWrite.getID() + " " + userAfterWrite.getName() );
         System.out.println( UserStorePostgres.hasUser(yeet.getID()) );
 
+        // Test deleting the user
         UserStorePostgres.deleteUser( userAfterWrite.getID() );
         System.out.println( UserStorePostgres.getUser() );
 

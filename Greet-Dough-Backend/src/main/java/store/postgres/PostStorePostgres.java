@@ -12,24 +12,23 @@ public class PostStorePostgres implements PostStore {
     // For testing purposes
     public static void main( String[] args ) {
 
-        UserStorePostgres UserStorePostgres =
-                new UserStorePostgres(
-                        GreetDoughJdbi.create("jdbc:postgresql://localhost:4321/greetdough"));
+        Jdbi jdbi = GreetDoughJdbi.create("jdbc:postgresql://localhost:4321/greetdough");
+        UserStorePostgres UserStorePostgres = new UserStorePostgres(jdbi);
+        PostStorePostgres PostStorePostgres = new PostStorePostgres(jdbi);
 
-        PostStorePostgres PostStorePostgres =
-                new PostStorePostgres(
-                        GreetDoughJdbi.create("jdbc:postgresql://localhost:4321/greetdough"));
-
+        // Used to DROP and CREATE the posts table
         PostStorePostgres.reset();
         PostStorePostgres.init();
 
         User yeet = UserStorePostgres.addUser("yeet");
-        Post yeetPost = PostStorePostgres.addPost( "first!", yeet.getID() );
 
+        // Test adding and retrieving a post
+        Post yeetPost = PostStorePostgres.addPost( "first!", yeet.getID() );
         Post postAfterWrite = PostStorePostgres.getPost( yeetPost.getID() );
         System.out.println( postAfterWrite.getID() + " " + postAfterWrite.getUserID() +
                             " " + postAfterWrite.getImageID() + " " + postAfterWrite.getContents() );
 
+        // Test deleting the post
         PostStorePostgres.deletePost( postAfterWrite.getID() );
 
         // Make some more posts
@@ -38,7 +37,7 @@ public class PostStorePostgres implements PostStore {
         System.out.println( PostStorePostgres.makeFeed( yeet.getID() ) );
 
         // Test deleting the user
-        //      Should cascade delete the posts
+        //      Should delete cascade the posts
         UserStorePostgres.deleteUser(yeet.getID());
         System.out.println( PostStorePostgres.makeFeed( yeet.getID() ) );
         System.out.println( PostStorePostgres.getPost() );

@@ -17,8 +17,8 @@ public class GreetDoughJdbi {
     public static Jdbi create( String url ) {
 
         Jdbi jdbi = Jdbi.create( url, BaseDao.name, BaseDao.password )
-                .installPlugin( new PostgresPlugin() );
-        jdbi.installPlugin( new SqlObjectPlugin() );
+                .installPlugin( new PostgresPlugin() )
+                .installPlugin( new SqlObjectPlugin() );
 //        jdbi.registerRowMapper(
 //
 //            // Same as
