@@ -20,11 +20,6 @@ public class ImageStoreImpl extends StoreWithID<Image> implements ImageStore {
     }
 
     @Override
-    public void addImage( Image newImage ) {
-        super.add( newImage.getImageID(), newImage );
-    }
-
-    @Override
     public boolean deleteImage(int ID) {
         return super.delete(ID);
     }
@@ -33,11 +28,11 @@ public class ImageStoreImpl extends StoreWithID<Image> implements ImageStore {
     public Image addImage( Image path, int postID, int uid ) {
 
         // Create image
-        int imageID = super.getFreeID();
-        Image tempImage = new Image(imageID, postID);
+        int ID = super.getFreeID();
+        Image tempImage = new Image(ID);
 
         // Add image
-        this.addImage(tempImage);
+        this.add( tempImage.getID(), tempImage );
         return tempImage;
 
     }

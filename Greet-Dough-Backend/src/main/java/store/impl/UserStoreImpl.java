@@ -26,11 +26,6 @@ public class UserStoreImpl extends StoreWithID<User> implements UserStore {
     }
 
     @Override
-    public void addUser( User newUser ) {
-        super.add( newUser.getID(), newUser );
-    }
-
-    @Override
     public User addUser( String name ) {
 
         // Create the user
@@ -38,14 +33,14 @@ public class UserStoreImpl extends StoreWithID<User> implements UserStore {
         User tempUser = new User( name, userID );
 
         // Add the user
-        this.addUser( tempUser );
+        super.add( tempUser.getID(), tempUser );
         return tempUser;
 
     }
 
     @Override
-    public boolean deleteUser( int ID ) {
-        return super.delete(ID);
+    public void deleteUser( int ID ) {
+        super.delete(ID);
     }
 
 }

@@ -8,10 +8,8 @@ public interface UserStore {
 
     boolean hasUser( int ID );
 
-    void addUser( User newUser );
-
     User addUser( String name );
 
-    boolean deleteUser( int ID );
+    void deleteUser( int ID );
 
 }

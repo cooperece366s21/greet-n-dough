@@ -6,27 +6,24 @@ import java.time.LocalDateTime;
 public class Post implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private final int ID;   // ID for this post
+    private final int ID;       // ID for this post
     private int userID;
-    private int imageID;    // Optional field to store an image ID
+    private Integer imageID;    // Optional field to store an image ID
     private String contents;
     private final LocalDateTime timeCreated;
 
+    // Constructor Chaining
+    // Uses below constructor
     public Post( String contents, int postID, int userID ) {
+        this( contents, postID, userID, null );
+    }
+
+    public Post( String contents, int postID, int userID, Integer imageID ) {
 
         this.ID = postID;
         this.userID = userID;
-        this.imageID = -1;
         this.contents = contents;
         this.timeCreated = LocalDateTime.now();
-
-    }
-
-    public Post( String contents, int postID, int userID, int imageID ) {
-
-        // Constructor Chaining
-        // Uses above constructor
-        this(contents, postID, userID );
         this.imageID = imageID;
 
     }
@@ -39,7 +36,7 @@ public class Post implements Serializable {
         return this.userID;
     }
 
-    public int getImageID() {
+    public Integer getImageID() {
         return this.imageID;
     }
 

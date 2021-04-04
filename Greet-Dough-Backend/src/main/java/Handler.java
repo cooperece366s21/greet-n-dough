@@ -125,7 +125,8 @@ public class Handler {
         int uid = Integer.parseInt( req.params(":id") );
         User tempUser = userStore.getUser(uid);
 
-        if ( userStore.deleteUser(uid) ) {
+        userStore.deleteUser(uid);
+        if ( !userStore.hasUser(uid) ) {
 
             System.out.println( gson.toJson(tempUser) );
             IOservice.saveObject(userStore, "data/users.txt");
@@ -309,13 +310,14 @@ public class Handler {
 
     public Integer deletePost( Request req, Response res ) {
 
-        int postID = Integer.parseInt( req.params(":id") );
-        Post tempPost = postStore.getPost( postID );
+        int pid = Integer.parseInt( req.params(":id") );
+        Post tempPost = postStore.getPost(pid);
 
-        if ( postStore.deletePost( postID ) ) {
+        postStore.deletePost(pid);
+        if ( postStore.hasPost(pid) ) {
 
-            postCommentStore.deletePost( postID );
-            likeStore.deleteLikes( postID );
+            postCommentStore.deletePost(pid);
+            likeStore.deleteLikes(pid);
 
             IOservice.saveObject (postStore, "data/posts.txt" );
             IOservice.saveObject (postCommentStore, "data/postsComments.txt");

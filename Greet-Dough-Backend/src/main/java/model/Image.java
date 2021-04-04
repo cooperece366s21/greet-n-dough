@@ -20,10 +20,9 @@ public class Image implements Serializable {
     // Copy the image from the path to the data directory
     // os.system("mv 'picture.png' "")
 
-    private int imageID;
+    private final int ID;
     private String path;
     private int userID;
-    private int postID;
 
     // Get image ID
     // base.Post class
@@ -41,42 +40,27 @@ public class Image implements Serializable {
     // img id is how many places
     // post id is how many places
 
+    public Image( int ID ) {
+        this(ID, "");
+    }
+
+    public Image( int ID,  String path ) {
+
+        this.ID = ID;
+        this.path = path;
+
+    }
+
     public String getPath() {
         return path;
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public int getID() {
+        return ID;
     }
 
     public int getUserID() {
         return userID;
-    }
-
-    public void setUserID(int userID) {
-        this.userID = userID;
-    }
-
-    public int getPostID() {
-        return postID;
-    }
-
-    public void setPostID(int postID) {
-        this.postID = postID;
-    }
-
-    public int getImageID() {
-        return imageID;
-    }
-
-    public void setImageID(int imageID) {
-        this.imageID = imageID;
-    }
-
-    public Image(int imageID, int postID) {
-        this.path = "";
-        this.setPostID(postID);
-        this.setImageID(imageID);
     }
 
 }

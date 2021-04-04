@@ -13,7 +13,7 @@ public class PostStoreImpl extends StoreWithID<Post> implements PostStore {
         super();
     }
 
-    public PostStoreImpl(int start ) {
+    public PostStoreImpl( int start ) {
         super(start);
     }
 
@@ -28,32 +28,26 @@ public class PostStoreImpl extends StoreWithID<Post> implements PostStore {
     }
 
     @Override
-    public void addPost( Post newPost ) {
-        super.add( newPost.getID(), newPost );
-    }
-
-    @Override
     public Post addPost( String contents, int userID ) {
-        return this.addPost( contents, userID, -1 );
+        return this.addPost( contents, userID, null );
     }
 
     @Override
-    public Post addPost( String contents, int userID, int imageID ) {
+    public Post addPost( String contents, int userID, Integer imageID ) {
 
         // Create the post
         int postID = super.getFreeID();
         Post tempPost = new Post( contents, postID, userID, imageID );
 
         // Add the post
-        this.addPost( tempPost );
+        super.add( tempPost.getID(), tempPost );
         return tempPost;
 
     }
 
-    // Later on, check if user owns the post before deleting
     @Override
-    public boolean deletePost( int ID ) {
-        return super.delete(ID);
+    public void deletePost( int ID ) {
+        super.delete(ID);
     }
 
     // Functions unique to PostStore
