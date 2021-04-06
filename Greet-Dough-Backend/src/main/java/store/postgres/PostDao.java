@@ -16,15 +16,15 @@ public interface PostDao {
     void resetTable();
 
     @SqlUpdate("CREATE TABLE IF NOT EXISTS posts( " +
-            "post_id SERIAL " + "NOT NULL, " +
-            "user_id INT " + "NOT NULL, " +
-            "image_id INT " + "NULL, " +
-            "contents TEXT " + "NULL, " +
+            "post_id SERIAL " +     "NOT NULL, " +
+            "user_id INT " +        "NOT NULL, " +
+            "image_id INT " +       "NULL, " +
+            "contents TEXT " +      "NULL, " +
             "PRIMARY KEY(post_id), " +
             "CONSTRAINT fk_user " + "FOREIGN KEY(user_id) " +
-                "REFERENCES users(user_id) ON DELETE CASCADE, " +
+                "REFERENCES users(user_id) " + "ON DELETE CASCADE, " +
             "CONSTRAINT fk_image " + "FOREIGN KEY(image_id) " +
-                "REFERENCES images(image_id)" +
+                "REFERENCES images(image_id) " +
             ");")
     void createTable();
 

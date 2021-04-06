@@ -38,8 +38,8 @@ public class PostStorePostgres implements PostStore {
 
         // Test deleting the user
         //      Should delete cascade the posts
-        UserStorePostgres.deleteUser(yeet.getID());
-        System.out.println( PostStorePostgres.makeFeed( yeet.getID() ) );
+        UserStorePostgres.deleteUser( yeet.getID() );
+        System.out.println( PostStorePostgres.makeFeed( yeet.getID() ));
         System.out.println( PostStorePostgres.getPost() );
 
     }

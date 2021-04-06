@@ -31,12 +31,13 @@ public interface CommentDao {
     @SqlUpdate("DROP TABLE comment;")
     void resetTable();
 
-    @SqlUpdate("CREATE TABLE comment( " +
-            "user_id INT NOT NULL, " +
+    @SqlUpdate("CREATE TABLE IF NOT EXISTS comment( " +
+            "comment_id SERIAL " +  "NOT NULL, " +
+            "user_id INT " +        "NOT NULL, " +
+            "content TEXT " +       "NOT NULL, " +
             "PRIMARY KEY(comment_id), " +
-            "content TEXT NOT NULL, " +
             "CONSTRAINT fk_user " + "FOREIGN KEY(user_id) " +
-            "REFERENCES users(user_id) + " +
+                "REFERENCES users(user_id) " + "ON DELETE CASCADE, " +
             ");")
     void createTable();
 }

@@ -17,7 +17,8 @@ public interface UserDao {
 
     @SqlUpdate("CREATE TABLE IF NOT EXISTS users( " +
             "user_id SERIAL PRIMARY KEY " + "NOT NULL, " +
-            "name TEXT " +             "NOT NULL);")
+            "name TEXT " +                  "NOT NULL" +
+            ");")
     void createTable();
 
     @SqlUpdate("INSERT INTO users (name) VALUES (:name);")
