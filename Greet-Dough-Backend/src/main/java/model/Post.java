@@ -14,17 +14,17 @@ public class Post implements Serializable {
 
     // Constructor Chaining
     // Uses below constructor
-    public Post( String contents, int postID, int userID ) {
-        this( contents, postID, userID, null );
+    public Post( String contents, int pid, int uid ) {
+        this( contents, pid, uid, null );
     }
 
-    public Post( String contents, int postID, int userID, Integer imageID ) {
+    public Post( String contents, int pid, int uid, Integer iid ) {
 
-        this.ID = postID;
-        this.userID = userID;
+        this.ID = pid;
+        this.userID = uid;
+        this.imageID = iid;
         this.contents = contents;
         this.timeCreated = LocalDateTime.now();
-        this.imageID = imageID;
 
     }
 

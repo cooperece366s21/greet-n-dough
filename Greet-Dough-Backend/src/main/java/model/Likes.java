@@ -9,14 +9,14 @@ public class Likes implements Serializable {
     private int postID;
     private HashSet<Integer> userLikes;
 
-    public Likes( int postID, int userID ) {
-        this( postID, userID, new HashSet<>() );
+    public Likes( int pid, int uid ) {
+        this( pid, uid, new HashSet<>() );
     }
 
-    public Likes( int postID, int userID, HashSet<Integer> userLikes ) {
+    public Likes( int pid, int uid, HashSet<Integer> userLikes ) {
 
-        this.userID = userID;
-        this.postID = postID;
+        this.userID = uid;
+        this.postID = pid;
         this.userLikes = userLikes;
 
     }

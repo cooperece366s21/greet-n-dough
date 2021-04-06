@@ -9,10 +9,10 @@ public class User implements Serializable {
     private String name;
     private final int ID;                   // Stores unique id for a given user
 
-    public User( String name, Integer ID ) {
+    public User( String name, int uid ) {
 
         this.name = name;
-        this.ID = ID;
+        this.ID = uid;
 
     }
 

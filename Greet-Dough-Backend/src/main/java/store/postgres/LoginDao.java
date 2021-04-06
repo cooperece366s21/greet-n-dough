@@ -27,6 +27,6 @@ public interface LoginDao {
     boolean containsInstance(@Bind("user_token") String user_token );
 
     @SqlQuery("SELECT user_id FROM login WHERE user_token = (:user_token);")
-    int getUser(@Bind("user_token") String user_token );
+    int getUserID(@Bind("user_token") String user_token );
 
 }

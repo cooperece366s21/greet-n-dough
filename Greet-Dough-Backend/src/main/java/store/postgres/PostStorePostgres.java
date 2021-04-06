@@ -68,8 +68,8 @@ public class PostStorePostgres implements PostStore {
     }
 
     @Override
-    public List<Post> makeFeed( int userID ) {
-        return jdbi.withHandle( handle -> handle.attach(PostDao.class).getFeed(userID) );
+    public List<Post> makeFeed( int uid ) {
+        return jdbi.withHandle( handle -> handle.attach(PostDao.class).getFeed(uid) );
     }
 
     @Override
@@ -78,14 +78,14 @@ public class PostStorePostgres implements PostStore {
     }
 
     @Override
-    public Post addPost( String contents, int userID ) {
-        return addPost( contents, userID, null );
+    public Post addPost( String contents, int uid ) {
+        return addPost( contents, uid, null );
     }
 
     @Override
-    public Post addPost( String contents, int userID, Integer imageID ) {
+    public Post addPost( String contents, int uid, Integer iid ) {
 
-        int ID = jdbi.withHandle( handle -> handle.attach(PostDao.class).insertPost( contents, userID, null ) );
+        int ID = jdbi.withHandle( handle -> handle.attach(PostDao.class).insertPost( contents, uid, iid ) );
         return getPost(ID);
 
     }

@@ -40,10 +40,10 @@ public class Image implements Serializable {
     // img id is how many places
     // post id is how many places
 
-    public Image( String path, int ID, int userID ) {
+    public Image( String path, int iid, int uid ) {
 
-        this.ID = ID;
-        this.userID = userID;
+        this.ID = iid;
+        this.userID = uid;
         this.path = path;
 
     }

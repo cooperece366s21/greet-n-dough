@@ -81,9 +81,9 @@ public class ImageStorePostgres implements ImageStore {
     }
 
     @Override
-    public Image addImage( String path, int userID ) {
+    public Image addImage( String path, int uid ) {
 
-        int ID = jdbi.withHandle( handle -> handle.attach(ImageDao.class).insertImage( path, userID ) );
+        int ID = jdbi.withHandle( handle -> handle.attach(ImageDao.class).insertImage( path, uid ) );
         return getImage(ID);
 
     }

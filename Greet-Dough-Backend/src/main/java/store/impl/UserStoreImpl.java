@@ -4,7 +4,6 @@ import model.User;
 import store.model.StoreWithID;
 import store.model.UserStore;
 
-// IMPLEMENT A PREFIX TRIE TO ALLOW SEARCHING FOR USERS
 public class UserStoreImpl extends StoreWithID<User> implements UserStore {
 
     public UserStoreImpl() {
@@ -29,8 +28,8 @@ public class UserStoreImpl extends StoreWithID<User> implements UserStore {
     public User addUser( String name ) {
 
         // Create the user
-        int userID = super.getFreeID();
-        User tempUser = new User( name, userID );
+        int uid = super.getFreeID();
+        User tempUser = new User( name, uid );
 
         // Add the user
         super.add( tempUser.getID(), tempUser );
