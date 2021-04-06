@@ -15,7 +15,7 @@ public interface PostDao {
     @SqlUpdate("DROP TABLE posts;")
     void resetTable();
 
-    @SqlUpdate("CREATE TABLE posts( " +
+    @SqlUpdate("CREATE TABLE IF NOT EXISTS posts( " +
             "post_id SERIAL " + "NOT NULL, " +
             "user_id INT " + "NOT NULL, " +
             "image_id INT " + "NULL, " +

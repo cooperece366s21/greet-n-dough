@@ -15,7 +15,7 @@ public interface UserDao {
     @SqlUpdate("DROP TABLE users;")
     void resetTable();
 
-    @SqlUpdate("CREATE TABLE users( " +
+    @SqlUpdate("CREATE TABLE IF NOT EXISTS users( " +
             "user_id SERIAL PRIMARY KEY " + "NOT NULL, " +
             "name TEXT " +             "NOT NULL);")
     void createTable();
