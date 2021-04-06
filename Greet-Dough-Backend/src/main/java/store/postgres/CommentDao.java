@@ -1,5 +1,9 @@
 package store.postgres;
 
+import model.Comment;
+import org.jdbi.v3.sqlobject.customizer.Bind;
+import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
+import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
 public interface CommentDao {
@@ -40,4 +44,5 @@ public interface CommentDao {
                 "REFERENCES users(user_id) " + "ON DELETE CASCADE, " +
             ");")
     void createTable();
+
 }
