@@ -5,6 +5,8 @@ import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
+import java.util.Optional;
+
 public interface LoginDao {
 
     @SqlUpdate("DROP TABLE IF EXISTS login;")
@@ -27,6 +29,6 @@ public interface LoginDao {
     boolean containsInstance(@Bind("user_token") String user_token );
 
     @SqlQuery("SELECT user_id FROM login WHERE user_token = (:user_token);")
-    int getUserID(@Bind("user_token") String user_token );
+    Optional<Integer> getUserID(@Bind("user_token") String user_token );
 
 }
