@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface ImageDao {
 
-    @SqlUpdate("DROP TABLE images;")
+    @SqlUpdate("DROP TABLE IF EXISTS images;")
     void resetTable();
 
     @SqlUpdate("CREATE TABLE IF NOT EXISTS images( " +
@@ -19,7 +19,7 @@ public interface ImageDao {
             "image BYTEA " +        "NOT NULL, " +
             "PRIMARY KEY(image_id), " +
             "CONSTRAINT fk_user " + "FOREIGN KEY(user_id) " +
-                "REFERENCES users(user_id) + " + "ON DELETE CASCADE, " +
+                "REFERENCES users(user_id) " + "ON DELETE CASCADE " +
             ");")
     void createTable();
 

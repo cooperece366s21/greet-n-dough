@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface UserDao {
 
-    @SqlUpdate("DROP TABLE users;")
+    @SqlUpdate("DROP TABLE IF EXISTS users;")
     void resetTable();
 
     @SqlUpdate("CREATE TABLE IF NOT EXISTS users( " +
