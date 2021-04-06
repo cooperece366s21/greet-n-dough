@@ -16,10 +16,10 @@ public interface ImageDao {
     @SqlUpdate("CREATE TABLE IF NOT EXISTS images( " +
             "image_id SERIAL " +    "NOT NULL, " +
             "user_id INT " +        "NOT NULL, " +
-            "path TEXT " +          "NOT NULL, " +
+            "image BYTEA " +        "NOT NULL, " +
             "PRIMARY KEY(image_id), " +
             "CONSTRAINT fk_user " + "FOREIGN KEY(user_id) " +
-                "REFERENCES users(user_id) + " +
+                "REFERENCES users(user_id) + " + "ON DELETE CASCADE, " +
             ");")
     void createTable();
 
