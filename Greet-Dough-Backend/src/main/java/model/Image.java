@@ -40,13 +40,10 @@ public class Image implements Serializable {
     // img id is how many places
     // post id is how many places
 
-    public Image( int ID ) {
-        this(ID, "");
-    }
-
-    public Image( int ID,  String path ) {
+    public Image( String path, int ID, int userID ) {
 
         this.ID = ID;
+        this.userID = userID;
         this.path = path;
 
     }
@@ -61,10 +58,6 @@ public class Image implements Serializable {
 
     public int getUserID() {
         return userID;
-    }
-
-    public void setPath( String path ) {
-        this.path = path;
     }
 
 }

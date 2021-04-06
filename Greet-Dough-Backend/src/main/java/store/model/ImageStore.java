@@ -2,20 +2,13 @@ package store.model;
 
 import model.Image;
 
-import java.io.IOException;
-import java.nio.file.*;
-import java.util.Scanner;
-
 public interface ImageStore {
 
     Image getImage( int ID );
 
-    Image addImage( Image path, int postID, int uid);
+    boolean hasImage( int ID );
 
-    boolean deleteImage( int ID );
+    Image addImage( String path, int uid );
 
-    String uploadImage( Image newImage );
-
-    void moveImage( Image newImage );
-
+    void deleteImage( int ID );
 }

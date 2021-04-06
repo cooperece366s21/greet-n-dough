@@ -1,5 +1,6 @@
 package store.postgres;
 
+import model.Image;
 import model.Post;
 import model.User;
 
@@ -35,6 +36,7 @@ public class GreetDoughJdbi {
         // method
         jdbi.registerRowMapper( new UserRowMapper() );
         jdbi.registerRowMapper( new PostRowMapper() );
+        jdbi.registerRowMapper( new ImageRowMapper() );
 
         return jdbi;
 
@@ -65,6 +67,21 @@ public class GreetDoughJdbi {
             String contents = rs.getString("contents");
 
             return new Post( contents, ID, userID, imageID );
+
+        }
+
+    }
+
+    public static class ImageRowMapper implements RowMapper<Image> {
+
+        @Override
+        public Image map( final ResultSet rs, final StatementContext ctx ) throws SQLException {
+
+            int ID = rs.getInt("image_id");
+            int userID = rs.getInt("user_id");
+            String path = rs.getString("path");
+
+            return new Image( path, ID, userID );
 
         }
 

@@ -24,16 +24,22 @@ public class ImageStoreImpl extends StoreWithID<Image> implements ImageStore {
     }
 
     @Override
-    public boolean deleteImage( int ID ) {
-        return super.delete(ID);
+    public boolean hasImage( int ID ) {
+        return super.has(ID);
     }
 
     @Override
-    public Image addImage( Image path, int postID, int uid ) {
+    public void deleteImage( int ID ) {
+        super.delete(ID);
+    }
+
+    @Override
+    public Image addImage( String path, int uid ) {
 
         // Create image
         int ID = super.getFreeID();
-        Image tempImage = new Image(ID);
+        String newPath = copyImage(path);   // Copies the image to a default folder
+        Image tempImage = new Image( newPath, ID, uid );
 
         // Add image
         this.add( tempImage.getID(), tempImage );
@@ -41,44 +47,23 @@ public class ImageStoreImpl extends StoreWithID<Image> implements ImageStore {
 
     }
 
-    @Override
-    public String uploadImage( Image newImage ) {
-
-        Scanner myObj = new Scanner(System.in);  // Create a Scanner object
-        System.out.println("Enter filepath: ");
-
-        String path = myObj.nextLine();  // Read user input
-        String extension = "";
-        int i = path.lastIndexOf('.');
-        if ( i >= 0 ) {
-            extension = path.substring(i + 1);
-        }
-
-        String validTypes = "jpg png jpeg";
-        if ( !(validTypes.contains(extension)) ) {
-            System.out.println("Invalid Input, Please Input a Valid Image!");
-            path = uploadImage(newImage);
-        }
-        newImage.setPath(path);
-        return path;
-
-    }
-
-    @Override
-    public void moveImage( Image newImage ) {
+    public String copyImage( String path ) {
 
         FileSystem fileSys = FileSystems.getDefault();
-        Path srcPath = fileSys.getPath(uploadImage(newImage));
+        Path srcPath = fileSys.getPath(path);
         //change this abomination if you are testing it (for now)
         //NEED TO EDIT LATER
         Path destPath = fileSys.getPath("c:\\Users\\brian\\OneDrive\\Documents\\Github\\Lee-Ko\\Greet-Dough\\data\\images.png");
         try {
             //COPY image from source to destination folder
             Files.copy(srcPath, destPath, StandardCopyOption.REPLACE_EXISTING);
+            return destPath.toString();
 
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
+
+        return null;
 
     }
 

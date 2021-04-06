@@ -24,7 +24,7 @@ public class PostStoreImpl extends StoreWithID<Post> implements PostStore {
 
     @Override
     public boolean hasPost( int ID ) {
-        return this.has(ID);
+        return super.has(ID);
     }
 
     @Override
