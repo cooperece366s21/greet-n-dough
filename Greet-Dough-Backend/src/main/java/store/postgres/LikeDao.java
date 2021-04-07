@@ -36,10 +36,10 @@ public interface LikeDao {
     // remove like
         // DELETE FROM like WHERE user_id = (:user_id);
 
-    @SqlUpdate("DROP TABLE IF EXISTS like;")
+    @SqlUpdate("DROP TABLE IF EXISTS likes;")
     void resetTable();
 
-    @SqlUpdate("CREATE TABLE IF NOT EXISTS like( " +
+    @SqlUpdate("CREATE TABLE IF NOT EXISTS likes( " +
             "post_id INT " +        "NOT NULL, " +
             "user_id INT[] " +        "NOT NULL, " +
             "PRIMARY KEY(user_id), " +
