@@ -1,14 +1,13 @@
 package store.postgres;
 
 import model.Post;
-import store.postgres.GreetDoughJdbi.PostRowMapper;
 
-import org.jdbi.v3.sqlobject.config.RegisterRowMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import java.util.List;
+import java.util.Optional;
 
 public interface PostDao {
 
@@ -45,7 +44,7 @@ public interface PostDao {
     List<Post> listPosts();
 
     @SqlQuery("SELECT * FROM posts WHERE post_id = (:post_id)")
-    Post getPost(@Bind("post_id") int post_id);
+    Optional<Post> getPost(@Bind("post_id") int post_id);
 
     @SqlQuery("SELECT * FROM posts WHERE user_id = (:user_id)")
     List<Post> getFeed(@Bind("user_id") int user_id);

@@ -60,7 +60,7 @@ public class PostStorePostgres implements PostStore {
 
     @Override
     public Post getPost( int ID ) {
-        return jdbi.withHandle( handle -> handle.attach(PostDao.class).getPost(ID) );
+        return jdbi.withHandle( handle -> handle.attach(PostDao.class).getPost(ID) ).orElse(null);
     }
 
     public List<Post> getPost() {

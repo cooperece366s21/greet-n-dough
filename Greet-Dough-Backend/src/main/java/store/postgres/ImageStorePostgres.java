@@ -18,9 +18,11 @@ public class ImageStorePostgres implements ImageStore {
         PostStorePostgres PostStorePostgres = new PostStorePostgres(jdbi);
         ImageStorePostgres ImageStorePostgres = new ImageStorePostgres(jdbi);
 
-        // Used to DROP and CREATE the posts and images table
+        // Used to DROP and CREATE the posts, images, users table
         PostStorePostgres.reset();
         ImageStorePostgres.reset();
+        UserStorePostgres.reset();
+        UserStorePostgres.init();
         ImageStorePostgres.init();
         PostStorePostgres.init();
 
@@ -64,7 +66,7 @@ public class ImageStorePostgres implements ImageStore {
 
     @Override
     public Image getImage( int ID ) {
-        return jdbi.withHandle( handle -> handle.attach(ImageDao.class).getImage(ID) );
+        return jdbi.withHandle( handle -> handle.attach(ImageDao.class).getImage(ID) ).orElse(null);
     }
 
     public List<Image> getImage() {

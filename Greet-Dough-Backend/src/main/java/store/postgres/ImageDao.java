@@ -7,6 +7,7 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ImageDao {
 
@@ -39,7 +40,7 @@ public interface ImageDao {
     List<Image> listImages();
 
     @SqlQuery("SELECT * FROM images WHERE image_id = (:image_id)")
-    Image getImage(@Bind("image_id") int image_id);
+    Optional<Image> getImage(@Bind("image_id") int image_id);
 
     @SqlQuery("SELECT * FROM images WHERE user_id = (:user_id)")
     List<Image> getGallery(@Bind("user_id") int user_id);

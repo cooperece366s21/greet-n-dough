@@ -5,7 +5,6 @@ import store.model.UserStore;
 import org.jdbi.v3.core.Jdbi;
 
 import java.util.List;
-import java.util.Optional;
 
 // IMPLEMENT A PREFIX TRIE TO ALLOW SEARCHING FOR USERS?
 public class UserStorePostgres implements UserStore {
