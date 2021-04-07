@@ -9,6 +9,7 @@ import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import java.util.List;
+import java.util.Optional;
 
 public interface UserDao {
 
@@ -36,6 +37,6 @@ public interface UserDao {
     List<User> listUsers();
 
     @SqlQuery("SELECT * FROM users WHERE user_id = (:user_id)")
-    User getUser(@Bind("user_id") int user_id);
+    Optional<User> getUser(@Bind("user_id") int user_id);
 
 }

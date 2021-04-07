@@ -24,11 +24,11 @@ public class ImageStorePostgres implements ImageStore {
         ImageStorePostgres.init();
         PostStorePostgres.init();
 
-        User yeet = UserStorePostgres.addUser("yeet");
+        User newUser = UserStorePostgres.addUser("Tony");
 
         // Test adding and retrieving a post
-        Post yeetPost = PostStorePostgres.addPost( "first!", yeet.getID() );
-        Post postAfterWrite = PostStorePostgres.getPost( yeetPost.getID() );
+        Post newPost = PostStorePostgres.addPost( "first!", newUser.getID() );
+        Post postAfterWrite = PostStorePostgres.getPost( newPost.getID() );
         System.out.println( postAfterWrite.getID() + " " + postAfterWrite.getUserID() +
                 " " + postAfterWrite.getImageID() + " " + postAfterWrite.getContents() );
 
@@ -36,14 +36,14 @@ public class ImageStorePostgres implements ImageStore {
         PostStorePostgres.deletePost( postAfterWrite.getID() );
 
         // Make some more posts
-        PostStorePostgres.addPost( "lol", yeet.getID() );
-        PostStorePostgres.addPost( "haha very cool!", yeet.getID() );
-        System.out.println( PostStorePostgres.makeFeed( yeet.getID() ) );
+        PostStorePostgres.addPost( "lol", newUser.getID() );
+        PostStorePostgres.addPost( "haha very cool!", newUser.getID() );
+        System.out.println( PostStorePostgres.makeFeed( newUser.getID() ) );
 
         // Test deleting the user
         //      Should delete cascade the posts
-        UserStorePostgres.deleteUser( yeet.getID() );
-        System.out.println( PostStorePostgres.makeFeed( yeet.getID() ));
+        UserStorePostgres.deleteUser( newUser.getID() );
+        System.out.println( PostStorePostgres.makeFeed( newUser.getID() ));
         System.out.println( PostStorePostgres.getPost() );
 
     }

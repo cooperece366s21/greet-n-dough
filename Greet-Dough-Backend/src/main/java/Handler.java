@@ -1,5 +1,5 @@
 import model.*;
-import utility.*;
+import utility.Pair;
 import store.model.*;
 
 import java.util.ArrayList;
@@ -112,7 +112,6 @@ public class Handler {
         String name = req.queryParams("name");
         User tempUser = userStore.addUser(name);
 
-        IOservice.saveObject(userStore, "data/users.txt");
         System.out.println( "User Created: " + tempUser.getName() + ", " + tempUser.getID() );
 
         res.status(200);
@@ -129,7 +128,6 @@ public class Handler {
         if ( !userStore.hasUser(uid) ) {
 
             System.out.println( gson.toJson(tempUser) );
-            IOservice.saveObject(userStore, "data/users.txt");
             res.status(200);
             return 200;
 
@@ -167,7 +165,6 @@ public class Handler {
 
         subStore.addSubscription( userPair.getLeft(), userPair.getRight() );
         System.out.println( "current subs: " + subStore.getSubscriptions(userPair.getLeft()) );
-        IOservice.saveObject(subStore, "data/subs.txt");
 
         return 0;
 
@@ -198,7 +195,6 @@ public class Handler {
         }
 
         subStore.removeSubscription( userPair.getLeft(), userPair.getRight() );
-        IOservice.saveObject(subStore, "data/subs.txt");
         System.out.println( subStore.getSubscriptions(userPair.getRight()) );
         res.status(200);
         return 0;
@@ -291,7 +287,6 @@ public class Handler {
         }
 
         Post tempPost = postStore.addPost( contentQuery, uid, imageID );
-        IOservice.saveObject( postStore, "data/posts.txt" );
 
 //        Image imagePath = new Image(postID, userID);
 //        ImageStore.moveImage(imagePath);
@@ -319,9 +314,6 @@ public class Handler {
             postCommentStore.deletePost(pid);
             likeStore.deleteLikes(pid);
 
-            IOservice.saveObject (postStore, "data/posts.txt" );
-            IOservice.saveObject (postCommentStore, "data/postsComments.txt");
-            IOservice.saveObject (likeStore, "data/likes.txt");
             System.out.println( gson.toJson(tempPost) );
 
         } else {
@@ -392,7 +384,6 @@ public class Handler {
             if ( !userLikes.contains(uid) ) {
 
                 postLikes.incrementLike(uid);
-                IOservice.saveObject( likeStore, "data/likes.txt" );
                 System.out.println( gson.toJson(postLikes) );
 
             }
@@ -418,8 +409,6 @@ public class Handler {
             Comment newComment = commentStore.addComment( contentQuery, uid );
             postCommentStore.addComment( pid, newComment.getID() );
 
-            IOservice.saveObject( commentStore, "data/comments.txt" );
-            IOservice.saveObject( postCommentStore, "data/postsComments.txt" );
             System.out.println( gson.toJson(newComment) );
 
         } else {

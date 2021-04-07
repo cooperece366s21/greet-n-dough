@@ -5,6 +5,7 @@ import store.model.UserStore;
 import org.jdbi.v3.core.Jdbi;
 
 import java.util.List;
+import java.util.Optional;
 
 // IMPLEMENT A PREFIX TRIE TO ALLOW SEARCHING FOR USERS?
 public class UserStorePostgres implements UserStore {
@@ -17,14 +18,15 @@ public class UserStorePostgres implements UserStore {
                         GreetDoughJdbi.create("jdbc:postgresql://localhost:4321/greetdough"));
 
         // Used to DROP and CREATE the users table
-//        UserStorePostgres.reset();
-//        UserStorePostgres.init();
+
+        UserStorePostgres.reset();
+        UserStorePostgres.init();
 
         // Test adding and retrieving a user
-        User yeet = UserStorePostgres.addUser("yeet");
-        User userAfterWrite = UserStorePostgres.getUser( yeet.getID() );
+        User newUser = UserStorePostgres.addUser("Josh");
+        User userAfterWrite = UserStorePostgres.getUser( newUser.getID() );
         System.out.println( userAfterWrite.getID() + " " + userAfterWrite.getName() );
-        System.out.println( UserStorePostgres.hasUser(yeet.getID()) );
+        System.out.println( UserStorePostgres.hasUser(newUser.getID()) );
 
         // Test deleting the user
         UserStorePostgres.deleteUser( userAfterWrite.getID() );
@@ -48,7 +50,7 @@ public class UserStorePostgres implements UserStore {
 
     @Override
     public User getUser( int ID ) {
-        return jdbi.withHandle( handle -> handle.attach(UserDao.class).getUser(ID) );
+        return jdbi.withHandle( handle -> handle.attach(UserDao.class).getUser(ID) ).orElse(null);
     }
 
     public List<User> getUser() {

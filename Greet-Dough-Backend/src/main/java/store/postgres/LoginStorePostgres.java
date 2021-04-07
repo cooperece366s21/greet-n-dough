@@ -24,7 +24,7 @@ public class LoginStorePostgres {
         String token = LoginStorePostgres.addInstance( yeet.getID() );
 
         // Get the user ID using the token
-        Optional<Integer> uid = LoginStorePostgres.getUserID( token );
+        Integer uid = LoginStorePostgres.getUserID( token );
 
         System.out.println( LoginStorePostgres.hasInstance(token) );
         System.out.println( LoginStorePostgres.getUserID("abc") );
@@ -55,8 +55,8 @@ public class LoginStorePostgres {
         return jdbi.withHandle( handle -> handle.attach(LoginDao.class).containsInstance(token) );
     }
 
-    public Optional<Integer> getUserID(String token ) {
-        return jdbi.withHandle( handle -> handle.attach(LoginDao.class).getUserID(token) );
+    public Integer getUserID( String token ) {
+        return jdbi.withHandle( handle -> handle.attach(LoginDao.class).getUserID(token) ).orElse(null);
     }
 
 }

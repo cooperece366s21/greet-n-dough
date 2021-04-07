@@ -1,6 +1,8 @@
 import org.jdbi.v3.core.Jdbi;
 import store.impl.*;
 import store.postgres.GreetDoughJdbi;
+import store.postgres.ImageStorePostgres;
+import store.postgres.PostStorePostgres;
 import store.postgres.UserStorePostgres;
 import store.relation.*;
 import store.model.*;
@@ -12,8 +14,8 @@ public class Server {
 
     ////////////////// Members //////////////////
     private static UserStore userStore;
-    private static PostStore postStore = new PostStoreImpl();
-    private static ImageStore imageStore = new ImageStoreImpl();
+    private static PostStore postStore;
+    private static ImageStore imageStore;
     private static LikeStore likeStore = new LikeStoreImpl();
     private static CommentStore commentStore = new CommentStoreImpl();
     private static SubStore subStore = new SubStoreImpl();
@@ -27,61 +29,18 @@ public class Server {
         // root is 'src/main/resources', so put files in 'src/main/resources/public'
         staticFiles.location("/public");
 
-//        initExceptionHandler((e) -> {
-//            System.out.println("Could not start server on port 4321");
-//            System.exit(100);
-//        });
-//        port(4321);
-//        init();
+        initExceptionHandler((e) -> {
+            System.out.println("Could not start server on port 5432");
+            System.exit(100);
+        });
+        port(5432);
+        init();
 
-        String jdbcUrl = "jdbc:mysql://localhost:3306/coopflix?serverTimezone=UTC";
-        Jdbi jdbi = GreetDoughJdbi.create( jdbcUrl );
+        Jdbi jdbi = GreetDoughJdbi.create("jdbc:postgresql://localhost:4321/greetdough");
 
         userStore = new UserStorePostgres(jdbi);
-
-        /*
-        try {
-            Server.userStore = (UserStore) IOservice.loadObject("data/users.txt");
-        } catch (ClassCastException e) {
-            System.out.println("(User load) Empty file or wrong class cast");
-        }
-
-        try {
-            Server.postStore = (PostStore) IOservice.loadObject("data/posts.txt");
-        } catch (ClassCastException e) {
-            System.out.println("(Post load) Empty file or wrong class cast");
-        }
-
-        try {
-            Server.subStore = (SubStore) IOservice.loadObject("data/subs.txt");
-        } catch (ClassCastException e) {
-            System.out.println("(Sub load) Empty file or wrong class cast");
-        }
-
-        try {
-            Server.followStore = (FollowStore) IOservice.loadObject("data/follows.txt");
-        } catch (ClassCastException e) {
-            System.out.println("(Follow load) Empty file or wrong class cast");
-        }
-
-        try {
-            Server.likeStore = (LikeStore) IOservice.loadObject("data/likes.txt");
-        } catch (ClassCastException e) {
-            System.out.println("(Like load) Empty file or wrong class cast");
-        }
-
-        try {
-            Server.commentStore = (CommentStore) IOservice.loadObject("data/comments.txt");
-        } catch (ClassCastException e) {
-            System.out.println("(Comment load) Empty file or wrong class cast");
-        }
-
-        try {
-            Server.postCommentStore = (PostCommentStore) IOservice.loadObject("data/postsComments.txt");
-        } catch (ClassCastException e) {
-            System.out.println("(PostComment load) Empty file or wrong class cast");
-        }
-        */
+        postStore = new PostStorePostgres(jdbi);
+        imageStore = new ImageStorePostgres(jdbi);
 
         Handler handler = new Handler(
                 Server.userStore,
@@ -97,13 +56,15 @@ public class Server {
         /////////////////
 
         // Returns user given an id
+        // curl localhost:5432/users/1/
         get("/users/:id/", handler::getUser, gson::toJson);
 
         // Creates a new user
-        // curl -d "name=Tony" -X post localhost:4321/users/
+        // curl -d "name=Tony" -X post localhost:5432/users/
         post("/users/", handler::createUser, gson::toJson );
 
         // Deletes user given UserID
+        // curl -X delete localhost:5432/users/1/
         delete("/users/:id/", handler::deleteUser, gson::toJson);
         
         // USER RELATION ROUTES
