@@ -42,14 +42,13 @@ public interface LikeDao {
     @SqlUpdate("CREATE TABLE IF NOT EXISTS likes( " +
             "post_id INT " +        "NOT NULL, " +
             "user_id INT[] " +        "NOT NULL, " +
-            "PRIMARY KEY(user_id), " +
+            "PRIMARY KEY(post_id), " +
             "CONSTRAINT fk_user " + "FOREIGN KEY(user_id) " +
                 "REFERENCES users(user_id) " + "ON DELETE CASCADE " +
             "CONSTRAINT fk_post " + "FOREIGN KEY(post_id) " +
                 "REFERENCES post(post_id) " +
             ");")
     void createTable();
-
 
 
 }
