@@ -47,6 +47,8 @@ public class LoginStorePostgres implements LoginStore {
 
     public void init() {
         jdbi.useHandle(handle -> handle.attach(LoginDao.class).createTable());
+        jdbi.useHandle(handle -> handle.attach(LoginDao.class).createTrigger());
+        jdbi.useHandle(handle -> handle.attach(LoginDao.class).setTrigger());
     }
 
     @Override

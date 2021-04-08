@@ -69,4 +69,15 @@ public class PasswordStorePostgres implements PasswordStore {
         return jdbi.withHandle( handle -> handle.attach(PasswordDao.class).hasEmail(email) );
     }
 
+    @Override
+    public void updateEmail( String oldEmail, String newEmail ) {
+
+    }
+
+    @Override
+    public void updatePassword( String email, String newPassword ) {
+
+    }
+
+
 }

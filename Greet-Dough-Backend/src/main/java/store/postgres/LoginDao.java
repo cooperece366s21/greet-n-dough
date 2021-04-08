@@ -13,8 +13,9 @@ public interface LoginDao {
     void resetTable();
 
     @SqlUpdate("CREATE TABLE IF NOT EXISTS login( " +
-            "user_token TEXT " +    "NOT NULL, " +
-            "user_id INT " +        "NOT NULL, " +
+            "user_token TEXT " +        "NOT NULL, " +
+            "user_id INT " +            "NOT NULL, " +
+            "timestamp timestamp " +    "NOT NULL " + "DEFAULT NOW(), " +
             "PRIMARY KEY(user_token), " +
             "CONSTRAINT fk_user " + "FOREIGN KEY(user_id) " +
                 "REFERENCES users(user_id) " + "ON DELETE CASCADE " +
@@ -30,5 +31,31 @@ public interface LoginDao {
 
     @SqlQuery("SELECT user_id FROM login WHERE user_token = (:user_token);")
     Optional<Integer> getUserID(@Bind("user_token") String user_token );
+
+
+    // Invalidates tokens after a specified amount of time
+    // From https://www.the-art-of-web.com/sql/trigger-delete-old/
+    @SqlUpdate( "CREATE OR REPLACE FUNCTION delete_old_rows() RETURNS trigger " +
+                    "LANGUAGE plpgsql " +
+                    "AS $$ " +
+                "DECLARE " +
+                    "row_count int; " +
+                "BEGIN " +
+                    "DELETE FROM login WHERE timestamp < NOW() - INTERVAL '1 hour'; " +
+                    "IF found THEN " +
+                        "GET DIAGNOSTICS row_count = ROW_COUNT; " +
+                    "RAISE NOTICE 'DELETE % row(s) FROM limiter', row_count; " +
+                    "END IF; " +
+                    "RETURN NULL; " +
+                "END; " +
+                "$$; ")
+    void createTrigger();
+
+    @SqlUpdate("CREATE TRIGGER trigger_delete_old_rows " +
+                    "AFTER INSERT ON login " +
+                    "EXECUTE PROCEDURE delete_old_rows();")
+    void setTrigger();
+
+
 
 }
