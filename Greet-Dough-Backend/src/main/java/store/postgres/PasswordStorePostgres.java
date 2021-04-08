@@ -1,10 +1,11 @@
 package store.postgres;
 
+import store.model.PasswordStore;
 import model.User;
 import org.jdbi.v3.core.Jdbi;
 
 /////////////////////////////////////////////// CHANGE HASH TO SHA256
-public class PasswordStorePostgres {
+public class PasswordStorePostgres implements PasswordStore {
 
     // For testing purposes
     public static void main( String[] args ) {
@@ -50,19 +51,21 @@ public class PasswordStorePostgres {
         jdbi.useHandle(handle -> handle.attach(PasswordDao.class).createTable());
     }
 
-    public void addPassword( String email, int uid, String password ) {
+    @Override
+    public void addPassword(String email, int uid, String password) {
         jdbi.useHandle( handle -> handle.attach(PasswordDao.class).insertPassword(email, uid, password) );
     }
 
     // Checks if the email + password match an entry in the DB
     //      If there is a match, returns the associated uid;
     //      Otherwise, null
-    public Integer getUserID( String email, String password ) {
+    @Override
+    public Integer getUserID(String email, String password) {
         return jdbi.withHandle( handle -> handle.attach(PasswordDao.class).isCorrectPassword(email, password) ).orElse(null);
     }
 
-    // Checks if user already has a stored password
-    public boolean hasPassword( String email ) {
+    @Override
+    public boolean hasPassword(String email) {
         return jdbi.withHandle( handle -> handle.attach(PasswordDao.class).hasPassword(email) );
     }
 

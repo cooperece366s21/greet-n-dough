@@ -1,12 +1,10 @@
 package store.postgres;
 
+import store.model.LoginStore;
 import model.User;
 import org.jdbi.v3.core.Jdbi;
 
-import java.util.Optional;
-
-// INSTEAD OF USING HAS(), USE IF( GET() )?
-public class LoginStorePostgres {
+public class LoginStorePostgres implements LoginStore {
 
     // For testing purposes
     public static void main(String[] args) {
@@ -24,12 +22,16 @@ public class LoginStorePostgres {
         String token = LoginStorePostgres.addSession( newUser.getID() );
 
         // Get the user ID using the token
-        Integer uid = LoginStorePostgres.getUserID( token );
+        Integer uid = LoginStorePostgres.getUserID(token);
 
         System.out.println( LoginStorePostgres.hasSession(token) );
         System.out.println( LoginStorePostgres.getUserID("abc") );
         System.out.println(uid);
         System.out.println(token);
+
+        // Test deleting a session
+        LoginStorePostgres.deleteSession(token);
+        System.out.println( LoginStorePostgres.hasSession(token) );
 
     }
 
@@ -47,14 +49,22 @@ public class LoginStorePostgres {
         jdbi.useHandle(handle -> handle.attach(LoginDao.class).createTable());
     }
 
+    @Override
     public String addSession( int uid ) {
-        return jdbi.withHandle( handle -> handle.attach(LoginDao.class).insertInstance(uid) );
+        return jdbi.withHandle( handle -> handle.attach(LoginDao.class).insertSession(uid) );
     }
 
+    @Override
     public boolean hasSession( String token ) {
         return getUserID(token) != null;
     }
 
+    @Override
+    public void deleteSession( String token ) {
+        jdbi.useHandle(handle -> handle.attach(LoginDao.class).deleteSession(token));
+    }
+
+    @Override
     public Integer getUserID( String token ) {
         return jdbi.withHandle( handle -> handle.attach(LoginDao.class).getUserID(token) ).orElse(null);
     }

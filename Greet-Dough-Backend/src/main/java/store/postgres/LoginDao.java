@@ -23,7 +23,10 @@ public interface LoginDao {
 
     @SqlUpdate("INSERT INTO login (user_token, user_id) VALUES (MD5(random()::text), :user_id);")
     @GetGeneratedKeys("user_token")
-    String insertInstance(@Bind("user_id") int user_id);
+    String insertSession(@Bind("user_id") int user_id);
+
+    @SqlUpdate("DELETE FROM login WHERE user_token = (:user_token);")
+    void deleteSession(@Bind("user_token") String user_token);
 
     @SqlQuery("SELECT user_id FROM login WHERE user_token = (:user_token);")
     Optional<Integer> getUserID(@Bind("user_token") String user_token );
