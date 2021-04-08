@@ -28,6 +28,6 @@ public interface PasswordDao {
     Optional<Integer> isCorrectPassword(@Bind("user_email") String user_email, @Bind("user_pass") String user_pass);
 
     @SqlQuery("SELECT EXISTS( SELECT * FROM passwords WHERE user_email = (:user_email) );")
-    boolean hasPassword(@Bind("user_email") String user_email);
+    boolean hasEmail(@Bind("user_email") String user_email);
 
 }

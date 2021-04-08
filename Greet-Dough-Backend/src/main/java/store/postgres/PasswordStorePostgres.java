@@ -52,7 +52,7 @@ public class PasswordStorePostgres implements PasswordStore {
     }
 
     @Override
-    public void addPassword(String email, int uid, String password) {
+    public void addPassword( String email, int uid, String password ) {
         jdbi.useHandle( handle -> handle.attach(PasswordDao.class).insertPassword(email, uid, password) );
     }
 
@@ -60,13 +60,13 @@ public class PasswordStorePostgres implements PasswordStore {
     //      If there is a match, returns the associated uid;
     //      Otherwise, null
     @Override
-    public Integer getUserID(String email, String password) {
+    public Integer getUserID( String email, String password ) {
         return jdbi.withHandle( handle -> handle.attach(PasswordDao.class).isCorrectPassword(email, password) ).orElse(null);
     }
 
     @Override
-    public boolean hasPassword(String email) {
-        return jdbi.withHandle( handle -> handle.attach(PasswordDao.class).hasPassword(email) );
+    public boolean hasEmail( String email ) {
+        return jdbi.withHandle( handle -> handle.attach(PasswordDao.class).hasEmail(email) );
     }
 
 }
