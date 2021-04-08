@@ -66,19 +66,19 @@ public class CommentStorePostgres implements CommentStore {
     };
 
     @Override
-    public Comment getComment(int ID) {
+    public Comment getComment( int ID ) {
         return null;
     }
 
     // return a list
 
     @Override
-    public void addComment(Comment newComment) {
+    public void addComment( Comment newComment ) {
 
     }
 
     @Override
-    public Comment addComment(String contents, int uid) {
+    public Comment addComment( String contents, int uid ) {
         return null;
     }
 }

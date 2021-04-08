@@ -59,8 +59,8 @@ public class PostStorePostgres implements PostStore {
     }
 
     @Override
-    public Post getPost( int ID ) {
-        return jdbi.withHandle( handle -> handle.attach(PostDao.class).getPost(ID) ).orElse(null);
+    public Post getPost( int pid ) {
+        return jdbi.withHandle( handle -> handle.attach(PostDao.class).getPost(pid) ).orElse(null);
     }
 
     public List<Post> getPost() {
@@ -73,8 +73,8 @@ public class PostStorePostgres implements PostStore {
     }
 
     @Override
-    public boolean hasPost( int ID ) {
-        return jdbi.withHandle( handle -> handle.attach(PostDao.class).containsPost(ID) );
+    public boolean hasPost( int pid ) {
+        return getPost(pid) != null;
     }
 
     @Override

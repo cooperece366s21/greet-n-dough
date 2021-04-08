@@ -21,12 +21,16 @@ public class ImageStorePostgres implements ImageStore {
         // Used to DROP and CREATE the posts, images, users table
         PostStorePostgres.reset();
         ImageStorePostgres.reset();
-        UserStorePostgres.reset();
-        UserStorePostgres.init();
+//        UserStorePostgres.reset();
+//        UserStorePostgres.init();
         ImageStorePostgres.init();
         PostStorePostgres.init();
 
         User newUser = UserStorePostgres.addUser("Tony");
+
+        // Test empty returns
+        System.out.println( ImageStorePostgres.getImage() );
+        System.out.println( ImageStorePostgres.getImage(1) );
 
         // Test adding and retrieving a post
         Post newPost = PostStorePostgres.addPost( "first!", newUser.getID() );
@@ -65,21 +69,21 @@ public class ImageStorePostgres implements ImageStore {
     }
 
     @Override
-    public Image getImage( int ID ) {
-        return jdbi.withHandle( handle -> handle.attach(ImageDao.class).getImage(ID) ).orElse(null);
+    public Image getImage( int iid ) {
+        return jdbi.withHandle( handle -> handle.attach(ImageDao.class).getImage(iid) ).orElse(null);
     }
 
     public List<Image> getImage() {
         return jdbi.withHandle( handle -> handle.attach(ImageDao.class).listImages() );
     }
 
-    public List<Image> makeGallery( int userID ) {
-        return jdbi.withHandle( handle -> handle.attach(ImageDao.class).getGallery(userID) );
+    public List<Image> makeGallery( int uid ) {
+        return jdbi.withHandle( handle -> handle.attach(ImageDao.class).getGallery(uid) );
     }
 
     @Override
-    public boolean hasImage( int ID ) {
-        return jdbi.withHandle( handle -> handle.attach(ImageDao.class).containsImage(ID) );
+    public boolean hasImage( int iid ) {
+        return jdbi.withHandle( handle -> handle.attach(ImageDao.class).containsImage(iid) );
     }
 
     @Override
@@ -91,8 +95,8 @@ public class ImageStorePostgres implements ImageStore {
     }
 
     @Override
-    public void deleteImage( int ID ) {
-        jdbi.useHandle( handle -> handle.attach(ImageDao.class).deleteImage(ID) );
+    public void deleteImage( int iid ) {
+        jdbi.useHandle( handle -> handle.attach(ImageDao.class).deleteImage(iid) );
     }
 
 }

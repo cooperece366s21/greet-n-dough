@@ -12,12 +12,10 @@ public class UserStorePostgres implements UserStore {
     // For testing purposes
     public static void main( String[] args ) {
 
-        UserStorePostgres UserStorePostgres =
-                new UserStorePostgres(
-                        GreetDoughJdbi.create("jdbc:postgresql://localhost:4321/greetdough"));
+        Jdbi jdbi = GreetDoughJdbi.create("jdbc:postgresql://localhost:4321/greetdough");
+        UserStorePostgres UserStorePostgres = new UserStorePostgres(jdbi);
 
         // Used to DROP and CREATE the users table
-
         UserStorePostgres.reset();
         UserStorePostgres.init();
 
@@ -48,8 +46,8 @@ public class UserStorePostgres implements UserStore {
     }
 
     @Override
-    public User getUser( int ID ) {
-        return jdbi.withHandle( handle -> handle.attach(UserDao.class).getUser(ID) ).orElse(null);
+    public User getUser( int uid ) {
+        return jdbi.withHandle( handle -> handle.attach(UserDao.class).getUser(uid) ).orElse(null);
     }
 
     public List<User> getUser() {
@@ -57,21 +55,21 @@ public class UserStorePostgres implements UserStore {
     }
 
     @Override
-    public boolean hasUser( int ID ) {
-        return jdbi.withHandle( handle -> handle.attach(UserDao.class).containsUser(ID) );
+    public boolean hasUser( int uid ) {
+        return getUser(uid) != null;
     }
 
     @Override
     public User addUser( String name ) {
 
-        int ID = jdbi.withHandle( handle -> handle.attach(UserDao.class).insertUser(name) );
-        return getUser(ID);
+        int uid = jdbi.withHandle( handle -> handle.attach(UserDao.class).insertUser(name) );
+        return getUser(uid);
 
     }
 
     @Override
-    public void deleteUser( int ID ) {
-        jdbi.useHandle( handle -> handle.attach(UserDao.class).deleteUser(ID) );
+    public void deleteUser( int uid ) {
+        jdbi.useHandle( handle -> handle.attach(UserDao.class).deleteUser(uid) );
     }
 
 }

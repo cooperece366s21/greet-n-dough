@@ -18,22 +18,18 @@ public interface UserDao {
 
     @SqlUpdate("CREATE TABLE IF NOT EXISTS users( " +
             "user_id SERIAL PRIMARY KEY " + "NOT NULL, " +
-            "name TEXT " +                  "NOT NULL" +
+            "user_name TEXT " +             "NOT NULL" +
             ");")
     void createTable();
 
-    @SqlUpdate("INSERT INTO users (name) VALUES (:name);")
+    @SqlUpdate("INSERT INTO users (user_name) VALUES (:user_name);")
     @GetGeneratedKeys("user_id")
-    int insertUser(@Bind("name") String name);
+    int insertUser(@Bind("user_name") String user_name);
 
     @SqlUpdate("DELETE FROM users WHERE user_id = (:user_id);")
     void deleteUser(@Bind("user_id") int user_id);
 
-    @SqlQuery("SELECT EXISTS( " +
-            "SELECT * from users WHERE user_id = (:user_id));")
-    Boolean containsUser(@Bind("user_id") int user_id);
-
-    @SqlQuery("SELECT * FROM users ORDER BY name")
+    @SqlQuery("SELECT * FROM users ORDER BY user_name")
     List<User> listUsers();
 
     @SqlQuery("SELECT * FROM users WHERE user_id = (:user_id)")

@@ -48,7 +48,7 @@ public class GreetDoughJdbi {
         public User map( final ResultSet rs, final StatementContext ctx ) throws SQLException {
 
             int ID = rs.getInt("user_id");
-            String name = rs.getString("name");
+            String name = rs.getString("user_name");
 
             return new User( name, ID );
 

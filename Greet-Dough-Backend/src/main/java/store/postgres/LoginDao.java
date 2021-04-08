@@ -6,7 +6,6 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
 import java.util.Optional;
-import java.util.OptionalInt;
 
 public interface LoginDao {
 
@@ -25,9 +24,6 @@ public interface LoginDao {
     @SqlUpdate("INSERT INTO login (user_token, user_id) VALUES (MD5(random()::text), :user_id);")
     @GetGeneratedKeys("user_token")
     String insertInstance(@Bind("user_id") int user_id);
-
-    @SqlQuery("SELECT EXISTS( SELECT * FROM login WHERE user_token = (:user_token) );")
-    boolean containsInstance(@Bind("user_token") String user_token );
 
     @SqlQuery("SELECT user_id FROM login WHERE user_token = (:user_token);")
     Optional<Integer> getUserID(@Bind("user_token") String user_token );

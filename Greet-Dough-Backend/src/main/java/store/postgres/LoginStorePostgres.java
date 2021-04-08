@@ -20,13 +20,13 @@ public class LoginStorePostgres {
         LoginStorePostgres.init();
 
         // Create a user and get a token for that user
-        User yeet = UserStorePostgres.addUser("yeet");
-        String token = LoginStorePostgres.addInstance( yeet.getID() );
+        User newUser = UserStorePostgres.addUser("Dan");
+        String token = LoginStorePostgres.addSession( newUser.getID() );
 
         // Get the user ID using the token
         Integer uid = LoginStorePostgres.getUserID( token );
 
-        System.out.println( LoginStorePostgres.hasInstance(token) );
+        System.out.println( LoginStorePostgres.hasSession(token) );
         System.out.println( LoginStorePostgres.getUserID("abc") );
         System.out.println(uid);
         System.out.println(token);
@@ -47,12 +47,12 @@ public class LoginStorePostgres {
         jdbi.useHandle(handle -> handle.attach(LoginDao.class).createTable());
     }
 
-    public String addInstance( int userID ) {
-        return jdbi.withHandle( handle -> handle.attach(LoginDao.class).insertInstance(userID) );
+    public String addSession( int uid ) {
+        return jdbi.withHandle( handle -> handle.attach(LoginDao.class).insertInstance(uid) );
     }
 
-    public boolean hasInstance( String token ) {
-        return jdbi.withHandle( handle -> handle.attach(LoginDao.class).containsInstance(token) );
+    public boolean hasSession( String token ) {
+        return getUserID(token) != null;
     }
 
     public Integer getUserID( String token ) {
