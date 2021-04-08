@@ -34,7 +34,12 @@ public class PasswordStorePostgres implements PasswordStore {
         System.out.println( PasswordStorePostgres.getUserID(email, pass) );
 
         // Test adding a second password for the same email
-        PasswordStorePostgres.addPassword(email, newUser.getID(), "lol");
+        try {
+            PasswordStorePostgres.addPassword(email, newUser.getID(), "lol");
+            System.out.println("Should not happen");
+        } catch( UnableToExecuteStatementException e ) {
+            System.out.println("Duplicate Email");
+        }
 
         // Test deleting the user
         UserStorePostgres.deleteUser( userAfterWrite.getID() );
@@ -57,12 +62,12 @@ public class PasswordStorePostgres implements PasswordStore {
     }
 
     @Override
-    public void addPassword( String email, int uid, String password ) {
+    public void addPassword( String email, int uid, String password ) throws UnableToExecuteStatementException {
 
         try {
             jdbi.useHandle( handle -> handle.attach(PasswordDao.class).insertPassword(email, uid, password) );
         } catch( UnableToExecuteStatementException e ) {
-            System.err.println("Error: Email already exists.\n" + e);
+            throw new UnableToExecuteStatementException( e.getMessage() );
         }
 
     }

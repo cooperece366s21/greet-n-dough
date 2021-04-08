@@ -1,4 +1,5 @@
 import model.*;
+import org.jdbi.v3.core.statement.UnableToExecuteStatementException;
 import utility.Pair;
 import store.model.*;
 
@@ -111,29 +112,47 @@ public class Handler {
     }
 
     public int createUser( Request req, Response res ) {
+
         res.type("application/json");
         Properties data = gson.fromJson(req.body(), Properties.class);
         String email = data.getProperty("email");
         String username = data.getProperty("username");
         String password = data.getProperty("password");
-        System.out.println(email +", "+ username +", "+ password);
+        System.out.println(email + ", " + username + ", " + password);
 
-        if ( passwordStore.hasEmail(email) ){
+        // Check if email has been used already
+        if ( passwordStore.hasEmail(email) ) {
             res.status(409);
             return res.status();
         }
 
         User tempUser = userStore.addUser(username);
-        passwordStore.addPassword(email, tempUser.getID(),password );
+
+        // Try to add a password associated with the email
+        //      Catch exception if the email already has associated password
+        try {
+            passwordStore.addPassword(email, tempUser.getID(), password ); ;
+        } catch( UnableToExecuteStatementException e ) {
+
+            System.out.println( e.getMessage() );
+            res.status(409);
+            return res.status();
+
+        }
+
+//        User tempUser = userStore.addUser(username);
+
 
         System.out.println( "User Created: " + tempUser.getName() + ", " + tempUser.getID() );
         System.out.println( "PASSWORD STORED\n");
 
         res.status(200);
         return res.status();
+
     }
 
     public int deleteUser( Request req, Response res ) {
+
         int uid = Integer.parseInt( req.params(":id") );
         User tempUser = userStore.getUser(uid);
 
