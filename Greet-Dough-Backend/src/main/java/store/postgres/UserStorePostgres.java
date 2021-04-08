@@ -61,7 +61,6 @@ public class UserStorePostgres implements UserStore {
 
     @Override
     public User addUser( String name ) {
-
         int uid = jdbi.withHandle( handle -> handle.attach(UserDao.class).insertUser(name) );
         return getUser(uid);
 

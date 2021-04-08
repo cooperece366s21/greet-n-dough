@@ -28,14 +28,14 @@ class RegisterForm extends React.Component<any, any>{
         redirect: null,
     }
 
-    registerWrapper( username:string ){
-        let res = register( username )
+    registerWrapper( email:string, username:string, password:string ){
+        let res = register( email, username, password )
         if ( res ) {
             alert("Registered!\nRedirecting to login page...");
             this.props.history.push('/login');
         }
         else {
-            alert("oopsie!");
+            alert("Response: " + JSON.stringify(res) );
             this.setState( {invalid: true});
         }
     }
@@ -72,7 +72,11 @@ class RegisterForm extends React.Component<any, any>{
                         <HStack marginTop={10}>
 
                             <Button colorScheme={'yellow'} size={"md"} _hover={ {bg: 'yellow.500'} }
-                                onClick={ () => this.registerWrapper(this.state.username) }
+                                onClick={ () => this.registerWrapper(
+                                    this.state.email,
+                                    this.state.username,
+                                    this.state.password,
+                                ) }
                             >
                                 Register
                             </Button>

@@ -21,17 +21,18 @@ public class Handler {
     private final FollowStore followStore;
     private final PostCommentStore postCommentStore;
     private final CommentStore commentStore;
+    private final PasswordStore passwordStore;
     private final Gson gson = new Gson();
 
-    public Handler( UserStore userStore,
-                    PostStore postStore,
-                    ImageStore imageStore,
-                    LikeStore likeStore,
-                    CommentStore commentStore,
-                    SubStore subStore,
-                    FollowStore followStore,
-                    PostCommentStore postCommentStore
-    ) {
+    public Handler(UserStore userStore,
+                   PostStore postStore,
+                   ImageStore imageStore,
+                   LikeStore likeStore,
+                   CommentStore commentStore,
+                   SubStore subStore,
+                   FollowStore followStore,
+                   PostCommentStore postCommentStore,
+                   PasswordStore passwordStore) {
                        
         this.userStore = userStore;
         this.postStore = postStore;
@@ -41,7 +42,7 @@ public class Handler {
         this.subStore = subStore;
         this.followStore = followStore;
         this.postCommentStore = postCommentStore;
-
+        this.passwordStore = passwordStore;
     }
 
     // PRIVATE HELPER FUNCTIONS
@@ -111,14 +112,19 @@ public class Handler {
 
     public int createUser( Request req, Response res ) {
         res.type("application/json");
-        System.out.println("Hello world!");
         Properties data = gson.fromJson(req.body(), Properties.class);
+        String email = data.getProperty("email");
+        String username = data.getProperty("username");
+        String password = data.getProperty("password");
+        System.out.println(email +", "+ username +", "+ password);
 
-        String name = data.getProperty("name");
-        User tempUser = userStore.addUser(name);
+        User tempUser = userStore.addUser(username);
+        passwordStore.addPassword(email, tempUser.getID(),password );
+
         System.out.println( "User Created: " + tempUser.getName() + ", " + tempUser.getID() );
-        res.status(200);
+        System.out.println( "PASSWORD STORED\n");
 
+        res.status(200);
         return res.status();
     }
 

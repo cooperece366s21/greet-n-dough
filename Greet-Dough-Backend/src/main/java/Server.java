@@ -1,11 +1,9 @@
 import org.jdbi.v3.core.Jdbi;
 import store.impl.*;
-import store.postgres.GreetDoughJdbi;
-import store.postgres.ImageStorePostgres;
-import store.postgres.PostStorePostgres;
-import store.postgres.UserStorePostgres;
+import store.postgres.*;
 import store.relation.*;
 import store.model.*;
+
 
 import com.google.gson.Gson;
 import static spark.Spark.*;
@@ -16,6 +14,7 @@ public class Server {
     private static UserStore userStore;
     private static PostStore postStore;
     private static ImageStore imageStore;
+    private static PasswordStore passwordStore;
     private static LikeStore likeStore = new LikeStoreImpl();
     private static CommentStore commentStore = new CommentStoreImpl();
     private static SubStore subStore = new SubStoreImpl();
@@ -68,6 +67,7 @@ public class Server {
         userStore = new UserStorePostgres(jdbi);
         postStore = new PostStorePostgres(jdbi);
         imageStore = new ImageStorePostgres(jdbi);
+        passwordStore = new PasswordStorePostgres(jdbi);
 
         Handler handler = new Handler(
                 Server.userStore,
@@ -77,7 +77,9 @@ public class Server {
                 Server.commentStore,
                 Server.subStore,
                 Server.followStore,
-                Server.postCommentStore );
+                Server.postCommentStore,
+                Server.passwordStore
+                );
 
         // USER ROUTES
         /////////////////
