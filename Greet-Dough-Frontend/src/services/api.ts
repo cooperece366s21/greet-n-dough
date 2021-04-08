@@ -1,9 +1,7 @@
 export const BACKEND_URL = "http://localhost:5432";
 
 export async function register(  email:string, username:string, password:string ) {
-
-    alert( "JSON BODY IS THIS: " + JSON.stringify({ email, username, password }));
-
+    
     const res = await fetch(`${BACKEND_URL}/users/`, {
         method: "post",
         mode: "cors",
@@ -16,13 +14,36 @@ export async function register(  email:string, username:string, password:string 
     if ( res.ok ) {
         return 200;
     } else {
-        return -1;
+        // maybe some other code here for specific errors?
+        return res.status;
     }
 
 }
 
+export async function login( email:string, password:string ) {
+    alert( "REQUEST: " + JSON.stringify( {email, password}) );
+
+    const res = await fetch(`${BACKEND_URL}/login`, {
+        method: "post",
+        mode: "cors",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email, password })
+    });
+
+    alert(res)
+
+    if ( res.ok ) {
+        return ;
+    } else {
+        return false;
+    }
+}
+
 let exports = {
-    register
+    register,
+    login
 }
 
 export default exports

@@ -118,6 +118,11 @@ public class Handler {
         String password = data.getProperty("password");
         System.out.println(email +", "+ username +", "+ password);
 
+        if ( passwordStore.hasEmail(email) ){
+            res.status(409);
+            return res.status();
+        }
+
         User tempUser = userStore.addUser(username);
         passwordStore.addPassword(email, tempUser.getID(),password );
 

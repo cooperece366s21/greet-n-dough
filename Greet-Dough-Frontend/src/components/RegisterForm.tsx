@@ -28,15 +28,22 @@ class RegisterForm extends React.Component<any, any>{
         redirect: null,
     }
 
-    registerWrapper( email:string, username:string, password:string ){
-        let res = register( email, username, password )
-        if ( res ) {
-            alert("Registered!\nRedirecting to login page...");
+    async registerWrapper(email: string, username: string, password: string) {
+        let res = await register(email, username, password)
+
+        if ( res === 200 ) {
+            alert("Registered!")
             this.props.history.push('/login');
         }
+
+        else if ( res === 409 ){
+            alert("Email already exists")
+            this.setState({invalid: true});
+        }
+
         else {
-            alert("Response: " + JSON.stringify(res) );
-            this.setState( {invalid: true});
+            alert("Error Code " + res);
+            this.setState( {invalid: true} );
         }
     }
 
