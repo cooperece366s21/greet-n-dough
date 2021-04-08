@@ -22,6 +22,7 @@ public class Handler {
     private final PostCommentStore postCommentStore;
     private final CommentStore commentStore;
     private final PasswordStore passwordStore;
+    private final LoginStore loginStore;
     private final Gson gson = new Gson();
 
     public Handler(UserStore userStore,
@@ -32,7 +33,8 @@ public class Handler {
                    SubStore subStore,
                    FollowStore followStore,
                    PostCommentStore postCommentStore,
-                   PasswordStore passwordStore) {
+                   PasswordStore passwordStore,
+                   LoginStore loginStore) {
                        
         this.userStore = userStore;
         this.postStore = postStore;
@@ -43,6 +45,7 @@ public class Handler {
         this.followStore = followStore;
         this.postCommentStore = postCommentStore;
         this.passwordStore = passwordStore;
+        this.loginStore = loginStore;
     }
 
     // PRIVATE HELPER FUNCTIONS
@@ -116,6 +119,7 @@ public class Handler {
         String email = data.getProperty("email");
         String username = data.getProperty("username");
         String password = data.getProperty("password");
+
         System.out.println(email +", "+ username +", "+ password);
 
         if ( passwordStore.hasEmail(email) ){
@@ -151,6 +155,25 @@ public class Handler {
 
         }
 
+    }
+
+    public int login( Request req, Response res ) {
+        res.type("application/json");
+        Properties data = gson.fromJson(req.body(), Properties.class);
+        String email = data.getProperty("email");
+        String password = data.getProperty("password");
+
+        System.out.println("Logging in: " + email +", "+ password);
+
+        int uid = passwordStore.getUserID(email, password); // check login
+        System.out.println(uid+" Logged in!");
+
+        String cookie = loginStore.addSession(uid);
+        res.body( cookie );
+
+        System.out.println( res.body() );
+        res.status(200);
+        return res.status();
     }
 
     // USER RELATION ACTIONS

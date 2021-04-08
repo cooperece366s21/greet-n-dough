@@ -1,7 +1,7 @@
 export const BACKEND_URL = "http://localhost:5432";
 
 export async function register(  email:string, username:string, password:string ) {
-    
+
     const res = await fetch(`${BACKEND_URL}/users/`, {
         method: "post",
         mode: "cors",
@@ -21,7 +21,6 @@ export async function register(  email:string, username:string, password:string 
 }
 
 export async function login( email:string, password:string ) {
-    alert( "REQUEST: " + JSON.stringify( {email, password}) );
 
     const res = await fetch(`${BACKEND_URL}/login`, {
         method: "post",
@@ -32,12 +31,14 @@ export async function login( email:string, password:string ) {
         body: JSON.stringify({ email, password })
     });
 
-    alert(res)
+    alert( JSON.stringify( res.body ) )
 
     if ( res.ok ) {
-        return ;
+        document.cookie= JSON.stringify(res.body)
+        return 200;
     } else {
-        return false;
+        // maybe some other code here for specific errors?
+        return res.status;
     }
 }
 
