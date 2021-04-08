@@ -60,7 +60,7 @@ public class Server {
         get("/users/:id/", handler::getUser, gson::toJson);
 
         // Creates a new user
-        // curl -d "name=Tony" -X post localhost:5432/users/
+        // curl -H "Content-Type: application/json" --data "{"name":"Josh"}" -X post localhost:5432/users/
         post("/users/", handler::createUser, gson::toJson );
 
         // Deletes user given UserID

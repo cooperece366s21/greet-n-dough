@@ -5,6 +5,8 @@ import store.model.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Properties;
+
 import com.google.gson.Gson;
 import spark.Request;
 import spark.Response;
@@ -108,19 +110,19 @@ public class Handler {
     }
 
     public Integer createUser( Request req, Response res ) {
+        res.type("application/json");
+        System.out.println("Hello world!");
+        Properties data = gson.fromJson(req.body(), Properties.class);
 
-        String name = req.queryParams("name");
+        String name = data.getProperty("name");
         User tempUser = userStore.addUser(name);
-
         System.out.println( "User Created: " + tempUser.getName() + ", " + tempUser.getID() );
-
         res.status(200);
-        return 0;
 
+        return null;
     }
 
     public int deleteUser( Request req, Response res ) {
-
         int uid = Integer.parseInt( req.params(":id") );
         User tempUser = userStore.getUser(uid);
 
