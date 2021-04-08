@@ -6,14 +6,16 @@ import {
     Center,
     Input,
     Button,
-    Flex,
+    Text,
 } from "@chakra-ui/react";
-import api, {register} from "../services/api"
-import {isNull} from "util";
+import api, {register} from "../services/api";
+import { withRouter } from 'react-router-dom';
 
 type RegisterState = {
+    email: string;
     username: string;
     password: string;
+    hasError: boolean;
 };
 
 class RegisterForm extends React.Component<any, any>{
@@ -22,10 +24,24 @@ class RegisterForm extends React.Component<any, any>{
         email : "",
         username : "",
         password : "",
+        invalid: false,
+        redirect: null,
+    }
+
+    registerWrapper( username:string ){
+        let res = register( username )
+        if ( res ) {
+            alert("Registered!\nRedirecting to login page...");
+            this.props.history.push('/login');
+        }
+        else {
+            alert("oopsie!");
+            this.setState( {invalid: true});
+        }
     }
 
     render() {
-        // @ts-ignore
+
         return(
 
             <Center>
@@ -36,15 +52,18 @@ class RegisterForm extends React.Component<any, any>{
 
                         <Input placeholder={'E-mail'}
                                onChange={ e => this.setState( {email: e.target.value }) }
+                               isInvalid={this.state.invalid}
                                size={'lg'} errorBorderCOlor={'tomato'} id={'email'}
                         />
 
                         <Input placeholder={'Username'}
                                onChange={ e => this.setState( {username: e.target.value }) }
+                               isInvalid={this.state.invalid}
                                size={'lg'} errorBorderCOlor={'tomato'} id={'user'}
                         />
                         <Input placeholder={'Password'} value={this.state.password}
                                onChange={ e => this.setState( {password: e.target.value}) }
+                               isInvalid={this.state.invalid}
                                size={'lg'} errorBorderCOlor={'tomato'} id={'password'}
                         />
                     </VStack>
@@ -53,12 +72,13 @@ class RegisterForm extends React.Component<any, any>{
                         <HStack marginTop={10}>
 
                             <Button colorScheme={'yellow'} size={"md"} _hover={ {bg: 'yellow.500'} }
-                                onClick={ () => register(this.state.username) }
+                                onClick={ () => this.registerWrapper(this.state.username) }
                             >
                                 Register
                             </Button>
 
                         </HStack>
+
                     </Box>
                     
                 </Box>
@@ -66,7 +86,7 @@ class RegisterForm extends React.Component<any, any>{
             </Center>
         )
     }
-
 }
 
-export default RegisterForm;
+
+export default withRouter(RegisterForm);

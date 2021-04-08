@@ -8,9 +8,23 @@ import {
     Link
 } from "react-router-dom";
 
-function Header() {
+class Header extends React.Component<any, any> {
 
-    return (
+    state = {
+        searchFor : "",
+    }
+
+    search(e:any) {
+        alert("POG")
+        if (e.key === 'Enter') {
+            alert("Searching for " + this.state.searchFor)
+        }
+
+    }
+
+
+    render() {
+        return (
             <div className="header">
 
                 <div className="inner left">
@@ -22,13 +36,24 @@ function Header() {
                 <div className="inner mid">
                     <ul className="navigation">
 
-                        <Link to="/"> <li> Home </li></Link>
-                        <Link to="/feed"> <li> Feed </li></Link>
-                        <Link to="/about"> <li> About </li></Link>
+                        <Link to="/">
+                            <li> Home</li>
+                        </Link>
+                        <Link to="/feed">
+                            <li> Feed</li>
+                        </Link>
+                        <Link to="/about">
+                            <li> About</li>
+                        </Link>
 
                         <div className="search_container">
                             <div className="search">
-                                <input type="text" placeholder="Search for user...">
+                                <input
+                                    type="text"
+                                    placeholder="Search for user..."
+                                    onChange={ e => this.setState( {searchFor: e.target.value }) }
+                                    onKeyDown={ e => this.search(e) }
+                                >
                                 </input>
                             </div>
                         </div>
@@ -41,7 +66,8 @@ function Header() {
                 </div>
 
             </div>
-    )
+        )
+    }
 
 }
 

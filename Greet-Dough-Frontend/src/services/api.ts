@@ -14,9 +14,10 @@ export async function register(  name:string ) {
     });
 
     if ( res.ok ) {
-        alert("Registered!")
+        return 200;
     } else {
         alert("Response: " + JSON.stringify(res) );
+        return -1;
     }
 
 }
