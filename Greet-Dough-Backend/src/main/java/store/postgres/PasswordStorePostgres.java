@@ -1,7 +1,5 @@
 package store.postgres;
 
-import org.jdbi.v3.core.statement.UnableToExecuteStatementException;
-import org.postgresql.util.PSQLException;
 import store.model.PasswordStore;
 import model.User;
 import org.jdbi.v3.core.Jdbi;
@@ -27,18 +25,21 @@ public class PasswordStorePostgres implements PasswordStore {
         // Add the user with an associated email and password
         String email = "SweetNDough@gmail.com";
         String pass = "password123";
-        PasswordStorePostgres.addPassword( email, newUser.getID(), pass );
+        if ( PasswordStorePostgres.addPassword( email, newUser.getID(), pass ) == 0 ) {
+            System.err.println("Duplicate Email");
+        } else {
+            System.out.println("Password Insert Successful");
+        }
 
         // Check if the password is correct
         System.out.println( PasswordStorePostgres.hasEmail(email) );
         System.out.println( PasswordStorePostgres.getUserID(email, pass) );
 
         // Test adding a second password for the same email
-        try {
-            PasswordStorePostgres.addPassword(email, newUser.getID(), "lol");
-            System.out.println("Should not happen");
-        } catch( UnableToExecuteStatementException e ) {
+        if ( PasswordStorePostgres.addPassword(email, newUser.getID(), "lol") == 0 ) {
             System.out.println("Duplicate Email");
+        } else {
+            System.err.println("SHOULD NOT HAPPEN!!!");
         }
 
         // Test deleting the user
@@ -62,14 +63,8 @@ public class PasswordStorePostgres implements PasswordStore {
     }
 
     @Override
-    public void addPassword( String email, int uid, String password ) throws UnableToExecuteStatementException {
-
-        try {
-            jdbi.useHandle( handle -> handle.attach(PasswordDao.class).insertPassword(email, uid, password) );
-        } catch( UnableToExecuteStatementException e ) {
-            throw new UnableToExecuteStatementException( e.getMessage() );
-        }
-
+    public int addPassword( String email, int uid, String password ) {
+        return jdbi.withHandle( handle -> handle.attach(PasswordDao.class).insertPassword(email, uid, password) );
     }
 
     // Checks if the email + password match an entry in the DB

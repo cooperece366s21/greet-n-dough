@@ -131,23 +131,18 @@ public class Handler {
 
         User tempUser = userStore.addUser(username);
 
-        // Try to add a password associated with the email
-        //      Catch exception if the email already has associated password
-        try {
-            passwordStore.addPassword(email, tempUser.getID(), password ); ;
-        } catch( UnableToExecuteStatementException e ) {
+        // Attempt to add a password associated with the email
+        //      If return value is 0, attempt was unsuccessful
+        if ( passwordStore.addPassword(email, tempUser.getID(), password ) == 0 ) {
 
-            System.out.println( e.getMessage() );
+            System.err.println( "Cannot add password for email" + email );
             res.status(409);
             return res.status();
 
         }
 
-//        User tempUser = userStore.addUser(username);
-
-
         System.out.println( "User Created: " + tempUser.getName() + ", " + tempUser.getID() );
-        System.out.println( "PASSWORD STORED\n");
+        System.out.println( "PASSWORD STORED\n" );
 
         res.status(200);
         return res.status();

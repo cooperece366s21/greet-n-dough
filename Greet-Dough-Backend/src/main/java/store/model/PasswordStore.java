@@ -1,10 +1,10 @@
 package store.model;
 
-import org.jdbi.v3.core.statement.UnableToExecuteStatementException;
-
 public interface PasswordStore {
 
-    void addPassword( String email, int uid, String password ) throws UnableToExecuteStatementException;
+    // Returns the number of rows affected
+    //      E.g. If the email already exists, will return 0
+    int addPassword( String email, int uid, String password );
 
     // Get the uid given an email and a password
     Integer getUserID( String email, String password );
