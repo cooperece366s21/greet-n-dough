@@ -28,12 +28,12 @@ public class PasswordStorePostgres implements PasswordStore {
         PasswordStorePostgres.addPassword( email, newUser.getID(), pass );
 
         // Check if the password is correct
-        System.out.println( PasswordStorePostgres.hasPassword(email) );
+        System.out.println( PasswordStorePostgres.hasEmail(email) );
         System.out.println( PasswordStorePostgres.getUserID(email, pass) );
 
         // Test deleting the user
         UserStorePostgres.deleteUser( userAfterWrite.getID() );
-        System.out.println( PasswordStorePostgres.hasPassword(email) );
+        System.out.println( PasswordStorePostgres.hasEmail(email) );
 
     }
 
