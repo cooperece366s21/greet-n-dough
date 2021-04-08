@@ -1,5 +1,7 @@
 package store.postgres;
 
+import org.jdbi.v3.core.statement.UnableToExecuteStatementException;
+import org.postgresql.util.PSQLException;
 import store.model.PasswordStore;
 import model.User;
 import org.jdbi.v3.core.Jdbi;
@@ -31,6 +33,9 @@ public class PasswordStorePostgres implements PasswordStore {
         System.out.println( PasswordStorePostgres.hasEmail(email) );
         System.out.println( PasswordStorePostgres.getUserID(email, pass) );
 
+        // Test adding a second password for the same email
+        PasswordStorePostgres.addPassword(email, newUser.getID(), "lol");
+
         // Test deleting the user
         UserStorePostgres.deleteUser( userAfterWrite.getID() );
         System.out.println( PasswordStorePostgres.hasEmail(email) );
@@ -53,7 +58,13 @@ public class PasswordStorePostgres implements PasswordStore {
 
     @Override
     public void addPassword( String email, int uid, String password ) {
-        jdbi.useHandle( handle -> handle.attach(PasswordDao.class).insertPassword(email, uid, password) );
+
+        try {
+            jdbi.useHandle( handle -> handle.attach(PasswordDao.class).insertPassword(email, uid, password) );
+        } catch( UnableToExecuteStatementException e ) {
+            System.err.println("Error: Email already exists.\n" + e);
+        }
+
     }
 
     // Checks if the email + password match an entry in the DB
