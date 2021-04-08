@@ -31,8 +31,8 @@ function Home(){
             {/*        </Text>*/}
 
             {/*</Center>*/}
-
             {/*Images*/}
+
             <Center>
                 <Box w={'70%'} bg={'sandybrown'} h={'500px'}>
 
