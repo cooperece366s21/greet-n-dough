@@ -109,7 +109,7 @@ public class Handler {
 
     }
 
-    public Integer createUser( Request req, Response res ) {
+    public int createUser( Request req, Response res ) {
         res.type("application/json");
         System.out.println("Hello world!");
         Properties data = gson.fromJson(req.body(), Properties.class);
@@ -119,7 +119,7 @@ public class Handler {
         System.out.println( "User Created: " + tempUser.getName() + ", " + tempUser.getID() );
         res.status(200);
 
-        return null;
+        return res.status();
     }
 
     public int deleteUser( Request req, Response res ) {

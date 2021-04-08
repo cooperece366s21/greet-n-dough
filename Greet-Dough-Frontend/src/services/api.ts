@@ -2,11 +2,11 @@ export const BACKEND_URL = "http://localhost:5432";
 
 export async function register(  name:string ) {
 
-    alert( "JSON BODY IS THIS: " + JSON.stringify({ name }));
+    // alert( "JSON BODY IS THIS: " + JSON.stringify({ name }));
 
     const res = await fetch(`${BACKEND_URL}/users/`, {
         method: "post",
-        mode: "no-cors",
+        mode: "cors",
         headers: {
             "Content-Type": "application/json"
         },
@@ -16,9 +16,8 @@ export async function register(  name:string ) {
     if ( res.ok ) {
         alert("Registered!")
     } else {
-        alert("Status code: " + res.status);
+        alert("Response: " + JSON.stringify(res) );
     }
-
 
 }
 

@@ -36,6 +36,33 @@ public class Server {
         port(5432);
         init();
 
+        // Copy pasted from
+        // https://gist.github.com/saeidzebardast/e375b7d17be3e0f4dddf
+        // Changes all headers from all endpoints to allow CORS, which is necessary
+        // for the front end to be able to receive the responses properly.
+        options("/*",
+                (request, response) -> {
+
+                    String accessControlRequestHeaders = request
+                            .headers("Access-Control-Request-Headers");
+                    if (accessControlRequestHeaders != null) {
+                        response.header("Access-Control-Allow-Headers",
+                                accessControlRequestHeaders);
+                    }
+
+                    String accessControlRequestMethod = request
+                            .headers("Access-Control-Request-Method");
+                    if (accessControlRequestMethod != null) {
+                        response.header("Access-Control-Allow-Methods",
+                                accessControlRequestMethod);
+                    }
+
+                    return "OK";
+                });
+
+        before((request, response) -> response.header("Access-Control-Allow-Origin", "*"));
+
+
         Jdbi jdbi = GreetDoughJdbi.create("jdbc:postgresql://localhost:4321/greetdough");
 
         userStore = new UserStorePostgres(jdbi);
