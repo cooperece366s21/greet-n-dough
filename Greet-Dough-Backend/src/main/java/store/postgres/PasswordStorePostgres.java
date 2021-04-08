@@ -3,6 +3,7 @@ package store.postgres;
 import model.User;
 import org.jdbi.v3.core.Jdbi;
 
+/////////////////////////////////////////////// CHANGE HASH TO SHA256
 public class PasswordStorePostgres {
 
     // For testing purposes
@@ -16,19 +17,22 @@ public class PasswordStorePostgres {
         PasswordStorePostgres.reset();
         PasswordStorePostgres.init();
 
-        // Create a user and add an associated password
+        // Create a user
         User newUser = UserStorePostgres.addUser("B. Ryan");
         User userAfterWrite = UserStorePostgres.getUser( newUser.getID() );
+
+        // Add the user with an associated email and password
+        String email = "SweetNDough@gmail.com";
         String pass = "password123";
-        PasswordStorePostgres.addPassword( newUser.getID(), pass );
+        PasswordStorePostgres.addPassword( email, newUser.getID(), pass );
 
         // Check if the password is correct
-        System.out.println( PasswordStorePostgres.hasPassword( newUser.getID() ) );
-        System.out.println( PasswordStorePostgres.isCorrectPassword(newUser.getID(), pass) );
+        System.out.println( PasswordStorePostgres.hasPassword(email) );
+        System.out.println( PasswordStorePostgres.getUserID(email, pass) );
 
         // Test deleting the user
         UserStorePostgres.deleteUser( userAfterWrite.getID() );
-        System.out.println( PasswordStorePostgres.hasPassword( newUser.getID() ) );
+        System.out.println( PasswordStorePostgres.hasPassword(email) );
 
     }
 
@@ -46,17 +50,20 @@ public class PasswordStorePostgres {
         jdbi.useHandle(handle -> handle.attach(PasswordDao.class).createTable());
     }
 
-    public void addPassword( int uid, String password ) {
-        jdbi.useHandle( handle -> handle.attach(PasswordDao.class).insertPassword(uid, password) );
+    public void addPassword( String email, int uid, String password ) {
+        jdbi.useHandle( handle -> handle.attach(PasswordDao.class).insertPassword(email, uid, password) );
     }
 
-    public boolean isCorrectPassword( int uid, String password ) {
-        return jdbi.withHandle( handle -> handle.attach(PasswordDao.class).isCorrectPassword(uid, password) );
+    // Checks if the email + password match an entry in the DB
+    //      If there is a match, returns the associated uid;
+    //      Otherwise, null
+    public Integer getUserID( String email, String password ) {
+        return jdbi.withHandle( handle -> handle.attach(PasswordDao.class).isCorrectPassword(email, password) ).orElse(null);
     }
 
     // Checks if user already has a stored password
-    public boolean hasPassword( int uid ) {
-        return jdbi.withHandle( handle -> handle.attach(PasswordDao.class).hasPassword(uid) );
+    public boolean hasPassword( String email ) {
+        return jdbi.withHandle( handle -> handle.attach(PasswordDao.class).hasPassword(email) );
     }
 
 }
