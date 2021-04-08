@@ -20,6 +20,7 @@ public class Server {
     private static SubStore subStore = new SubStoreImpl();
     private static FollowStore followStore = new FollowStoreImpl();
     private static PostCommentStore postCommentStore = new PostCommentStoreImpl();
+    private static LoginStore loginStore;
 
     private static Gson gson = new Gson();
 
@@ -68,6 +69,7 @@ public class Server {
         postStore = new PostStorePostgres(jdbi);
         imageStore = new ImageStorePostgres(jdbi);
         passwordStore = new PasswordStorePostgres(jdbi);
+        loginStore = new LoginStorePostgres(jdbi);
 
         Handler handler = new Handler(
                 Server.userStore,
@@ -78,7 +80,8 @@ public class Server {
                 Server.subStore,
                 Server.followStore,
                 Server.postCommentStore,
-                Server.passwordStore
+                Server.passwordStore,
+                Server.loginStore
                 );
 
         // USER ROUTES
@@ -87,6 +90,9 @@ public class Server {
         // Returns user given an id
         // curl localhost:5432/users/1/
         get("/users/:id/", handler::getUser, gson::toJson);
+
+        // curl -H "Content-Type: application/json" --data "{"email":"a@gmail.com", "password":"123"}" localhost:5432/login
+        post("/login", handler::login, gson::toJson);
 
         // Creates a new user
         // curl -H "Content-Type: application/json" --data "{"name":"Josh"}" -X post localhost:5432/users/
