@@ -39,16 +39,34 @@ public interface LikeDao {
     @SqlUpdate("DROP TABLE IF EXISTS likes;")
     void resetTable();
 
+    // is array agg on the constraint possible?
+    // instead can i just array agg after? yes, yes you can with a group by
     @SqlUpdate("CREATE TABLE IF NOT EXISTS likes( " +
             "post_id INT " +        "NOT NULL, " +
-            "user_id INT[] " +      "NOT NULL, " +
-            "PRIMARY KEY(user_id), " +
+            "user_id INT " +      "NOT NULL, " +
+            "PRIMARY KEY(post_id), " +
             "CONSTRAINT fk_user " + "FOREIGN KEY(user_id) " +
                 "REFERENCES users(user_id) " + "ON DELETE CASCADE " +
-            "CONSTRAINT fk_post " + "FOREIGN KEY(post_id) " +
-                "REFERENCES post(post_id) " + "ON DELETE CASCADE " +
+            //"CONSTRAINT fk_post " + "FOREIGN KEY(post_id) " +
+            //    "REFERENCES posts(post_id) " + "ON DELETE CASCADE " +
             ");")
     void createTable();
 
+    @SqlUpdate("INSERT INTO likes (post_id, user_id) VALUES (:post_id, :user_id);")
+    int insertLikes(@Bind("post_id") int post_id,
+                    @Bind("user_id") int user_id);
+
+    @SqlUpdate("DELETE FROM likes WHERE post_id = (:post_id);")
+    void deleteLikes(@Bind("post_id") int post_id);
+
+    @SqlQuery("SELECT post_id, COUNT(*) AS like_count FROM likes GROUP BY post_id;")
+    Likes getID(@Bind("post_id") int post_id);
+
+    @SqlQuery("SELECT EXISTS( " +
+            "SELECT * from likes WHERE post_id = (:post_id) AND user_id = (:user_id));")
+    Boolean containsLike(@Bind("post_id") int post_id,
+                         @Bind("user_id") int user_id);
+
+    
 
 }

@@ -1,6 +1,5 @@
 package store.impl;
 
-import model.Comment;
 import model.Likes;
 import store.StorageRetrieval;
 import store.model.LikeStore;
@@ -27,7 +26,7 @@ public class LikeStoreImpl extends StorageRetrieval<Likes> implements LikeStore 
     }
 
     @Override
-    public Likes addLikes( int pid, int uid ) {
+    public Likes addLikes(int pid, int uid ) {
 
         // Create the like
         Likes tempLike = new Likes( pid, uid );
@@ -36,5 +35,15 @@ public class LikeStoreImpl extends StorageRetrieval<Likes> implements LikeStore 
         this.addLikes( tempLike );
         return tempLike;
 
+    }
+
+    @Override
+    public void insertLikes(int postID, int uid) {
+
+    }
+
+    @Override
+    public boolean containsLike(int postID, int uid) {
+        return false;
     }
 }

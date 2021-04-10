@@ -1,8 +1,6 @@
 package store.postgres;
 
-import model.Image;
-import model.Post;
-import model.User;
+import model.*;
 
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.mapper.RowMapper;
@@ -37,6 +35,8 @@ public class GreetDoughJdbi {
         jdbi.registerRowMapper( new UserRowMapper() );
         jdbi.registerRowMapper( new PostRowMapper() );
         jdbi.registerRowMapper( new ImageRowMapper() );
+        jdbi.registerRowMapper( new LikeRowMapper() );
+        jdbi.registerRowMapper( new CommentRowMapper() );
 
         return jdbi;
 
@@ -85,6 +85,33 @@ public class GreetDoughJdbi {
 
         }
 
+    }
+
+    public static class LikeRowMapper implements RowMapper<Likes> {
+
+        @Override
+        public Likes map(final ResultSet rs, final StatementContext ctx) throws SQLException{
+
+            int post_id = rs.getInt("post_id");
+            int userID = rs.getInt("user_id");
+
+            return new Likes(post_id, userID);
+
+        }
+    }
+
+    public static class CommentRowMapper implements RowMapper<Comment> {
+
+        @Override
+        public Comment map(final ResultSet rs, final StatementContext ctx) throws SQLException{
+
+            String content = rs.getString("content");
+            int comment_id = rs.getInt("comment_id");
+            int userID = rs.getInt("user_id");
+
+            return new Comment(content, comment_id, userID);
+
+        }
     }
 
 }
