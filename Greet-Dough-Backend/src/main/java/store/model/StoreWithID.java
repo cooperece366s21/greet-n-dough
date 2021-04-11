@@ -11,7 +11,7 @@ public abstract class StoreWithID<T> extends StorageRetrieval<T> {
         this(0);
     }
 
-    protected StoreWithID(int start ) {
+    protected StoreWithID( int start ) {
 
         super();
         this.freeIDs = new AtomicInteger(start);

@@ -5,9 +5,8 @@ import store.postgres.*;
 
 public class ResetDao {
 
-    public static void reset(String url) {
+    public static void reset(Jdbi jdbi) {
 
-        Jdbi jdbi = GreetDoughJdbi.create(url);
         UserStorePostgres UserStorePostgres = new UserStorePostgres(jdbi);
         PostStorePostgres PostStorePostgres = new PostStorePostgres(jdbi);
         ImageStorePostgres ImageStorePostgres = new ImageStorePostgres(jdbi);

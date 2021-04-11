@@ -3,6 +3,7 @@ package store.postgres;
 import model.User;
 import store.model.UserStore;
 import org.jdbi.v3.core.Jdbi;
+import utility.ResetDao;
 
 import java.util.List;
 
@@ -15,9 +16,8 @@ public class UserStorePostgres implements UserStore {
         Jdbi jdbi = GreetDoughJdbi.create("jdbc:postgresql://localhost:4321/greetdough");
         UserStorePostgres UserStorePostgres = new UserStorePostgres(jdbi);
 
-        // Used to DROP and CREATE the users table
-        UserStorePostgres.delete();
-        UserStorePostgres.init();
+        // Used to DROP and CREATE all tables
+        ResetDao.reset(jdbi);
 
         // Test adding and retrieving a user
         User newUser = UserStorePostgres.addUser("Josh");

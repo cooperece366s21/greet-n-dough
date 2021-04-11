@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public interface SubStore {
 
-    ArrayList<Integer> getSubscriptions( int ID );
+    ArrayList<Integer> getSubscriptions( int uid );
 
     void addSubscription( int curUser, int targetUser );
 
@@ -12,5 +12,5 @@ public interface SubStore {
     void removeSubscription( int curUser, int targetUser );
 
     // Deletes user along with all subscriptions
-    boolean deleteUser( int ID );
+    boolean deleteUser( int uid );
 }

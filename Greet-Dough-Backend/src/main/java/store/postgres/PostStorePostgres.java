@@ -4,6 +4,7 @@ import model.Post;
 import model.User;
 import org.jdbi.v3.core.Jdbi;
 import store.model.PostStore;
+import utility.ResetDao;
 
 import java.util.List;
 
@@ -16,9 +17,8 @@ public class PostStorePostgres implements PostStore {
         UserStorePostgres UserStorePostgres = new UserStorePostgres(jdbi);
         PostStorePostgres PostStorePostgres = new PostStorePostgres(jdbi);
 
-        // Used to DROP and CREATE the posts table
-        PostStorePostgres.delete();
-        PostStorePostgres.init();
+        // Used to DROP and CREATE all tables
+        ResetDao.reset(jdbi);
 
         User newUser = UserStorePostgres.addUser("Bill");
 

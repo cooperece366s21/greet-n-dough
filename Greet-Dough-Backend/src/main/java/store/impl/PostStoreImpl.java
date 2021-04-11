@@ -18,18 +18,18 @@ public class PostStoreImpl extends StoreWithID<Post> implements PostStore {
     }
 
     @Override
-    public Post getPost( int ID ) {
-        return super.get(ID);
+    public Post getPost( int pid ) {
+        return super.get(pid);
     }
 
     @Override
-    public boolean hasPost( int ID ) {
-        return super.has(ID);
+    public boolean hasPost( int pid ) {
+        return super.has(pid);
     }
 
     @Override
-    public Post addPost( String contents, int userID ) {
-        return this.addPost( contents, userID, null );
+    public Post addPost( String contents, int uid ) {
+        return this.addPost( contents, uid, null );
     }
 
     @Override
@@ -46,8 +46,8 @@ public class PostStoreImpl extends StoreWithID<Post> implements PostStore {
     }
 
     @Override
-    public void deletePost( int ID ) {
-        super.delete(ID);
+    public void deletePost( int pid ) {
+        super.delete(pid);
     }
 
     // Functions unique to PostStore

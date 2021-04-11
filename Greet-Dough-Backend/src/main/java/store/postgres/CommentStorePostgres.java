@@ -5,6 +5,7 @@ import model.Post;
 import model.User;
 import org.jdbi.v3.core.Jdbi;
 import store.model.CommentStore;
+import utility.ResetDao;
 
 public class CommentStorePostgres implements CommentStore {
 
@@ -15,10 +16,8 @@ public class CommentStorePostgres implements CommentStore {
         PostStorePostgres PostStorePostgres = new PostStorePostgres(jdbi);
         CommentStorePostgres CommentStorePostgres = new CommentStorePostgres(jdbi);
 
-        PostStorePostgres.delete();
-        CommentStorePostgres.delete();
-        CommentStorePostgres.init();
-        PostStorePostgres.init();
+        // Used to DROP and CREATE all tables
+        ResetDao.reset(jdbi);
 
         User yeet = UserStorePostgres.addUser("yeet");
 

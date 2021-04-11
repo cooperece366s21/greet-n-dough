@@ -65,9 +65,8 @@ public class Server {
         before((request, response) -> response.header("Access-Control-Allow-Origin", "*"));
 
 
-        String url = "jdbc:postgresql://localhost:4321/greetdough";
-        ResetDao.reset(url);
-        Jdbi jdbi = GreetDoughJdbi.create(url);
+        Jdbi jdbi = GreetDoughJdbi.create("jdbc:postgresql://localhost:4321/greetdough");
+        ResetDao.reset(jdbi);
 
         userStore = new UserStorePostgres(jdbi);
         postStore = new PostStorePostgres(jdbi);

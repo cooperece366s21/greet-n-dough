@@ -4,14 +4,14 @@ import java.util.ArrayList;
 
 public interface PostCommentStore {
 
-    ArrayList<Integer> getComments( int ID );
+    ArrayList<Integer> getComments( int pid );
 
-    void addComment( int postID, int commentID );
+    void addComment( int pid, int cid );
 
-    void removeComment( int postID, int commentID );
+    void removeComment( int pid, int cid );
 
     // Deletes all comments associated with post
     // Need to access CommentReply <- once implemented
-    boolean deletePost( int ID );
+    boolean deletePost( int pid );
 
 }

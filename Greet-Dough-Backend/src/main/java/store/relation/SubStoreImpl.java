@@ -13,8 +13,8 @@ public class SubStoreImpl extends Relation implements SubStore {
     }
 
     @Override
-    public ArrayList<Integer> getSubscriptions( int ID ) {
-        return super.get(ID);
+    public ArrayList<Integer> getSubscriptions( int uid ) {
+        return super.get(uid);
     }
 
     @Override
@@ -30,8 +30,8 @@ public class SubStoreImpl extends Relation implements SubStore {
 
     // Deletes user along with all subscriptions
     @Override
-    public boolean deleteUser( int ID ) {
-        return super.delete(ID);
+    public boolean deleteUser( int uid ) {
+        return super.delete(uid);
     }
 
 }

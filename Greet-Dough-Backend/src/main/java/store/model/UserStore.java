@@ -4,12 +4,12 @@ import model.User;
 
 public interface UserStore {
 
-    User getUser( int ID );
+    User getUser( int uid );
 
-    boolean hasUser( int ID );
+    boolean hasUser( int uid );
 
     User addUser( String name );
 
-    void deleteUser( int ID );
+    void deleteUser( int uid );
 
 }

@@ -3,6 +3,7 @@ package store.postgres;
 import store.model.PasswordStore;
 import model.User;
 import org.jdbi.v3.core.Jdbi;
+import utility.ResetDao;
 
 /////////////////////////////////////////////// CHANGE HASH TO SHA256
 public class PasswordStorePostgres implements PasswordStore {
@@ -14,9 +15,8 @@ public class PasswordStorePostgres implements PasswordStore {
         UserStorePostgres UserStorePostgres = new UserStorePostgres(jdbi);
         PasswordStorePostgres PasswordStorePostgres = new PasswordStorePostgres(jdbi);
 
-        // Used to DROP and CREATE the users table
-        PasswordStorePostgres.delete();
-        PasswordStorePostgres.init();
+        // Used to DROP and CREATE all tables
+        ResetDao.reset(jdbi);
 
         // Create a user
         User newUser = UserStorePostgres.addUser("B. Ryan");

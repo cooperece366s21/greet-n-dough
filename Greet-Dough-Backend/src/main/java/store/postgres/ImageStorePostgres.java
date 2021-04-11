@@ -5,6 +5,7 @@ import model.Post;
 import model.User;
 import org.jdbi.v3.core.Jdbi;
 import store.model.ImageStore;
+import utility.ResetDao;
 
 import java.util.List;
 
@@ -18,13 +19,8 @@ public class ImageStorePostgres implements ImageStore {
         PostStorePostgres PostStorePostgres = new PostStorePostgres(jdbi);
         ImageStorePostgres ImageStorePostgres = new ImageStorePostgres(jdbi);
 
-        // Used to DROP and CREATE the posts, images, users table
-        PostStorePostgres.delete();
-        ImageStorePostgres.delete();
-//        UserStorePostgres.reset();
-//        UserStorePostgres.init();
-        ImageStorePostgres.init();
-        PostStorePostgres.init();
+        // Used to DROP and CREATE all tables
+        ResetDao.reset(jdbi);
 
         User newUser = UserStorePostgres.addUser("Tony");
 

@@ -19,27 +19,27 @@ public class ImageStoreImpl extends StoreWithID<Image> implements ImageStore {
     }
 
     @Override
-    public Image getImage( int ID ) {
-        return super.get(ID);
+    public Image getImage( int iid ) {
+        return super.get(iid);
     }
 
     @Override
-    public boolean hasImage( int ID ) {
-        return super.has(ID);
+    public boolean hasImage( int iid ) {
+        return super.has(iid);
     }
 
     @Override
-    public void deleteImage( int ID ) {
-        super.delete(ID);
+    public void deleteImage( int iid ) {
+        super.delete(iid);
     }
 
     @Override
     public Image addImage( String path, int uid ) {
 
         // Create image
-        int ID = super.getFreeID();
+        int iid = super.getFreeID();
         String newPath = copyImage(path);   // Copies the image to a default folder
-        Image tempImage = new Image( newPath, ID, uid );
+        Image tempImage = new Image( newPath, iid, uid );
 
         // Add image
         this.add( tempImage.getID(), tempImage );

@@ -15,8 +15,8 @@ public class CommentStoreImpl extends StoreWithID<Comment> implements CommentSto
     }
 
     @Override
-    public Comment getComment( int ID ) {
-        return super.get(ID);
+    public Comment getComment( int cid ) {
+        return super.get(cid);
     }
 
     @Override

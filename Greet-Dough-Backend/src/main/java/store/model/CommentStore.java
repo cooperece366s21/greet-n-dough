@@ -4,7 +4,7 @@ import model.Comment;
 
 public interface CommentStore {
 
-    Comment getComment( int ID );
+    Comment getComment( int cid );
 
     void addComment( Comment newComment );
 

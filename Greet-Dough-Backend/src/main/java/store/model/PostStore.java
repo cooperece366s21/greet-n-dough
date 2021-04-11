@@ -6,16 +6,16 @@ import java.util.List;
 
 public interface PostStore {
 
-    Post getPost( int ID );
+    Post getPost( int pid );
 
-    boolean hasPost( int ID );
+    boolean hasPost( int pid );
 
-    Post addPost( String contents, int userID );
+    Post addPost( String contents, int uid );
 
-    Post addPost( String contents, int userID, Integer imageID );
+    Post addPost( String contents, int uid, Integer iid );
 
-    void deletePost( int ID );
+    void deletePost( int pid );
 
-    List<Post> makeFeed( int userID );
+    List<Post> makeFeed( int uid );
 
 }

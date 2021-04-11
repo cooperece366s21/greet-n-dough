@@ -11,25 +11,25 @@ public class PostCommentStoreImpl extends Relation implements PostCommentStore {
     }
 
     @Override
-    public ArrayList<Integer> getComments( int ID ) {
-        return super.get(ID);
+    public ArrayList<Integer> getComments( int pid ) {
+        return super.get(pid);
     }
 
     @Override
-    public void addComment( int postID, int commentID ) {
-        super.add( postID, commentID );
+    public void addComment( int pid, int cid ) {
+        super.add( pid, cid );
     }
 
     @Override
-    public void removeComment( int postID, int commentID ) {
-        super.remove( postID, commentID );
+    public void removeComment( int pid, int cid ) {
+        super.remove( pid, cid );
     }
 
     // Deletes all comments associated with post
     // Need to access CommentReply <- once implemented
     @Override
-    public boolean deletePost( int ID ) {
-        return super.delete(ID);
+    public boolean deletePost( int pid ) {
+        return super.delete(pid);
     }
 
 }

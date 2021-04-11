@@ -5,6 +5,7 @@ import model.Post;
 import model.User;
 import org.jdbi.v3.core.Jdbi;
 import store.model.LikeStore;
+import utility.ResetDao;
 
 public class LikeStorePostgres implements LikeStore {
 
@@ -16,12 +17,8 @@ public class LikeStorePostgres implements LikeStore {
         PostStorePostgres PostStorePostgres = new PostStorePostgres(jdbi);
         LikeStorePostgres LikeStorePostgres = new LikeStorePostgres(jdbi);
 
-        PostStorePostgres.delete();
-        LikeStorePostgres.delete();
-        //UserStorePostgres.reset();
-        //UserStorePostgres.init();
-        LikeStorePostgres.init();
-        PostStorePostgres.init();
+        // Used to DROP and CREATE all tables
+        ResetDao.reset(jdbi);
 
         User newUser = UserStorePostgres.addUser("Felipe");
 
@@ -56,35 +53,29 @@ public class LikeStorePostgres implements LikeStore {
     }
 
     @Override
-    public Likes getID(int ID) {
-        return jdbi.withHandle( handle -> handle.attach(LikeDao.class).getID(ID) );
-    }
-
-    // From hashtable store
-    @Override
-    public void addLikes(Likes newLikes) {
-
+    public Likes getID( int lid ) {
+        return jdbi.withHandle( handle -> handle.attach(LikeDao.class).getID(lid) );
     }
 
     // From hashtable store (can replace with insertLikes)
     @Override
-    public Likes addLikes(int postID, int uid) {
+    public Likes addLikes( int pid, int uid ) {
         return null;
     }
 
     @Override
-    public void deleteLikes(Integer ID) {
-        jdbi.useHandle( handle -> handle.attach(LikeDao.class).deleteLikes(ID));
+    public void deleteLikes( int lid ) {
+        jdbi.useHandle( handle -> handle.attach(LikeDao.class).deleteLikes(lid));
     }
 
     @Override
-    public void insertLikes(int postID, int uid) {
-        jdbi.useHandle( handle -> handle.attach(LikeDao.class).insertLikes(postID, uid) );
+    public void insertLikes( int pid, int uid)  {
+        jdbi.useHandle( handle -> handle.attach(LikeDao.class).insertLikes(pid, uid) );
     }
 
     @Override
-    public boolean containsLike(int postID, int uid){
-        return jdbi.withHandle( handle -> handle.attach(LikeDao.class).containsLike(postID, uid) );
+    public boolean containsLike(int pid, int uid){
+        return jdbi.withHandle( handle -> handle.attach(LikeDao.class).containsLike(pid, uid) );
     }
 
 }

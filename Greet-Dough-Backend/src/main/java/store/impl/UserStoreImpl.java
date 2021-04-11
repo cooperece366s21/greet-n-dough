@@ -15,13 +15,13 @@ public class UserStoreImpl extends StoreWithID<User> implements UserStore {
     }
 
     @Override
-    public User getUser( int ID ) {
-        return super.get(ID);
+    public User getUser( int uid ) {
+        return super.get(uid);
     }
 
     @Override
-    public boolean hasUser( int ID ){
-        return super.has(ID);
+    public boolean hasUser( int uid ){
+        return super.has(uid);
     }
 
     @Override
@@ -38,8 +38,8 @@ public class UserStoreImpl extends StoreWithID<User> implements UserStore {
     }
 
     @Override
-    public void deleteUser( int ID ) {
-        super.delete(ID);
+    public void deleteUser( int uid ) {
+        super.delete(uid);
     }
 
 }

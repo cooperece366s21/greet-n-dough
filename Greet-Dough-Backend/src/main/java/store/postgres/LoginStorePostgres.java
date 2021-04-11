@@ -3,6 +3,7 @@ package store.postgres;
 import store.model.LoginStore;
 import model.User;
 import org.jdbi.v3.core.Jdbi;
+import utility.ResetDao;
 
 public class LoginStorePostgres implements LoginStore {
 
@@ -13,9 +14,8 @@ public class LoginStorePostgres implements LoginStore {
         UserStorePostgres UserStorePostgres = new UserStorePostgres(jdbi);
         LoginStorePostgres LoginStorePostgres = new LoginStorePostgres(jdbi);
 
-        // Used to DROP and CREATE the posts table
-        LoginStorePostgres.delete();
-        LoginStorePostgres.init();
+        // Used to DROP and CREATE all tables
+        ResetDao.reset(jdbi);
 
         // Create a user and get a token for that user
         User newUser = UserStorePostgres.addUser("Dan");
