@@ -36,11 +36,21 @@ public class PasswordStorePostgres implements PasswordStore {
         System.out.println( PasswordStorePostgres.getUserID(email, pass) );
 
         // Test adding a second password for the same email
-        if ( PasswordStorePostgres.addPassword(email, newUser.getID(), "lol") == 0 ) {
+        if ( PasswordStorePostgres.addPassword( email, newUser.getID(), "lol" ) == 0 ) {
             System.out.println("Duplicate Email");
         } else {
             System.err.println("SHOULD NOT HAPPEN!!!");
         }
+
+        // Test changing the email/password
+        String newEmail = "MeatNGrow@aol.com";
+        String newPass = "password1234";
+        PasswordStorePostgres.updateEmail( email, newEmail );
+        PasswordStorePostgres.updatePassword( newEmail, newPass );
+
+        // Check if update was successful
+        System.out.println( PasswordStorePostgres.hasEmail(newEmail) );
+        System.out.println( PasswordStorePostgres.getUserID(newEmail, newPass) );
 
         // Test deleting the user
         UserStorePostgres.deleteUser( userAfterWrite.getID() );
@@ -82,12 +92,12 @@ public class PasswordStorePostgres implements PasswordStore {
 
     @Override
     public void updateEmail( String oldEmail, String newEmail ) {
-
+        jdbi.useHandle( handle -> handle.attach(PasswordDao.class).updateEmail( oldEmail, newEmail ) );
     }
 
     @Override
     public void updatePassword( String email, String newPassword ) {
-
+        jdbi.useHandle( handle -> handle.attach(PasswordDao.class).updatePassword( email, newPassword ) );
     }
 
 

@@ -32,4 +32,12 @@ public interface PasswordDao {
     @SqlQuery("SELECT EXISTS( SELECT * FROM passwords WHERE user_email = (:user_email) );")
     boolean hasEmail(@Bind("user_email") String user_email);
 
+    @SqlUpdate("UPDATE passwords SET user_email = (:newEmail) " +
+            "WHERE user_email = (:oldEmail);")
+    void updateEmail(@Bind("oldEmail") String oldEmail, @Bind("newEmail") String newEmail );
+
+    @SqlUpdate("UPDATE passwords SET user_pass = MD5(:newPassword) " +
+            "WHERE user_email = (:email);")
+    void updatePassword(@Bind("email") String email, @Bind("newPassword") String newPassword );
+
 }

@@ -44,7 +44,7 @@ public interface LoginDao {
                     "DELETE FROM login WHERE timestamp < NOW() - INTERVAL '1 hour'; " +
                     "IF found THEN " +
                         "GET DIAGNOSTICS row_count = ROW_COUNT; " +
-                    "RAISE NOTICE 'DELETE % row(s) FROM limiter', row_count; " +
+                    "RAISE NOTICE 'DELETE % row(s) FROM login', row_count; " +
                     "END IF; " +
                     "RETURN NULL; " +
                 "END; " +
