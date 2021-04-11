@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface LoginDao {
 
     @SqlUpdate("DROP TABLE IF EXISTS login;")
-    void resetTable();
+    void deleteTable();
 
     @SqlUpdate("CREATE TABLE IF NOT EXISTS login( " +
             "user_token TEXT " +        "NOT NULL, " +

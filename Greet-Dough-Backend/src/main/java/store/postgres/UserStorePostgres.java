@@ -16,7 +16,7 @@ public class UserStorePostgres implements UserStore {
         UserStorePostgres UserStorePostgres = new UserStorePostgres(jdbi);
 
         // Used to DROP and CREATE the users table
-        UserStorePostgres.reset();
+        UserStorePostgres.delete();
         UserStorePostgres.init();
 
         // Test adding and retrieving a user
@@ -37,8 +37,8 @@ public class UserStorePostgres implements UserStore {
         this.jdbi = jdbi;
     }
 
-    public void reset() {
-        jdbi.useHandle(handle -> handle.attach(UserDao.class).resetTable());
+    public void delete() {
+        jdbi.useHandle(handle -> handle.attach(UserDao.class).deleteTable());
     }
 
     public void init() {

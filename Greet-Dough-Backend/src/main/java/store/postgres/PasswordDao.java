@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface PasswordDao {
 
     @SqlUpdate("DROP TABLE IF EXISTS passwords;")
-    void resetTable();
+    void deleteTable();
 
     @SqlUpdate("CREATE TABLE IF NOT EXISTS passwords( " +
             "user_email TEXT " +    "NOT NULL, " +

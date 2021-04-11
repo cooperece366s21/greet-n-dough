@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface PostDao {
 
     @SqlUpdate("DROP TABLE IF EXISTS posts;")
-    void resetTable();
+    void deleteTable();
 
     @SqlUpdate("CREATE TABLE IF NOT EXISTS posts( " +
             "post_id SERIAL " +     "NOT NULL, " +

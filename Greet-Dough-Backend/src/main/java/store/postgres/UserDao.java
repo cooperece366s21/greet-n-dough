@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface UserDao {
 
     @SqlUpdate("DROP TABLE IF EXISTS users;")
-    void resetTable();
+    void deleteTable();
 
     @SqlUpdate("CREATE TABLE IF NOT EXISTS users( " +
             "user_id SERIAL PRIMARY KEY " + "NOT NULL, " +

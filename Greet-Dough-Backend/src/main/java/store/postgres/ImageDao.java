@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface ImageDao {
 
     @SqlUpdate("DROP TABLE IF EXISTS images;")
-    void resetTable();
+    void deleteTable();
 
     @SqlUpdate("CREATE TABLE IF NOT EXISTS images( " +
             "image_id SERIAL " +    "NOT NULL, " +

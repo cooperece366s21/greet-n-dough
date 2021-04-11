@@ -15,7 +15,7 @@ public class PasswordStorePostgres implements PasswordStore {
         PasswordStorePostgres PasswordStorePostgres = new PasswordStorePostgres(jdbi);
 
         // Used to DROP and CREATE the users table
-        PasswordStorePostgres.reset();
+        PasswordStorePostgres.delete();
         PasswordStorePostgres.init();
 
         // Create a user
@@ -64,8 +64,8 @@ public class PasswordStorePostgres implements PasswordStore {
         this.jdbi = jdbi;
     }
 
-    public void reset() {
-        jdbi.useHandle(handle -> handle.attach(PasswordDao.class).resetTable());
+    public void delete() {
+        jdbi.useHandle(handle -> handle.attach(PasswordDao.class).deleteTable());
     }
 
     public void init() {

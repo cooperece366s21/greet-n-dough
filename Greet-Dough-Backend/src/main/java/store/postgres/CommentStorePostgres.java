@@ -3,11 +3,8 @@ package store.postgres;
 import model.Comment;
 import model.Post;
 import model.User;
-import store.model.StoreWithID;
 import org.jdbi.v3.core.Jdbi;
 import store.model.CommentStore;
-
-import java.util.List;
 
 public class CommentStorePostgres implements CommentStore {
 
@@ -18,8 +15,8 @@ public class CommentStorePostgres implements CommentStore {
         PostStorePostgres PostStorePostgres = new PostStorePostgres(jdbi);
         CommentStorePostgres CommentStorePostgres = new CommentStorePostgres(jdbi);
 
-        PostStorePostgres.reset();
-        CommentStorePostgres.reset();
+        PostStorePostgres.delete();
+        CommentStorePostgres.delete();
         CommentStorePostgres.init();
         PostStorePostgres.init();
 
@@ -57,12 +54,12 @@ public class CommentStorePostgres implements CommentStore {
         this.jdbi = jdbi;
     }
 
-    public void reset() {
-        jdbi.useHandle(handle -> handle.attach(CommentDao.class).resetTable());
+    public void delete() {
+        jdbi.useHandle(handle -> handle.attach(CommentDao.class).deleteTable());
     };
 
     public void init() {
-        jdbi.useHandle(handle -> handle.attach(CommentDao.class).resetTable());
+        jdbi.useHandle(handle -> handle.attach(CommentDao.class).createTable());
     };
 
     @Override

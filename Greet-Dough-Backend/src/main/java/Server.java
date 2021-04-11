@@ -6,6 +6,8 @@ import store.model.*;
 
 
 import com.google.gson.Gson;
+import utility.ResetDao;
+
 import static spark.Spark.*;
 
 public class Server {
@@ -63,7 +65,9 @@ public class Server {
         before((request, response) -> response.header("Access-Control-Allow-Origin", "*"));
 
 
-        Jdbi jdbi = GreetDoughJdbi.create("jdbc:postgresql://localhost:4321/greetdough");
+        String url = "jdbc:postgresql://localhost:4321/greetdough";
+        ResetDao.reset(url);
+        Jdbi jdbi = GreetDoughJdbi.create(url);
 
         userStore = new UserStorePostgres(jdbi);
         postStore = new PostStorePostgres(jdbi);

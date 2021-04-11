@@ -14,7 +14,7 @@ public class LoginStorePostgres implements LoginStore {
         LoginStorePostgres LoginStorePostgres = new LoginStorePostgres(jdbi);
 
         // Used to DROP and CREATE the posts table
-        LoginStorePostgres.reset();
+        LoginStorePostgres.delete();
         LoginStorePostgres.init();
 
         // Create a user and get a token for that user
@@ -41,14 +41,16 @@ public class LoginStorePostgres implements LoginStore {
         this.jdbi = jdbi;
     }
 
-    public void reset() {
-        jdbi.useHandle(handle -> handle.attach(LoginDao.class).resetTable());
+    public void delete() {
+        jdbi.useHandle(handle -> handle.attach(LoginDao.class).deleteTable());
     }
 
     public void init() {
+
         jdbi.useHandle(handle -> handle.attach(LoginDao.class).createTable());
         jdbi.useHandle(handle -> handle.attach(LoginDao.class).createTrigger());
         jdbi.useHandle(handle -> handle.attach(LoginDao.class).setTrigger());
+
     }
 
     @Override

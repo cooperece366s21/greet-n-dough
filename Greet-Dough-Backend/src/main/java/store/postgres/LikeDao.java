@@ -37,13 +37,13 @@ public interface LikeDao {
         // DELETE FROM like WHERE user_id = (:user_id);
 
     @SqlUpdate("DROP TABLE IF EXISTS likes;")
-    void resetTable();
+    void deleteTable();
 
     // is array agg on the constraint possible?
     // instead can i just array agg after? yes, yes you can with a group by
     @SqlUpdate("CREATE TABLE IF NOT EXISTS likes( " +
             "post_id INT " +        "NOT NULL, " +
-            "user_id INT " +      "NOT NULL, " +
+            "user_id INT " +        "NOT NULL, " +
             "PRIMARY KEY(post_id), " +
             "CONSTRAINT fk_user " + "FOREIGN KEY(user_id) " +
                 "REFERENCES users(user_id) " + "ON DELETE CASCADE " +

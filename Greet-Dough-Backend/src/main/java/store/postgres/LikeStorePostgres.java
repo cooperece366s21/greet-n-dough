@@ -16,8 +16,8 @@ public class LikeStorePostgres implements LikeStore {
         PostStorePostgres PostStorePostgres = new PostStorePostgres(jdbi);
         LikeStorePostgres LikeStorePostgres = new LikeStorePostgres(jdbi);
 
-        PostStorePostgres.reset();
-        LikeStorePostgres.reset();
+        PostStorePostgres.delete();
+        LikeStorePostgres.delete();
         //UserStorePostgres.reset();
         //UserStorePostgres.init();
         LikeStorePostgres.init();
@@ -47,8 +47,8 @@ public class LikeStorePostgres implements LikeStore {
         this.jdbi = jdbi;
     }
 
-    public void reset() {
-        jdbi.useHandle(handle -> handle.attach(LikeDao.class).resetTable());
+    public void delete() {
+        jdbi.useHandle(handle -> handle.attach(LikeDao.class).deleteTable());
     }
 
     public void init() {

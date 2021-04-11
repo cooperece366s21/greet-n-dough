@@ -1,6 +1,6 @@
 import model.*;
-import org.jdbi.v3.core.statement.UnableToExecuteStatementException;
 import utility.Pair;
+import utility.ResetDao;
 import store.model.*;
 
 import java.util.ArrayList;
@@ -47,6 +47,7 @@ public class Handler {
         this.postCommentStore = postCommentStore;
         this.passwordStore = passwordStore;
         this.loginStore = loginStore;
+
     }
 
     // PRIVATE HELPER FUNCTIONS

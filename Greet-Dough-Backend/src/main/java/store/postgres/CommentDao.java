@@ -32,8 +32,8 @@ public interface CommentDao {
     // replies column
     // [2, 3]
 
-    @SqlUpdate("DROP TABLE comment;")
-    void resetTable();
+    @SqlUpdate("DROP TABLE IF EXISTS comment;")
+    void deleteTable();
 
     @SqlUpdate("CREATE TABLE IF NOT EXISTS comment( " +
             "comment_id SERIAL " +  "NOT NULL, " +
@@ -41,7 +41,7 @@ public interface CommentDao {
             "content TEXT " +       "NOT NULL, " +
             "PRIMARY KEY(comment_id), " +
             "CONSTRAINT fk_user " + "FOREIGN KEY(user_id) " +
-                "REFERENCES users(user_id) " + "ON DELETE CASCADE, " +
+                "REFERENCES users(user_id) " + "ON DELETE CASCADE " +
             ");")
     void createTable();
 

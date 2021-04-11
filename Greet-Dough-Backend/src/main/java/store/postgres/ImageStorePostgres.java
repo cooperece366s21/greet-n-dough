@@ -19,8 +19,8 @@ public class ImageStorePostgres implements ImageStore {
         ImageStorePostgres ImageStorePostgres = new ImageStorePostgres(jdbi);
 
         // Used to DROP and CREATE the posts, images, users table
-        PostStorePostgres.reset();
-        ImageStorePostgres.reset();
+        PostStorePostgres.delete();
+        ImageStorePostgres.delete();
 //        UserStorePostgres.reset();
 //        UserStorePostgres.init();
         ImageStorePostgres.init();
@@ -60,8 +60,8 @@ public class ImageStorePostgres implements ImageStore {
         this.jdbi = jdbi;
     }
 
-    public void reset() {
-        jdbi.useHandle(handle -> handle.attach(ImageDao.class).resetTable());
+    public void delete() {
+        jdbi.useHandle(handle -> handle.attach(ImageDao.class).deleteTable());
     }
 
     public void init() {

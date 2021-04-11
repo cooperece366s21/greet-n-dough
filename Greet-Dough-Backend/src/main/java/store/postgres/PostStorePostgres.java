@@ -17,7 +17,7 @@ public class PostStorePostgres implements PostStore {
         PostStorePostgres PostStorePostgres = new PostStorePostgres(jdbi);
 
         // Used to DROP and CREATE the posts table
-        PostStorePostgres.reset();
+        PostStorePostgres.delete();
         PostStorePostgres.init();
 
         User newUser = UserStorePostgres.addUser("Bill");
@@ -50,8 +50,8 @@ public class PostStorePostgres implements PostStore {
         this.jdbi = jdbi;
     }
 
-    public void reset() {
-        jdbi.useHandle(handle -> handle.attach(PostDao.class).resetTable());
+    public void delete() {
+        jdbi.useHandle(handle -> handle.attach(PostDao.class).deleteTable());
     }
 
     public void init() {
