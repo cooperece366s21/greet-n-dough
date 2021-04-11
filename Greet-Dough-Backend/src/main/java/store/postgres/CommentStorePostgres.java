@@ -34,18 +34,39 @@ public class CommentStorePostgres implements CommentStore {
         PostStorePostgres.addPost( "lol", yeet.getID() );
 
         // Create a comment (can't delete)
-        // addComment
-        // int ID = jdbi.withHandle()
-        // return getComment(ID);
-
 
         // Reply to a comment
-        // given a comment id, append current userid to list
-        // return the new list of id
 
-        // Delete user
+        // Get the list of parent comments under a post
+
+        // Get the list of replies under a parent comment
+
+        // Delete user, delete the table
 
     }
+
+    // given a postid
+    // return with hierarchy
+    // single depth replies
+
+    // canComment() check if post_id exists
+
+    // on frontend you choose post and then choose a comment to reply to
+    // requires boolean canReply()
+    // checks if the given comment_id exists
+    // true
+    // feed the parentID, the comment i'm trying to reply to
+    // insertComment(uid, content, parentID)
+    // insert uid, content, parentID  (commentID auto generated key)
+    // false
+    // return status error, comment doesnt exist
+
+    // regular comment
+    // insertComment(uid, content, null)
+
+    // Columns: commentID, uid, content, parentID
+    // commentID -> another commentID (parentID)
+
 
     private final Jdbi jdbi;
 
@@ -66,15 +87,70 @@ public class CommentStorePostgres implements CommentStore {
         return null;
     }
 
-    // return a list
-
     @Override
     public void addComment( Comment newComment ) {
+    }
+
+    @Override
+    public Comment addComment( String contents, int uid) {
+
+        return null;
 
     }
 
     @Override
-    public Comment addComment( String contents, int uid ) {
-        return null;
+    public boolean canComment(int post_id) {
+
+        return jdbi.withHandle( handle -> handle.attach(CommentDao.class).canComment(post_id) );
+
     }
+
+    @Override
+    public Comment insertComment(String contents, int uid, Integer parent_id) {
+
+        int ID = jdbi.withHandle( handle -> handle.attach(CommentDao.class).insertComment(uid, contents, parent_id) );
+        return getComment(ID);
+
+    }
+
+    @Override
+    public Comment insertComment(String contents, int uid) {
+
+        return insertComment( contents, uid, null );
+
+    }
+
+    @Override
+    public boolean canReply(int comment_id) {
+
+        return jdbi.withHandle( handle -> handle.attach(CommentDao.class).canReply(comment_id) );
+
+    }
+
+    @Override
+    public Comment getReplies(int parent_id) {
+        return jdbi.withHandle( handle -> handle.attach(CommentDao.class).getReplies(parent_id));
+    }
+
+    /*
+    identify a post
+        make a list of every parent_id
+            // array_agg(parent_id) where post_id = (:post_id)
+        in handler loop through each parent_id
+            call getReplies
+
+    comments section:
+        parent 1
+            replies
+            replies
+            replies
+        parent 2
+            replies
+        parent 3
+        parent 4
+            replies
+    */
+
 }
+
+

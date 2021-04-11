@@ -35,14 +35,46 @@ public interface CommentDao {
     @SqlUpdate("DROP TABLE IF EXISTS comment;")
     void deleteTable();
 
-    @SqlUpdate("CREATE TABLE IF NOT EXISTS comment( " +
+    @SqlUpdate("DROP TABLE comments, postComments;")
+    void resetTable();
+
+    @SqlUpdate("CREATE TABLE IF NOT EXISTS comments( " +
             "comment_id SERIAL " +  "NOT NULL, " +
             "user_id INT " +        "NOT NULL, " +
             "content TEXT " +       "NOT NULL, " +
+            "post_id INT " + "NOT NULL, " +
+            "parent_comment_id INT " + "NOT NULL, " +
             "PRIMARY KEY(comment_id), " +
             "CONSTRAINT fk_user " + "FOREIGN KEY(user_id) " +
-                "REFERENCES users(user_id) " + "ON DELETE CASCADE " +
+            "REFERENCES users(user_id) " + "ON DELETE CASCADE " +
             ");")
     void createTable();
 
+    @SqlUpdate("INSERT INTO comments ( user_id, content, parent_id) VALUES (:user_id, :content, :parent_id);")
+    @GetGeneratedKeys("comment_id")
+    int insertComment(@Bind("user_id") int user_id,
+                      @Bind("content") String content,
+                      @Bind("parent_id") Integer parent_id);
+
+    /*
+    @SqlUpdate("INSERT INTO postComments (comment_id, post_id) VALUES (:comment_id, :post_id);")
+    void insertPostComment(@Bind("comment_id") int comment_id,
+                           @Bind("post_id") int post_id);
+                           */
+    /*
+    @SqlQuery("DELETE FROM comments WHERE comment_id = (:comment_id); DELETE FROM postComments WHERE comment_id = (:comment_id);")
+    void removeComment(@Bind("comment_id") int comment_id);
+    */
+
+    @SqlQuery("SELECT EXISTS (SELECT * FROM comments WHERE post_id = (:post_id));")
+    boolean canComment(@Bind("post_id") int post_id);
+
+    @SqlQuery("SELECT EXISTS (SELECT * FROM comments WHERE comment_id = (:comment_id));")
+    boolean canReply(@Bind("comment_id") int comment_id);
+
+    @SqlQuery("SELECT * FROM comments WHERE parent_id = (:parent_id);")
+    Comment getReplies(@Bind("parent_id") int parent_id);
+
+
 }
+

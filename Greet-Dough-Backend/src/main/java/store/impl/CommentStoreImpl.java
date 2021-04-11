@@ -37,4 +37,29 @@ public class CommentStoreImpl extends StoreWithID<Comment> implements CommentSto
 
     }
 
+    @Override
+    public boolean canComment(int post_id) {
+        return false;
+    }
+
+    @Override
+    public Comment insertComment(String contents, int uid, Integer parent_id) {
+        return null;
+    }
+
+    @Override
+    public Comment insertComment(String contents, int uid) {
+        return null;
+    }
+
+    @Override
+    public boolean canReply(int comment_id) {
+        return false;
+    }
+
+    @Override
+    public Comment getReplies(int parent_id) {
+        return null;
+    }
+
 }
