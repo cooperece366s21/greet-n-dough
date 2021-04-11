@@ -65,7 +65,7 @@ public class LoginStorePostgres implements LoginStore {
 
     @Override
     public void deleteSession( String token ) {
-        jdbi.useHandle(handle -> handle.attach(LoginDao.class).deleteSession(token));
+        jdbi.useHandle( handle -> handle.attach(LoginDao.class).deleteSession(token) );
     }
 
     @Override

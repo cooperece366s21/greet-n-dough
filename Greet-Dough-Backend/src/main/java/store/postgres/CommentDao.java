@@ -32,21 +32,20 @@ public interface CommentDao {
     // replies column
     // [2, 3]
 
-    @SqlUpdate("DROP TABLE IF EXISTS comment;")
+    @SqlUpdate("DROP TABLE IF EXISTS comments;")
     void deleteTable();
-
-    @SqlUpdate("DROP TABLE comments, postComments;")
-    void resetTable();
 
     @SqlUpdate("CREATE TABLE IF NOT EXISTS comments( " +
             "comment_id SERIAL " +  "NOT NULL, " +
             "user_id INT " +        "NOT NULL, " +
+            "post_id INT " +        "NOT NULL, " +
             "content TEXT " +       "NOT NULL, " +
-            "post_id INT " + "NOT NULL, " +
             "parent_comment_id INT " + "NOT NULL, " +
             "PRIMARY KEY(comment_id), " +
             "CONSTRAINT fk_user " + "FOREIGN KEY(user_id) " +
-            "REFERENCES users(user_id) " + "ON DELETE CASCADE " +
+                "REFERENCES users(user_id) " + "ON DELETE CASCADE, " +
+            "CONSTRAINT fk_post " + "FOREIGN KEY(post_id) " +
+                "REFERENCES posts(post_id) " + "ON DELETE CASCADE " +
             ");")
     void createTable();
 

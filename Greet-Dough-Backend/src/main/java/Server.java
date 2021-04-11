@@ -108,60 +108,60 @@ public class Server {
         // USER RELATION ROUTES
         ///////////////////////
 
-        // curl -d "uid=2" -X post localhost:4321/users/0/subscribe/
+        // curl -d "uid=2" -X post localhost:5432/users/0/subscribe/
         post( "/users/:id/subscribe/", handler::subscribe, gson::toJson );
 
-        // curl -d "uid=2" -X post localhost:4321/users/0/unsubscribe/
+        // curl -d "uid=2" -X post localhost:5432/users/0/unsubscribe/
         post( "/users/:id/unsubscribe/", handler::unsubscribe, gson::toJson );
 
-//        // curl -d "uid=2" -X post localhost:4321/users/0/follow/
+//        // curl -d "uid=2" -X post localhost:5432/users/0/follow/
 //        post( "/users/:id/follow/", (req,res) -> handler.follow(req), gson::toJson );
 //
-//        // curl -d "uid=2" -X post localhost:4321/users/0/unfollow/
+//        // curl -d "uid=2" -X post localhost:5432/users/0/unfollow/
 //        post( "/users/:id/unfollow/", (req,res) -> handler.unfollow(req), gson::toJson );
 
         // POST ROUTES
         ////////////////////
 
         //  Returns post object
-        // curl localhost:4321/posts/0/
+        // curl localhost:5432/posts/0/
         get("/posts/:id/", handler::getPost, gson::toJson);
 
         //  Creates a new post
-        // curl -d "uid=0&contents=hello world" -X post localhost:4321/posts/
+        // curl -d "uid=0&contents=hello world" -X post localhost:5432/posts/
         post("/posts/", handler::createPost, gson::toJson);
 
         //  Deletes post given postID
-        // curl -X delete localhost:4321/posts/0
+        // curl -X delete localhost:5432/posts/0
         delete("/posts/:id/", handler::deletePost, gson::toJson);
 
         // returns feed if user is subscribed.
-        // curl -G -d "uid=1" -X post localhost:4321/users/0/feed/
+        // curl -G -d "uid=1" -X post localhost:5432/users/0/feed/
         get("/users/:id/feed/", handler::getFeed, gson::toJson );
 
         // LIKES ROUTES
         ////////////////////
 
-        // curl -G -d "uid=1" localhost:4321/posts/0/likes/
+        // curl -G -d "uid=1" localhost:5432/posts/0/likes/
         get("/posts/:postID/likes/", handler::getLikes, gson::toJson);
 
         // Like, put request
-        // curl -d "uid=0" -X post localhost:4321/posts/0/addLike/
+        // curl -d "uid=0" -X post localhost:5432/posts/0/addLike/
         post("/posts/:postID/addLike/", handler::likePost, gson::toJson);
 
         // COMMENTS ROUTES
         /////////////////////
 
-        // curl -G -d "uid=1" localhost:4321/posts/0/comments/
+        // curl -G -d "uid=1" localhost:5432/posts/0/comments/
         get("/posts/:postID/comments/", handler::getComments, gson::toJson);
 
         // Comment, post for now, put request since we are updating something about the post??
-        // curl -d "uid=1&contents=ok post!" -X post localhost:4321/posts/0/comments/
+        // curl -d "uid=1&contents=ok post!" -X post localhost:5432/posts/0/comments/
         post("/posts/:postID/comments/", handler::createComment, gson::toJson);
 
 
         // Upload Image, which is createPost but imageID exists
-        // curl -d "userID=0&contents=hello world&imageID=0" -X post localhost:4321/posts/
+        // curl -d "userID=0&contents=hello world&imageID=0" -X post localhost:5432/posts/
         // uploadImage() will prompt user for a path
 
     }

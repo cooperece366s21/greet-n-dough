@@ -172,6 +172,7 @@ public class Handler {
     }
 
     public int login( Request req, Response res ) {
+
         res.type("application/json");
         Properties data = gson.fromJson(req.body(), Properties.class);
         String email = data.getProperty("email");
@@ -188,6 +189,7 @@ public class Handler {
         System.out.println( res.body() );
         res.status(200);
         return res.status();
+
     }
 
     // USER RELATION ACTIONS
