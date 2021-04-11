@@ -78,8 +78,6 @@ public class PasswordStorePostgres implements PasswordStore {
     }
 
     // Checks if the email + password match an entry in the DB
-    //      If there is a match, returns the associated uid;
-    //      Otherwise, null
     @Override
     public Integer getUserID( String email, String password ) {
         return jdbi.withHandle( handle -> handle.attach(PasswordDao.class).isCorrectPassword(email, password) ).orElse(null);

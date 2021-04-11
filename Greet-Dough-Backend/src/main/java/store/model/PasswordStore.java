@@ -7,6 +7,8 @@ public interface PasswordStore {
     int addPassword( String email, int uid, String password );
 
     // Get the uid given an email and a password
+    //      If there is a match, returns the associated uid;
+    //      Otherwise, null
     Integer getUserID( String email, String password );
 
     // Checks if email already has an associated password
