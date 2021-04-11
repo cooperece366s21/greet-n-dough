@@ -18,20 +18,8 @@ public class GreetDoughJdbi {
         Jdbi jdbi = Jdbi.create( url, BaseDao.name, BaseDao.password )
                 .installPlugin( new PostgresPlugin() )
                 .installPlugin( new SqlObjectPlugin() );
-//        jdbi.registerRowMapper(
-//
-//            // Same as
-//            //      new RowMapper<User>()
-//            (RowMapper<User>) (rs, ctx) -> {
-//                int id = rs.getInt("id");
-//                String name = rs.getString("name");
-//                return new User( name, id );
-//            }
-//
-//        );
 
-        // you can register row mappers here or you can use @RegisterRowMapper annotation on each Dao
-        // method
+        // Register RowMappers
         jdbi.registerRowMapper( new UserRowMapper() );
         jdbi.registerRowMapper( new PostRowMapper() );
         jdbi.registerRowMapper( new ImageRowMapper() );
@@ -47,10 +35,10 @@ public class GreetDoughJdbi {
         @Override
         public User map( final ResultSet rs, final StatementContext ctx ) throws SQLException {
 
-            int ID = rs.getInt("user_id");
+            int uid = rs.getInt("user_id");
             String name = rs.getString("user_name");
 
-            return new User( name, ID );
+            return new User( name, uid );
 
         }
 
@@ -61,12 +49,12 @@ public class GreetDoughJdbi {
         @Override
         public Post map( final ResultSet rs, final StatementContext ctx ) throws SQLException {
 
-            int ID = rs.getInt("post_id");
-            int userID = rs.getInt("user_id");
-            Integer imageID = rs.getObject("image_id", Integer.class);
+            int pid = rs.getInt("post_id");
+            int uid = rs.getInt("user_id");
+            Integer iid = rs.getObject("image_id", Integer.class);
             String contents = rs.getString("contents");
 
-            return new Post( contents, ID, userID, imageID );
+            return new Post( contents, pid, uid, iid );
 
         }
 
@@ -77,11 +65,11 @@ public class GreetDoughJdbi {
         @Override
         public Image map( final ResultSet rs, final StatementContext ctx ) throws SQLException {
 
-            int ID = rs.getInt("image_id");
-            int userID = rs.getInt("user_id");
+            int iid = rs.getInt("image_id");
+            int uid = rs.getInt("user_id");
             String path = rs.getString("path");
 
-            return new Image( path, ID, userID );
+            return new Image( path, iid, uid );
 
         }
 
@@ -90,28 +78,30 @@ public class GreetDoughJdbi {
     public static class LikeRowMapper implements RowMapper<Likes> {
 
         @Override
-        public Likes map(final ResultSet rs, final StatementContext ctx) throws SQLException{
+        public Likes map( final ResultSet rs, final StatementContext ctx ) throws SQLException {
 
-            int post_id = rs.getInt("post_id");
-            int userID = rs.getInt("user_id");
+            int pid = rs.getInt("post_id");
+            int uid = rs.getInt("user_id");
 
-            return new Likes(post_id, userID);
+            return new Likes( pid, uid );
 
         }
+
     }
 
     public static class CommentRowMapper implements RowMapper<Comment> {
 
         @Override
-        public Comment map(final ResultSet rs, final StatementContext ctx) throws SQLException{
+        public Comment map( final ResultSet rs, final StatementContext ctx ) throws SQLException {
 
             String content = rs.getString("content");
-            int comment_id = rs.getInt("comment_id");
-            int userID = rs.getInt("user_id");
+            int cid = rs.getInt("comment_id");
+            int uid = rs.getInt("user_id");
 
-            return new Comment(content, comment_id, userID);
+            return new Comment( content, cid, uid );
 
         }
+
     }
 
 }
