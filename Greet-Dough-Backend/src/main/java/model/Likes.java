@@ -37,12 +37,12 @@ public class Likes implements Serializable {
         return this.userLikes.size();
     }
 
-    public void incrementLike( int userID ) {
-        this.userLikes.add(userID);
+    public void incrementLike( int uid ) {
+        this.userLikes.add(uid);
     }
 
-    public void decrementLike( int userID ) {
-        this.userLikes.remove(userID);
+    public void decrementLike( int uid ) {
+        this.userLikes.remove(uid);
     }
 
     // No dislike option

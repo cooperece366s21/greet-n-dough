@@ -11,8 +11,8 @@ public class FollowStoreImpl extends Relation implements FollowStore {
     }
 
     @Override
-    public ArrayList<Integer> getFollowers( int ID ) {
-        return super.get(ID);
+    public ArrayList<Integer> getFollowers( int uid ) {
+        return super.get(uid);
     }
 
     @Override
@@ -27,8 +27,8 @@ public class FollowStoreImpl extends Relation implements FollowStore {
 
     // Deletes user along with all followers
     @Override
-    public boolean deleteUser( int ID ) {
-        return super.delete(ID);
+    public boolean deleteUser( int uid ) {
+        return super.delete(uid);
     }
 
 }
