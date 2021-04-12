@@ -14,6 +14,6 @@ public interface UserStore {
 
     void deleteUser( int uid );
 
-    List<String> searchUsers( String name );
+    List<User> searchUsers( String name );
 
 }

@@ -45,7 +45,7 @@ public class UserStoreImpl extends StoreWithID<User> implements UserStore {
     }
 
     @Override
-    public List<String> searchUsers( String name ) {
+    public List<User> searchUsers( String name ) {
         return null;
     }
 

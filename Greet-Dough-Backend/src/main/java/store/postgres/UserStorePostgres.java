@@ -6,6 +6,7 @@ import org.jdbi.v3.core.Jdbi;
 import utility.ResetDao;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 // ADD PROFILE PICTURES
 public class UserStorePostgres implements UserStore {
@@ -26,7 +27,8 @@ public class UserStorePostgres implements UserStore {
         System.out.println( UserStorePostgres.hasUser(newUser.getID()) );
 
         UserStorePostgres.addUser("Jon");
-        System.out.println( UserStorePostgres.searchUsers("Jo") );
+        System.out.println( UserStorePostgres.searchUsers("Jo").stream().map(User::getName).collect(Collectors.toList()) );
+//        UserStorePostgres.searchUsers("Jo") .forEach( x -> System.out.println(x.getID()) );
 
         // Test deleting the user
         UserStorePostgres.deleteUser( userAfterWrite.getID() );
@@ -76,7 +78,7 @@ public class UserStorePostgres implements UserStore {
     }
 
     @Override
-    public List<String> searchUsers( String name ) {
+    public List<User> searchUsers( String name ) {
         return jdbi.withHandle( handle -> handle.attach(UserDao.class).searchUsers(name) );
     }
 

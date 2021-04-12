@@ -33,8 +33,8 @@ public interface UserDao {
     @SqlQuery("SELECT * FROM users WHERE user_id = (:user_id)")
     Optional<User> getUser(@Bind("user_id") int user_id);
 
-    @SqlQuery("SELECT user_name FROM users WHERE user_name " +
+    @SqlQuery("SELECT * FROM users WHERE user_name " +
             "SIMILAR TO :name || '%';" )
-    List<String> searchUsers(@Bind("name") String name);
+    List<User> searchUsers(@Bind("name") String name);
 
 }
