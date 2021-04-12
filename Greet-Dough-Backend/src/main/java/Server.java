@@ -104,6 +104,8 @@ public class Server {
         // Deletes user given UserID
         // curl -X delete localhost:5432/users/1/
         delete("/users/:id/", handler::deleteUser, gson::toJson);
+
+        post("/auth/", handler::tokenToId, gson::toJson);
         
         // USER RELATION ROUTES
         ///////////////////////

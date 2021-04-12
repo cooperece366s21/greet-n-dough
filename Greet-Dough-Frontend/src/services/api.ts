@@ -8,6 +8,44 @@ function setCurrentToken( token:string): void {
     localStorage.setItem("authToken", token);
 }
 
+export async function getUserID(): Promise<number> {
+    let authToken = getCurrentToken();
+
+    if (authToken === "") {
+        alert("NO TOKEN IN BROWSER!") // debug
+        return -1;
+    }
+
+    const res = await fetch(`${BACKEND_URL}/auth/`, {
+        method: "post",
+        mode: "cors",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ authToken })
+    });
+
+    if ( res.ok ) {
+        let uid = await res.json()
+            .then(json => JSON.parse(json))
+            .then(parsed => { return parsed.uid } );
+
+        if( uid === -1 ) {
+            alert("token valid but user is -1?!?!?!") // debug
+            return -1;
+        }
+
+        return uid;
+    }
+
+    else {
+        alert( "ERROR: " + res.status );
+        return -1;
+    }
+
+
+
+}
 
 export async function register(  email:string, username:string, password:string ) {
 
@@ -53,7 +91,6 @@ export async function login( email:string, password:string ) {
             })
 
         return 200;
-        // set token here once i get it to work :): ):
 
     } else {
         // maybe some other code here for specific errors?
@@ -63,7 +100,8 @@ export async function login( email:string, password:string ) {
 
 let exports = {
     register,
-    login
+    login,
+    getUserID,
 }
 
 export default exports

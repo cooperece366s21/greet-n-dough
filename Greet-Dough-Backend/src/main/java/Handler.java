@@ -172,6 +172,28 @@ public class Handler {
 
     }
 
+    public int tokenToId( Request req, Response res ) {
+        res.type("application/json");
+        Properties data = gson.fromJson(req.body(), Properties.class);
+        String token = data.getProperty("authToken");
+
+        Integer uid = loginStore.getUserID(token);
+
+        if( uid == null ) {
+            res.status(401);
+            return -1; // frontend is expecting a uid return
+        }
+
+        // Not sure if this body part is required, since we are returning uid?
+        JsonObject uidJSON = new JsonObject();
+        uidJSON.addProperty("uid", uid);
+        res.body( String.valueOf(uidJSON) );
+
+        res.status(200);
+        return uid;
+
+    }
+
     public int login( Request req, Response res ) {
 
         res.type("application/json");
