@@ -29,11 +29,13 @@ public interface LoginDao {
     @SqlUpdate("DELETE FROM login WHERE user_token = (:user_token);")
     void deleteSession(@Bind("user_token") String user_token);
 
-    @SqlQuery("SELECT user_id FROM login WHERE user_token = (:user_token);")
+    @SqlQuery("SELECT user_id FROM login " +
+            "WHERE user_token = (:user_token) AND " +
+                    "timestamp > NOW() - INTERVAL '1 hour';")
     Optional<Integer> getUserID(@Bind("user_token") String user_token );
 
-
     // Invalidates tokens after a specified amount of time
+    //      Takes place before an INSERT
     // From https://www.the-art-of-web.com/sql/trigger-delete-old/
     @SqlUpdate( "CREATE OR REPLACE FUNCTION delete_old_rows() RETURNS trigger " +
                     "LANGUAGE plpgsql " +
@@ -52,7 +54,7 @@ public interface LoginDao {
     void createTrigger();
 
     @SqlUpdate("CREATE TRIGGER trigger_delete_old_rows " +
-                    "AFTER INSERT ON login " +
+                    "BEFORE INSERT ON login " +
                     "EXECUTE PROCEDURE delete_old_rows();")
     void setTrigger();
 
