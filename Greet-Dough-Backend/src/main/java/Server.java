@@ -95,7 +95,7 @@ public class Server {
         get("/users/:id/", handler::getUser, gson::toJson);
 
         // curl -H "Content-Type: application/json" --data "{"email":"a@gmail.com", "password":"123"}" localhost:5432/login
-        post("/login", handler::login, gson::toJson);
+        post("/login/", handler::login, gson::toJson);
 
         // Creates a new user
         // curl -H "Content-Type: application/json" --data "{"name":"Josh"}" -X post localhost:5432/users/

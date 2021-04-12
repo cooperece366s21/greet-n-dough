@@ -24,12 +24,10 @@ class LoginForm extends React.Component<any, any>{
 
     async loginWrapper( email:string, password:string ){
         let res = await login( email, password )
-        if ( res ) {
+        if ( res === 200 ) {
             alert("Successful log in");
             this.props.history.push('/');
-
-        }
-        else {
+        } else {
             alert("Response: " + JSON.stringify(res) );
             this.setState( {invalid: true});
         }

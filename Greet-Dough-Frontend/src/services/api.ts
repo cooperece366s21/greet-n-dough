@@ -1,5 +1,14 @@
 export const BACKEND_URL = "http://localhost:5432";
 
+function getCurrentToken(): string {
+    return localStorage.getItem("authToken") || "";
+}
+
+function setCurrentToken( token:string): void {
+    localStorage.setItem("authToken", token);
+}
+
+
 export async function register(  email:string, username:string, password:string ) {
 
     const res = await fetch(`${BACKEND_URL}/users/`, {
@@ -22,7 +31,9 @@ export async function register(  email:string, username:string, password:string 
 
 export async function login( email:string, password:string ) {
 
-    const res = await fetch(`${BACKEND_URL}/login`, {
+    alert( JSON.stringify({ email, password } ) )
+
+    const res = await fetch(`${BACKEND_URL}/login/`, {
         method: "post",
         mode: "cors",
         headers: {
@@ -31,11 +42,19 @@ export async function login( email:string, password:string ) {
         body: JSON.stringify({ email, password })
     });
 
-    alert( JSON.stringify( res.body ) )
+
 
     if ( res.ok ) {
-        document.cookie= JSON.stringify(res.body)
+        res.json()
+            .then( body => {
+                setCurrentToken( JSON.parse(body).authToken )
+                // alert("body: " + body);
+                // alert("Token: " + JSON.parse(body).authToken );
+            })
+
         return 200;
+        // set token here once i get it to work :): ):
+
     } else {
         // maybe some other code here for specific errors?
         return res.status;

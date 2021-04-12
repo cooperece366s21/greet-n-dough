@@ -1,3 +1,4 @@
+import com.google.gson.JsonObject;
 import model.*;
 import utility.Pair;
 import utility.ResetDao;
@@ -180,11 +181,20 @@ public class Handler {
 
         System.out.println("Logging in: " + email +", "+ password);
 
-        int uid = passwordStore.getUserID(email, password); // check login
+        Integer uid = passwordStore.getUserID(email, password); // check logi
+
+        if ( uid == null ) {
+            res.status(403);
+            System.out.println("Unsuccessful login!");
+            return res.status();
+        }
+
         System.out.println(uid+" Logged in!");
 
         String cookie = loginStore.addSession(uid);
-        res.body( cookie );
+        JsonObject cookieJSON = new JsonObject();
+        cookieJSON.addProperty("authToken", cookie);
+        res.body( String.valueOf(cookieJSON) );
 
         System.out.println( res.body() );
         res.status(200);
