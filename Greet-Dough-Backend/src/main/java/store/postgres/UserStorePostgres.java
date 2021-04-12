@@ -7,7 +7,7 @@ import utility.ResetDao;
 
 import java.util.List;
 
-// IMPLEMENT A PREFIX TRIE TO ALLOW SEARCHING FOR USERS?
+// ADD PROFILE PICTURES
 public class UserStorePostgres implements UserStore {
 
     // For testing purposes
@@ -24,6 +24,9 @@ public class UserStorePostgres implements UserStore {
         User userAfterWrite = UserStorePostgres.getUser( newUser.getID() );
         System.out.println( userAfterWrite.getID() + " " + userAfterWrite.getName() );
         System.out.println( UserStorePostgres.hasUser(newUser.getID()) );
+
+        UserStorePostgres.addUser("Jon");
+        System.out.println( UserStorePostgres.searchUsers("Jo") );
 
         // Test deleting the user
         UserStorePostgres.deleteUser( userAfterWrite.getID() );
@@ -70,6 +73,11 @@ public class UserStorePostgres implements UserStore {
     @Override
     public void deleteUser( int uid ) {
         jdbi.useHandle( handle -> handle.attach(UserDao.class).deleteUser(uid) );
+    }
+
+    @Override
+    public List<String> searchUsers( String name ) {
+        return jdbi.withHandle( handle -> handle.attach(UserDao.class).searchUsers(name) );
     }
 
 }

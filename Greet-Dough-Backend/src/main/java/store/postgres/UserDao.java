@@ -1,9 +1,7 @@
 package store.postgres;
 
 import model.User;
-import store.postgres.GreetDoughJdbi.UserRowMapper;
 
-import org.jdbi.v3.sqlobject.config.RegisterRowMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
@@ -34,5 +32,9 @@ public interface UserDao {
 
     @SqlQuery("SELECT * FROM users WHERE user_id = (:user_id)")
     Optional<User> getUser(@Bind("user_id") int user_id);
+
+    @SqlQuery("SELECT user_name FROM users WHERE user_name " +
+            "SIMILAR TO :name || '%';" )
+    List<String> searchUsers(@Bind("name") String name);
 
 }

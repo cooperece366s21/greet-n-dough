@@ -4,6 +4,8 @@ import model.User;
 import store.model.StoreWithID;
 import store.model.UserStore;
 
+import java.util.List;
+
 public class UserStoreImpl extends StoreWithID<User> implements UserStore {
 
     public UserStoreImpl() {
@@ -40,6 +42,11 @@ public class UserStoreImpl extends StoreWithID<User> implements UserStore {
     @Override
     public void deleteUser( int uid ) {
         super.delete(uid);
+    }
+
+    @Override
+    public List<String> searchUsers( String name ) {
+        return null;
     }
 
 }
