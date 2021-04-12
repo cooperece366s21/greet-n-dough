@@ -1,9 +1,9 @@
 package store.postgres;
 
-import store.model.LoginStore;
 import model.User;
-import org.jdbi.v3.core.Jdbi;
+import store.model.LoginStore;
 import utility.ResetDao;
+import org.jdbi.v3.core.Jdbi;
 
 public class LoginStorePostgres implements LoginStore {
 

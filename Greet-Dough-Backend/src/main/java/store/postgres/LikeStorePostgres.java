@@ -1,11 +1,12 @@
 package store.postgres;
 
-import model.Likes;
-import model.Post;
 import model.User;
-import org.jdbi.v3.core.Jdbi;
+import model.Post;
+import model.Likes;
 import store.model.LikeStore;
 import utility.ResetDao;
+
+import org.jdbi.v3.core.Jdbi;
 
 public class LikeStorePostgres implements LikeStore {
 

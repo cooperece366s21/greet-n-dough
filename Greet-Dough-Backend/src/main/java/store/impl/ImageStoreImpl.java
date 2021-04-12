@@ -6,7 +6,7 @@ import store.model.ImageStore;
 
 import java.io.IOException;
 import java.nio.file.*;
-import java.util.Scanner;
+import java.util.List;
 
 public class ImageStoreImpl extends StoreWithID<Image> implements ImageStore {
 
@@ -29,11 +29,6 @@ public class ImageStoreImpl extends StoreWithID<Image> implements ImageStore {
     }
 
     @Override
-    public void deleteImage( int iid ) {
-        super.delete(iid);
-    }
-
-    @Override
     public Image addImage( String path, int uid ) {
 
         // Create image
@@ -45,6 +40,16 @@ public class ImageStoreImpl extends StoreWithID<Image> implements ImageStore {
         this.add( tempImage.getID(), tempImage );
         return tempImage;
 
+    }
+
+    @Override
+    public void deleteImage( int iid ) {
+        super.delete(iid);
+    }
+
+    @Override
+    public List<Image> makeGallery( int uid ) {
+        return null;
     }
 
     public String copyImage( String path ) {

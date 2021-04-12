@@ -1,11 +1,11 @@
 package store.postgres;
 
-import model.Post;
 import model.User;
-import org.jdbi.v3.core.Jdbi;
+import model.Post;
 import store.model.PostStore;
 import utility.ResetDao;
 
+import org.jdbi.v3.core.Jdbi;
 import java.util.List;
 
 public class PostStorePostgres implements PostStore {
@@ -63,6 +63,8 @@ public class PostStorePostgres implements PostStore {
         return jdbi.withHandle( handle -> handle.attach(PostDao.class).getPost(pid) ).orElse(null);
     }
 
+    // Returns all posts in the database
+    //      Currently only used for testing
     public List<Post> getPost() {
         return jdbi.withHandle( handle -> handle.attach(PostDao.class).listPosts() );
     }

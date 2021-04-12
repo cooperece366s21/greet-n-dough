@@ -2,9 +2,9 @@ package store.postgres;
 
 import model.User;
 import store.model.UserStore;
-import org.jdbi.v3.core.Jdbi;
 import utility.ResetDao;
 
+import org.jdbi.v3.core.Jdbi;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,9 +26,12 @@ public class UserStorePostgres implements UserStore {
         System.out.println( userAfterWrite.getID() + " " + userAfterWrite.getName() );
         System.out.println( UserStorePostgres.hasUser(newUser.getID()) );
 
+        // Test searching for a user given the first portion of their name
         UserStorePostgres.addUser("Jon");
+
+        // Prints the names of the users given a list of users
+        //      Playing around with mapping a list
         System.out.println( UserStorePostgres.searchUsers("Jo").stream().map(User::getName).collect(Collectors.toList()) );
-//        UserStorePostgres.searchUsers("Jo") .forEach( x -> System.out.println(x.getID()) );
 
         // Test deleting the user
         UserStorePostgres.deleteUser( userAfterWrite.getID() );
@@ -55,6 +58,8 @@ public class UserStorePostgres implements UserStore {
         return jdbi.withHandle( handle -> handle.attach(UserDao.class).getUser(uid) ).orElse(null);
     }
 
+    // Returns all users in the database
+    //      Currently only used for testing
     public List<User> getUser() {
         return jdbi.withHandle( handle -> handle.attach(UserDao.class).listUsers() );
     }

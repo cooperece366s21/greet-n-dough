@@ -59,13 +59,13 @@ public class Handler {
 
         if ( userStore.getUser(uid) == null ) {
 
-            System.out.println("Current user "+uid+" does not exist");
+            System.err.println("Current user "+uid+" does not exist");
             return null;
 
         }
         if ( userStore.getUser(targetUser) == null ) {
 
-            System.out.println("Target user "+targetUser+" does not exist");
+            System.err.println("Target user "+targetUser+" does not exist");
             return null;
 
         }
@@ -77,14 +77,14 @@ public class Handler {
 
         if ( !postStore.hasPost(pid) ) {
 
-            System.out.println("Post does not exist");
+            System.err.println("Post does not exist");
             return 404;
 
         }
 
         if ( !userStore.hasUser(uid) ) {
 
-            System.out.println("User does not exist");
+            System.err.println("User does not exist");
             return 404;
 
         }
@@ -127,8 +127,10 @@ public class Handler {
 
         // Check if email has been used already
         if ( passwordStore.hasEmail(email) ) {
+
             res.status(409);
             return res.status();
+
         }
 
         User tempUser = userStore.addUser(username);
@@ -173,15 +175,18 @@ public class Handler {
     }
 
     public int tokenToId( Request req, Response res ) {
+
         res.type("application/json");
         Properties data = gson.fromJson(req.body(), Properties.class);
         String token = data.getProperty("authToken");
 
         Integer uid = loginStore.getUserID(token);
 
-        if( uid == null ) {
+        if ( uid == null ) {
+
             res.status(401);
             return -1; // frontend is expecting a uid return
+
         }
 
         // Not sure if this body part is required, since we are returning uid?
@@ -206,9 +211,11 @@ public class Handler {
         Integer uid = passwordStore.getUserID(email, password); // check logi
 
         if ( uid == null ) {
+
             res.status(403);
-            System.out.println("Unsuccessful login!");
+            System.err.println("Unsuccessful login!");
             return res.status();
+
         }
 
         System.out.println(uid+" Logged in!");
@@ -241,7 +248,7 @@ public class Handler {
 
         if ( curSubs != null && curSubs.contains( userPair.getRight() ) ) {
 
-            System.out.println("Current User already is subscribed");
+            System.err.println("Current user already is subscribed");
             res.status(404);
             return 404;
 
@@ -268,14 +275,14 @@ public class Handler {
 
         if ( curSubs == null ) {
 
-            System.out.println("User not subscribed to anyone");
+            System.err.println("User not subscribed to anyone");
             res.status(404);
             return 404;
 
         }
 
         if ( !curSubs.contains(userPair.getRight()) ) {
-            System.out.println("Current user not subscribed to target user");
+            System.err.println("Current user not subscribed to target user");
         }
 
         subStore.removeSubscription( userPair.getLeft(), userPair.getRight() );
@@ -343,7 +350,7 @@ public class Handler {
         if ( postStore.hasPost(pid) ) {
 
             res.status(200);
-            System.out.println("Post does not exist");
+            System.err.println("Post does not exist");
             return postStore.getPost(pid);
 
         } else {
@@ -365,7 +372,7 @@ public class Handler {
         if ( !userStore.hasUser(uid) ) {
 
             res.status(404);
-            System.out.println("User does not exist");
+            System.err.println("User does not exist");
             return 404;
 
         }
@@ -379,7 +386,6 @@ public class Handler {
 
         System.out.println( gson.toJson(tempPost) );
 
-//        IOservice.saveObject( this.imageStore, "data/posts.txt" );
 //        System.out.println( gson.toJson(imagePath) );
         res.status(200);
         return 200;
@@ -447,7 +453,7 @@ public class Handler {
             return likeStore.getID(pid);
         }
 
-        System.out.println("Error code: " + res.status() );
+        System.err.println("Error code: " + res.status() );
         return null;
 
     }
@@ -460,7 +466,7 @@ public class Handler {
         Likes postLikes = likeStore.getID(pid);
         res.status(status);
 
-        if ( res.status()==200 ) {
+        if ( res.status() == 200 ) {
 
             HashSet<Integer> userLikes = postLikes.getUserLikes();
 
@@ -472,7 +478,7 @@ public class Handler {
             }
 
         } else {
-            System.out.println("Error code: " + res.status());
+            System.err.println("Error code: " + res.status());
         }
 
         return res.status();
@@ -495,7 +501,7 @@ public class Handler {
             System.out.println( gson.toJson(newComment) );
 
         } else {
-            System.out.println("Error code: " + res.status());
+            System.err.println("Error code: " + res.status());
         }
 
         return res.status();
@@ -518,7 +524,7 @@ public class Handler {
             }
 
         } else {
-            System.out.println("Error code: " + res.status());
+            System.err.println("Error code: " + res.status());
         }
 
         return comments;

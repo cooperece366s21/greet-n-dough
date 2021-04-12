@@ -33,12 +33,12 @@ public class LikeStoreImpl extends StorageRetrieval<Likes> implements LikeStore 
     }
 
     @Override
-    public void insertLikes( int postID, int uid ) {
+    public void insertLikes( int pid, int uid ) {
 
     }
 
     @Override
-    public boolean containsLike( int postID, int uid ) {
+    public boolean containsLike( int pid, int uid ) {
         return false;
     }
 

@@ -1,16 +1,18 @@
 package store.postgres;
 
-import model.Comment;
-import model.Post;
 import model.User;
-import org.jdbi.v3.core.Jdbi;
+import model.Post;
+import model.Comment;
 import store.model.CommentStore;
 import utility.ResetDao;
+
+import org.jdbi.v3.core.Jdbi;
 
 public class CommentStorePostgres implements CommentStore {
 
     // Connection test function
-    public static void main( String[] args){
+    public static void main( String[] args ) {
+
         Jdbi jdbi = GreetDoughJdbi.create("jdbc:postgresql://localhost:4321/greetdough");
         UserStorePostgres UserStorePostgres = new UserStorePostgres(jdbi);
         PostStorePostgres PostStorePostgres = new PostStorePostgres(jdbi);
@@ -88,25 +90,21 @@ public class CommentStorePostgres implements CommentStore {
     }
 
     @Override
-    public void addComment( Comment newComment ) {
-    }
-
-    @Override
-    public Comment addComment( String contents, int uid) {
+    public Comment addComment( String contents, int uid ) {
 
         return null;
 
     }
 
     @Override
-    public boolean canComment(int post_id) {
+    public boolean canComment( int pid ) {
 
-        return jdbi.withHandle( handle -> handle.attach(CommentDao.class).canComment(post_id) );
+        return jdbi.withHandle( handle -> handle.attach(CommentDao.class).canComment(pid) );
 
     }
 
     @Override
-    public Comment insertComment(String contents, int uid, Integer parent_id) {
+    public Comment insertComment( String contents, int uid, Integer parent_id ) {
 
         int ID = jdbi.withHandle( handle -> handle.attach(CommentDao.class).insertComment(uid, contents, parent_id) );
         return getComment(ID);
@@ -114,16 +112,16 @@ public class CommentStorePostgres implements CommentStore {
     }
 
     @Override
-    public Comment insertComment(String contents, int uid) {
+    public Comment insertComment( String contents, int uid ) {
 
         return insertComment( contents, uid, null );
 
     }
 
     @Override
-    public boolean canReply(int comment_id) {
+    public boolean canReply( int cid ) {
 
-        return jdbi.withHandle( handle -> handle.attach(CommentDao.class).canReply(comment_id) );
+        return jdbi.withHandle( handle -> handle.attach(CommentDao.class).canReply(cid) );
 
     }
 

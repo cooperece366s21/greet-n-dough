@@ -14,6 +14,7 @@ public interface UserStore {
 
     void deleteUser( int uid );
 
+    // Returns a list of users given the first portion of their name
     List<User> searchUsers( String name );
 
 }

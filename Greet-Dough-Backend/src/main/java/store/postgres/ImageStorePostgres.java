@@ -1,12 +1,12 @@
 package store.postgres;
 
-import model.Image;
-import model.Post;
 import model.User;
-import org.jdbi.v3.core.Jdbi;
+import model.Post;
+import model.Image;
 import store.model.ImageStore;
 import utility.ResetDao;
 
+import org.jdbi.v3.core.Jdbi;
 import java.util.List;
 
 public class ImageStorePostgres implements ImageStore {
@@ -69,17 +69,20 @@ public class ImageStorePostgres implements ImageStore {
         return jdbi.withHandle( handle -> handle.attach(ImageDao.class).getImage(iid) ).orElse(null);
     }
 
+    // Returns all users in the database
+    //      Currently only used for testing
     public List<Image> getImage() {
         return jdbi.withHandle( handle -> handle.attach(ImageDao.class).listImages() );
     }
 
+    @Override
     public List<Image> makeGallery( int uid ) {
         return jdbi.withHandle( handle -> handle.attach(ImageDao.class).getGallery(uid) );
     }
 
     @Override
     public boolean hasImage( int iid ) {
-        return jdbi.withHandle( handle -> handle.attach(ImageDao.class).containsImage(iid) );
+        return getImage(iid) != null;
     }
 
     @Override

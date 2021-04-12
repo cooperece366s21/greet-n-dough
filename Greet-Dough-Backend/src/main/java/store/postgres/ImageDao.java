@@ -32,10 +32,6 @@ public interface ImageDao {
     @SqlUpdate("DELETE FROM images WHERE image_id = (:image_id);")
     void deleteImage(@Bind("image_id") int image_id);
 
-    @SqlQuery("SELECT EXISTS( " +
-            "SELECT * from images WHERE image_id = (:image_id));")
-    Boolean containsImage(@Bind("image_id") int image_id);
-
     @SqlQuery("SELECT * FROM images ORDER BY user_id")
     List<Image> listImages();
 

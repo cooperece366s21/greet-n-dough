@@ -16,6 +16,7 @@ public interface PostStore {
 
     void deletePost( int pid );
 
+    // Returns all of a user's posts
     List<Post> makeFeed( int uid );
 
 }

@@ -1,9 +1,9 @@
 package store.postgres;
 
-import store.model.PasswordStore;
 import model.User;
-import org.jdbi.v3.core.Jdbi;
+import store.model.PasswordStore;
 import utility.ResetDao;
+import org.jdbi.v3.core.Jdbi;
 
 /////////////////////////////////////////////// CHANGE HASH TO SHA256
 public class PasswordStorePostgres implements PasswordStore {
