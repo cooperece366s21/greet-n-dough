@@ -97,8 +97,9 @@ public class GreetDoughJdbi {
             String content = rs.getString("content");
             int cid = rs.getInt("comment_id");
             int uid = rs.getInt("user_id");
+            Integer parentID = rs.getObject("parent_id", Integer.class);
 
-            return new Comment( content, cid, uid );
+            return new Comment( content, cid, uid, parentID );
 
         }
 
