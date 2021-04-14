@@ -8,8 +8,9 @@ public class ResetDao {
     public static void reset(Jdbi jdbi) {
 
         UserStorePostgres UserStorePostgres = new UserStorePostgres(jdbi);
-        PostStorePostgres PostStorePostgres = new PostStorePostgres(jdbi);
+        WalletStorePostgres WalletStorePostgres = new WalletStorePostgres(jdbi);
         ImageStorePostgres ImageStorePostgres = new ImageStorePostgres(jdbi);
+        PostStorePostgres PostStorePostgres = new PostStorePostgres(jdbi);
         CommentStorePostgres CommentStorePostgres = new CommentStorePostgres(jdbi);
         LikeStorePostgres LikeStorePostgres = new LikeStorePostgres(jdbi);
         LoginStorePostgres LoginStorePostgres = new LoginStorePostgres(jdbi);
@@ -22,10 +23,12 @@ public class ResetDao {
         CommentStorePostgres.delete();
         PostStorePostgres.delete();
         ImageStorePostgres.delete();
+        WalletStorePostgres.delete();
         UserStorePostgres.delete();
 
         // Initialize the databases
         UserStorePostgres.init();
+        WalletStorePostgres.init();
         ImageStorePostgres.init();
         PostStorePostgres.init();
         CommentStorePostgres.init();

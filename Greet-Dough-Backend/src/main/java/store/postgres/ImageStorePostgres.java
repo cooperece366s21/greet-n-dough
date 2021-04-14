@@ -7,6 +7,9 @@ import store.model.ImageStore;
 import utility.ResetDao;
 
 import org.jdbi.v3.core.Jdbi;
+
+import java.io.IOException;
+import java.nio.file.*;
 import java.util.List;
 
 public class ImageStorePostgres implements ImageStore {
@@ -96,6 +99,25 @@ public class ImageStorePostgres implements ImageStore {
     @Override
     public void deleteImage( int iid ) {
         jdbi.useHandle( handle -> handle.attach(ImageDao.class).deleteImage(iid) );
+    }
+
+    public String copyImage( String path ) {
+
+        FileSystem fileSys = FileSystems.getDefault();
+        Path srcPath = fileSys.getPath(path);
+
+        Path destPath = fileSys.getPath("c:\\Users\\brian\\OneDrive\\Documents\\Github\\Lee-Ko\\Greet-Dough\\data\\images.png");
+        try {
+            //COPY image from source to destination folder
+            Files.copy(srcPath, destPath, StandardCopyOption.REPLACE_EXISTING);
+            return destPath.toString();
+
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+
+        return null;
+
     }
 
 }
