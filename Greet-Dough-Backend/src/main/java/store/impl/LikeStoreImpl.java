@@ -11,13 +11,13 @@ public class LikeStoreImpl extends StorageRetrieval<Likes> implements LikeStore 
     }
 
     @Override
-    public Likes getID( int ID ) {
-        return super.get(ID);
+    public Likes getLikes( int pid ) {
+        return super.get(pid);
     }
 
     @Override
-    public void deleteLikes( int ID ) {
-        super.delete( ID );
+    public void deleteLikes( int pid ) {
+        super.delete(pid);
     }
 
     @Override
@@ -38,7 +38,7 @@ public class LikeStoreImpl extends StorageRetrieval<Likes> implements LikeStore 
     }
 
     @Override
-    public boolean containsLike( int pid, int uid ) {
+    public boolean hasUserLike( int pid, int uid ) {
         return false;
     }
 

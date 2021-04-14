@@ -28,15 +28,15 @@ public class LikeStorePostgres implements LikeStore {
         Post secondPost = PostStorePostgres.addPost( "haha very cool!", newUser.getID() );
 
         // Like one post
-        int temp = newPost.getID();
-        int chata = newUser.getID();
-        LikeStorePostgres.insertLikes(temp, chata);
+        LikeStorePostgres.insertLikes( newPost.getID(), newUser.getID() );
 
         // Check if the user liked a specific post
-        System.out.println(LikeStorePostgres.containsLike(temp, chata));
+        System.out.println( LikeStorePostgres.hasUserLike( newPost.getID(), newUser.getID() ) );
 
         // Delete post => delete all likes
-        LikeStorePostgres.deleteLikes(temp);
+        PostStorePostgres.deletePost( newPost.getID() );
+        System.out.println( LikeStorePostgres.getLikes( newPost.getID() ) );
+
     }
 
     private final Jdbi jdbi;
@@ -54,8 +54,8 @@ public class LikeStorePostgres implements LikeStore {
     }
 
     @Override
-    public Likes getID( int lid ) {
-        return jdbi.withHandle( handle -> handle.attach(LikeDao.class).getID(lid) );
+    public Likes getLikes( int pid ) {
+        return jdbi.withHandle( handle -> handle.attach(LikeDao.class).getLikes(pid) );
     }
 
     // From hashtable store (can replace with insertLikes)
@@ -66,16 +66,16 @@ public class LikeStorePostgres implements LikeStore {
 
     @Override
     public void deleteLikes( int lid ) {
-        jdbi.useHandle( handle -> handle.attach(LikeDao.class).deleteLikes(lid));
+//        jdbi.useHandle( handle -> handle.attach(LikeDao.class).deleteLikes(lid));
     }
 
     @Override
-    public void insertLikes( int pid, int uid)  {
+    public void insertLikes( int pid, int uid )  {
         jdbi.useHandle( handle -> handle.attach(LikeDao.class).insertLikes(pid, uid) );
     }
 
     @Override
-    public boolean containsLike(int pid, int uid){
+    public boolean hasUserLike( int pid, int uid ){
         return jdbi.withHandle( handle -> handle.attach(LikeDao.class).containsLike(pid, uid) );
     }
 

@@ -4,14 +4,15 @@ import model.Likes;
 
 public interface LikeStore {
 
-    Likes getID( int ID );
+    Likes getLikes( int pid );
 
     Likes addLikes( int pid, int uid );
 
-    void deleteLikes( int lid );
+    void deleteLikes( int pid );
 
     void insertLikes( int pid, int uid );
 
-    boolean containsLike( int pid, int uid );
+    // Returns whether the user has liked the post
+    boolean hasUserLike( int pid, int uid );
 
 }

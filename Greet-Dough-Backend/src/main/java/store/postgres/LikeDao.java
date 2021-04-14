@@ -46,9 +46,9 @@ public interface LikeDao {
             "user_id INT " +        "NOT NULL, " +
             "PRIMARY KEY(post_id), " +
             "CONSTRAINT fk_user " + "FOREIGN KEY(user_id) " +
-                "REFERENCES users(user_id) " + "ON DELETE CASCADE " +
-            //"CONSTRAINT fk_post " + "FOREIGN KEY(post_id) " +
-            //    "REFERENCES posts(post_id) " + "ON DELETE CASCADE " +
+                "REFERENCES users(user_id) " + "ON DELETE CASCADE, " +
+            "CONSTRAINT fk_post " + "FOREIGN KEY(post_id) " +
+                "REFERENCES posts(post_id) " + "ON DELETE CASCADE " +
             ");")
     void createTable();
 
@@ -59,8 +59,8 @@ public interface LikeDao {
     @SqlUpdate("DELETE FROM likes WHERE post_id = (:post_id);")
     void deleteLikes(@Bind("post_id") int post_id);
 
-    @SqlQuery("SELECT post_id, COUNT(*) AS like_count FROM likes GROUP BY post_id;")
-    Likes getID(@Bind("post_id") int post_id);
+    @SqlQuery("SELECT * FROM likes WHERE post_id = (:post_id);")
+    Likes getLikes(@Bind("post_id") int post_id);
 
     @SqlQuery("SELECT EXISTS( " +
             "SELECT * from likes WHERE post_id = (:post_id) AND user_id = (:user_id));")
