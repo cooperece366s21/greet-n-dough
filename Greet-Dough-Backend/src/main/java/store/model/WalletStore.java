@@ -1,16 +1,18 @@
 package store.model;
 
+import java.math.BigDecimal;
+
 public interface WalletStore {
 
-    float getBalance( int uid );
+    BigDecimal getBalance( int uid );
 
     // By default, user has a balance of 0
     void addUser( int uid );
 
-    void addUser( int uid, float balance );
+    void addUser( int uid, BigDecimal balance );
 
-    void addToBalance( int uid, float amount );
+    void addToBalance( int uid, BigDecimal amount );
 
-    void withdrawFromBalance( int uid, float amount );
+    void withdrawFromBalance( int uid, BigDecimal amount );
 
 }

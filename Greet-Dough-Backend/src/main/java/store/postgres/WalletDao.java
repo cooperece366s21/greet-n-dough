@@ -4,6 +4,8 @@ import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
+import java.math.BigDecimal;
+
 public interface WalletDao {
 
     @SqlUpdate("DROP TABLE IF EXISTS wallet;")
@@ -21,15 +23,15 @@ public interface WalletDao {
     void createTable();
 
     @SqlUpdate("INSERT INTO wallet (user_id, user_balance) VALUES (:user_id, :balance);")
-    void insertUser(@Bind("user_id") int user_id, @Bind("balance") float balance);
+    void insertUser(@Bind("user_id") int user_id, @Bind("balance") BigDecimal balance);
 
     // Needs to be optional?
     @SqlQuery("SELECT user_balance FROM wallet WHERE user_id = (:user_id);")
-    float getBalance(@Bind("user_id") int user_id);
+    BigDecimal getBalance(@Bind("user_id") int user_id);
 
     @SqlUpdate("UPDATE wallet SET user_balance = (:newBalance) " +
             "WHERE user_id = (:user_id);")
-    void updateBalance(@Bind("user_id") int user_id, @Bind("newBalance") float newBalance);
+    void updateBalance(@Bind("user_id") int user_id, @Bind("newBalance") BigDecimal newBalance);
 
 
 }

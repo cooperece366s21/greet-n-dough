@@ -1,9 +1,12 @@
 package store.postgres;
 
+import model.User;
 import store.model.WalletStore;
 import utility.ResetDao;
 
 import org.jdbi.v3.core.Jdbi;
+
+import java.math.BigDecimal;
 
 // Method to add directly to DB?
 // Need to have has()?
@@ -17,6 +20,25 @@ public class WalletStorePostgres implements WalletStore {
 
         // Used to DROP and CREATE all tables
         ResetDao.reset(jdbi);
+
+        User steve = UserStorePostgres.addUser("Steve Ree");
+        User juan = UserStorePostgres.addUser("Juan Lam");
+
+        // Test adding a user
+        WalletStorePostgres.addUser( steve.getID() );
+        WalletStorePostgres.addUser( juan.getID(), new BigDecimal("10.50") );
+
+        // Check balances
+        System.out.println( WalletStorePostgres.getBalance( steve.getID() ) );
+        System.out.println( WalletStorePostgres.getBalance( juan.getID() ) );
+
+        // Test changing balances
+        WalletStorePostgres.addToBalance( steve.getID(), new BigDecimal("1.005") ); // Rounds to 1.01
+        WalletStorePostgres.withdrawFromBalance( juan.getID(), new BigDecimal("0.50") );
+
+        // Check balances
+        System.out.println( WalletStorePostgres.getBalance( steve.getID() ) );
+        System.out.println( WalletStorePostgres.getBalance( juan.getID() ) );
 
     }
 
@@ -35,33 +57,33 @@ public class WalletStorePostgres implements WalletStore {
     }
 
     @Override
-    public float getBalance( int uid ) {
+    public BigDecimal getBalance( int uid ) {
         return jdbi.withHandle( handle -> handle.attach(WalletDao.class).getBalance( uid ) );
     }
 
     @Override
     public void addUser( int uid ) {
-        addUser(uid,0);
+    addUser(uid,BigDecimal.ZERO);
     }
 
     @Override
-    public void addUser( int uid, float balance ) {
+    public void addUser( int uid, BigDecimal balance ) {
         jdbi.useHandle( handle -> handle.attach(WalletDao.class).insertUser( uid, balance ) );
     }
 
     @Override
-    public void addToBalance( int uid, float amount ) {
+    public void addToBalance( int uid, BigDecimal amount ) {
 
-        float curBalance = getBalance(uid);
-        float newBalance = curBalance + amount;
+        BigDecimal curBalance = getBalance(uid);
+        BigDecimal newBalance = curBalance.add(amount);
 
         jdbi.useHandle( handle -> handle.attach(WalletDao.class).updateBalance( uid, newBalance ) );
 
     }
 
     @Override
-    public void withdrawFromBalance( int uid, float amount ) {
-        addToBalance(uid, -1*amount);
+    public void withdrawFromBalance( int uid, BigDecimal amount ) {
+        addToBalance(uid, amount.negate());
     }
 
 }
