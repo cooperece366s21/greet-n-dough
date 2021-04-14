@@ -31,9 +31,7 @@ function Home(){
             {/*        </Text>*/}
 
             {/*</Center>*/}
-            <Center>
-                <TestLogin />
-            </Center>
+
             {/*Images*/}
 
             <Center>

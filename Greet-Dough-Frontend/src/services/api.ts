@@ -8,6 +8,11 @@ function setCurrentToken( token:string): void {
     localStorage.setItem("authToken", token);
 }
 
+export function logout() {
+    localStorage.removeItem("authToken");
+    window.location.replace("/");
+}
+
 export async function getUserID() {
     let authToken = getCurrentToken();
 
@@ -36,7 +41,7 @@ export async function getUserID() {
     }
 
     else {
-        alert( "Invalid Loggin Session" );
+        // alert( "Invalid Loggin Session" );
         return -1;
     }
 
@@ -66,7 +71,7 @@ export async function register(  email:string, username:string, password:string 
 
 export async function login( email:string, password:string ) {
 
-    alert( JSON.stringify({ email, password } ) )
+    // alert( JSON.stringify({ email, password } ) )
 
     const res = await fetch(`${BACKEND_URL}/login/`, {
         method: "post",
@@ -77,15 +82,13 @@ export async function login( email:string, password:string ) {
         body: JSON.stringify({ email, password })
     });
 
-
-
     if ( res.ok ) {
-        res.json()
-            .then( body => {
-                setCurrentToken( JSON.parse(body).authToken );
-            })
 
-        return 200;
+        return await res.json()
+            .then(body => {
+                setCurrentToken(JSON.parse(body).authToken);
+                return 200;
+            });
 
     } else {
         // maybe some other code here for specific errors?
@@ -97,6 +100,7 @@ let exports = {
     register,
     login,
     getUserID,
+    logout,
 }
 
 export default exports

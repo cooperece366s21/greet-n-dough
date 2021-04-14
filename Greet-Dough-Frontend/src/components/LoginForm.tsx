@@ -25,7 +25,7 @@ class LoginForm extends React.Component<any, any>{
     async loginWrapper( email:string, password:string ){
         let res = await login( email, password )
         if ( res === 200 ) {
-            alert("Successful log in");
+            // alert("Successful log in");
             this.props.history.push('/');
         } else {
             alert("Response: " + JSON.stringify(res) );

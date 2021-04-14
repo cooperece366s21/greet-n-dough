@@ -40,7 +40,6 @@ class testLogin extends React.Component<any, any> {
         )
     }
 
-
     render() {
         const { uid } = this.state;
 
