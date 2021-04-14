@@ -43,7 +43,7 @@ public class LikeStoreImpl extends StorageRetrieval<Likes> implements LikeStore 
     }
 
     @Override
-    public void deleteUserLike( int pid, int uid ) {
+    public void removeUserLike( int pid, int uid ) {
 
         Likes tempLike = super.get(pid);
         tempLike.decrementLike(uid);
