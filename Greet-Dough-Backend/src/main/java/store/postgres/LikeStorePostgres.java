@@ -8,6 +8,8 @@ import utility.ResetDao;
 
 import org.jdbi.v3.core.Jdbi;
 
+import java.util.HashSet;
+
 public class LikeStorePostgres implements LikeStore {
 
     // test function
@@ -29,7 +31,11 @@ public class LikeStorePostgres implements LikeStore {
         Post secondPost = PostStorePostgres.addPost( "haha very cool!", newUser.getID() );
 
         // Like one post
+        LikeStorePostgres.addUserLike( newPost.getID(), newUser.getID() );
         LikeStorePostgres.addUserLike( newPost.getID(), tempUser.getID() );
+
+        // Check who liked the post
+        System.out.println( LikeStorePostgres.getLikes( newPost.getID() ).getUserLikes() );
 
         // Check if the user liked a specific post
         System.out.println( LikeStorePostgres.hasUserLike( newPost.getID(), newUser.getID() ) );
@@ -56,7 +62,10 @@ public class LikeStorePostgres implements LikeStore {
 
     @Override
     public Likes getLikes( int pid ) {
-        return jdbi.withHandle( handle -> handle.attach(LikeDao.class).getLikes(pid) );
+
+        HashSet<Integer> userLikes = jdbi.withHandle(handle -> handle.attach(LikeDao.class).getLikes(pid) );
+        return new Likes( pid, userLikes );
+
     }
 
     // From hashtable store (can replace with insertLikes)
@@ -67,7 +76,7 @@ public class LikeStorePostgres implements LikeStore {
 
     @Override
     public void addUserLike( int pid, int uid ) {
-
+        jdbi.useHandle( handle -> handle.attach(LikeDao.class).insertLikes(pid, uid) );
     }
 
     @Override

@@ -6,6 +6,9 @@ import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
+import java.util.HashSet;
+import java.util.List;
+
 public interface LikeDao {
 
     // columns
@@ -44,7 +47,6 @@ public interface LikeDao {
     @SqlUpdate("CREATE TABLE IF NOT EXISTS likes( " +
             "post_id INT " +        "NOT NULL, " +
             "user_id INT " +        "NOT NULL, " +
-            "PRIMARY KEY(post_id), " +
             "CONSTRAINT fk_user " + "FOREIGN KEY(user_id) " +
                 "REFERENCES users(user_id) " + "ON DELETE CASCADE, " +
             "CONSTRAINT fk_post " + "FOREIGN KEY(post_id) " +
@@ -59,8 +61,8 @@ public interface LikeDao {
     @SqlUpdate("DELETE FROM likes WHERE post_id = (:post_id);")
     void deleteLikes(@Bind("post_id") int post_id);
 
-    @SqlQuery("SELECT * FROM likes WHERE post_id = (:post_id);")
-    Likes getLikes(@Bind("post_id") int post_id);
+    @SqlQuery("SELECT user_id FROM likes WHERE post_id = (:post_id);")
+    HashSet<Integer> getLikes(@Bind("post_id") int post_id);
 
     @SqlQuery("SELECT EXISTS( " +
             "SELECT * from likes WHERE post_id = (:post_id) AND user_id = (:user_id));")
