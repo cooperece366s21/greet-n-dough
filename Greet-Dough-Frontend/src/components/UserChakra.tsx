@@ -17,7 +17,7 @@ type UserState = {
     name: string;
 }
 
-class LoginChakra extends React.Component<any, any> {
+class UserChakra extends React.Component<any, any> {
 
     state: UserState = {
         uid: null,
@@ -96,4 +96,4 @@ class LoginChakra extends React.Component<any, any> {
     }
 }
 
-export default LoginChakra
+export default UserChakra

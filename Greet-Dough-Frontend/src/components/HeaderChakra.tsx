@@ -16,7 +16,7 @@ import {
     Text,
     Input,
 } from "@chakra-ui/react";
-import UserChakra from "./LoginChakra";
+import UserChakra from "./UserChakra";
 
 class HeaderChakra extends React.Component<any, any>{
 
