@@ -71,12 +71,6 @@ public class LikeStorePostgres implements LikeStore {
 
     }
 
-    // From hashtable store (can replace with insertLikes)
-    @Override
-    public Likes addLikes( int pid ) {
-        return null;
-    }
-
     @Override
     public void addUserLike( int pid, int uid ) {
         jdbi.useHandle( handle -> handle.attach(LikeDao.class).insertLikes(pid, uid) );

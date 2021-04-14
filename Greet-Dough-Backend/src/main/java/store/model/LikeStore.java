@@ -6,9 +6,6 @@ public interface LikeStore {
 
     Likes getLikes( int pid );
 
-    // Creates a Likes object for a given pid and stores it
-    Likes addLikes( int pid );
-
     // Adds a user to the set of users that liked the post
     void addUserLike( int pid, int uid );
 
