@@ -62,7 +62,7 @@ public interface LikeDao {
     void deleteLikes(@Bind("post_id") int post_id);
 
     @SqlQuery("SELECT user_id FROM likes WHERE post_id = (:post_id);")
-    HashSet<Integer> getLikes(@Bind("post_id") int post_id);
+    HashSet<Integer> getUserLikes(@Bind("post_id") int post_id);
 
     @SqlQuery("SELECT EXISTS( " +
             "SELECT * from likes WHERE post_id = (:post_id) AND user_id = (:user_id));")

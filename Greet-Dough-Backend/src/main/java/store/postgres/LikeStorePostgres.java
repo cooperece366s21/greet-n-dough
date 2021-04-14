@@ -63,8 +63,11 @@ public class LikeStorePostgres implements LikeStore {
     @Override
     public Likes getLikes( int pid ) {
 
-        HashSet<Integer> userLikes = jdbi.withHandle(handle -> handle.attach(LikeDao.class).getLikes(pid) );
-        return new Likes( pid, userLikes );
+        HashSet<Integer> userLikes = jdbi.withHandle(handle -> handle.attach(LikeDao.class).getUserLikes(pid) );
+
+        // If userLikes is empty, return a null object
+        // Else, return the Likes object
+        return userLikes.size() != 0 ? new Likes( pid, userLikes ) : null;
 
     }
 
