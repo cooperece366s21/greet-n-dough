@@ -1,3 +1,5 @@
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 import model.*;
 import utility.Pair;
@@ -26,6 +28,7 @@ public class Handler {
     private final PasswordStore passwordStore;
     private final LoginStore loginStore;
     private final Gson gson = new Gson();
+    ObjectMapper mapper = new ObjectMapper();
 
     public Handler(UserStore userStore,
                    PostStore postStore,
@@ -98,14 +101,18 @@ public class Handler {
     }
 
     // USER ACTIONS
-    public User getUser( Request req, Response res ) {
+    public String getUser( Request req, Response res ) throws JsonProcessingException {
 
-        int uid = Integer.parseInt( req.params(":id") );
+        System.out.println("hello world!");
+        int uid = Integer.parseInt( req.params(":uid") );
+        System.out.println("Uid got from url:" + uid);
 
         if ( userStore.hasUser(uid) ) {
 
             res.status(200);
-            return userStore.getUser(uid);
+            String userJSON = mapper.writeValueAsString( userStore.getUser(uid) );
+            System.out.println(userJSON);
+            return userJSON;
 
         } else {
 
@@ -113,7 +120,6 @@ public class Handler {
             return null;
 
         }
-
     }
 
     public int createUser( Request req, Response res ) {

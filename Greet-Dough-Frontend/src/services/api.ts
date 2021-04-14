@@ -13,7 +13,7 @@ export function logout() {
     window.location.replace("/");
 }
 
-export async function getUserID() {
+export async function getUserID(): Promise<number> {
     let authToken = getCurrentToken();
 
     if (authToken === "") {
@@ -44,9 +44,6 @@ export async function getUserID() {
         // alert( "Invalid Loggin Session" );
         return -1;
     }
-
-
-
 }
 
 export async function register(  email:string, username:string, password:string ) {
@@ -96,11 +93,33 @@ export async function login( email:string, password:string ) {
     }
 }
 
+export async function getUser( uid:number ) {
+    
+    const res = await fetch(`${BACKEND_URL}/users/${uid}/`, {
+        headers: {
+            "Content-Type": "application/json"
+        },
+    });
+
+    if ( res.ok ) {
+
+        return await res.json()
+            .then(body => {
+                return JSON.parse(body);
+            });
+
+    } else {
+        // maybe some other code here for specific errors?
+        return res.status;
+    }
+}
+
 let exports = {
     register,
     login,
     getUserID,
     logout,
+    getUser,
 }
 
 export default exports

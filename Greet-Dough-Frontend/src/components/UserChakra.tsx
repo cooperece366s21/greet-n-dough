@@ -26,8 +26,14 @@ class UserChakra extends React.Component<any, any> {
 
     componentDidMount() {
         api.getUserID()
-            .then( res => {
-                this.setState( {uid: res});
+            .then( uid => {
+                this.setState( {uid: uid});
+
+                if (uid!==-1) {
+                    api.getUser(uid).then( user => {
+                            this.setState( {name: user.name} );
+                    })
+                }
             })
     }
 
