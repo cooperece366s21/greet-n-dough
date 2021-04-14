@@ -11,6 +11,7 @@ import {
     Stat, StatLabel, StatNumber, StatHelpText, StatArrow, StatGroup,
 } from "@chakra-ui/react";
 import HeaderChakra from "../components/HeaderChakra";
+import TestLogin from "../components/TestLogin";
 
 function Home(){
     return(
@@ -30,6 +31,9 @@ function Home(){
             {/*        </Text>*/}
 
             {/*</Center>*/}
+            <Center>
+                <TestLogin />
+            </Center>
             {/*Images*/}
 
             <Center>

@@ -8,11 +8,10 @@ function setCurrentToken( token:string): void {
     localStorage.setItem("authToken", token);
 }
 
-export async function getUserID(): Promise<number> {
+export async function getUserID() {
     let authToken = getCurrentToken();
 
     if (authToken === "") {
-        alert("NO TOKEN IN BROWSER!") // debug
         return -1;
     }
 
@@ -26,20 +25,18 @@ export async function getUserID(): Promise<number> {
     });
 
     if ( res.ok ) {
-        let uid = await res.json()
-            .then(json => JSON.parse(json))
-            .then(parsed => { return parsed.uid } );
 
-        if( uid === -1 ) {
-            alert("token valid but user is -1?!?!?!") // debug
-            return -1;
-        }
+        let resJSON = await res.json()
+            .then( body => {
+                return ( JSON.parse(body).uid );
+            })
 
-        return uid;
+        return resJSON;
+
     }
 
     else {
-        alert( "ERROR: " + res.status );
+        alert( "Invalid Loggin Session" );
         return -1;
     }
 
@@ -85,9 +82,7 @@ export async function login( email:string, password:string ) {
     if ( res.ok ) {
         res.json()
             .then( body => {
-                setCurrentToken( JSON.parse(body).authToken )
-                // alert("body: " + body);
-                // alert("Token: " + JSON.parse(body).authToken );
+                setCurrentToken( JSON.parse(body).authToken );
             })
 
         return 200;

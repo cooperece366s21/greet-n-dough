@@ -174,7 +174,7 @@ public class Handler {
 
     }
 
-    public int tokenToId( Request req, Response res ) {
+    public String tokenToId( Request req, Response res ) {
 
         res.type("application/json");
         Properties data = gson.fromJson(req.body(), Properties.class);
@@ -185,7 +185,7 @@ public class Handler {
         if ( uid == null ) {
 
             res.status(401);
-            return -1; // frontend is expecting a uid return
+            return "";
 
         }
 
@@ -195,11 +195,11 @@ public class Handler {
         res.body( String.valueOf(uidJSON) );
 
         res.status(200);
-        return uid;
+        return res.body();
 
     }
 
-    public int login( Request req, Response res ) {
+    public String login( Request req, Response res ) {
 
         res.type("application/json");
         Properties data = gson.fromJson(req.body(), Properties.class);
@@ -214,7 +214,7 @@ public class Handler {
 
             res.status(403);
             System.err.println("Unsuccessful login!");
-            return res.status();
+            return "";
 
         }
 
@@ -227,7 +227,7 @@ public class Handler {
 
         System.out.println( res.body() );
         res.status(200);
-        return res.status();
+        return res.body();
 
     }
 
