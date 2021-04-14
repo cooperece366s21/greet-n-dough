@@ -49,11 +49,12 @@ public interface CommentDao {
             ");")
     void createTable();
 
-    @SqlUpdate("INSERT INTO comments ( user_id, content, parent_id) VALUES (:user_id, :content, :parent_id);")
+    @SqlUpdate("INSERT INTO comments ( user_id, content, post_id, parent_comment_id) VALUES (:user_id, :content, :post_id, :parent_comment_id);")
     @GetGeneratedKeys("comment_id")
     int insertComment(@Bind("user_id") int user_id,
                       @Bind("content") String content,
-                      @Bind("parent_id") Integer parent_id);
+                      @Bind("post_id") int post_id,
+                      @Bind("parent_comment_id") Integer parent_comment_id);
 
     /*
     @SqlUpdate("INSERT INTO postComments (comment_id, post_id) VALUES (:comment_id, :post_id);")
@@ -71,9 +72,11 @@ public interface CommentDao {
     @SqlQuery("SELECT EXISTS (SELECT * FROM comments WHERE comment_id = (:comment_id));")
     boolean canReply(@Bind("comment_id") int comment_id);
 
-    @SqlQuery("SELECT * FROM comments WHERE parent_id = (:parent_id);")
-    Comment getReplies(@Bind("parent_id") int parent_id);
+    @SqlQuery("SELECT * FROM comments WHERE parent_comment_id = (:parent_comment_id);")
+    Comment getReplies(@Bind("parent_comment_id") int parent_id);
 
+    @SqlQuery("SELECT * FROM comments WHERE post_id = (:post_id) AND parent_comment_id = 0;")
+    Comment getParents(@Bind("post_id") int post_id);
 
 }
 
