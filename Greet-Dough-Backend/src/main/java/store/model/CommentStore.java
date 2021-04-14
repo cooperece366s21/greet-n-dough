@@ -17,4 +17,5 @@ public interface CommentStore {
     boolean canReply( int comment_id );
 
     Comment getReplies( int parent_id );
+
 }

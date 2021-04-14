@@ -13,4 +13,5 @@ public interface LikeStore {
     void insertLikes( int pid, int uid );
 
     boolean containsLike( int pid, int uid );
+
 }

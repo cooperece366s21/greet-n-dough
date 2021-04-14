@@ -8,8 +8,8 @@ public class Comment implements Serializable {
     private Integer parentID;
     private String content;
 
-    public Comment( String contents, int cid, int uid ) {
-        this( contents, cid, uid, null );
+    public Comment( String content, int cid, int uid ) {
+        this( content, cid, uid, null );
     }
 
     public Comment( String content, int cid, int uid, Integer parentID ) {
