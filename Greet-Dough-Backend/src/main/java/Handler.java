@@ -388,7 +388,7 @@ public class Handler {
 //        Image imagePath = new Image(postID, userID);
 //        ImageStore.moveImage(imagePath);
 
-        Likes tempLike = this.likeStore.addLikes( tempPost.getID(), uid );
+        Likes tempLike = this.likeStore.addLikes( tempPost.getID() );
 
         System.out.println( gson.toJson(tempPost) );
 

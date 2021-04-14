@@ -21,10 +21,10 @@ public class LikeStoreImpl extends StorageRetrieval<Likes> implements LikeStore 
     }
 
     @Override
-    public Likes addLikes( int pid, int uid ) {
+    public Likes addLikes( int pid ) {
 
         // Create the like
-        Likes tempLike = new Likes( pid, uid );
+        Likes tempLike = new Likes( pid );
 
         // Add the like
         super.add( tempLike.getPostID(), tempLike );
@@ -33,7 +33,22 @@ public class LikeStoreImpl extends StorageRetrieval<Likes> implements LikeStore 
     }
 
     @Override
-    public void insertLikes( int pid, int uid ) {
+    public void addUserLike( int pid, int uid ) {
+
+        Likes tempLike = super.get(pid);
+        tempLike.incrementLike(uid);
+
+        super.add( tempLike.getPostID(), tempLike );
+
+    }
+
+    @Override
+    public void deleteUserLike( int pid, int uid ) {
+
+        Likes tempLike = super.get(pid);
+        tempLike.decrementLike(uid);
+
+        super.add( tempLike.getPostID(), tempLike );
 
     }
 

@@ -22,13 +22,14 @@ public class LikeStorePostgres implements LikeStore {
         ResetDao.reset(jdbi);
 
         User newUser = UserStorePostgres.addUser("Felipe");
+        User tempUser = UserStorePostgres.addUser("Jill");
 
         // Make two posts
         Post newPost = PostStorePostgres.addPost( "first!", newUser.getID() );
         Post secondPost = PostStorePostgres.addPost( "haha very cool!", newUser.getID() );
 
         // Like one post
-        LikeStorePostgres.insertLikes( newPost.getID(), newUser.getID() );
+        LikeStorePostgres.addUserLike( newPost.getID(), tempUser.getID() );
 
         // Check if the user liked a specific post
         System.out.println( LikeStorePostgres.hasUserLike( newPost.getID(), newUser.getID() ) );
@@ -60,18 +61,23 @@ public class LikeStorePostgres implements LikeStore {
 
     // From hashtable store (can replace with insertLikes)
     @Override
-    public Likes addLikes( int pid, int uid ) {
+    public Likes addLikes( int pid ) {
         return null;
     }
 
     @Override
-    public void deleteLikes( int lid ) {
-//        jdbi.useHandle( handle -> handle.attach(LikeDao.class).deleteLikes(lid));
+    public void addUserLike( int pid, int uid ) {
+
     }
 
     @Override
-    public void insertLikes( int pid, int uid )  {
-        jdbi.useHandle( handle -> handle.attach(LikeDao.class).insertLikes(pid, uid) );
+    public void removeUserLike( int pid, int uid ) {
+
+    }
+
+    @Override
+    public void deleteLikes( int pid ) {
+//        jdbi.useHandle( handle -> handle.attach(LikeDao.class).deleteLikes(pid));
     }
 
     @Override

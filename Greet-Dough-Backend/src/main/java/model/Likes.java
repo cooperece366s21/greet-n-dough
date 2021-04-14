@@ -8,11 +8,11 @@ public class Likes implements Serializable {
     private int postID;
     private HashSet<Integer> userLikes;
 
-    public Likes( int pid, int uid ) {
-        this( pid, uid, new HashSet<>() );
+    public Likes( int pid ) {
+        this( pid, new HashSet<>() );
     }
 
-    public Likes( int pid, int uid, HashSet<Integer> userLikes ) {
+    public Likes( int pid, HashSet<Integer> userLikes ) {
 
         this.postID = pid;
         this.userLikes = userLikes;
