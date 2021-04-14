@@ -38,12 +38,12 @@ public class CommentStoreImpl extends StoreWithID<Comment> implements CommentSto
     }
 
     @Override
-    public Comment insertComment( String contents, int uid, Integer parent_id ) {
+    public Comment insertComment( String contents, int uid, int pid, Integer parent_id ) {
         return null;
     }
 
     @Override
-    public Comment insertComment( String contents, int uid ) {
+    public Comment insertComment( String contents, int uid, int pid ) {
         return null;
     }
 
@@ -54,6 +54,11 @@ public class CommentStoreImpl extends StoreWithID<Comment> implements CommentSto
 
     @Override
     public Comment getReplies( int parent_id ) {
+        return null;
+    }
+
+    @Override
+    public Comment getParents(int post_id) {
         return null;
     }
 
