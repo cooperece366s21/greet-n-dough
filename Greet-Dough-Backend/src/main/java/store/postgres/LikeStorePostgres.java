@@ -37,6 +37,11 @@ public class LikeStorePostgres implements LikeStore {
         // Check who liked the post
         System.out.println( LikeStorePostgres.getLikes( newPost.getID() ).getUserLikes() );
 
+        // Count how many people liked a post
+
+        // A single user unlikes a post
+        LikeStorePostgres.removeUserLike(newPost.getID(), newUser.getID());
+
         // Check if the user liked a specific post
         System.out.println( LikeStorePostgres.hasUserLike( newPost.getID(), newUser.getID() ) );
 
@@ -78,7 +83,7 @@ public class LikeStorePostgres implements LikeStore {
 
     @Override
     public void removeUserLike( int pid, int uid ) {
-
+        jdbi.useHandle( handle -> handle.attach(LikeDao.class).deleteUserLike(pid, uid) );
     }
 
     @Override
