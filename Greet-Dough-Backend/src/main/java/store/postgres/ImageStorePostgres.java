@@ -10,10 +10,8 @@ import utility.ResetDao;
 import org.jdbi.v3.core.Jdbi;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.*;
 import java.util.List;
-import java.util.Random;
 
 public class ImageStorePostgres implements ImageStore {
 

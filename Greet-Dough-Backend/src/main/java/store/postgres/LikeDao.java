@@ -1,13 +1,10 @@
 package store.postgres;
 
-import model.Likes;
 import org.jdbi.v3.sqlobject.customizer.Bind;
-import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
 import java.util.HashSet;
-import java.util.List;
 
 public interface LikeDao {
 
@@ -71,7 +68,5 @@ public interface LikeDao {
             "SELECT * from likes WHERE post_id = (:post_id) AND user_id = (:user_id));")
     Boolean hasUserLike(@Bind("post_id") int post_id,
                         @Bind("user_id") int user_id);
-
-    
 
 }

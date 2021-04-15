@@ -8,6 +8,8 @@ import utility.ResetDao;
 
 import org.jdbi.v3.core.Jdbi;
 
+import java.util.List;
+
 public class CommentStorePostgres implements CommentStore {
 
     // Connection test function
@@ -38,11 +40,11 @@ public class CommentStorePostgres implements CommentStore {
         // Reply to a comment
         int cid = yeetCommentTwo.getID();
         System.out.println(CommentStorePostgres.canReply(cid));
-        //CommentStorePostgres.insertComment("i love jlab", yeet.getID(), yeetPost.getID(), yeetCommentTwo.getID());
+        CommentStorePostgres.addComment("i love jlab", yeet.getID(), yeetPost.getID(), yeetCommentTwo.getID());
 
         // Get the list of parent comments under a post
-        //Comment yeetPostParents = CommentStorePostgres.getParents(yeetPost.getID());
-        //System.out.println(yeetPostParents);
+        List<Comment> yeetPostParents = CommentStorePostgres.getParents(yeetPost.getID());
+        yeetPostParents.forEach( x -> System.out.println( x.getContents() ) );
 
         // Get the list of replies under a parent comment
         //CommentStorePostgres.getReplies(yeetCommentTwo.getID());
@@ -100,7 +102,7 @@ public class CommentStorePostgres implements CommentStore {
     }
 
     @Override
-    public Comment getParents( int pid ) {
+    public List<Comment> getParents( int pid ) {
         return jdbi.withHandle( handle -> handle.attach(CommentDao.class).getParents(pid) );
     }
 
@@ -114,7 +116,7 @@ public class CommentStorePostgres implements CommentStore {
 
     @Override
     public Comment addComment( String contents, int uid, int pid ) {
-        return addComment( contents, uid, pid, 0 );
+        return addComment( contents, uid, pid, null );
     }
 
     @Override

@@ -4,6 +4,8 @@ import model.Comment;
 import store.model.StoreWithID;
 import store.model.CommentStore;
 
+import java.util.List;
+
 public class CommentStoreImpl extends StoreWithID<Comment> implements CommentStore {
 
     public CommentStoreImpl() {
@@ -53,7 +55,7 @@ public class CommentStoreImpl extends StoreWithID<Comment> implements CommentSto
     }
 
     @Override
-    public Comment getParents( int pid ) {
+    public List<Comment> getParents(int pid ) {
         return null;
     }
 
