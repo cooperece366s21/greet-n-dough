@@ -5,28 +5,30 @@ public class Comment implements Serializable {
 
     private final int ID;
     private final int userID;
-    private int pid;
+    private int postID;
     private Integer parentID;
     private String content;
 
-    public Comment( String contents, int cid, int uid, int pid ) {
-        this( contents, cid, uid, pid, 0 );
+    public Comment( String content, int cid, int uid, int pid ) {
+        this( content, cid, uid, pid, null );
     }
 
     public Comment( String content, int cid, int uid, int pid, Integer parentID ) {
 
         this.ID = cid;
         this.userID = uid;
-        this.pid = pid;
+        this.postID = pid;
         this.content = content;
         this.parentID = parentID;
 
     }
 
-    public Comment(String contents, int cid, int uid) {
+    public Comment( String content, int cid, int uid ) {
+
         this.ID = cid;
         this.userID = uid;
-        this.content = contents;
+        this.content = content;
+
     }
 
     public int getID() {
@@ -35,6 +37,14 @@ public class Comment implements Serializable {
 
     public int getUserID() {
         return this.userID;
+    }
+
+    public int getPostID() {
+        return this.postID;
+    }
+
+    public Integer getParentID() {
+        return this.parentID;
     }
 
     public String getContent() {

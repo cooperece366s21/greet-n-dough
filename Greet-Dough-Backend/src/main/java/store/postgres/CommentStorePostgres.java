@@ -36,7 +36,8 @@ public class CommentStorePostgres implements CommentStore {
         System.out.println(CommentStorePostgres.canComment(yeetPost.getID()));
 
         // Reply to a comment
-        System.out.println(CommentStorePostgres.canReply(yeetCommentTwo.getID()));
+        int cid = yeetCommentTwo.getID();
+        System.out.println(CommentStorePostgres.canReply(cid));
         //CommentStorePostgres.insertComment("i love jlab", yeet.getID(), yeetPost.getID(), yeetCommentTwo.getID());
 
         // Get the list of parent comments under a post
@@ -89,54 +90,46 @@ public class CommentStorePostgres implements CommentStore {
     };
 
     @Override
-    public Comment getComment( int ID ) {
-        return null;
+    public Comment getComment( int cid ) {
+        return jdbi.withHandle( handle -> handle.attach(CommentDao.class).getComment(cid) );
     }
 
     @Override
-    public Comment addComment( String contents, int uid ) {
-
+    public Comment addComment( String content, int uid ) {
         return null;
-
     }
 
     @Override
     public boolean canComment( int pid ) {
-
         return jdbi.withHandle( handle -> handle.attach(CommentDao.class).canComment(pid) );
-
     }
 
     @Override
-    public Comment insertComment( String contents, int uid, int post_id, Integer parent_id ) {
+    public Comment insertComment( String content, int uid, int post_id, Integer parent_id ) {
 
-        int ID = jdbi.withHandle( handle -> handle.attach(CommentDao.class).insertComment(uid, contents, post_id, parent_id) );
+        int ID = jdbi.withHandle( handle -> handle.attach(CommentDao.class).insertComment(uid, content, post_id, parent_id) );
         return getComment(ID);
 
     }
 
     @Override
-    public Comment insertComment( String contents, int uid, int post_id ) {
-
-        return insertComment( contents, uid, post_id, 0 );
-
+    public Comment insertComment( String content, int uid, int pid ) {
+        return insertComment( content, uid, pid, 0 );
     }
 
     @Override
     public boolean canReply( int cid ) {
-
         return jdbi.withHandle( handle -> handle.attach(CommentDao.class).canReply(cid) );
-
     }
 
     @Override
-    public Comment getReplies(int parent_comment_id) {
-        return jdbi.withHandle( handle -> handle.attach(CommentDao.class).getReplies(parent_comment_id) );
+    public Comment getReplies( int parentID ) {
+        return jdbi.withHandle( handle -> handle.attach(CommentDao.class).getReplies(parentID) );
     }
 
     @Override
-    public Comment getParents(int post_id) {
-        return jdbi.withHandle( handle -> handle.attach(CommentDao.class).getParents(post_id) );
+    public Comment getParents( int pid ) {
+        return jdbi.withHandle( handle -> handle.attach(CommentDao.class).getParents(pid) );
     }
 
     /*

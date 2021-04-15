@@ -35,7 +35,6 @@ public class ImageStorePostgres implements ImageStore {
 
         // Get local image
         Path tempPath = fileSys.getPath( System.getProperty("user.dir") );
-
         for ( int a=0; a<3; a++ ) {
             tempPath = tempPath.getParent();
         }
@@ -161,10 +160,10 @@ public class ImageStorePostgres implements ImageStore {
         // Attempt to save the image
         try {
 
-            System.out.println(destPath.toString());
-            File tempFile = new File( destPath.toString() );
-            tempFile.createNewFile();
+            // Creates the file to write to
+            new File( destPath.toString() ).createNewFile();
 
+            // Copies the file
             Files.copy(srcPath, destPath, StandardCopyOption.REPLACE_EXISTING);
             return destPath.toString();
 
