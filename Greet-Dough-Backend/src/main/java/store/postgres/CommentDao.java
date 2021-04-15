@@ -54,10 +54,10 @@ public interface CommentDao {
 
     @SqlUpdate("INSERT INTO comments ( user_id, contents, post_id, parent_id) VALUES (:user_id, :contents, :post_id, :parent_id);")
     @GetGeneratedKeys("comment_id")
-    int insertComment(@Bind("user_id") int user_id,
-                      @Bind("contents") String contents,
-                      @Bind("post_id") int post_id,
-                      @Bind("parent_id") Integer parent_id);
+    int addComment(@Bind("contents") String contents,
+                   @Bind("user_id") int user_id,
+                   @Bind("post_id") int post_id,
+                   @Bind("parent_id") Integer parent_id);
 
     /*
     @SqlUpdate("INSERT INTO postComments (comment_id, post_id) VALUES (:comment_id, :post_id);")

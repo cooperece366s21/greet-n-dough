@@ -107,9 +107,9 @@ public class CommentStorePostgres implements CommentStore {
     }
 
     @Override
-    public Comment addComment( String contents, int uid, int post_id, Integer parent_id ) {
+    public Comment addComment( String contents, int uid, int pid, Integer parent_id ) {
 
-        int ID = jdbi.withHandle( handle -> handle.attach(CommentDao.class).insertComment(uid, contents, post_id, parent_id) );
+        int ID = jdbi.withHandle( handle -> handle.attach(CommentDao.class).addComment(contents, uid, pid, parent_id) );
         return getComment(ID);
 
     }

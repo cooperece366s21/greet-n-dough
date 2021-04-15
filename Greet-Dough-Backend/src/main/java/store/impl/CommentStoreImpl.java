@@ -55,7 +55,7 @@ public class CommentStoreImpl extends StoreWithID<Comment> implements CommentSto
     }
 
     @Override
-    public List<Comment> getParents(int pid ) {
+    public List<Comment> getParents( int pid ) {
         return null;
     }
 
