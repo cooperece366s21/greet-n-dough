@@ -68,6 +68,8 @@ public interface LikeDao {
     @SqlQuery("SELECT user_id FROM likes WHERE post_id = (:post_id);")
     HashSet<Integer> getUserLikes(@Bind("post_id") int post_id);
 
+    // SELECT ARRAY_AGG(user_id) as userLikes FROM likes WHERE post_id = (:post_id) GROUP BY post_id
+
     @SqlQuery("SELECT EXISTS( " +
             "SELECT * from likes WHERE post_id = (:post_id) AND user_id = (:user_id));")
     Boolean containsLike(@Bind("post_id") int post_id,

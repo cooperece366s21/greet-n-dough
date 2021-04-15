@@ -72,12 +72,7 @@ public class WalletStorePostgres implements WalletStore {
 
     @Override
     public void addToBalance( int uid, BigDecimal amount ) {
-
-        BigDecimal curBalance = getBalance(uid);
-        BigDecimal newBalance = curBalance.add(amount);
-
-        jdbi.useHandle( handle -> handle.attach(WalletDao.class).updateBalance( uid, newBalance ) );
-
+        jdbi.useHandle( handle -> handle.attach(WalletDao.class).addToBalance( uid, amount ) );
     }
 
     @Override

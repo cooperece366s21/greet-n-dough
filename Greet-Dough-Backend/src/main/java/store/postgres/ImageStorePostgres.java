@@ -8,9 +8,11 @@ import utility.ResetDao;
 
 import org.jdbi.v3.core.Jdbi;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.List;
+import java.util.Random;
 
 public class ImageStorePostgres implements ImageStore {
 
@@ -25,38 +27,75 @@ public class ImageStorePostgres implements ImageStore {
         // Used to DROP and CREATE all tables
         ResetDao.reset(jdbi);
 
-        User newUser = UserStorePostgres.addUser("Tony");
+        User komodo = UserStorePostgres.addUser("Komodo");
 
         // Test empty returns
         System.out.println( ImageStorePostgres.getImage() );
         System.out.println( ImageStorePostgres.getImage(1) );
 
-        // Test adding and retrieving a post
-        Post newPost = PostStorePostgres.addPost( "first!", newUser.getID() );
-        Post postAfterWrite = PostStorePostgres.getPost( newPost.getID() );
-        System.out.println( postAfterWrite.getID() + " " + postAfterWrite.getUserID() +
-                " " + postAfterWrite.getImageID() + " " + postAfterWrite.getContents() );
+        // Get local image
+        Path tempPath = fileSys.getPath( System.getProperty("user.dir") );
+
+        for ( int a=0; a<3; a++ ) {
+            tempPath = tempPath.getParent();
+        }
+        Path newPath = fileSys.getPath( tempPath.toString() + File.separator + "beardKoolmodo.png" );
+        System.out.println(newPath.toString());
+
+        // Test copying and saving an image
+        Image selfie = ImageStorePostgres.addImage( newPath.toString(), komodo.getID() );
+
+        // Test adding a post with an image
+        Post newPost = PostStorePostgres.addPost( "first!", komodo.getID(), selfie.getID() );
+        System.out.println( newPost.getID() + " " + newPost.getUserID() +
+                " " + newPost.getImageID() + " " + newPost.getContents() );
 
         // Test deleting the post
-        PostStorePostgres.deletePost( postAfterWrite.getID() );
-
-        // Make some more posts
-        PostStorePostgres.addPost( "lol", newUser.getID() );
-        PostStorePostgres.addPost( "haha very cool!", newUser.getID() );
-        System.out.println( PostStorePostgres.makeFeed( newUser.getID() ) );
-
-        // Test deleting the user
-        //      Should delete cascade the posts
-        UserStorePostgres.deleteUser( newUser.getID() );
-        System.out.println( PostStorePostgres.makeFeed( newUser.getID() ));
-        System.out.println( PostStorePostgres.getPost() );
+        //      Should delete cascade the image
+        PostStorePostgres.deletePost( newPost.getID() );
+        System.out.println( ImageStorePostgres.getImage( selfie.getID() ) );
 
     }
 
     private final Jdbi jdbi;
+    private final Path imageDir;
+    private final Random filenameGen;
+    private static final int MAX_FILENAME_SIZE = 10;
+    private static final FileSystem fileSys = FileSystems.getDefault();
 
     public ImageStorePostgres( final Jdbi jdbi ) {
+
         this.jdbi = jdbi;
+        this.imageDir = setImageDir();
+        this.filenameGen = new Random();
+
+    }
+
+    private Path setImageDir() {
+
+        Path tempPath = fileSys.getPath( System.getProperty("user.dir") );
+
+        // Stores in Greet-Dough-Backend/data/images
+        Path newPath = fileSys.getPath( tempPath.toString() + File.separator + "data" + File.separator + "images" );
+
+        return newPath;
+
+    }
+
+    // From https://stackoverflow.com/a/21974043
+    private String getFileExtension( String filename ) {
+
+        String extension = "";
+
+        int i = filename.lastIndexOf('.');
+        int p = Math.max(filename.lastIndexOf('/'), filename.lastIndexOf('\\'));
+
+        if (i > p) {
+            extension = filename.substring(i);
+        }
+
+        return extension;
+
     }
 
     public void delete() {
@@ -91,7 +130,8 @@ public class ImageStorePostgres implements ImageStore {
     @Override
     public Image addImage( String path, int uid ) {
 
-        int ID = jdbi.withHandle( handle -> handle.attach(ImageDao.class).insertImage( path, uid ) );
+        String newPath = copyImage(path);
+        int ID = jdbi.withHandle( handle -> handle.attach(ImageDao.class).insertImage( newPath, uid ) );
         return getImage(ID);
 
     }
@@ -101,14 +141,30 @@ public class ImageStorePostgres implements ImageStore {
         jdbi.useHandle( handle -> handle.attach(ImageDao.class).deleteImage(iid) );
     }
 
-    public String copyImage( String path ) {
+    private String copyImage( String path ) {
 
-        FileSystem fileSys = FileSystems.getDefault();
         Path srcPath = fileSys.getPath(path);
+        String extension = getFileExtension(path);
 
-        Path destPath = fileSys.getPath("c:\\Users\\brian\\OneDrive\\Documents\\Github\\Lee-Ko\\Greet-Dough\\data\\images.png");
+        // Generate a random alphanumeric filename
+        //      Characters from '0' to 'z'
+        // From https://www.baeldung.com/java-random-string
+        String filename = filenameGen.ints(48,122+1)
+                            .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
+                            .limit( MAX_FILENAME_SIZE )
+                            .collect( StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append )
+                            .toString();
+
+        // Writes to imageDir/RANDOM_NAME
+        Path destPath = fileSys.getPath( imageDir.toString() + File.separator + filename + extension );
+
+        // Attempt to save the image
         try {
-            //COPY image from source to destination folder
+
+            System.out.println(destPath.toString());
+            File tempFile = new File( destPath.toString() );
+            tempFile.createNewFile();
+
             Files.copy(srcPath, destPath, StandardCopyOption.REPLACE_EXISTING);
             return destPath.toString();
 
@@ -116,7 +172,7 @@ public class ImageStorePostgres implements ImageStore {
             ioe.printStackTrace();
         }
 
-        return null;
+        return destPath.toString();
 
     }
 

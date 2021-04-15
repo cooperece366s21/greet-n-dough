@@ -38,7 +38,7 @@ public class LikeStorePostgres implements LikeStore {
         System.out.println( LikeStorePostgres.getLikes( newPost.getID() ).getUserLikes() );
 
         // Count how many people liked a post
-        System.out.println( LikeStorePostgres.getLikes( newPost.getID() ).getUserLikes().size() );
+        System.out.println( LikeStorePostgres.getLikes( newPost.getID() ).getLikeCount() );
 
         // A single user unlikes a post
         LikeStorePostgres.removeUserLike(newPost.getID(), newUser.getID());

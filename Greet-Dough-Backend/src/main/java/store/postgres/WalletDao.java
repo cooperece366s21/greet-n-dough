@@ -15,7 +15,7 @@ public interface WalletDao {
     //      Limited to 2 digits on the right side of the decimal (cents)
     @SqlUpdate("CREATE TABLE IF NOT EXISTS wallet( " +
             "user_id INT " +                    "NOT NULL, " +
-            "user_balance NUMERIC(1000,2) " +    "NOT NULL " + "DEFAULT 0, " +
+            "user_balance NUMERIC(1000,2) " +   "NOT NULL " + "DEFAULT 0, " +
             "PRIMARY KEY(user_id), " +
             "CONSTRAINT fk_user " + "FOREIGN KEY(user_id) " +
                 "REFERENCES users(user_id) " + "ON DELETE CASCADE " +
@@ -29,9 +29,10 @@ public interface WalletDao {
     @SqlQuery("SELECT user_balance FROM wallet WHERE user_id = (:user_id);")
     BigDecimal getBalance(@Bind("user_id") int user_id);
 
-    @SqlUpdate("UPDATE wallet SET user_balance = (:newBalance) " +
-            "WHERE user_id = (:user_id);")
-    void updateBalance(@Bind("user_id") int user_id, @Bind("newBalance") BigDecimal newBalance);
-
+    // From https://stackoverflow.com/a/48648915
+    @SqlUpdate("UPDATE wallet SET user_balance = (user_balance + :amount) " +
+            "WHERE (user_balance + :amount) >= 0 " +
+            "AND user_id = (:user_id);")
+    void addToBalance(@Bind("user_id") int user_id, @Bind("amount") BigDecimal amount);
 
 }
