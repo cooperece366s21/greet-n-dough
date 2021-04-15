@@ -27,26 +27,27 @@ public class CommentStorePostgres implements CommentStore {
         Post yeetPost = PostStorePostgres.addPost( "first!", yeet.getID() );
 
         // Create another post
-        PostStorePostgres.addPost( "lol", yeet.getID() );
+        Post yeetPost2 = PostStorePostgres.addPost( "lol", yeet.getID() );
 
         // Create a comment (can't delete individually)
         System.out.println(CommentStorePostgres.canComment(yeetPost.getID()));
         Comment yeetCommentOne = CommentStorePostgres.insertComment("haha croissant", yeet.getID(), yeetPost.getID() );
         Comment yeetCommentTwo = CommentStorePostgres.insertComment("nawrrr", yeet.getID(), yeetPost.getID());
+        System.out.println(CommentStorePostgres.canComment(yeetPost.getID()));
 
         // Reply to a comment
-        //System.out.println(CommentStorePostgres.canReply(yeetCommentTwo.getID()));
+        System.out.println(CommentStorePostgres.canReply(yeetCommentTwo.getID()));
         //CommentStorePostgres.insertComment("i love jlab", yeet.getID(), yeetPost.getID(), yeetCommentTwo.getID());
 
         // Get the list of parent comments under a post
-        Comment yeetPostParents = CommentStorePostgres.getParents(yeetPost.getID());
-        System.out.println(yeetPostParents);
+        //Comment yeetPostParents = CommentStorePostgres.getParents(yeetPost.getID());
+        //System.out.println(yeetPostParents);
 
         // Get the list of replies under a parent comment
         //CommentStorePostgres.getReplies(yeetCommentTwo.getID());
 
         // Delete users deletes the table
-        UserStorePostgres.deleteUser( yeet.getID() );
+        //UserStorePostgres.deleteUser( yeet.getID() );
 
     }
 

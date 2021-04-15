@@ -23,8 +23,8 @@ public class Comment implements Serializable {
 
     }
 
-    public Comment(String contents, int commentID, int uid) {
-        this.ID = commentID;
+    public Comment(String contents, int cid, int uid) {
+        this.ID = cid;
         this.userID = uid;
         this.content = contents;
     }
