@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 public abstract class StorageRetrieval<T> implements Serializable {
     // changed the line below so implementations can access items
-    private HashMap<Integer, T> items;
+    protected HashMap<Integer, T> items;
 
     private static final long serialVersionUID = 1L;
 

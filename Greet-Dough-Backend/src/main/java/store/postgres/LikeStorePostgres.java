@@ -8,6 +8,8 @@ import utility.ResetDao;
 
 import org.jdbi.v3.core.Jdbi;
 
+import java.util.HashSet;
+
 public class LikeStorePostgres implements LikeStore {
 
     // test function
@@ -22,21 +24,33 @@ public class LikeStorePostgres implements LikeStore {
         ResetDao.reset(jdbi);
 
         User newUser = UserStorePostgres.addUser("Felipe");
+        User tempUser = UserStorePostgres.addUser("Jill");
 
         // Make two posts
         Post newPost = PostStorePostgres.addPost( "first!", newUser.getID() );
         Post secondPost = PostStorePostgres.addPost( "haha very cool!", newUser.getID() );
 
         // Like one post
-        int temp = newPost.getID();
-        int chata = newUser.getID();
-        LikeStorePostgres.insertLikes(temp, chata);
+        LikeStorePostgres.addUserLike( newPost.getID(), newUser.getID() );
+        LikeStorePostgres.addUserLike( newPost.getID(), tempUser.getID() );
+
+        // Check who liked the post
+        System.out.println( LikeStorePostgres.getLikes( newPost.getID() ).getUserLikes() );
+
+        // Count how many people liked a post
+        System.out.println( LikeStorePostgres.getLikes( newPost.getID() ).getUserLikes().size() );
+
+        // A single user unlikes a post
+        LikeStorePostgres.removeUserLike(newPost.getID(), newUser.getID());
+        System.out.println( LikeStorePostgres.getLikes( newPost.getID() ).getUserLikes() );
 
         // Check if the user liked a specific post
-        System.out.println(LikeStorePostgres.containsLike(temp, chata));
+        System.out.println( LikeStorePostgres.hasUserLike( newPost.getID(), newUser.getID() ) );
 
         // Delete post => delete all likes
-        LikeStorePostgres.deleteLikes(temp);
+        PostStorePostgres.deletePost( newPost.getID() );
+        System.out.println( LikeStorePostgres.getLikes( newPost.getID() ) );
+
     }
 
     private final Jdbi jdbi;
@@ -54,28 +68,33 @@ public class LikeStorePostgres implements LikeStore {
     }
 
     @Override
-    public Likes getID( int lid ) {
-        return jdbi.withHandle( handle -> handle.attach(LikeDao.class).getID(lid) );
-    }
+    public Likes getLikes( int pid ) {
 
-    // From hashtable store (can replace with insertLikes)
-    @Override
-    public Likes addLikes( int pid, int uid ) {
-        return null;
-    }
+        HashSet<Integer> userLikes = jdbi.withHandle(handle -> handle.attach(LikeDao.class).getUserLikes(pid) );
 
-    @Override
-    public void deleteLikes( int lid ) {
-        jdbi.useHandle( handle -> handle.attach(LikeDao.class).deleteLikes(lid));
+        // If userLikes is empty, return a null object
+        // Else, return the Likes object
+        return userLikes.size() != 0 ? new Likes( pid, userLikes ) : null;
+
     }
 
     @Override
-    public void insertLikes( int pid, int uid)  {
+    public void addUserLike( int pid, int uid ) {
         jdbi.useHandle( handle -> handle.attach(LikeDao.class).insertLikes(pid, uid) );
     }
 
     @Override
-    public boolean containsLike(int pid, int uid){
+    public void removeUserLike( int pid, int uid ) {
+        jdbi.useHandle( handle -> handle.attach(LikeDao.class).deleteUserLike(pid, uid) );
+    }
+
+    @Override
+    public void deleteLikes( int pid ) {
+//        jdbi.useHandle( handle -> handle.attach(LikeDao.class).deleteLikes(pid));
+    }
+
+    @Override
+    public boolean hasUserLike( int pid, int uid ){
         return jdbi.withHandle( handle -> handle.attach(LikeDao.class).containsLike(pid, uid) );
     }
 

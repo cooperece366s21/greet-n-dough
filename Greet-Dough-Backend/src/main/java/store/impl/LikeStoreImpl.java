@@ -11,34 +11,39 @@ public class LikeStoreImpl extends StorageRetrieval<Likes> implements LikeStore 
     }
 
     @Override
-    public Likes getID( int ID ) {
-        return super.get(ID);
+    public Likes getLikes( int pid ) {
+        return super.get(pid);
     }
 
     @Override
-    public void deleteLikes( int ID ) {
-        super.delete( ID );
+    public void deleteLikes( int pid ) {
+        super.delete(pid);
     }
 
     @Override
-    public Likes addLikes( int pid, int uid ) {
+    public void addUserLike( int pid, int uid ) {
 
-        // Create the like
-        Likes tempLike = new Likes( pid, uid );
+        // Attempts to get the Likes object
+        //      If doesn't exist, creates a new Likes object
+        Likes tempLike = super.items.getOrDefault(pid, new Likes(pid));
+        tempLike.incrementLike(uid);
 
-        // Add the like
         super.add( tempLike.getPostID(), tempLike );
-        return tempLike;
 
     }
 
     @Override
-    public void insertLikes( int pid, int uid ) {
+    public void removeUserLike( int pid, int uid ) {
+
+        Likes tempLike = super.get(pid);
+        tempLike.decrementLike(uid);
+
+        super.add( tempLike.getPostID(), tempLike );
 
     }
 
     @Override
-    public boolean containsLike( int pid, int uid ) {
+    public boolean hasUserLike( int pid, int uid ) {
         return false;
     }
 

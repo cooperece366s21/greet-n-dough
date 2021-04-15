@@ -388,8 +388,6 @@ public class Handler {
 //        Image imagePath = new Image(postID, userID);
 //        ImageStore.moveImage(imagePath);
 
-        Likes tempLike = this.likeStore.addLikes( tempPost.getID(), uid );
-
         System.out.println( gson.toJson(tempPost) );
 
 //        System.out.println( gson.toJson(imagePath) );
@@ -456,7 +454,7 @@ public class Handler {
         res.status(status);
 
         if ( res.status() == 200 ) {
-            return likeStore.getID(pid);
+            return likeStore.getLikes(pid);
         }
 
         System.err.println("Error code: " + res.status() );
@@ -469,7 +467,7 @@ public class Handler {
         int pid = Integer.parseInt( req.params(":postID") );
         int uid = Integer.parseInt( req.queryParams("uid") );
         int status = checkUserPostPerms(uid, pid);
-        Likes postLikes = likeStore.getID(pid);
+        Likes postLikes = likeStore.getLikes(pid);
         res.status(status);
 
         if ( res.status() == 200 ) {

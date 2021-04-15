@@ -5,24 +5,18 @@ import java.util.HashSet;
 
 public class Likes implements Serializable {
 
-    private int userID;
     private int postID;
     private HashSet<Integer> userLikes;
 
-    public Likes( int pid, int uid ) {
-        this( pid, uid, new HashSet<>() );
+    public Likes( int pid ) {
+        this( pid, new HashSet<>() );
     }
 
-    public Likes( int pid, int uid, HashSet<Integer> userLikes ) {
+    public Likes( int pid, HashSet<Integer> userLikes ) {
 
-        this.userID = uid;
         this.postID = pid;
         this.userLikes = userLikes;
 
-    }
-
-    public int getUserID() {
-        return this.userID;
     }
 
     public int getPostID() {
