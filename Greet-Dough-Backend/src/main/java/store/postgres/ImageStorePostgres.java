@@ -54,7 +54,7 @@ public class ImageStorePostgres implements ImageStore {
         // Test deleting the post
         //      Should delete cascade the image
         PostStorePostgres.deletePost( newPost.getID() );
-        System.out.println( ImageStorePostgres.getImage( selfie.getID() ) );
+        System.out.println( ImageStorePostgres.getImage( selfie.getID() ).getPath() );
 
     }
 
