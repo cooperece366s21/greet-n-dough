@@ -50,10 +50,11 @@ public class CommentStorePostgres implements CommentStore {
         List<Comment> yeetPostReplies = CommentStorePostgres.getReplies( comment2.getID() );
         yeetPostReplies.forEach( x -> System.out.println( x.getContents() ) );
 
-        // Test deleting the user
+        // Test deleting the post
         //      Should delete cascade the comments
         PostStorePostgres.deletePost( post1.getID() );
         System.out.println( CommentStorePostgres.getParents( post1.getID() ) );
+        System.out.println( CommentStorePostgres.getComment( comment1.getID() ) );
 
     }
 
