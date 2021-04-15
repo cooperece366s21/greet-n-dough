@@ -47,10 +47,11 @@ public class CommentStorePostgres implements CommentStore {
         yeetPostParents.forEach( x -> System.out.println( x.getContents() ) );
 
         // Get the list of replies under a parent comment
-        //CommentStorePostgres.getReplies(yeetCommentTwo.getID());
+        List<Comment> yeetPostReplies = CommentStorePostgres.getReplies(yeetCommentTwo.getID());
+        yeetPostReplies.forEach( x -> System.out.println( x.getContents() ) );
 
         // Delete users deletes the table
-        //UserStorePostgres.deleteUser( yeet.getID() );
+        UserStorePostgres.deleteUser( yeet.getID() );
 
     }
 
@@ -97,7 +98,7 @@ public class CommentStorePostgres implements CommentStore {
     }
 
     @Override
-    public Comment getReplies( int parentID ) {
+    public List<Comment> getReplies(int parentID ) {
         return jdbi.withHandle( handle -> handle.attach(CommentDao.class).getReplies(parentID) );
     }
 

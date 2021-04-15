@@ -50,7 +50,7 @@ public class CommentStoreImpl extends StoreWithID<Comment> implements CommentSto
     }
 
     @Override
-    public Comment getReplies( int parent_id ) {
+    public List<Comment> getReplies(int parent_id ) {
         return null;
     }
 
