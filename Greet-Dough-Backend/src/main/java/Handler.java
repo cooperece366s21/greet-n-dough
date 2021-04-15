@@ -3,7 +3,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 import model.*;
 import utility.Pair;
-import utility.ResetDao;
 import store.model.*;
 
 import java.util.ArrayList;
@@ -53,6 +52,7 @@ public class Handler {
         this.postCommentStore = postCommentStore;
         this.passwordStore = passwordStore;
         this.loginStore = loginStore;
+        this.walletStore = walletStore;
 
     }
 
