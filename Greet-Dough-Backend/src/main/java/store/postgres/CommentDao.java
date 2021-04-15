@@ -43,7 +43,7 @@ public interface CommentDao {
             "user_id INT " +            "NOT NULL, " +
             "post_id INT " +            "NOT NULL, " +
             "contents TEXT " +          "NOT NULL, " +
-            "parent_id INT " +  "NULL, " +
+            "parent_id INT " +          "NULL, " +
             "PRIMARY KEY(comment_id), " +
             "CONSTRAINT fk_user " + "FOREIGN KEY(user_id) " +
                 "REFERENCES users(user_id) " + "ON DELETE CASCADE, " +

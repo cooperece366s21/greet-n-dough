@@ -27,6 +27,7 @@ public class Handler {
     private final CommentStore commentStore;
     private final PasswordStore passwordStore;
     private final LoginStore loginStore;
+    private final WalletStore walletStore;
     private final Gson gson = new Gson();
     ObjectMapper mapper = new ObjectMapper();
 
@@ -39,7 +40,8 @@ public class Handler {
                    FollowStore followStore,
                    PostCommentStore postCommentStore,
                    PasswordStore passwordStore,
-                   LoginStore loginStore) {
+                   LoginStore loginStore,
+                   WalletStore walletStore) {
                        
         this.userStore = userStore;
         this.postStore = postStore;

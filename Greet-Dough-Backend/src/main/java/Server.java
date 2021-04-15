@@ -1,3 +1,4 @@
+import org.checkerframework.checker.units.qual.C;
 import org.jdbi.v3.core.Jdbi;
 import store.impl.*;
 import store.postgres.*;
@@ -16,12 +17,13 @@ public class Server {
     private static PostStore postStore;
     private static ImageStore imageStore;
     private static PasswordStore passwordStore;
-    private static LikeStore likeStore = new LikeStoreImpl();
-    private static CommentStore commentStore = new CommentStoreImpl();
+    private static LikeStore likeStore;
+    private static CommentStore commentStore;
+    private static LoginStore loginStore;
+    private static WalletStore walletStore;
     private static SubStore subStore = new SubStoreImpl();
     private static FollowStore followStore = new FollowStoreImpl();
     private static PostCommentStore postCommentStore = new PostCommentStoreImpl();
-    private static LoginStore loginStore;
 
     private static Gson gson = new Gson();
 
@@ -70,8 +72,11 @@ public class Server {
         userStore = new UserStorePostgres(jdbi);
         postStore = new PostStorePostgres(jdbi);
         imageStore = new ImageStorePostgres(jdbi);
+        likeStore = new LikeStorePostgres(jdbi);
+        commentStore = new CommentStorePostgres(jdbi);
         passwordStore = new PasswordStorePostgres(jdbi);
         loginStore = new LoginStorePostgres(jdbi);
+        walletStore = new WalletStorePostgres(jdbi);
 
         Handler handler = new Handler(
                 Server.userStore,
@@ -83,7 +88,8 @@ public class Server {
                 Server.followStore,
                 Server.postCommentStore,
                 Server.passwordStore,
-                Server.loginStore
+                Server.loginStore,
+                Server.walletStore
                 );
 
         // USER ROUTES
