@@ -8,9 +8,9 @@ public interface CommentStore {
 
     Comment getComment( int cid );
 
-    Comment getReplies( int parent_id );
+    List<Comment> getReplies( int parent_id );
 
-    List<Comment> getParents(int pid );
+    List<Comment> getParents( int pid );
 
     Comment addComment( String contents, int uid, int pid, Integer parent_id );
 

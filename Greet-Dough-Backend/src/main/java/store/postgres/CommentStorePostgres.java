@@ -47,7 +47,8 @@ public class CommentStorePostgres implements CommentStore {
         yeetPostParents.forEach( x -> System.out.println( x.getContents() ) );
 
         // Get the list of replies under a parent comment
-        //CommentStorePostgres.getReplies(yeetCommentTwo.getID());
+        List<Comment> replies = CommentStorePostgres.getReplies(yeetCommentTwo.getID());
+        replies.forEach( x -> System.out.println( x.getContents() ) );
 
         // Delete users deletes the table
         //UserStorePostgres.deleteUser( yeet.getID() );
@@ -85,11 +86,11 @@ public class CommentStorePostgres implements CommentStore {
 
     public void delete() {
         jdbi.useHandle(handle -> handle.attach(CommentDao.class).deleteTable());
-    };
+    }
 
     public void init() {
         jdbi.useHandle(handle -> handle.attach(CommentDao.class).createTable());
-    };
+    }
 
     @Override
     public Comment getComment( int cid ) {
@@ -97,7 +98,7 @@ public class CommentStorePostgres implements CommentStore {
     }
 
     @Override
-    public Comment getReplies( int parentID ) {
+    public List<Comment> getReplies( int parentID ) {
         return jdbi.withHandle( handle -> handle.attach(CommentDao.class).getReplies(parentID) );
     }
 
@@ -109,7 +110,7 @@ public class CommentStorePostgres implements CommentStore {
     @Override
     public Comment addComment( String contents, int uid, int pid, Integer parent_id ) {
 
-        int ID = jdbi.withHandle( handle -> handle.attach(CommentDao.class).addComment(contents, uid, pid, parent_id) );
+        int ID = jdbi.withHandle( handle -> handle.attach(CommentDao.class).addComment( contents, uid, pid, parent_id ) );
         return getComment(ID);
 
     }
