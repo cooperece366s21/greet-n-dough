@@ -23,9 +23,9 @@ public interface WalletDao {
     void createTable();
 
     @SqlUpdate("INSERT INTO wallet (user_id, user_balance) VALUES (:user_id, :balance);")
-    void insertUser(@Bind("user_id") int user_id, @Bind("balance") BigDecimal balance);
+    void insertUser(@Bind("user_id") int user_id,
+                    @Bind("balance") BigDecimal balance);
 
-    // Needs to be optional?
     @SqlQuery("SELECT user_balance FROM wallet WHERE user_id = (:user_id);")
     BigDecimal getBalance(@Bind("user_id") int user_id);
 
@@ -33,6 +33,7 @@ public interface WalletDao {
     @SqlUpdate("UPDATE wallet SET user_balance = (user_balance + :amount) " +
             "WHERE (user_balance + :amount) >= 0 " +
             "AND user_id = (:user_id);")
-    void addToBalance(@Bind("user_id") int user_id, @Bind("amount") BigDecimal amount);
+    void addToBalance(@Bind("user_id") int user_id,
+                      @Bind("amount") BigDecimal amount);
 
 }

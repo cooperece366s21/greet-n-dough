@@ -37,4 +37,9 @@ public interface UserDao {
             "SIMILAR TO :name || '%';" )
     List<User> searchUsers(@Bind("name") String name);
 
+    @SqlUpdate("UPDATE users SET user_name = (:name) " +
+            "WHERE user_id = (:user_id)")
+    void changeName(@Bind("user_id") int user_id,
+                    @Bind("name") String name);
+
 }

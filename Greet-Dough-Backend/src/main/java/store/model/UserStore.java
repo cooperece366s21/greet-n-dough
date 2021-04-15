@@ -17,4 +17,6 @@ public interface UserStore {
     // Returns a list of users given the first portion of their name
     List<User> searchUsers( String name );
 
+    void changeName( int uid, String name );
+
 }

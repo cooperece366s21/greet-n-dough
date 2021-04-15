@@ -24,4 +24,8 @@ public class User implements Serializable {
         return this.ID;
     }
 
+    public void setName( String name ) {
+        this.name = name;
+    }
+
 }

@@ -19,12 +19,16 @@ public class Post implements Serializable {
     }
 
     public Post( String contents, int pid, int uid, Integer iid ) {
+        this( contents, pid, uid, iid, LocalDateTime.now() );
+    }
+
+    public Post( String contents, int pid, int uid, Integer iid, LocalDateTime timeCreated ) {
 
         this.ID = pid;
         this.userID = uid;
         this.imageID = iid;
         this.contents = contents;
-        this.timeCreated = LocalDateTime.now();
+        this.timeCreated = timeCreated;
 
     }
 
@@ -46,6 +50,10 @@ public class Post implements Serializable {
 
     public LocalDateTime getTime() {
         return this.timeCreated;
+    }
+
+    public void setContents( String contents ) {
+        this.contents = contents;
     }
 
 }

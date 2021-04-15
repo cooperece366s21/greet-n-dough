@@ -55,25 +55,22 @@ public interface LikeDao {
     void createTable();
 
     @SqlUpdate("INSERT INTO likes (post_id, user_id) VALUES (:post_id, :user_id);")
-    int insertLikes(@Bind("post_id") int post_id,
+    int addUserLike(@Bind("post_id") int post_id,
                     @Bind("user_id") int user_id);
-
-    @SqlUpdate("DELETE FROM likes WHERE post_id = (:post_id);")
-    void deleteLikes(@Bind("post_id") int post_id);
 
     @SqlUpdate("DELETE FROM likes WHERE post_id = (:post_id) AND user_id = (:user_id);")
     void deleteUserLike(@Bind("post_id") int post_id,
                         @Bind("user_id") int user_id);
 
+    // Potentially return a Likes object instead
+    // SELECT ARRAY_AGG(user_id) as userLikes FROM likes WHERE post_id = (:post_id) GROUP BY post_id
     @SqlQuery("SELECT user_id FROM likes WHERE post_id = (:post_id);")
     HashSet<Integer> getUserLikes(@Bind("post_id") int post_id);
 
-    // SELECT ARRAY_AGG(user_id) as userLikes FROM likes WHERE post_id = (:post_id) GROUP BY post_id
-
     @SqlQuery("SELECT EXISTS( " +
             "SELECT * from likes WHERE post_id = (:post_id) AND user_id = (:user_id));")
-    Boolean containsLike(@Bind("post_id") int post_id,
-                         @Bind("user_id") int user_id);
+    Boolean hasUserLike(@Bind("post_id") int post_id,
+                        @Bind("user_id") int user_id);
 
     
 

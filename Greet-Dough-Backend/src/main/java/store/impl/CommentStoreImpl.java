@@ -20,11 +20,16 @@ public class CommentStoreImpl extends StoreWithID<Comment> implements CommentSto
     }
 
     @Override
-    public Comment addComment( String contents, int uid ) {
+    public boolean canComment( int pid ) {
+        return false;
+    }
+
+    @Override
+    public Comment addComment( String contents, int uid, int pid, Integer parentID ) {
 
         // Create the comment
         int commentID = super.getFreeID();
-        Comment tempComment = new Comment( contents, commentID, uid );
+        Comment tempComment = new Comment( contents, commentID, uid, pid, parentID );
 
         // Add the comment
         super.add( tempComment.getID(), tempComment );
@@ -33,18 +38,8 @@ public class CommentStoreImpl extends StoreWithID<Comment> implements CommentSto
     }
 
     @Override
-    public boolean canComment( int pid ) {
-        return false;
-    }
-
-    @Override
-    public Comment insertComment( String contents, int uid, int pid, Integer parent_id ) {
-        return null;
-    }
-
-    @Override
-    public Comment insertComment( String contents, int uid, int pid ) {
-        return null;
+    public Comment addComment( String contents, int uid, int pid ) {
+        return addComment( contents, uid, pid, null );
     }
 
     @Override
@@ -58,7 +53,7 @@ public class CommentStoreImpl extends StoreWithID<Comment> implements CommentSto
     }
 
     @Override
-    public Comment getParents(int post_id) {
+    public Comment getParents( int pid ) {
         return null;
     }
 

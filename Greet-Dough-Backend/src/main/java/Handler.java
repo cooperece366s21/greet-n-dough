@@ -499,7 +499,7 @@ public class Handler {
 
         if ( res.status() == 200 ) {
 
-            Comment newComment = commentStore.addComment( contentQuery, uid );
+            Comment newComment = commentStore.addComment( contentQuery, uid, pid );
             postCommentStore.addComment( pid, newComment.getID() );
 
             System.out.println( gson.toJson(newComment) );

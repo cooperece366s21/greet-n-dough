@@ -10,6 +10,8 @@ import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 public class GreetDoughJdbi {
 
@@ -53,8 +55,9 @@ public class GreetDoughJdbi {
             int uid = rs.getInt("user_id");
             Integer iid = rs.getObject("image_id", Integer.class);
             String contents = rs.getString("contents");
+            LocalDateTime timeCreated = rs.getObject("time_created", LocalDateTime.class);
 
-            return new Post( contents, pid, uid, iid );
+            return new Post( contents, pid, uid, iid, timeCreated );
 
         }
 
@@ -94,7 +97,7 @@ public class GreetDoughJdbi {
         @Override
         public Comment map( final ResultSet rs, final StatementContext ctx ) throws SQLException {
 
-            String content = rs.getString("content");
+            String content = rs.getString("contents");
             int cid = rs.getInt("comment_id");
             int uid = rs.getInt("user_id");
             int pid = rs.getInt("post_id");

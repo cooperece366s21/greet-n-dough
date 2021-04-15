@@ -39,7 +39,7 @@ public interface CommentDao {
             "comment_id SERIAL " +      "NOT NULL, " +
             "user_id INT " +            "NOT NULL, " +
             "post_id INT " +            "NOT NULL, " +
-            "content TEXT " +           "NOT NULL, " +
+            "contents TEXT " +           "NOT NULL, " +
             "parent_id INT " +  "NULL, " +
             "PRIMARY KEY(comment_id), " +
             "CONSTRAINT fk_user " + "FOREIGN KEY(user_id) " +
@@ -49,10 +49,10 @@ public interface CommentDao {
             ");")
     void createTable();
 
-    @SqlUpdate("INSERT INTO comments ( user_id, content, post_id, parent_id) VALUES (:user_id, :content, :post_id, :parent_id);")
+    @SqlUpdate("INSERT INTO comments ( user_id, contents, post_id, parent_id) VALUES (:user_id, :contents, :post_id, :parent_id);")
     @GetGeneratedKeys("comment_id")
     int insertComment(@Bind("user_id") int user_id,
-                      @Bind("content") String content,
+                      @Bind("contents") String contents,
                       @Bind("post_id") int post_id,
                       @Bind("parent_id") Integer parent_id);
 

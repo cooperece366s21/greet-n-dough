@@ -23,6 +23,9 @@ public class WalletStorePostgres implements WalletStore {
         User steve = UserStorePostgres.addUser("Steve Ree");
         User juan = UserStorePostgres.addUser("Juan Lam");
 
+        // Test retrieving an invalid user
+        System.out.println( WalletStorePostgres.getBalance( steve.getID() ) );
+
         // Test adding a user
         WalletStorePostgres.addUser( steve.getID() );
         WalletStorePostgres.addUser( juan.getID(), new BigDecimal("10.50") );
@@ -33,7 +36,7 @@ public class WalletStorePostgres implements WalletStore {
 
         // Test changing balances
         WalletStorePostgres.addToBalance( steve.getID(), new BigDecimal("1.005") ); // Rounds to 1.01
-        WalletStorePostgres.withdrawFromBalance( juan.getID(), new BigDecimal("0.50") );
+        WalletStorePostgres.subtractFromBalance( juan.getID(), new BigDecimal("0.50") );
 
         // Check balances
         System.out.println( WalletStorePostgres.getBalance( steve.getID() ) );
@@ -62,7 +65,7 @@ public class WalletStorePostgres implements WalletStore {
 
     @Override
     public void addUser( int uid ) {
-    addUser(uid,BigDecimal.ZERO);
+    addUser(uid, BigDecimal.ZERO);
     }
 
     @Override
@@ -76,7 +79,7 @@ public class WalletStorePostgres implements WalletStore {
     }
 
     @Override
-    public void withdrawFromBalance( int uid, BigDecimal amount ) {
+    public void subtractFromBalance( int uid, BigDecimal amount ) {
         addToBalance(uid, amount.negate());
     }
 

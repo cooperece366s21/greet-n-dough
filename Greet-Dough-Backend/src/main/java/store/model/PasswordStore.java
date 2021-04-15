@@ -14,9 +14,9 @@ public interface PasswordStore {
     // Checks if email already has an associated password
     boolean hasEmail( String email );
 
-    void updateEmail( String oldEmail, String newEmail );
+    void changeEmail( String oldEmail, String newEmail );
 
     // Should only be used after checking getUserID() to validate the old password
-    void updatePassword( String email, String newPassword );
+    void changePassword( String email, String newPassword );
 
 }

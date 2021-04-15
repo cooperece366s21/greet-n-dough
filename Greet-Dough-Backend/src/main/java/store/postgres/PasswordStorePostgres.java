@@ -43,10 +43,10 @@ public class PasswordStorePostgres implements PasswordStore {
         }
 
         // Test changing the email/password
-        String newEmail = "MeatNGrow@aol.com";
+        String newEmail = "WheatNGrow@aol.com";
         String newPass = "password1234";
-        PasswordStorePostgres.updateEmail( email, newEmail );
-        PasswordStorePostgres.updatePassword( newEmail, newPass );
+        PasswordStorePostgres.changeEmail( email, newEmail );
+        PasswordStorePostgres.changePassword( newEmail, newPass );
 
         // Check if update was successful
         System.out.println( PasswordStorePostgres.hasEmail(newEmail) );
@@ -74,7 +74,7 @@ public class PasswordStorePostgres implements PasswordStore {
 
     @Override
     public int addPassword( String email, int uid, String password ) {
-        return jdbi.withHandle( handle -> handle.attach(PasswordDao.class).insertPassword(email, uid, password) );
+        return jdbi.withHandle( handle -> handle.attach(PasswordDao.class).addPassword(email, uid, password) );
     }
 
     // Checks if the email + password match an entry in the DB
@@ -89,13 +89,13 @@ public class PasswordStorePostgres implements PasswordStore {
     }
 
     @Override
-    public void updateEmail( String oldEmail, String newEmail ) {
-        jdbi.useHandle( handle -> handle.attach(PasswordDao.class).updateEmail( oldEmail, newEmail ) );
+    public void changeEmail( String oldEmail, String newEmail ) {
+        jdbi.useHandle( handle -> handle.attach(PasswordDao.class).changeEmail( oldEmail, newEmail ) );
     }
 
     @Override
-    public void updatePassword( String email, String newPassword ) {
-        jdbi.useHandle( handle -> handle.attach(PasswordDao.class).updatePassword( email, newPassword ) );
+    public void changePassword( String email, String newPassword ) {
+        jdbi.useHandle( handle -> handle.attach(PasswordDao.class).changePassword( email, newPassword ) );
     }
 
 

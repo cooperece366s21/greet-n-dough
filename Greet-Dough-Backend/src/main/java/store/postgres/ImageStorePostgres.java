@@ -130,7 +130,7 @@ public class ImageStorePostgres implements ImageStore {
     public Image addImage( String path, int uid ) {
 
         String newPath = copyImage(path);
-        int ID = jdbi.withHandle( handle -> handle.attach(ImageDao.class).insertImage( newPath, uid ) );
+        int ID = jdbi.withHandle( handle -> handle.attach(ImageDao.class).addImage( newPath, uid ) );
         return getImage(ID);
 
     }

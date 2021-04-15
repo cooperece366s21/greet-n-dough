@@ -9,8 +9,8 @@ public interface LikeStore {
     // Adds a user to the set of users that liked the post
     void addUserLike( int pid, int uid );
 
-    // Removes a user from the set of users that liked the post
-    void removeUserLike( int pid, int uid );
+    // Deletes a user from the set of users that liked the post
+    void deleteUserLike( int pid, int uid );
 
     void deleteLikes( int pid );
 

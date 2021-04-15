@@ -15,10 +15,11 @@ public interface PostDao {
     void deleteTable();
 
     @SqlUpdate("CREATE TABLE IF NOT EXISTS posts( " +
-            "post_id SERIAL " +     "NOT NULL, " +
-            "user_id INT " +        "NOT NULL, " +
-            "image_id INT " +       "NULL, " +
-            "contents TEXT " +      "NULL, " +
+            "post_id SERIAL " +         "NOT NULL, " +
+            "user_id INT " +            "NOT NULL, " +
+            "image_id INT " +           "NULL, " +
+            "contents TEXT " +          "NULL, " +
+            "time_created TIMESTAMP " + "NOT NULL " + "DEFAULT NOW(), " +
             "PRIMARY KEY(post_id), " +
             "CONSTRAINT fk_user " + "FOREIGN KEY(user_id) " +
                 "REFERENCES users(user_id) " + "ON DELETE CASCADE, " +
@@ -29,9 +30,9 @@ public interface PostDao {
 
     @SqlUpdate("INSERT INTO posts (user_id, image_id, contents) VALUES (:user_id, :image_id, :contents);")
     @GetGeneratedKeys("post_id")
-    int insertPost(@Bind("contents") String contents,
-                   @Bind("user_id") int user_id,
-                   @Bind("image_id") Integer image_id);
+    int addPost(@Bind("contents") String contents,
+                @Bind("user_id") int user_id,
+                @Bind("image_id") Integer image_id);
 
     @SqlUpdate("DELETE FROM posts WHERE post_id = (:post_id);")
     void deletePost(@Bind("post_id") int post_id);

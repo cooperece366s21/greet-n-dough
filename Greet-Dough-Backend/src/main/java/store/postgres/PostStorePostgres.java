@@ -25,8 +25,9 @@ public class PostStorePostgres implements PostStore {
         // Test adding and retrieving a post
         Post newPost = PostStorePostgres.addPost( "first!", newUser.getID() );
         Post postAfterWrite = PostStorePostgres.getPost( newPost.getID() );
-        System.out.println( postAfterWrite.getID() + " " + postAfterWrite.getUserID() +
-                            " " + postAfterWrite.getImageID() + " " + postAfterWrite.getContents() );
+        System.out.println( postAfterWrite.getID() + " " + postAfterWrite.getUserID() + " " +
+                            postAfterWrite.getImageID() + " " + postAfterWrite.getContents() + " " +
+                            postAfterWrite.getTime() );
 
         // Test deleting the post
         PostStorePostgres.deletePost( postAfterWrite.getID() );
@@ -87,7 +88,7 @@ public class PostStorePostgres implements PostStore {
     @Override
     public Post addPost( String contents, int uid, Integer iid ) {
 
-        int ID = jdbi.withHandle( handle -> handle.attach(PostDao.class).insertPost( contents, uid, iid ) );
+        int ID = jdbi.withHandle( handle -> handle.attach(PostDao.class).addPost( contents, uid, iid ) );
         return getPost(ID);
 
     }

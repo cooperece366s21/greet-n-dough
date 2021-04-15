@@ -49,4 +49,15 @@ public class UserStoreImpl extends StoreWithID<User> implements UserStore {
         return null;
     }
 
+    @Override
+    public void changeName( int uid, String name ) {
+
+        // Change the name
+        User tempUser = getUser(uid);
+        tempUser.setName(name);
+
+        super.add( tempUser.getID(), tempUser );
+
+    }
+
 }

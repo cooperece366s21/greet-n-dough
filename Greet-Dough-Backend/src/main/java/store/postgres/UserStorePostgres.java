@@ -27,11 +27,15 @@ public class UserStorePostgres implements UserStore {
         System.out.println( UserStorePostgres.hasUser(newUser.getID()) );
 
         // Test searching for a user given the first portion of their name
-        UserStorePostgres.addUser("Jon");
+        User jon = UserStorePostgres.addUser("Jon");
 
         // Prints the names of the users given a list of users
         //      Playing around with mapping a list
         System.out.println( UserStorePostgres.searchUsers("Jo").stream().map(User::getName).collect(Collectors.toList()) );
+
+        // Test changing the user's name
+        UserStorePostgres.changeName( jon.getID(), "John" );
+        System.out.println( UserStorePostgres.getUser( jon.getID() ).getName() );
 
         // Test deleting the user
         UserStorePostgres.deleteUser( userAfterWrite.getID() );
@@ -85,6 +89,11 @@ public class UserStorePostgres implements UserStore {
     @Override
     public List<User> searchUsers( String name ) {
         return jdbi.withHandle( handle -> handle.attach(UserDao.class).searchUsers(name) );
+    }
+
+    @Override
+    public void changeName( int uid, String name ) {
+        jdbi.useHandle( handle -> handle.attach(UserDao.class).changeName(uid, name) );
     }
 
 }

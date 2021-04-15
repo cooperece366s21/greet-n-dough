@@ -6,17 +6,16 @@ public interface CommentStore {
 
     Comment getComment( int cid );
 
-    Comment addComment( String contents, int uid );
+    Comment getReplies( int parent_id );
+
+    Comment getParents( int pid );
+
+    Comment addComment( String contents, int uid, int pid, Integer parent_id );
+
+    Comment addComment( String contents, int uid, int pid );
 
     boolean canComment( int pid );
 
-    Comment insertComment( String contents, int uid, int pid, Integer parent_id );
+    boolean canReply( int cid );
 
-    Comment insertComment( String contents, int uid, int pid );
-
-    boolean canReply( int comment_id );
-
-    Comment getReplies( int parent_id );
-
-    Comment getParents(int post_id);
 }
