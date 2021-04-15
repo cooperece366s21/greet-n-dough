@@ -4,6 +4,7 @@ import model.User;
 import model.Post;
 import model.Image;
 import store.model.ImageStore;
+import utility.ImageHandler;
 import utility.ResetDao;
 
 import org.jdbi.v3.core.Jdbi;
@@ -34,6 +35,7 @@ public class ImageStorePostgres implements ImageStore {
         System.out.println( ImageStorePostgres.getImage(1) );
 
         // Get local image
+        FileSystem fileSys = FileSystems.getDefault();
         Path tempPath = fileSys.getPath( System.getProperty("user.dir") );
         for ( int a=0; a<3; a++ ) {
             tempPath = tempPath.getParent();
@@ -57,43 +59,12 @@ public class ImageStorePostgres implements ImageStore {
     }
 
     private final Jdbi jdbi;
-    private final Path imageDir;
-    private final Random filenameGen;
-    private static final int MAX_FILENAME_SIZE = 10;
-    private static final FileSystem fileSys = FileSystems.getDefault();
+    private final ImageHandler ImageHandler;
 
     public ImageStorePostgres( final Jdbi jdbi ) {
 
         this.jdbi = jdbi;
-        this.imageDir = setImageDir();
-        this.filenameGen = new Random();
-
-    }
-
-    private Path setImageDir() {
-
-        Path tempPath = fileSys.getPath( System.getProperty("user.dir") );
-
-        // Stores in Greet-Dough-Backend/data/images
-        Path newPath = fileSys.getPath( tempPath.toString() + File.separator + "data" + File.separator + "images" );
-
-        return newPath;
-
-    }
-
-    // From https://stackoverflow.com/a/21974043
-    private String getFileExtension( String filename ) {
-
-        String extension = "";
-
-        int i = filename.lastIndexOf('.');
-        int p = Math.max(filename.lastIndexOf('/'), filename.lastIndexOf('\\'));
-
-        if (i > p) {
-            extension = filename.substring(i);
-        }
-
-        return extension;
+        this.ImageHandler = new ImageHandler();
 
     }
 
@@ -129,7 +100,7 @@ public class ImageStorePostgres implements ImageStore {
     @Override
     public Image addImage( String path, int uid ) {
 
-        String newPath = copyImage(path);
+        String newPath = ImageHandler.copyImage(path);
         int ID = jdbi.withHandle( handle -> handle.attach(ImageDao.class).addImage( newPath, uid ) );
         return getImage(ID);
 
@@ -138,41 +109,6 @@ public class ImageStorePostgres implements ImageStore {
     @Override
     public void deleteImage( int iid ) {
         jdbi.useHandle( handle -> handle.attach(ImageDao.class).deleteImage(iid) );
-    }
-
-    private String copyImage( String path ) {
-
-        Path srcPath = fileSys.getPath(path);
-        String extension = getFileExtension(path);
-
-        // Generate a random alphanumeric filename
-        //      Characters from '0' to 'z'
-        // From https://www.baeldung.com/java-random-string
-        String filename = filenameGen.ints(48,122+1)
-                            .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
-                            .limit( MAX_FILENAME_SIZE )
-                            .collect( StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append )
-                            .toString();
-
-        // Writes to imageDir/RANDOM_NAME
-        Path destPath = fileSys.getPath( imageDir.toString() + File.separator + filename + extension );
-
-        // Attempt to save the image
-        try {
-
-            // Creates the file to write to
-            new File( destPath.toString() ).createNewFile();
-
-            // Copies the file
-            Files.copy(srcPath, destPath, StandardCopyOption.REPLACE_EXISTING);
-            return destPath.toString();
-
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-
-        return destPath.toString();
-
     }
 
 }
