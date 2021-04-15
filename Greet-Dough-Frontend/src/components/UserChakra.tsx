@@ -30,9 +30,10 @@ class UserChakra extends React.Component<any, any> {
                 this.setState( {uid: uid});
 
                 if (uid!==-1) {
-                    api.getUser(uid).then( user => {
+                    api.getUser(uid)
+                        .then( user => {
                             this.setState( {name: user.name} );
-                    })
+                        })
                 }
             })
     }
@@ -42,7 +43,9 @@ class UserChakra extends React.Component<any, any> {
             <HStack marginLeft="80px">
 
             {/*User Icon*/}
+            <Link to={`/user/${this.state.uid}`}>
                 <SkeletonCircle size='60px' />
+            </Link>
 
             {/*Greeting and logout V-stack*/}
                 <VStack>
