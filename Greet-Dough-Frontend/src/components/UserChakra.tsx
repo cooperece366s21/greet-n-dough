@@ -49,7 +49,7 @@ class UserChakra extends React.Component<any, any> {
 
             {/*Greeting and logout V-stack*/}
                 <VStack>
-                    <Box> Welcome, {this.state.name}! </Box>
+                    <Box>{this.state.name} </Box>
                     <Button colorScheme={'yellow'} size={"sm"}
                             _hover={{bg: 'yellow.500'}} onClick={api.logout}>
                         Logout
@@ -67,14 +67,14 @@ class UserChakra extends React.Component<any, any> {
             <HStack marginLeft="120px">
 
                 <Link to="/login">
-                    <Box borderWidth={1} padding={2} borderColor={"black"} marginRight={3}
+                    <Box borderWidth={1} padding={2} borderColor={"black"} marginRight={3} borderRadius="10px"
                          _hover={{ background:"orange.300"}}>
                         SIGN IN
                     </Box>
                 </Link>
 
                 <Link to="/register">
-                    <Box borderWidth={1} padding={2} borderColor={"black"} marginRight={3}
+                    <Box borderWidth={1} padding={2} borderColor={"black"} marginRight={3} borderRadius="10px"
                          _hover={{ background:"orange.300"}}>
                         REGISTER
                     </Box>

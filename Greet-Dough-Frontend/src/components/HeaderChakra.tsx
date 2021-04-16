@@ -1,5 +1,4 @@
 import React from 'react';
-import User from './User';
 import {
     BrowserRouter as Router,
     Switch,

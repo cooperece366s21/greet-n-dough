@@ -9,7 +9,7 @@ import {
     Flex, Text, SkeletonCircle,
 } from "@chakra-ui/react";
 import {Link} from "react-router-dom";
-import api from "../services/api";
+import api from "../../services/api";
 import { withRouter } from 'react-router-dom';
 
 
@@ -19,6 +19,7 @@ type UserState = {
     followers: number | null;
     posts: number | null;
     exists: boolean | null;
+    hasOwnership : boolean | null;
 }
 
 class UserHeader extends React.Component<any, any> {
@@ -29,6 +30,7 @@ class UserHeader extends React.Component<any, any> {
         followers:  null,
         posts: null,
         exists: null,
+        hasOwnership: null,
     }
 
     constructor(props:any) {
@@ -39,6 +41,7 @@ class UserHeader extends React.Component<any, any> {
             followers: null,
             posts:null,
             exists: null,
+            hasOwnership: null,
         }
     }
 
@@ -53,8 +56,14 @@ class UserHeader extends React.Component<any, any> {
                     name: user.name,
                     exists: true,
                 });
-            })
+            });
 
+        api.getUserID()
+            .then( cuid => {
+                (cuid === this.state.uid) ?
+                    this.setState({hasOwnership:true}) :
+                    this.setState({hasOwnership:false});
+            })
     }
 
     renderError() {
@@ -66,6 +75,7 @@ class UserHeader extends React.Component<any, any> {
     }
 
     renderUser() {
+
          return(
 
             <Center marginTop="40px">
@@ -98,6 +108,7 @@ class UserHeader extends React.Component<any, any> {
                 </Box>
 
             </Center>
+
 
          )
      }
