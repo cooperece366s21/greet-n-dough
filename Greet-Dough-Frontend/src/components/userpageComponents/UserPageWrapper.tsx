@@ -72,9 +72,11 @@ class UserPageWrapper extends React.Component<any, any> {
                 <UserHeader
                     uid={this.state.uid}
                     name={this.state.name}
-                    hasOwnership={this.state.name}
+                    hasOwnership={this.state.hasOwnership}
                     exists={this.state.exists}
                 />
+
+                <UserFeed uid={this.state.uid} />
 
             </>
         )
