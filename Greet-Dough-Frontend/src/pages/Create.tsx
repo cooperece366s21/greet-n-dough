@@ -1,12 +1,13 @@
 import React from 'react'
 import Header from "../components/globalComponents/Header";
+import PostForm from "../components/createPostComponents/PostForm";
 
 function Create(){
     return (
 
         <>
             <Header/>
-            <h1> Post Creation stuff here </h1>
+            <PostForm />
         </>
 
     );

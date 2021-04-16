@@ -82,12 +82,12 @@ class UserHeader extends React.Component<any, any> {
              <>
                 <Center marginTop="40px">
 
-                     <Box w="175px" height="175px" borderWidth="2px" >
+                     <Box w="175px" height="175px" borderWidth="0px" >
                          <SkeletonCircle size="175px" />
                      </Box>
 
                     {/* RHS TEXT CONTAINER*/}
-                    <Box w="45%" height="175px" marginLeft={"20px"} borderWidth="2px">
+                    <Box w="45%" height="175px" marginLeft={"20px"} borderWidth="0px">
 
                         {/*UPPER TEXT CONTAINER*/}
                         <Box w="100%" h="80px" >

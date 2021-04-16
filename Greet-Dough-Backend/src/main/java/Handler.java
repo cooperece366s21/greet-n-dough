@@ -105,15 +105,12 @@ public class Handler {
     // USER ACTIONS
     public String getUser( Request req, Response res ) throws JsonProcessingException {
 
-        System.out.println("hello world!");
         int uid = Integer.parseInt( req.params(":uid") );
-        System.out.println("Uid got from url:" + uid);
 
         if ( userStore.hasUser(uid) ) {
 
             res.status(200);
             String userJSON = mapper.writeValueAsString( userStore.getUser(uid) );
-            System.out.println(userJSON);
             return userJSON;
 
         } else {
@@ -372,9 +369,14 @@ public class Handler {
 
     public int createPost( Request req, Response res ) {
 
-        int uid = Integer.parseInt( req.queryParams("uid") );
-        String imageQuery = req.queryParams("imageID");
-        String contentQuery = req.queryParams("contents");
+        res.type("application/json");
+        Properties data = gson.fromJson(req.body(), Properties.class);
+
+        int uid = Integer.parseInt( data.getProperty("uid") );
+
+        String imageQuery = data.getProperty("imageQuery");
+
+        String contents = data.getProperty("contents");
         int imageID = (imageQuery != null) ? Integer.parseInt(imageQuery) : -1;
 
         if ( !userStore.hasUser(uid) ) {
@@ -385,14 +387,11 @@ public class Handler {
 
         }
 
-        Post tempPost = postStore.addPost( contentQuery, uid, imageID );
-
-//        Image imagePath = new Image(postID, userID);
-//        ImageStore.moveImage(imagePath);
+//        Currently noot accepting image ID's
+        Post tempPost = postStore.addPost( contents, uid );
 
         System.out.println( gson.toJson(tempPost) );
 
-//        System.out.println( gson.toJson(imagePath) );
         res.status(200);
         return 200;
 

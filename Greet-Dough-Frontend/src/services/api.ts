@@ -114,12 +114,36 @@ export async function getUser( uid:number ) {
     }
 }
 
+export async function createPost( uid:number, contents:string ) {
+
+    // alert( JSON.stringify({ uid, contents } ) )
+
+    const res = await fetch(`${BACKEND_URL}/posts/`, {
+        method: "post",
+        mode: "cors",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ uid, contents })
+    });
+
+    if ( res.ok ) {
+        return 200;
+    } else {
+        // maybe some other code here for specific errors?
+        return res.status;
+    }
+
+
+}
+
 let exports = {
     register,
     login,
     getUserID,
     logout,
     getUser,
+    createPost,
 }
 
 export default exports
