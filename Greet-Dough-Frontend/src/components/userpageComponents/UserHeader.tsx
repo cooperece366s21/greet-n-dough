@@ -38,33 +38,12 @@ class UserHeader extends React.Component<any, any> {
         super(props);
         this.state = {
             uid: props.uid,
-            name: "",
+            name: props.name,
             followers: null,
             posts:null,
-            exists: null,
-            hasOwnership: null,
+            exists: props.exists,
+            hasOwnership: props.hasOwnership,
         }
-    }
-
-    componentDidMount() {
-        api.getUser(this.state.uid)
-            .then( user => {
-                if( user === 404 ) {
-                    this.setState( {exists: false} );
-                    return;
-                }
-                this.setState( {
-                    name: user.name,
-                    exists: true,
-                });
-            });
-
-        api.getUserID()
-            .then( cuid => {
-                ( cuid === parseInt(String(this.state.uid)) ) ?
-                    this.setState({hasOwnership:true}) :
-                    this.setState({hasOwnership:false});
-            })
     }
 
     renderError() {
@@ -125,12 +104,12 @@ class UserHeader extends React.Component<any, any> {
 
     render() {
         switch( this.state.exists ) {
-            case null:
-                return ( <> </> );
+
             case true:
                 return this.renderUser();
+
             default:
-                return this.renderError();
+                return ( <> </> );
         }
     }
 

@@ -134,7 +134,6 @@ export async function createPost( uid:number, contents:string ) {
         return res.status;
     }
 
-
 }
 
 let exports = {
