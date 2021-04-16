@@ -10,14 +10,14 @@ import {
     SkeletonCircle,
     Stat, StatLabel, StatNumber, StatHelpText, StatArrow, StatGroup,
 } from "@chakra-ui/react";
-import HeaderChakra from "../components/HeaderChakra";
+import Header from "../components/globalComponents/Header";
 import TestLogin from "../components/TestLogin";
 
 function Home(){
     return(
 
         <>
-            <HeaderChakra/>
+            <Header/>
 
             {/*Welcome message*/}
             {/*<Center>*/}

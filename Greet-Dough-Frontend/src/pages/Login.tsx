@@ -1,16 +1,16 @@
 import React from 'react'
-import LoginForm from '../components/LoginForm'
+import LoginForm from '../components/authComponents/LoginForm'
 import {
     Text,
     Center,
     Divider,
 } from "@chakra-ui/react";
-import HeaderChakra from "../components/HeaderChakra";
+import Header from "../components/globalComponents/Header";
 function Login(){
     return (
 
         <>
-            <HeaderChakra />
+            <Header />
 
             <Center>
                 <Text

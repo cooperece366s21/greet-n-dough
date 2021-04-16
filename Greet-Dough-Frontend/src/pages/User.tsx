@@ -1,8 +1,8 @@
 import React from 'react'
-import RegisterForm from "../components/RegisterForm";
+import RegisterForm from "../components/authComponents/RegisterForm";
 import {Center, Text} from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
-import HeaderChakra from "../components/HeaderChakra";
+import Header from "../components/globalComponents/Header";
 import UserHeader from "../components/userpageComponents/UserHeader";
 import api from "../services/api";
 
@@ -12,7 +12,7 @@ function User() {
 
     return(
         <>
-            < HeaderChakra />
+            < Header />
             <UserHeader uid={uid}/>
         </>
 

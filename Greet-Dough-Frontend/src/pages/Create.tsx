@@ -1,15 +1,15 @@
 import React from 'react'
 import Header from "../components/globalComponents/Header";
 
-function Feed(){
+function Create(){
     return (
 
         <>
             <Header/>
-            <h1> Feed page goes here</h1>
+            <h1> Post Creation stuff here </h1>
         </>
 
     );
 }
 
-export default Feed
+export default Create

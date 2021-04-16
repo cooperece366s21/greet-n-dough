@@ -6,6 +6,7 @@ import Feed from './pages/Feed';
 import Login from './pages/Login';
 import Register from "./pages/Register";
 import User from "./pages/User";
+import Create from "./pages/Create";
 import { ChakraProvider } from "@chakra-ui/react";
 
 import {
@@ -34,6 +35,8 @@ function App() {
                 <Route exact path="/" component={Home} />
 
                 <Route path="/user/:uid"  component={User} />
+
+                <Route exact path="/create" component={Create} />
 
             </Switch>
 

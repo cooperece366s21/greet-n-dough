@@ -10,6 +10,7 @@ import {
 } from "@chakra-ui/react";
 import {Link} from "react-router-dom";
 import api from "../../services/api";
+import CreatePostButton from "../createPostComponents/CreatePostButton";
 import { withRouter } from 'react-router-dom';
 
 
@@ -60,7 +61,7 @@ class UserHeader extends React.Component<any, any> {
 
         api.getUserID()
             .then( cuid => {
-                (cuid === this.state.uid) ?
+                ( cuid === parseInt(String(this.state.uid)) ) ?
                     this.setState({hasOwnership:true}) :
                     this.setState({hasOwnership:false});
             })
@@ -78,37 +79,45 @@ class UserHeader extends React.Component<any, any> {
 
          return(
 
-            <Center marginTop="40px">
+             <>
+                <Center marginTop="40px">
 
-                 <Box w="175px" height="175px" borderWidth="2px" >
-                     <SkeletonCircle size="175px" />
-                 </Box>
+                     <Box w="175px" height="175px" borderWidth="2px" >
+                         <SkeletonCircle size="175px" />
+                     </Box>
 
-                {/* RHS TEXT CONTAINER*/}
-                <Box w="45%" height="175px" marginLeft={"20px"} borderWidth="2px">
+                    {/* RHS TEXT CONTAINER*/}
+                    <Box w="45%" height="175px" marginLeft={"20px"} borderWidth="2px">
 
-                    {/*UPPER TEXT CONTAINER*/}
-                    <Box w="100%" h="80px" >
-                        <HStack>
+                        {/*UPPER TEXT CONTAINER*/}
+                        <Box w="100%" h="80px" >
+                            <HStack>
 
-                            <Text fontSize={'4xl'} fontWeight={500}> {this.state.name} </Text>
+                                <Text fontSize={'4xl'} fontWeight={500}> {this.state.name} </Text>
 
-                            {/*<Text> FOLLOWERS </Text>*/}
-                            {/*<Text> POSTS </Text>*/}
+                                {/*<Text> FOLLOWERS </Text>*/}
+                                {/*<Text> POSTS </Text>*/}
 
 
-                        </HStack>
+                            </HStack>
+                        </Box>
+
+                        {/*LOWER TEXT CONTAINER*/}
+                        <Box w="80%" h="95px"  paddingTop="30px">
+                            <Text> Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloribus eligendi minus nam sequi ullam. A ab alias commodi fugiat magni nobis non, perspiciatis quibusdam quis quos, ullam ut voluptas voluptatum?</Text>
+                        </Box>
+
                     </Box>
 
-                    {/*LOWER TEXT CONTAINER*/}
-                    <Box w="80%" h="95px"  paddingTop="30px">
-                        <Text> Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloribus eligendi minus nam sequi ullam. A ab alias commodi fugiat magni nobis non, perspiciatis quibusdam quis quos, ullam ut voluptas voluptatum?</Text>
-                    </Box>
+                </Center>
 
-                </Box>
+                 <Center>
+                     <Box marginTop="30px" marginLeft="40%">
+                         <CreatePostButton hasOwnership={this.state.hasOwnership} />
+                     </Box>
+                 </Center>
 
-            </Center>
-
+             </>
 
          )
      }
@@ -124,8 +133,6 @@ class UserHeader extends React.Component<any, any> {
                 return this.renderError();
         }
     }
-
-
 
 }
 

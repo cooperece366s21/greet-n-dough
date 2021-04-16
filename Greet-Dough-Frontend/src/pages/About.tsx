@@ -1,11 +1,11 @@
 import React from 'react'
-import HeaderChakra from "../components/HeaderChakra";
+import Header from "../components/globalComponents/Header";
 
 function About(){
     return (
 
         <>
-            <HeaderChakra/>
+            <Header/>
             <h1> About page goes here</h1>
         </>
 

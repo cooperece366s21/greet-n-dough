@@ -1,13 +1,13 @@
 import React from 'react'
-import RegisterForm from "../components/RegisterForm";
+import RegisterForm from "../components/authComponents/RegisterForm";
 import {Center, Text} from "@chakra-ui/react";
-import HeaderChakra from "../components/HeaderChakra";
+import Header from "../components/globalComponents/Header";
 
 function Register(){
     return (
 
         <>
-            <HeaderChakra />
+            <Header />
 
             <Center>
                 <Text

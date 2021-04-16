@@ -1,4 +1,3 @@
-import './LoginForm.css';
 import React from 'react';
 import {
     Box,
@@ -10,7 +9,7 @@ import {
     Flex,
 } from "@chakra-ui/react";
 import {Link} from "react-router-dom";
-import {login} from "../services/api";
+import {login} from "../../services/api";
 import { withRouter } from 'react-router-dom';
 
 class LoginForm extends React.Component<any, any>{

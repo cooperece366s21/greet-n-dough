@@ -15,9 +15,9 @@ import {
     Text,
     Input,
 } from "@chakra-ui/react";
-import UserChakra from "./UserChakra";
+import HeaderUser from "./HeaderUser";
 
-class HeaderChakra extends React.Component<any, any>{
+class Header extends React.Component<any, any>{
 
     render() {
         return(
@@ -67,7 +67,7 @@ class HeaderChakra extends React.Component<any, any>{
 
                         {/*User Component*/}
                         <Box w={'25%'}>
-                            <UserChakra />
+                            <HeaderUser />
                         </Box>
 
                     </HStack>
@@ -80,4 +80,4 @@ class HeaderChakra extends React.Component<any, any>{
 
 }
 
-export default HeaderChakra;
+export default Header;

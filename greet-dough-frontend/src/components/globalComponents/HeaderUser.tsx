@@ -9,7 +9,7 @@ import {
     Flex, Text, SkeletonCircle,
 } from "@chakra-ui/react";
 import {Link} from "react-router-dom";
-import api from "../services/api";
+import api from "../../services/api";
 import { withRouter } from 'react-router-dom';
 
 type UserState = {
@@ -17,7 +17,7 @@ type UserState = {
     name: string;
 }
 
-class UserChakra extends React.Component<any, any> {
+class HeaderUser extends React.Component<any, any> {
 
     state: UserState = {
         uid: null,
@@ -105,4 +105,4 @@ class UserChakra extends React.Component<any, any> {
     }
 }
 
-export default UserChakra
+export default HeaderUser

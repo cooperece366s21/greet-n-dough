@@ -8,7 +8,7 @@ import {
     Button,
     Text,
 } from "@chakra-ui/react";
-import api, {register} from "../services/api";
+import api, {register} from "../../services/api";
 import { withRouter } from 'react-router-dom';
 
 type RegisterState = {
