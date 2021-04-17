@@ -21,10 +21,10 @@ public class CommentStoreImpl extends StoreWithID<Comment> implements CommentSto
         return super.get(cid);
     }
 
-    @Override
-    public boolean canComment( int pid ) {
-        return false;
-    }
+    //@Override
+    //public boolean canComment( int pid ) {
+    //    return false;
+    //}
 
     @Override
     public Comment addComment( String contents, int uid, int pid, Integer parentID ) {
@@ -45,7 +45,7 @@ public class CommentStoreImpl extends StoreWithID<Comment> implements CommentSto
     }
 
     @Override
-    public boolean hasParent( int cid ) {
+    public boolean hasComment( int cid ) {
         return false;
     }
 

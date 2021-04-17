@@ -18,7 +18,7 @@ public interface CommentStore {
 
     //boolean canComment( int pid );
 
-    boolean hasParent( int cid );
+    boolean hasComment( int cid );
 
     boolean isParent(int cid);
 }

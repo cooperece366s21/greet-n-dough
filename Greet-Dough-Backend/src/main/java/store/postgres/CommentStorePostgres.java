@@ -39,12 +39,12 @@ public class CommentStorePostgres implements CommentStore {
 
         // Reply to a comment
         int cid = comment2.getID();
-        System.out.println(CommentStorePostgres.hasParent(cid));
+        System.out.println(CommentStorePostgres.hasComment(cid));
         Comment parentTemp = CommentStorePostgres.addComment("i love jlab", dan.getID(), post1.getID(), comment2.getID());
 
         // Reply to a reply, we want to force hasParent to be false
         int cidTemp = parentTemp.getID();
-        System.out.println(CommentStorePostgres.hasParent(cidTemp));
+        System.out.println(CommentStorePostgres.hasComment(cidTemp));
 
         // Get the list of parent comments under a post
         List<Comment> yeetPostParents = CommentStorePostgres.getParents(post1.getID());
@@ -133,7 +133,7 @@ public class CommentStorePostgres implements CommentStore {
     //}
 
     @Override
-    public boolean hasParent( int cid ) {
+    public boolean hasComment( int cid ) {
         return jdbi.withHandle( handle -> handle.attach(CommentDao.class).canReply(cid) );
     }
 

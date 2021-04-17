@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.math.BigDecimal;
 
 import com.google.gson.Gson;
 import spark.Request;
@@ -571,7 +572,7 @@ public class Handler {
 
         if ( res.status() == 200 ) {
 
-            if ( !commentStore.hasParent(parent_id) ) {
+            if ( commentStore.hasComment(parent_id) ) {
                 // need to check if parent is a parent not a reply, to ensure depth 1
                 if ( commentStore.isParent(parent_id) ) {
                     commentStore.addComment( contentQuery, uid, pid, parent_id );
