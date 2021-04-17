@@ -24,21 +24,26 @@ public interface ImageDao {
             ");")
     void createTable();
 
-    @SqlUpdate("INSERT INTO images (user_id, path) VALUES (:user_id, :path);")
+    @SqlUpdate("INSERT INTO images (user_id, path) " +
+            "VALUES (:user_id, :path);")
     @GetGeneratedKeys("image_id")
     int addImage(@Bind("path") String path,
                  @Bind("user_id") int user_id);
 
-    @SqlUpdate("DELETE FROM images WHERE image_id = (:image_id);")
+    @SqlUpdate("DELETE FROM images " +
+            "WHERE image_id = (:image_id);")
     void deleteImage(@Bind("image_id") int image_id);
 
-    @SqlQuery("SELECT * FROM images ORDER BY user_id")
+    @SqlQuery("SELECT * FROM images " +
+            "ORDER BY user_id")
     List<Image> listImages();
 
-    @SqlQuery("SELECT * FROM images WHERE image_id = (:image_id)")
+    @SqlQuery("SELECT * FROM images " +
+            "WHERE image_id = (:image_id)")
     Optional<Image> getImage(@Bind("image_id") int image_id);
 
-    @SqlQuery("SELECT * FROM images WHERE user_id = (:user_id)")
+    @SqlQuery("SELECT * FROM images " +
+            "WHERE user_id = (:user_id)")
     List<Image> getGallery(@Bind("user_id") int user_id);
 
 }

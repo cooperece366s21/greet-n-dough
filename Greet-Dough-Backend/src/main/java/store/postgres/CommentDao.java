@@ -69,19 +69,28 @@ public interface CommentDao {
     void removeComment(@Bind("comment_id") int comment_id);
     */
 
-    @SqlQuery("SELECT * FROM comments WHERE comment_id = (:comment_id);")
+    @SqlQuery("SELECT * FROM comments " +
+            "WHERE comment_id = (:comment_id);")
     Comment getComment(@Bind("comment_id") int comment_id);
 
-    @SqlQuery("SELECT EXISTS (SELECT * FROM comments WHERE comment_id = (:comment_id));")
+    @SqlQuery("SELECT EXISTS( " +
+            "SELECT * FROM comments " +
+            "WHERE comment_id = (:comment_id));")
     boolean hasComment(@Bind("comment_id") int comment_id);
 
-    @SqlQuery("SELECT * FROM comments WHERE parent_id = (:parent_id);")
+    @SqlQuery("SELECT * FROM comments " +
+            "WHERE parent_id = (:parent_id);")
     List<Comment> getReplies(@Bind("parent_id") int parent_id);
 
-    @SqlQuery("SELECT * FROM comments WHERE post_id = (:post_id) AND parent_id IS null;")
+    @SqlQuery("SELECT * FROM comments " +
+            "WHERE post_id = (:post_id) AND " +
+                    "parent_id IS null;")
     List<Comment> getParents(@Bind("post_id") int post_id);
 
-    @SqlQuery("SELECT EXISTS (SELECT * FROM comments WHERE comment_id = (:comment_id) AND parent_id IS null);")
+    @SqlQuery("SELECT EXISTS( " +
+            "SELECT * FROM comments " +
+            "WHERE comment_id = (:comment_id) AND " +
+                    "parent_id IS null);")
     boolean isParent(@Bind("comment_id") int comment_id);
 
 }

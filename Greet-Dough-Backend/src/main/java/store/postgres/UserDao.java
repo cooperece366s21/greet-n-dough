@@ -20,24 +20,31 @@ public interface UserDao {
             ");")
     void createTable();
 
-    @SqlUpdate("INSERT INTO users (user_name) VALUES (:user_name);")
+    @SqlUpdate("INSERT INTO users (user_name) " +
+            "VALUES (:user_name);")
     @GetGeneratedKeys("user_id")
     int insertUser(@Bind("user_name") String user_name);
 
-    @SqlUpdate("DELETE FROM users WHERE user_id = (:user_id);")
+    @SqlUpdate("DELETE FROM users " +
+            "WHERE user_id = (:user_id);")
     void deleteUser(@Bind("user_id") int user_id);
 
-    @SqlQuery("SELECT * FROM users ORDER BY user_name")
+    @SqlQuery("SELECT * FROM users " +
+            "ORDER BY user_name")
     List<User> listUsers();
 
-    @SqlQuery("SELECT * FROM users WHERE user_id = (:user_id)")
+    @SqlQuery("SELECT * FROM users " +
+            "WHERE user_id = (:user_id)")
     Optional<User> getUser(@Bind("user_id") int user_id);
 
-    @SqlQuery("SELECT * FROM users WHERE user_name " +
+    // Returns all users whose names match the pattern "name*"
+    @SqlQuery("SELECT * FROM users " +
+            "WHERE user_name " +
             "SIMILAR TO :name || '%';" )
     List<User> searchUsers(@Bind("name") String name);
 
-    @SqlUpdate("UPDATE users SET user_name = (:name) " +
+    @SqlUpdate("UPDATE users " +
+            "SET user_name = (:name) " +
             "WHERE user_id = (:user_id)")
     void changeName(@Bind("user_id") int user_id,
                     @Bind("name") String name);

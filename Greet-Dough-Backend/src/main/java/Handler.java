@@ -5,6 +5,7 @@ import model.*;
 import utility.Pair;
 import store.model.*;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -56,7 +57,7 @@ public class Handler {
 
     }
 
-    // PRIVATE HELPER FUNCTIONS
+    /////////////// PRIVATE HELPER FUNCTIONS ///////////////
     private Pair grabUserPair( Request req ) {
 
         int uid = Integer.parseInt( req.queryParams("uid") );
@@ -102,7 +103,7 @@ public class Handler {
 
     }
 
-    // USER ACTIONS
+    /////////////// USER ACTIONS ///////////////
     public String getUser( Request req, Response res ) throws JsonProcessingException {
 
         int uid = Integer.parseInt( req.params(":uid") );
@@ -144,13 +145,17 @@ public class Handler {
 
         // Attempt to add a password associated with the email
         //      If return value is 0, attempt was unsuccessful
-        if ( passwordStore.addPassword(email, tempUser.getID(), password ) == 0 ) {
+        if ( passwordStore.addPassword( email, tempUser.getID(), password ) == 0 ) {
 
             System.err.println( "Cannot add password for email" + email );
             res.status(409);
             return res.status();
 
         }
+
+        // Creates a balance for the user
+        //      Default $0
+        walletStore.addUser( tempUser.getID() );
 
         System.out.println( "User Created: " + tempUser.getName() + ", " + tempUser.getID() );
         System.out.println( "PASSWORD STORED\n" );
@@ -256,7 +261,7 @@ public class Handler {
 
             List<Post> feed = postStore.makeFeed(uid);
             res.status(200);
-            return mapper.writeValueAsString( feed );
+            return mapper.writeValueAsString(feed);
 
         } else {
 
@@ -267,9 +272,48 @@ public class Handler {
     }
 
 
+    /////////////// WALLET ACTIONS ///////////////
+    public String getBalance( Request req, Response res ) {
 
-    // USER RELATION ACTIONS
+        res.type("application/json");
+        Properties data = gson.fromJson(req.body(), Properties.class);
 
+        // Parse the request
+        int uid = Integer.parseInt( data.getProperty("uid") );
+
+        // Returns balance or null
+        return walletStore.getBalance(uid).toString();
+
+    }
+
+    // Returns balance or null
+    // Can return null if:
+    //      User doesn't have a balance
+    //      verifyPurchase() failed (should never happen for this project)
+    public int addToBalance( Request req, Response res ) {
+
+        res.type("application/json");
+        Properties data = gson.fromJson(req.body(), Properties.class);
+
+        // Parse the request
+        int uid = Integer.parseInt( data.getProperty("uid") );
+        String amountQuery = data.getProperty("amount");
+        BigDecimal amount = new BigDecimal(amountQuery);
+
+        if ( WalletStore.verifyPurchase() ) {
+
+            walletStore.addToBalance( uid, amount );
+            res.status(200);
+
+        } else {
+            res.status(401);
+        }
+
+        return res.status();
+
+    }
+
+    /////////////// USER RELATION ACTIONS ///////////////
 //    public int subscribe( Request req, Response res ) {
 //
 //        Pair userPair = this.grabUserPair(req);
@@ -379,7 +423,7 @@ public class Handler {
 
  */
 
-    // POST ACTIONS
+    /////////////// POST ACTIONS ///////////////
     public Post getPost( Request req, Response res ) {
 
         int pid = Integer.parseInt( req.params(":id") );

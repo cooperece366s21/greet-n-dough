@@ -22,11 +22,13 @@ public interface WalletDao {
             ");")
     void createTable();
 
-    @SqlUpdate("INSERT INTO wallet (user_id, user_balance) VALUES (:user_id, :balance);")
+    @SqlUpdate("INSERT INTO wallet (user_id, user_balance) " +
+            "VALUES (:user_id, :balance);")
     void insertUser(@Bind("user_id") int user_id,
                     @Bind("balance") BigDecimal balance);
 
-    @SqlQuery("SELECT user_balance FROM wallet WHERE user_id = (:user_id);")
+    @SqlQuery("SELECT user_balance FROM wallet " +
+            "WHERE user_id = (:user_id);")
     BigDecimal getBalance(@Bind("user_id") int user_id);
 
     // From https://stackoverflow.com/a/48648915
