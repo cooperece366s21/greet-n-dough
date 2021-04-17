@@ -546,20 +546,16 @@ public class Handler {
 
         if ( res.status() == 200 ) {
 
-            if ( commentStore.canComment(pid) ) {
-
-                if ( !commentStore.hasParent(parent_id) ) {
-                    // need to check if parent is a parent not a reply, to ensure depth 1
-                    if ( commentStore.isParent( parent_id ) ) {
-                        commentStore.addComment( contentQuery, uid, pid, parent_id );
-                    }
-                    else {
-                        System.err.println("Error code: " + res.status());
-                    }
-                } else {
-                    commentStore.addComment( contentQuery, uid, pid );
+            if ( !commentStore.hasParent(parent_id) ) {
+                // need to check if parent is a parent not a reply, to ensure depth 1
+                if ( commentStore.isParent(parent_id) ) {
+                    commentStore.addComment( contentQuery, uid, pid, parent_id );
                 }
-
+                else {
+                    System.err.println("Error code: " + res.status());
+                }
+            } else {
+                commentStore.addComment( contentQuery, uid, pid );
             }
 
         } else {
