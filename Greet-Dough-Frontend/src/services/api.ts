@@ -114,6 +114,30 @@ export async function getUser( uid:number ) {
     }
 }
 
+export async function getUserFeed( cuid:number, uid:number ) {
+
+    const res = await fetch(`${BACKEND_URL}/users/${uid}/feed/`, {
+        method: "get",
+        mode: "cors",
+        headers: {
+            "Content-Type": "application/json"
+        },
+    });
+
+
+
+    if( res.ok ) {
+        return await res.json()
+            .then(body => {
+                return JSON.parse(body);
+            });
+
+    } else {
+        alert("ERROR GRABBING FEED: " + res.status );
+    }
+
+}
+
 export async function createPost( uid:number, contents:string ) {
 
     // alert( JSON.stringify({ uid, contents } ) )
@@ -143,6 +167,7 @@ let exports = {
     logout,
     getUser,
     createPost,
+    getUserFeed,
 }
 
 export default exports

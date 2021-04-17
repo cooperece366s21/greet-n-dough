@@ -99,6 +99,8 @@ public class Server {
         // curl localhost:5432/users/1/
         get("/users/:uid/", handler::getUser, gson::toJson);
 
+        get("users/:uid/feed/", handler::getUserFeed, gson::toJson);
+
         // curl -H "Content-Type: application/json" --data "{"email":"a@gmail.com", "password":"123"}" localhost:5432/login
         post("/login/", handler::login, gson::toJson);
 

@@ -108,7 +108,7 @@ public class Handler {
         int uid = Integer.parseInt( req.params(":uid") );
 
         if ( userStore.hasUser(uid) ) {
-
+            
             res.status(200);
             String userJSON = mapper.writeValueAsString( userStore.getUser(uid) );
             return userJSON;
@@ -235,6 +235,31 @@ public class Handler {
         return res.body();
 
     }
+
+    public String getUserFeed( Request req, Response res ) throws JsonProcessingException {
+
+        res.type("application/json");
+        int uid = Integer.parseInt( req.params(":uid") );
+
+//        Properties data = gson.fromJson(req.body(), Properties.class);
+//        Integer cuid = Integer.parseInt( data.getProperty("cuid") );
+
+        System.out.println("Doing logic stuff now");
+        if ( userStore.hasUser(uid) ) {
+
+            List<Post> feed = postStore.makeFeed(uid);
+            res.status(200);
+            return mapper.writeValueAsString( feed );
+
+        } else {
+
+            res.status(404);
+            return "";
+
+        }
+    }
+
+
 
     // USER RELATION ACTIONS
 
