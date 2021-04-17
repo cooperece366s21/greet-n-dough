@@ -45,7 +45,12 @@ public class CommentStoreImpl extends StoreWithID<Comment> implements CommentSto
     }
 
     @Override
-    public boolean canReply( int cid ) {
+    public boolean hasParent( int cid ) {
+        return false;
+    }
+
+    @Override
+    public boolean isParent(int cid) {
         return false;
     }
 

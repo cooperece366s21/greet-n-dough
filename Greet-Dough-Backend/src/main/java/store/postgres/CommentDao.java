@@ -84,5 +84,8 @@ public interface CommentDao {
     @SqlQuery("SELECT * FROM comments WHERE post_id = (:post_id) AND parent_id IS null;")
     List<Comment> getParents(@Bind("post_id") int post_id);
 
+    @SqlQuery("SELECT EXISTS (SELECT * FROM comments WHERE comment_id = (:comment_id) AND parent_id IS null);")
+    boolean isParent(@Bind("comment_id") int comment_id);
+
 }
 

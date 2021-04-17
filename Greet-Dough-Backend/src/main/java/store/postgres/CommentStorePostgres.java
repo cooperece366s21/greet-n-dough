@@ -39,8 +39,12 @@ public class CommentStorePostgres implements CommentStore {
 
         // Reply to a comment
         int cid = comment2.getID();
-        System.out.println(CommentStorePostgres.canReply(cid));
-        CommentStorePostgres.addComment("i love jlab", dan.getID(), post1.getID(), comment2.getID());
+        System.out.println(CommentStorePostgres.hasParent(cid));
+        Comment parentTemp = CommentStorePostgres.addComment("i love jlab", dan.getID(), post1.getID(), comment2.getID());
+
+        // Reply to a reply, we want to force hasParent to be false
+        int cidTemp = parentTemp.getID();
+        System.out.println(CommentStorePostgres.hasParent(cidTemp));
 
         // Get the list of parent comments under a post
         List<Comment> yeetPostParents = CommentStorePostgres.getParents(post1.getID());
@@ -52,9 +56,9 @@ public class CommentStorePostgres implements CommentStore {
 
         // Test deleting the post
         //      Should delete cascade the comments
-        PostStorePostgres.deletePost( post1.getID() );
-        System.out.println( CommentStorePostgres.getParents( post1.getID() ) );
-        System.out.println( CommentStorePostgres.getComment( comment1.getID() ) );
+        //PostStorePostgres.deletePost( post1.getID() );
+        //System.out.println( CommentStorePostgres.getParents( post1.getID() ) );
+        //System.out.println( CommentStorePostgres.getComment( comment1.getID() ) );
 
     }
 
@@ -129,8 +133,13 @@ public class CommentStorePostgres implements CommentStore {
     }
 
     @Override
-    public boolean canReply( int cid ) {
+    public boolean hasParent( int cid ) {
         return jdbi.withHandle( handle -> handle.attach(CommentDao.class).canReply(cid) );
+    }
+
+    @Override
+    public boolean isParent(int cid) {
+        return jdbi.withHandle( handle -> handle.attach(CommentDao.class).isParent(cid) );
     }
 
     /*
