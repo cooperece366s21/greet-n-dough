@@ -17,7 +17,10 @@ public class GreetDoughJdbi {
 
     public static Jdbi create( String url ) {
 
-        Jdbi jdbi = Jdbi.create( url, BaseDao.name, BaseDao.password )
+        String name = "postgres";
+        url = "jdbc:postgresql://localhost:4321/greetdough";
+        String password = "123";
+        Jdbi jdbi = Jdbi.create( url, name, password )
                 .installPlugin( new PostgresPlugin() )
                 .installPlugin( new SqlObjectPlugin() );
 

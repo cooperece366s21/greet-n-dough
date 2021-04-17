@@ -2,6 +2,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 import model.*;
+import store.postgres.LikeStorePostgres;
 import utility.Pair;
 import store.model.*;
 
@@ -447,6 +448,21 @@ public class Handler {
 
     }
 
+    public HashSet<Integer> getLikes( Request req, Response res ){
+        int uid = Integer.parseInt( req.queryParams("uid") );
+        int pid = Integer.parseInt( req.params(":postID") );
+        int status = checkUserPostPerms(uid, pid);
+        res.status(status);
+
+        if ( res.status() == 200 ) {
+            return likeStore.getLikes(pid).getUserLikes();
+        }
+
+        System.err.println("Error code: " + res.status() );
+        return null;
+    }
+
+    /*
     public Likes getLikes( Request req, Response res ) {
 
         int uid = Integer.parseInt( req.queryParams("uid") );
@@ -462,7 +478,37 @@ public class Handler {
         return null;
 
     }
+    */
 
+    public Integer likePost( Request req, Response res ) {
+        int pid = Integer.parseInt( req.params(":postID") );
+        int uid = Integer.parseInt( req.queryParams("uid") );
+        int status =  checkUserPostPerms(uid, pid);
+        res.status(status);
+
+        if (res.status() == 200) {
+
+            if ( !likeStore.hasUserLike(pid, uid) ) {
+
+                likeStore.addUserLike(pid, uid);
+            }
+            else {
+
+                likeStore.deleteUserLike(pid, uid);
+
+            }
+
+        }
+        else {
+
+            System.err.println("Error code: " + res.status());
+
+        }
+
+        return res.status();
+    }
+
+    /*
     public Integer likePost( Request req, Response res ) {
 
         int pid = Integer.parseInt( req.params(":postID") );
@@ -489,7 +535,47 @@ public class Handler {
         return res.status();
 
     }
+     */
 
+    public Integer createComment( Request req, Response res ) {
+
+        int pid = Integer.parseInt( req.params(":postID") );
+        int uid = Integer.parseInt( req.queryParams("uid") );
+        String contentQuery = req.queryParams("contents");
+        int status = checkUserPostPerms(uid, pid);
+
+        Properties data = gson.fromJson(req.body(), Properties.class);
+        String parent = data.getProperty("parent_id");
+        int parent_id = (parent != null) ? Integer.parseInt(parent) : -1;
+
+        res.status(status);
+
+        if ( res.status() == 200 ) {
+
+            if ( commentStore.canComment(pid) ) {
+
+                if (commentStore.canReply(parent_id)) {
+
+                    commentStore.addComment( contentQuery, uid, pid );
+
+                }
+                else{
+
+                    commentStore.addComment( contentQuery, uid, pid, parent_id );
+
+                }
+
+            }
+
+        }
+        else {
+            System.err.println("Error code: " + res.status());
+        }
+
+        return res.status();
+    }
+
+    /*
     public Integer createComment( Request req, Response res ) {
 
         int pid = Integer.parseInt( req.params(":postID") );
@@ -511,8 +597,56 @@ public class Handler {
 
         return res.status();
     }
+    */
+
 
     // havent checked permissions for this yet
+
+    public List<Comment> getParentComments( Request req, Response res ) {
+
+        int pid = Integer.parseInt( req.params(":postID") );
+        int uid = Integer.parseInt( req.queryParams("uid") );
+        int status = checkUserPostPerms(uid, pid);
+        List<Comment> comments = new ArrayList<>();
+        res.status(status);
+
+        if (res.status() == 200) {
+
+            return commentStore.getParents(pid);
+
+        }
+        else {
+
+            System.err.println("Error code: " + res.status());
+
+        }
+
+        return comments;
+    }
+
+    public List<Comment> getRepliesComments( Request req, Response res ) {
+
+        int pid = Integer.parseInt( req.params(":postID") );
+        int uid = Integer.parseInt( req.queryParams("uid") );
+        int cid = Integer.parseInt( req.queryParams("cid") );
+        int status = checkUserPostPerms(uid, pid);
+        List<Comment> comments = new ArrayList<>();
+        res.status(status);
+
+        if (res.status() == 200) {
+
+            return commentStore.getReplies(cid);
+
+        }
+        else {
+
+            System.err.println("Error code: " + res.status());
+
+        }
+
+        return comments;
+    }
+
     public ArrayList<Comment> getComments( Request req, Response res ) {
 
         int pid = Integer.parseInt( req.params(":postID") );
@@ -534,6 +668,7 @@ public class Handler {
 
         return comments;
     }
+
 
 }
 
