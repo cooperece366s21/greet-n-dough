@@ -45,7 +45,7 @@ public class ImageStorePostgres implements ImageStore {
         Image selfie = ImageStorePostgres.addImage( newPath.toString(), komodo.getID() );
 
         // Test adding a post with an image
-        Post newPost = PostStorePostgres.addPost( "first!", komodo.getID(), selfie.getID() );
+        Post newPost = PostStorePostgres.addPost( "Feeling cute, might delete later", "first!", komodo.getID(), selfie.getID() );
         System.out.println( newPost.getID() + " " + newPost.getUserID() +
                 " " + newPost.getImageID() + " " + newPost.getContents() );
 

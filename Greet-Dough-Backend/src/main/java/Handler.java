@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
-import java.math.BigDecimal;
 
 import com.google.gson.Gson;
 import spark.Request;
@@ -42,7 +41,7 @@ public class Handler {
                    PasswordStore passwordStore,
                    LoginStore loginStore,
                    WalletStore walletStore) {
-                       
+
         this.userStore = userStore;
         this.postStore = postStore;
         this.imageStore = imageStore;
@@ -109,7 +108,7 @@ public class Handler {
         int uid = Integer.parseInt( req.params(":uid") );
 
         if ( userStore.hasUser(uid) ) {
-            
+
             res.status(200);
             String userJSON = mapper.writeValueAsString( userStore.getUser(uid) );
             return userJSON;
@@ -126,6 +125,8 @@ public class Handler {
 
         res.type("application/json");
         Properties data = gson.fromJson(req.body(), Properties.class);
+
+        // Parse the request
         String email = data.getProperty("email");
         String username = data.getProperty("username");
         String password = data.getProperty("password");
@@ -164,9 +165,10 @@ public class Handler {
         int uid = Integer.parseInt( req.params(":id") );
         User tempUser = userStore.getUser(uid);
 
+        // Should cascade delete the posts, images, comments, wallet, etc.
         userStore.deleteUser(uid);
 
-        // Checks if user was deleted
+        // Checks if the user was successfully deleted
         if ( !userStore.hasUser(uid) ) {
 
             System.out.println( gson.toJson(tempUser) );
@@ -184,6 +186,8 @@ public class Handler {
 
         res.type("application/json");
         Properties data = gson.fromJson(req.body(), Properties.class);
+
+        // Parse the request
         String token = data.getProperty("authToken");
 
         Integer uid = loginStore.getUserID(token);
@@ -209,10 +213,12 @@ public class Handler {
 
         res.type("application/json");
         Properties data = gson.fromJson(req.body(), Properties.class);
+
+        // Parse the request
         String email = data.getProperty("email");
         String password = data.getProperty("password");
 
-        System.out.println("Logging in: " + email +", "+ password);
+        System.out.println("Logging in: " + email + ", " + password);
 
         // Check if login was successful
         Integer uid = passwordStore.getUserID(email, password);
@@ -398,11 +404,11 @@ public class Handler {
         res.type("application/json");
         Properties data = gson.fromJson(req.body(), Properties.class);
 
+        // Parse the request
         int uid = Integer.parseInt( data.getProperty("uid") );
-
-        String imageQuery = data.getProperty("imageQuery");
-
+        String title = data.getProperty("title");
         String contents = data.getProperty("contents");
+        String imageQuery = data.getProperty("imageQuery");
         Integer iid = (imageQuery != null) ? Integer.parseInt(imageQuery) : null;
 
         if ( !userStore.hasUser(uid) ) {
@@ -413,7 +419,7 @@ public class Handler {
 
         }
 
-        Post tempPost = postStore.addPost( contents, uid, iid );
+        Post tempPost = postStore.addPost( title, contents, uid, iid );
 
         System.out.println( gson.toJson(tempPost) );
 
@@ -430,8 +436,8 @@ public class Handler {
         // Should cascade delete the image, comments, likes, etc.
         postStore.deletePost(pid);
 
-        // Checks if the post was deleted
-        if ( !postStore.hasPost(pid) ) {
+        // Checks if the post was successfully deleted
+        if ( postStore.hasPost(pid) ) {
 
             System.out.println( gson.toJson(tempPost) );
             res.status(200);
@@ -440,9 +446,7 @@ public class Handler {
             res.status(404);
         }
 
-
         return res.status();
-
 
     }
 
@@ -473,8 +477,12 @@ public class Handler {
 
     public HashSet<Integer> getLikes( Request req, Response res ) {
 
-        int uid = Integer.parseInt( req.queryParams("uid") );
-        int pid = Integer.parseInt( req.params(":postID") );
+        res.type("application/json");
+        Properties data = gson.fromJson(req.body(), Properties.class);
+
+        // Parse the request
+        int pid = Integer.parseInt( data.getProperty("pid") );
+        int uid = Integer.parseInt( data.getProperty("uid") );
         int status = checkUserPostPerms(uid, pid);
         res.status(status);
 
@@ -490,8 +498,12 @@ public class Handler {
     /*
     public Likes getLikes( Request req, Response res ) {
 
-        int uid = Integer.parseInt( req.queryParams("uid") );
-        int pid = Integer.parseInt( req.params(":postID") );
+        res.type("application/json");
+        Properties data = gson.fromJson(req.body(), Properties.class);
+
+        // Parse the request
+        int pid = Integer.parseInt( data.getProperty("pid") );
+        int uid = Integer.parseInt( data.getProperty("uid") );
         int status = checkUserPostPerms(uid, pid);
         res.status(status);
 
@@ -507,9 +519,13 @@ public class Handler {
 
     public Integer likePost( Request req, Response res ) {
 
-        int pid = Integer.parseInt( req.params(":postID") );
-        int uid = Integer.parseInt( req.queryParams("uid") );
-        int status =  checkUserPostPerms(uid, pid);
+        res.type("application/json");
+        Properties data = gson.fromJson(req.body(), Properties.class);
+
+        // Parse the request
+        int pid = Integer.parseInt( data.getProperty("pid") );
+        int uid = Integer.parseInt( data.getProperty("uid") );
+        int status = checkUserPostPerms(uid, pid);
         res.status(status);
 
         if ( res.status() == 200 ) {
@@ -528,136 +544,105 @@ public class Handler {
 
     }
 
-    /*
-    public Integer likePost( Request req, Response res ) {
-
-        int pid = Integer.parseInt( req.params(":postID") );
-        int uid = Integer.parseInt( req.queryParams("uid") );
-        int status = checkUserPostPerms(uid, pid);
-        Likes postLikes = likeStore.getLikes(pid);
-        res.status(status);
-
-        if ( res.status() == 200 ) {
-
-            HashSet<Integer> userLikes = postLikes.getUserLikes();
-
-            if ( !userLikes.contains(uid) ) {
-
-                postLikes.incrementLike(uid);
-                System.out.println( gson.toJson(postLikes) );
-
-            }
-
-        } else {
-            System.err.println("Error code: " + res.status());
-        }
-
-        return res.status();
-
-    }
-     */
-
     public Integer createComment( Request req, Response res ) {
 
-        int pid = Integer.parseInt( req.params(":postID") );
-        int uid = Integer.parseInt( req.queryParams("uid") );
-        String contentQuery = req.queryParams("contents");
-        int status = checkUserPostPerms(uid, pid);
-
+        res.type("application/json");
         Properties data = gson.fromJson(req.body(), Properties.class);
+
+        // Parse the request
+        int pid = Integer.parseInt( data.getProperty("pid") );
+        int uid = Integer.parseInt( data.getProperty("uid") );
+        String contentQuery = data.getProperty("contents");
         String parent = data.getProperty("parent_id");
-        int parent_id = (parent != null) ? Integer.parseInt(parent) : -1;
+        Integer parent_id = (parent != null) ? Integer.parseInt(parent) : null;
 
-        res.status(status);
-
-        if ( res.status() == 200 ) {
-
-            if ( commentStore.hasComment(parent_id) ) {
-                // need to check if parent is a parent not a reply, to ensure depth 1
-                if ( commentStore.isParent(parent_id) ) {
-                    commentStore.addComment( contentQuery, uid, pid, parent_id );
-                }
-                else {
-                    System.err.println("Error code: " + res.status());
-                }
-            } else {
-                commentStore.addComment( contentQuery, uid, pid );
-            }
-
-        } else {
-            System.err.println("Error code: " + res.status());
-        }
-
-        return res.status();
-    }
-
-    /*
-    public Integer createComment( Request req, Response res ) {
-
-        int pid = Integer.parseInt( req.params(":postID") );
-        int uid = Integer.parseInt( req.queryParams("uid") );
-        String contentQuery = req.queryParams("contents");
         int status = checkUserPostPerms(uid, pid);
         res.status(status);
 
-        if ( res.status() == 200 ) {
+        // Check if the status is not OK
+        if ( res.status() != 200 ) {
 
-            Comment newComment = commentStore.addComment( contentQuery, uid, pid );
-            postCommentStore.addComment( pid, newComment.getID() );
-
-            System.out.println( gson.toJson(newComment) );
-
-        } else {
             System.err.println("Error code: " + res.status());
+            return res.status();
+
+        }
+
+        if ( parent_id == null ) {
+            commentStore.addComment( contentQuery, uid, pid );
+        } else {
+
+            // Check if the desired parent_id exists
+            if ( !commentStore.hasComment(parent_id) ) {
+
+                res.status(404);
+                return res.status();
+
+            }
+
+            // Checks if the desired parent comment does not also have a parent
+            //      to ensure depth 1
+            if ( commentStore.isParent(parent_id) ) {
+                commentStore.addComment( contentQuery, uid, pid, parent_id );
+            } else {
+                System.err.println("Error code: " + res.status());
+            }
+
         }
 
         return res.status();
-    }
-    */
 
+    }
 
     // havent checked permissions for this yet
-
     public List<Comment> getParentComments( Request req, Response res ) {
 
-        int pid = Integer.parseInt( req.params(":postID") );
-        int uid = Integer.parseInt( req.queryParams("uid") );
+        res.type("application/json");
+        Properties data = gson.fromJson(req.body(), Properties.class);
+
+        // Parse the request
+        int pid = Integer.parseInt( data.getProperty("pid") );
+        int uid = Integer.parseInt( data.getProperty("uid") );
         int status = checkUserPostPerms(uid, pid);
-        List<Comment> comments = new ArrayList<>();
         res.status(status);
 
-        if ( res.status() == 200 ) {
-            return commentStore.getParents(pid);
-        } else {
+        if ( res.status() != 200 ) {
+
             System.err.println("Error code: " + res.status());
+            return null;
+
         }
 
-        return comments;
+        return commentStore.getParents(pid);
+
 
     }
 
     public List<Comment> getRepliesComments( Request req, Response res ) {
 
-        int pid = Integer.parseInt( req.params(":postID") );
-        int uid = Integer.parseInt( req.queryParams("uid") );
-        int cid = Integer.parseInt( req.queryParams("cid") );
+        res.type("application/json");
+        Properties data = gson.fromJson(req.body(), Properties.class);
+
+        // Parse the request
+        int pid = Integer.parseInt( data.getProperty("pid") );
+        int uid = Integer.parseInt( data.getProperty("uid") );
+        int cid = Integer.parseInt( data.getProperty("cid") );
         int status = checkUserPostPerms(uid, pid);
-        List<Comment> comments = new ArrayList<>();
         res.status(status);
 
-        if ( res.status() == 200 ) {
-            return commentStore.getReplies(cid);
-        } else {
+        if ( res.status() != 200 ) {
+
             System.err.println("Error code: " + res.status());
+            return null;
+
         }
 
-        return comments;
+        return commentStore.getReplies(cid);
 
     }
 
 //    public ArrayList<Comment> getComments( Request req, Response res ) {
 //
-//        int pid = Integer.parseInt( req.params(":postID") );
+//        int pid = Integer.parseInt( req.params(":pid") );
 //        int uid = Integer.parseInt( req.queryParams("uid") );
 //        int status = checkUserPostPerms(uid, pid);
 //        ArrayList<Comment> comments = new ArrayList<>();

@@ -23,7 +23,7 @@ public class PostStorePostgres implements PostStore {
         User newUser = UserStorePostgres.addUser("Bill");
 
         // Test adding and retrieving a post
-        Post newPost = PostStorePostgres.addPost( "first!", newUser.getID() );
+        Post newPost = PostStorePostgres.addPost( "My first post!", "testing123", newUser.getID() );
         Post postAfterWrite = PostStorePostgres.getPost( newPost.getID() );
         System.out.println( postAfterWrite.getID() + " " + postAfterWrite.getUserID() + " " +
                             postAfterWrite.getImageID() + " " + postAfterWrite.getContents() + " " +
@@ -33,14 +33,15 @@ public class PostStorePostgres implements PostStore {
         PostStorePostgres.deletePost( postAfterWrite.getID() );
 
         // Make some more posts
-        PostStorePostgres.addPost( "lol", newUser.getID() );
-        PostStorePostgres.addPost( "haha very cool!", newUser.getID() );
+        PostStorePostgres.addPost( "Feeling well today", "cuz it's a WELLness day hahahahhah", newUser.getID() );
+        PostStorePostgres.addPost( "You can graduate with a bachelors and masters with 134 credits at other schools",
+                                "haha very cool!", newUser.getID() );
         System.out.println( PostStorePostgres.makeFeed( newUser.getID() ) );
 
         // Test deleting the user
         //      Should delete cascade the posts
         UserStorePostgres.deleteUser( newUser.getID() );
-        System.out.println( PostStorePostgres.makeFeed( newUser.getID() ));
+        System.out.println( PostStorePostgres.makeFeed( newUser.getID() ) );
         System.out.println( PostStorePostgres.getPost() );
 
     }
@@ -81,14 +82,14 @@ public class PostStorePostgres implements PostStore {
     }
 
     @Override
-    public Post addPost( String contents, int uid ) {
-        return addPost( contents, uid, null );
+    public Post addPost( String title, String contents, int uid ) {
+        return addPost( title, contents, uid, null );
     }
 
     @Override
-    public Post addPost( String contents, int uid, Integer iid ) {
+    public Post addPost( String title, String contents, int uid, Integer iid ) {
 
-        int ID = jdbi.withHandle( handle -> handle.attach(PostDao.class).addPost( contents, uid, iid ) );
+        int ID = jdbi.withHandle( handle -> handle.attach(PostDao.class).addPost( title, contents, uid, iid ) );
         return getPost(ID);
 
     }

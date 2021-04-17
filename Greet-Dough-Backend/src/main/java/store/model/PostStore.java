@@ -10,9 +10,9 @@ public interface PostStore {
 
     boolean hasPost( int pid );
 
-    Post addPost( String contents, int uid );
+    Post addPost( String title, String contents, int uid );
 
-    Post addPost( String contents, int uid, Integer iid );
+    Post addPost( String title, String contents, int uid, Integer iid );
 
     void deletePost( int pid );
 

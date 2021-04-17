@@ -60,7 +60,7 @@ public class WalletStorePostgres implements WalletStore {
 
     @Override
     public BigDecimal getBalance( int uid ) {
-        return jdbi.withHandle( handle -> handle.attach(WalletDao.class).getBalance( uid ) );
+        return jdbi.withHandle( handle -> handle.attach(WalletDao.class).getBalance(uid) );
     }
 
     @Override

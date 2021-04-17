@@ -27,8 +27,8 @@ public class LikeStorePostgres implements LikeStore {
         User tempUser = UserStorePostgres.addUser("Jill");
 
         // Make two posts
-        Post newPost = PostStorePostgres.addPost( "first!", newUser.getID() );
-        Post secondPost = PostStorePostgres.addPost( "haha very cool!", newUser.getID() );
+        Post newPost = PostStorePostgres.addPost( "My first post", "first!", newUser.getID() );
+        Post secondPost = PostStorePostgres.addPost( "My second post", "haha very cool!", newUser.getID() );
 
         // Like one post
         LikeStorePostgres.addUserLike( newPost.getID(), newUser.getID() );

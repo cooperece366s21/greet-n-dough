@@ -47,4 +47,8 @@ public class Comment implements Serializable {
         this.contents = contents;
     }
 
+    public boolean hasParent() {
+        return getParentID() != null;
+    }
+
 }

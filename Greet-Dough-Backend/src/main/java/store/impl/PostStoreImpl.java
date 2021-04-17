@@ -28,16 +28,16 @@ public class PostStoreImpl extends StoreWithID<Post> implements PostStore {
     }
 
     @Override
-    public Post addPost( String contents, int uid ) {
-        return this.addPost( contents, uid, null );
+    public Post addPost( String title, String contents, int uid ) {
+        return addPost( title, contents, uid, null );
     }
 
     @Override
-    public Post addPost( String contents, int uid, Integer iid ) {
+    public Post addPost( String title, String contents, int uid, Integer iid ) {
 
         // Create the post
         int pid = super.getFreeID();
-        Post tempPost = new Post( contents, pid, uid, iid );
+        Post tempPost = new Post( title, contents, pid, uid, iid );
 
         // Add the post
         super.add( tempPost.getID(), tempPost );

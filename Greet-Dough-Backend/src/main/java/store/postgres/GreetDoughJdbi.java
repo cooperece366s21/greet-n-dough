@@ -54,10 +54,11 @@ public class GreetDoughJdbi {
             int pid = rs.getInt("post_id");
             int uid = rs.getInt("user_id");
             Integer iid = rs.getObject("image_id", Integer.class);
-            String contents = rs.getString("contents");
+            String title = rs.getString("post_title");
+            String contents = rs.getString("post_contents");
             LocalDateTime timeCreated = rs.getObject("time_created", LocalDateTime.class);
 
-            return new Post( contents, pid, uid, iid, timeCreated );
+            return new Post( title, contents, pid, uid, iid, timeCreated );
 
         }
 

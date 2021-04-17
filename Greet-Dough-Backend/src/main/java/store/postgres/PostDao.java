@@ -18,7 +18,8 @@ public interface PostDao {
             "post_id SERIAL " +         "NOT NULL, " +
             "user_id INT " +            "NOT NULL, " +
             "image_id INT " +           "NULL, " +
-            "contents TEXT " +          "NULL, " +
+            "post_title TEXT " +        "NOT NULL, " +
+            "post_contents TEXT " +     "NULL, " +
             "time_created TIMESTAMP " + "NOT NULL " + "DEFAULT NOW(), " +
             "PRIMARY KEY(post_id), " +
             "CONSTRAINT fk_user " + "FOREIGN KEY(user_id) " +
@@ -28,9 +29,10 @@ public interface PostDao {
             ");")
     void createTable();
 
-    @SqlUpdate("INSERT INTO posts (user_id, image_id, contents) VALUES (:user_id, :image_id, :contents);")
+    @SqlUpdate("INSERT INTO posts (user_id, image_id, post_title, post_contents) VALUES (:user_id, :image_id, :title, :contents);")
     @GetGeneratedKeys("post_id")
-    int addPost(@Bind("contents") String contents,
+    int addPost(@Bind("title") String title,
+                @Bind("contents") String contents,
                 @Bind("user_id") int user_id,
                 @Bind("image_id") Integer image_id);
 

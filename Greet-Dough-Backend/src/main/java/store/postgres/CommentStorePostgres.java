@@ -26,23 +26,22 @@ public class CommentStorePostgres implements CommentStore {
         User dan = UserStorePostgres.addUser("Dan Bim");
 
         // Add a post
-        Post post1 = PostStorePostgres.addPost( "first!", dan.getID() );
+        Post post1 = PostStorePostgres.addPost( "Testing", "first!", dan.getID() );
 
         // Create another post
-        Post post2 = PostStorePostgres.addPost( "lol", dan.getID() );
+        Post post2 = PostStorePostgres.addPost( "I'm new here", "lol", dan.getID() );
 
         // Create a comment (can't delete individually)
-        //System.out.println(CommentStorePostgres.canComment(post1.getID()));
+        System.out.println(PostStorePostgres.hasPost(post1.getID()));
         Comment comment1 = CommentStorePostgres.addComment("haha croissant", dan.getID(), post1.getID() );
         Comment comment2 = CommentStorePostgres.addComment("nawrrr", dan.getID(), post1.getID());
-        //System.out.println(CommentStorePostgres.canComment(post1.getID()));
 
         // Reply to a comment
         int cid = comment2.getID();
         System.out.println(CommentStorePostgres.hasComment(cid));
         Comment parentTemp = CommentStorePostgres.addComment("i love jlab", dan.getID(), post1.getID(), comment2.getID());
 
-        // Reply to a reply, we want to force hasParent to be false
+        // Reply to a reply, we want to force hasComment to be false
         int cidTemp = parentTemp.getID();
         System.out.println(CommentStorePostgres.hasComment(cidTemp));
 
@@ -127,18 +126,13 @@ public class CommentStorePostgres implements CommentStore {
         return addComment( contents, uid, pid, null );
     }
 
-    //@Override
-    //public boolean canComment( int pid ) {
-    //    return jdbi.withHandle( handle -> handle.attach(CommentDao.class).canComment(pid) );
-    //}
-
     @Override
     public boolean hasComment( int cid ) {
-        return jdbi.withHandle( handle -> handle.attach(CommentDao.class).canReply(cid) );
+        return jdbi.withHandle( handle -> handle.attach(CommentDao.class).hasComment(cid) );
     }
 
     @Override
-    public boolean isParent(int cid) {
+    public boolean isParent( int cid ) {
         return jdbi.withHandle( handle -> handle.attach(CommentDao.class).isParent(cid) );
     }
 
