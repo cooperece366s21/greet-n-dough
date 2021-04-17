@@ -9,6 +9,7 @@ import {Center, Text} from "@chakra-ui/react";
 
 type PassdownStates = {
     uid : number,
+    cuid: number | null,
     name : string | null,
     exists : boolean | null,  // Null state for rendering blank when not yet explicitly set to boolean
     hasOwnership : boolean | null,
@@ -17,6 +18,7 @@ type PassdownStates = {
 class UserPageWrapper extends React.Component<any, any> {
 
     state: PassdownStates = {
+        cuid: -1,
         uid: -1,
         name: "",
         exists: null,
@@ -26,6 +28,7 @@ class UserPageWrapper extends React.Component<any, any> {
     constructor(props:any) {
         super(props);
         this.state = {
+            cuid: null,
             uid : props.uid,
             name : null,
             exists: null,
@@ -51,10 +54,9 @@ class UserPageWrapper extends React.Component<any, any> {
         api.getUserID()
             .then( cuid => {
                 ( cuid === parseInt(String(this.state.uid)) ) ?
-                    this.setState({hasOwnership:true}) :
-                    this.setState({hasOwnership:false});
+                    this.setState({hasOwnership:true, cuid:cuid}) :
+                    this.setState({hasOwnership:false, cuid:cuid});
             })
-
     }
 
     renderError() {
@@ -76,7 +78,7 @@ class UserPageWrapper extends React.Component<any, any> {
                     exists={this.state.exists}
                 />
 
-                <UserFeed uid={this.state.uid} />
+                <UserFeed uid={this.state.uid} cuid={this.state.cuid} />
 
             </>
         )
