@@ -378,7 +378,7 @@ public class Handler {
         String imageQuery = data.getProperty("imageQuery");
 
         String contents = data.getProperty("contents");
-        int imageID = (imageQuery != null) ? Integer.parseInt(imageQuery) : -1;
+        Integer iid = (imageQuery != null) ? Integer.parseInt(imageQuery) : null;
 
         if ( !userStore.hasUser(uid) ) {
 
@@ -388,8 +388,7 @@ public class Handler {
 
         }
 
-//        Currently noot accepting image ID's
-        Post tempPost = postStore.addPost( contents, uid );
+        Post tempPost = postStore.addPost( contents, uid, iid );
 
         System.out.println( gson.toJson(tempPost) );
 
@@ -448,7 +447,8 @@ public class Handler {
 
     }
 
-    public HashSet<Integer> getLikes( Request req, Response res ){
+    public HashSet<Integer> getLikes( Request req, Response res ) {
+
         int uid = Integer.parseInt( req.queryParams("uid") );
         int pid = Integer.parseInt( req.params(":postID") );
         int status = checkUserPostPerms(uid, pid);
@@ -460,6 +460,7 @@ public class Handler {
 
         System.err.println("Error code: " + res.status() );
         return null;
+
     }
 
     /*
@@ -481,31 +482,27 @@ public class Handler {
     */
 
     public Integer likePost( Request req, Response res ) {
+
         int pid = Integer.parseInt( req.params(":postID") );
         int uid = Integer.parseInt( req.queryParams("uid") );
         int status =  checkUserPostPerms(uid, pid);
         res.status(status);
 
-        if (res.status() == 200) {
+        if ( res.status() == 200 ) {
 
             if ( !likeStore.hasUserLike(pid, uid) ) {
-
                 likeStore.addUserLike(pid, uid);
-            }
-            else {
-
+            } else {
                 likeStore.deleteUserLike(pid, uid);
-
             }
 
         }
         else {
-
             System.err.println("Error code: " + res.status());
-
         }
 
         return res.status();
+
     }
 
     /*
@@ -554,21 +551,15 @@ public class Handler {
 
             if ( commentStore.canComment(pid) ) {
 
-                if (commentStore.canReply(parent_id)) {
-
+                if ( commentStore.canReply(parent_id) ) {
                     commentStore.addComment( contentQuery, uid, pid );
-
-                }
-                else{
-
+                } else {
                     commentStore.addComment( contentQuery, uid, pid, parent_id );
-
                 }
 
             }
 
-        }
-        else {
+        } else {
             System.err.println("Error code: " + res.status());
         }
 
@@ -610,18 +601,14 @@ public class Handler {
         List<Comment> comments = new ArrayList<>();
         res.status(status);
 
-        if (res.status() == 200) {
-
+        if ( res.status() == 200 ) {
             return commentStore.getParents(pid);
-
-        }
-        else {
-
+        } else {
             System.err.println("Error code: " + res.status());
-
         }
 
         return comments;
+
     }
 
     public List<Comment> getRepliesComments( Request req, Response res ) {
@@ -633,18 +620,14 @@ public class Handler {
         List<Comment> comments = new ArrayList<>();
         res.status(status);
 
-        if (res.status() == 200) {
-
+        if ( res.status() == 200 ) {
             return commentStore.getReplies(cid);
-
-        }
-        else {
-
+        } else {
             System.err.println("Error code: " + res.status());
-
         }
 
         return comments;
+
     }
 
     public ArrayList<Comment> getComments( Request req, Response res ) {
@@ -667,6 +650,7 @@ public class Handler {
         }
 
         return comments;
+        
     }
 
 
