@@ -2,7 +2,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 import model.*;
-import store.postgres.LikeStorePostgres;
 import utility.Pair;
 import store.model.*;
 
@@ -65,17 +64,17 @@ public class Handler {
 
         if ( userStore.getUser(uid) == null ) {
 
-            System.err.println("Current user "+uid+" does not exist");
+            System.err.println("Current user " + uid + " does not exist");
             return null;
 
         }
         if ( userStore.getUser(targetUser) == null ) {
 
-            System.err.println("Target user "+targetUser+" does not exist");
+            System.err.println("Target user " + targetUser + " does not exist");
             return null;
 
         }
-        
+
         return new Pair(uid, targetUser);
 
     }
@@ -166,19 +165,17 @@ public class Handler {
 
         userStore.deleteUser(uid);
 
-        // Check if user was deleted
+        // Checks if user was deleted
         if ( !userStore.hasUser(uid) ) {
 
             System.out.println( gson.toJson(tempUser) );
             res.status(200);
-            return 200;
 
         } else {
-
             res.status(404);
-            return 404;
-
         }
+
+        return res.status();
 
     }
 
@@ -248,7 +245,7 @@ public class Handler {
 //        if ( userPair == null ) {
 //
 //            res.status(404);
-//            return 404;
+//            return res.status();
 //
 //        }
 //
@@ -258,7 +255,7 @@ public class Handler {
 //
 //            System.err.println("Current user already is subscribed");
 //            res.status(404);
-//            return 404;
+//            return res.status();
 //
 //        }
 //
@@ -275,7 +272,7 @@ public class Handler {
 //        if ( userPair == null ) {
 //
 //            res.status(404);
-//            return 404;
+//            return res.status();
 //
 //        }
 //
@@ -285,7 +282,7 @@ public class Handler {
 //
 //            System.err.println("User not subscribed to anyone");
 //            res.status(404);
-//            return 404;
+//            return res.status();
 //
 //        }
 //
@@ -386,7 +383,7 @@ public class Handler {
 
             res.status(404);
             System.err.println("User does not exist");
-            return 404;
+            return res.status();
 
         }
 
@@ -395,7 +392,7 @@ public class Handler {
         System.out.println( gson.toJson(tempPost) );
 
         res.status(200);
-        return 200;
+        return res.status();
 
     }
 
@@ -404,23 +401,22 @@ public class Handler {
         int pid = Integer.parseInt( req.params(":id") );
         Post tempPost = postStore.getPost(pid);
 
+        // Should cascade delete the image, comments, likes, etc.
         postStore.deletePost(pid);
-        if ( postStore.hasPost(pid) ) {
 
-            postCommentStore.deletePost(pid);
-            likeStore.deleteLikes(pid);
+        // Checks if the post was deleted
+        if ( !postStore.hasPost(pid) ) {
 
             System.out.println( gson.toJson(tempPost) );
+            res.status(200);
 
         } else {
-
             res.status(404);
-            return 404;
-
         }
 
-        res.status(200);
-        return 200;
+
+        return res.status();
+
 
     }
 
