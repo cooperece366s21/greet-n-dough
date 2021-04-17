@@ -16,7 +16,7 @@ public interface CommentStore {
 
     Comment addComment( String contents, int uid, int pid );
 
-    boolean canComment( int pid );
+    //boolean canComment( int pid );
 
     boolean hasParent( int cid );
 

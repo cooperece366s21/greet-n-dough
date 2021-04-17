@@ -32,10 +32,10 @@ public class CommentStorePostgres implements CommentStore {
         Post post2 = PostStorePostgres.addPost( "lol", dan.getID() );
 
         // Create a comment (can't delete individually)
-        System.out.println(CommentStorePostgres.canComment(post1.getID()));
+        //System.out.println(CommentStorePostgres.canComment(post1.getID()));
         Comment comment1 = CommentStorePostgres.addComment("haha croissant", dan.getID(), post1.getID() );
         Comment comment2 = CommentStorePostgres.addComment("nawrrr", dan.getID(), post1.getID());
-        System.out.println(CommentStorePostgres.canComment(post1.getID()));
+        //System.out.println(CommentStorePostgres.canComment(post1.getID()));
 
         // Reply to a comment
         int cid = comment2.getID();
@@ -127,10 +127,10 @@ public class CommentStorePostgres implements CommentStore {
         return addComment( contents, uid, pid, null );
     }
 
-    @Override
-    public boolean canComment( int pid ) {
-        return jdbi.withHandle( handle -> handle.attach(CommentDao.class).canComment(pid) );
-    }
+    //@Override
+    //public boolean canComment( int pid ) {
+    //    return jdbi.withHandle( handle -> handle.attach(CommentDao.class).canComment(pid) );
+    //}
 
     @Override
     public boolean hasParent( int cid ) {

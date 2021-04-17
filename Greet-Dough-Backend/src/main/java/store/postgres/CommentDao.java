@@ -72,8 +72,8 @@ public interface CommentDao {
     @SqlQuery("SELECT * FROM comments WHERE comment_id = (:comment_id);")
     Comment getComment(@Bind("comment_id") int comment_id);
 
-    @SqlQuery("SELECT EXISTS (SELECT * FROM comments WHERE post_id = (:post_id));")
-    boolean canComment(@Bind("post_id") int post_id);
+    //@SqlQuery("SELECT EXISTS (SELECT * FROM comments WHERE post_id = (:post_id));")
+    //boolean canComment(@Bind("post_id") int post_id);
 
     @SqlQuery("SELECT EXISTS (SELECT * FROM comments WHERE comment_id = (:comment_id));")
     boolean canReply(@Bind("comment_id") int comment_id);
