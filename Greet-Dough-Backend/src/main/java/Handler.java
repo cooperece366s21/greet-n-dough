@@ -75,6 +75,7 @@ public class Handler {
             return null;
 
         }
+        
         return new Pair(uid, targetUser);
 
     }
@@ -94,7 +95,6 @@ public class Handler {
             return 404;
 
         }
-
 
         ArrayList<Integer> subs = subStore.getSubscriptions(uid);
         int tuid = postStore.getPost(pid).getUserID();
@@ -165,6 +165,8 @@ public class Handler {
         User tempUser = userStore.getUser(uid);
 
         userStore.deleteUser(uid);
+
+        // Check if user was deleted
         if ( !userStore.hasUser(uid) ) {
 
             System.out.println( gson.toJson(tempUser) );
@@ -180,7 +182,7 @@ public class Handler {
 
     }
 
-    public String tokenToId( Request req, Response res ) {
+    public String tokenToID( Request req, Response res ) {
 
         res.type("application/json");
         Properties data = gson.fromJson(req.body(), Properties.class);
@@ -214,8 +216,8 @@ public class Handler {
 
         System.out.println("Logging in: " + email +", "+ password);
 
-        Integer uid = passwordStore.getUserID(email, password); // check logi
-
+        // Check if login was successful
+        Integer uid = passwordStore.getUserID(email, password);
         if ( uid == null ) {
 
             res.status(403);
@@ -224,7 +226,7 @@ public class Handler {
 
         }
 
-        System.out.println(uid+" Logged in!");
+        System.out.println(uid + " Logged in!");
 
         String cookie = loginStore.addSession(uid);
         JsonObject cookieJSON = new JsonObject();
@@ -239,64 +241,64 @@ public class Handler {
 
     // USER RELATION ACTIONS
 
-    public int subscribe( Request req, Response res ) {
+//    public int subscribe( Request req, Response res ) {
+//
+//        Pair userPair = this.grabUserPair(req);
+//
+//        if ( userPair == null ) {
+//
+//            res.status(404);
+//            return 404;
+//
+//        }
+//
+//        List<Integer> curSubs = subStore.getSubscriptions(userPair.getLeft());
+//
+//        if ( curSubs != null && curSubs.contains( userPair.getRight() ) ) {
+//
+//            System.err.println("Current user already is subscribed");
+//            res.status(404);
+//            return 404;
+//
+//        }
+//
+//        subStore.addSubscription( userPair.getLeft(), userPair.getRight() );
+//        System.out.println( "current subs: " + subStore.getSubscriptions(userPair.getLeft()) );
+//
+//        return 0;
+//
+//    }
 
-        Pair userPair = this.grabUserPair(req);
-
-        if ( userPair == null ) {
-
-            res.status(404);
-            return 404;
-
-        }
-
-        List<Integer> curSubs = subStore.getSubscriptions(userPair.getLeft());
-
-        if ( curSubs != null && curSubs.contains( userPair.getRight() ) ) {
-
-            System.err.println("Current user already is subscribed");
-            res.status(404);
-            return 404;
-
-        }
-
-        subStore.addSubscription( userPair.getLeft(), userPair.getRight() );
-        System.out.println( "current subs: " + subStore.getSubscriptions(userPair.getLeft()) );
-
-        return 0;
-
-    }
-
-    public int unsubscribe( Request req, Response res ) {
-
-        Pair userPair = this.grabUserPair(req);
-        if ( userPair == null ) {
-
-            res.status(404);
-            return 404;
-
-        }
-
-        List<Integer> curSubs = subStore.getSubscriptions( userPair.getLeft() );
-
-        if ( curSubs == null ) {
-
-            System.err.println("User not subscribed to anyone");
-            res.status(404);
-            return 404;
-
-        }
-
-        if ( !curSubs.contains(userPair.getRight()) ) {
-            System.err.println("Current user not subscribed to target user");
-        }
-
-        subStore.removeSubscription( userPair.getLeft(), userPair.getRight() );
-        System.out.println( subStore.getSubscriptions(userPair.getRight()) );
-        res.status(200);
-        return 0;
-
-    }
+//    public int unsubscribe( Request req, Response res ) {
+//
+//        Pair userPair = this.grabUserPair(req);
+//        if ( userPair == null ) {
+//
+//            res.status(404);
+//            return 404;
+//
+//        }
+//
+//        List<Integer> curSubs = subStore.getSubscriptions( userPair.getLeft() );
+//
+//        if ( curSubs == null ) {
+//
+//            System.err.println("User not subscribed to anyone");
+//            res.status(404);
+//            return 404;
+//
+//        }
+//
+//        if ( !curSubs.contains(userPair.getRight()) ) {
+//            System.err.println("Current user not subscribed to target user");
+//        }
+//
+//        subStore.removeSubscription( userPair.getLeft(), userPair.getRight() );
+//        System.out.println( subStore.getSubscriptions(userPair.getRight()) );
+//        res.status(200);
+//        return 0;
+//
+//    }
 
 /*
     public Integer follow( Request req ) {
@@ -422,30 +424,30 @@ public class Handler {
 
     }
 
-    public List<Post> getFeed( Request req, Response res ) {
-
-        int uid = Integer.parseInt( req.queryParams("uid") );
-        int tuid = Integer.parseInt( req.params(":id") );
-        List<Integer> curSubs = subStore.getSubscriptions(uid);
-
-        if ( !userStore.hasUser(uid) || !userStore.hasUser(tuid) ) {
-
-            res.status(404);
-            return null;
-
-        }
-
-        if ( (curSubs == null) || (!curSubs.contains(tuid)) ) {
-
-            System.out.println("Current user does not have permission to this feed");
-            res.status(403);
-            return null;
-
-        }
-
-        return postStore.makeFeed(tuid);
-
-    }
+//    public List<Post> getFeed( Request req, Response res ) {
+//
+//        int uid = Integer.parseInt( req.queryParams("uid") );
+//        int tuid = Integer.parseInt( req.params(":id") );
+//        List<Integer> curSubs = subStore.getSubscriptions(uid);
+//
+//        if ( !userStore.hasUser(uid) || !userStore.hasUser(tuid) ) {
+//
+//            res.status(404);
+//            return null;
+//
+//        }
+//
+//        if ( (curSubs == null) || (!curSubs.contains(tuid)) ) {
+//
+//            System.out.println("Current user does not have permission to this feed");
+//            res.status(403);
+//            return null;
+//
+//        }
+//
+//        return postStore.makeFeed(tuid);
+//
+//    }
 
     public HashSet<Integer> getLikes( Request req, Response res ) {
 
@@ -496,8 +498,7 @@ public class Handler {
                 likeStore.deleteUserLike(pid, uid);
             }
 
-        }
-        else {
+        } else {
             System.err.println("Error code: " + res.status());
         }
 
@@ -630,28 +631,28 @@ public class Handler {
 
     }
 
-    public ArrayList<Comment> getComments( Request req, Response res ) {
-
-        int pid = Integer.parseInt( req.params(":postID") );
-        int uid = Integer.parseInt( req.queryParams("uid") );
-        int status = checkUserPostPerms(uid, pid);
-        ArrayList<Comment> comments = new ArrayList<>();
-        res.status(status);
-
-        if ( res.status() == 200 ) {
-
-            ArrayList<Integer> commentIDs = postCommentStore.getComments(pid);
-            for ( Integer ID : commentIDs ) {
-                comments.add( commentStore.getComment(ID) );
-            }
-
-        } else {
-            System.err.println("Error code: " + res.status());
-        }
-
-        return comments;
-        
-    }
+//    public ArrayList<Comment> getComments( Request req, Response res ) {
+//
+//        int pid = Integer.parseInt( req.params(":postID") );
+//        int uid = Integer.parseInt( req.queryParams("uid") );
+//        int status = checkUserPostPerms(uid, pid);
+//        ArrayList<Comment> comments = new ArrayList<>();
+//        res.status(status);
+//
+//        if ( res.status() == 200 ) {
+//
+//            ArrayList<Integer> cidList = postCommentStore.getComments(pid);
+//            for ( Integer ID : cidList ) {
+//                comments.add( commentStore.getComment(ID) );
+//            }
+//
+//        } else {
+//            System.err.println("Error code: " + res.status());
+//        }
+//
+//        return comments;
+//
+//    }
 
 
 }

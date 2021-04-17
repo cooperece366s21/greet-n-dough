@@ -110,16 +110,16 @@ public class Server {
         // curl -X delete localhost:5432/users/1/
         delete("/users/:id/", handler::deleteUser, gson::toJson);
 
-        post("/auth/", handler::tokenToId, gson::toJson);
+        post("/auth/", handler::tokenToID, gson::toJson);
         
         // USER RELATION ROUTES
         ///////////////////////
 
         // curl -d "uid=2" -X post localhost:5432/users/0/subscribe/
-        post( "/users/:id/subscribe/", handler::subscribe, gson::toJson );
+//        post( "/users/:id/subscribe/", handler::subscribe, gson::toJson );
 
         // curl -d "uid=2" -X post localhost:5432/users/0/unsubscribe/
-        post( "/users/:id/unsubscribe/", handler::unsubscribe, gson::toJson );
+//        post( "/users/:id/unsubscribe/", handler::unsubscribe, gson::toJson );
 
 //        // curl -d "uid=2" -X post localhost:5432/users/0/follow/
 //        post( "/users/:id/follow/", (req,res) -> handler.follow(req), gson::toJson );
@@ -144,7 +144,7 @@ public class Server {
 
         // returns feed if user is subscribed.
         // curl -G -d "uid=1" -X post localhost:5432/users/0/feed/
-        get("/users/:id/feed/", handler::getFeed, gson::toJson );
+//        get("/users/:id/feed/", handler::getFeed, gson::toJson );
 
         // LIKES ROUTES
         ////////////////////
@@ -160,7 +160,7 @@ public class Server {
         /////////////////////
 
         // curl -G -d "uid=1" localhost:5432/posts/0/comments/
-        get("/posts/:postID/comments/", handler::getComments, gson::toJson);
+//        get("/posts/:postID/comments/", handler::getComments, gson::toJson);
 
         // Comment, post for now, put request since we are updating something about the post??
         // curl -d "uid=1&contents=ok post!" -X post localhost:5432/posts/0/comments/
