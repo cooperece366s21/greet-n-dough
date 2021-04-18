@@ -11,7 +11,7 @@ public interface WalletDao {
     @SqlUpdate("DROP TABLE IF EXISTS wallet;")
     void deleteTable();
 
-    // Can store 100 digits on both sides of decimal
+    // user_balance can store up to 1000 digits in total
     //      Limited to 2 digits on the right side of the decimal (cents)
     @SqlUpdate("CREATE TABLE IF NOT EXISTS wallet( " +
             "user_id INT " +                    "NOT NULL, " +
