@@ -77,7 +77,9 @@ public class PasswordStorePostgres implements PasswordStore {
         return jdbi.withHandle( handle -> handle.attach(PasswordDao.class).addPassword(email, uid, password) );
     }
 
-    // Checks if the email + password match an entry in the DB
+    /**
+     * Checks if the email + password match an entry in the DB.
+      */
     @Override
     public Integer getUserID( String email, String password ) {
         return jdbi.withHandle( handle -> handle.attach(PasswordDao.class).isCorrectPassword(email, password) ).orElse(null);

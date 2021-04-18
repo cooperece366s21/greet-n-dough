@@ -62,8 +62,11 @@ public class UserStorePostgres implements UserStore {
         return jdbi.withHandle( handle -> handle.attach(UserDao.class).getUser(uid) ).orElse(null);
     }
 
-    // Returns all users in the database
-    //      Currently only used for testing
+    /**
+     * Currently only used for testing.
+     *
+     * @return all users in the database
+     */
     public List<User> getUser() {
         return jdbi.withHandle( handle -> handle.attach(UserDao.class).listUsers() );
     }

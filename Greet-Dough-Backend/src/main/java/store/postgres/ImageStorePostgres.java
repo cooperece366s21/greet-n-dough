@@ -79,8 +79,11 @@ public class ImageStorePostgres implements ImageStore {
         return jdbi.withHandle( handle -> handle.attach(ImageDao.class).getImage(iid) ).orElse(null);
     }
 
-    // Returns all users in the database
-    //      Currently only used for testing
+    /**
+     * Currently only used for testing.
+     *
+     * @return all images in the database
+     */
     public List<Image> getImage() {
         return jdbi.withHandle( handle -> handle.attach(ImageDao.class).listImages() );
     }

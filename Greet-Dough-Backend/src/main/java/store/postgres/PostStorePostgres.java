@@ -65,8 +65,11 @@ public class PostStorePostgres implements PostStore {
         return jdbi.withHandle( handle -> handle.attach(PostDao.class).getPost(pid) ).orElse(null);
     }
 
-    // Returns all posts in the database
-    //      Currently only used for testing
+    /**
+     * Currently only used for testing.
+     *
+     * @return all posts in the database
+     */
     public List<Post> getPost() {
         return jdbi.withHandle( handle -> handle.attach(PostDao.class).listPosts() );
     }

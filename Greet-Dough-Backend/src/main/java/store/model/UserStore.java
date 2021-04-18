@@ -14,7 +14,12 @@ public interface UserStore {
 
     void deleteUser( int uid );
 
-    // Returns a list of users given the first portion of their name
+    /**
+     * Matches user's names based on the regex expression |name*|, where name is the provided argument.
+     *
+     * @param   name    a string representing the first portion of a user's name
+     * @return          a list of users, where each user's name matches the regex expression
+     */
     List<User> searchUsers( String name );
 
     void changeName( int uid, String name );

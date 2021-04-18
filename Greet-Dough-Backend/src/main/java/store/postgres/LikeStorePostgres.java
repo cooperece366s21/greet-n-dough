@@ -89,11 +89,6 @@ public class LikeStorePostgres implements LikeStore {
     }
 
     @Override
-    public void deleteLikes( int pid ) {
-//        jdbi.useHandle( handle -> handle.attach(LikeDao.class).deleteLikes(pid));
-    }
-
-    @Override
     public boolean hasUserLike( int pid, int uid ){
         return jdbi.withHandle( handle -> handle.attach(LikeDao.class).hasUserLike(pid, uid) );
     }

@@ -16,11 +16,6 @@ public class LikeStoreImpl extends StorageRetrieval<Likes> implements LikeStore 
     }
 
     @Override
-    public void deleteLikes( int pid ) {
-        super.delete(pid);
-    }
-
-    @Override
     public void addUserLike( int pid, int uid ) {
 
         // Attempts to get the Likes object

@@ -2,17 +2,27 @@ package store.model;
 
 public interface LoginStore {
 
-    // Returns a token for the user
+    /**
+     * @return a token for the specified uid
+      */
     String addSession( int uid );
 
-    // Checks if a token is valid
+    /**
+     * Checks if the specified token is valid.
+     */
     boolean hasSession( String token );
 
-    // Invalidates a token
+    /**
+     * Invalidates the specified token.
+      */
     void deleteSession( String token );
 
-    // Returns the uid associated with a token
-    // If the token is invalid, returns null
+    /**
+     * The method returns the associated uid if the token is valid.
+     * The method returns null if the token is invalid.
+     *
+     * @return the uid associated with a token
+      */
     Integer getUserID( String token );
 
 }

@@ -8,7 +8,9 @@ public interface ImageStore {
 
     Image getImage( int iid );
 
-    // Returns a list of images owned by a user
+    /**
+     * @return a list of images owned by a user
+      */
     List<Image> makeGallery( int uid );
 
     boolean hasImage( int iid );

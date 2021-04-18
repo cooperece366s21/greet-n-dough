@@ -104,6 +104,27 @@ public class Handler {
 
     }
 
+    /**
+     * Checks if the token is valid.
+     * Sets res.status().
+     *
+     * @return   The uid associated with the token, or null if token is invalid
+     */
+    private Integer validateToken( Request req, Response res ) {
+
+        String token = req.params("token");
+        Integer uid = loginStore.getUserID(token);
+
+        if ( uid == null ) {
+            res.status(401);
+        } else {
+            res.status(200);
+        }
+
+        return uid;
+
+    }
+
     /////////////// USER ACTIONS ///////////////
     public String getUser( Request req, Response res ) throws JsonProcessingException {
 
@@ -289,26 +310,34 @@ public class Handler {
 
     }
 
-    // Returns balance or null
-    // Can return null if:
-    //      User doesn't have a balance
-    //      verifyPurchase() failed (should never happen for this project)
-    public int addToBalance( Request req, Response res ) {
+    private int modifyBalance( Request req, Response res, boolean isAdd ) {
 
         res.type("application/json");
 
         // Parse the request
         Properties data = gson.fromJson(req.body(), Properties.class);
 
-        String token = req.params("token");
-        Integer uid =  loginStore.getUserID(token);
+        Integer uid = validateToken( req, res );
 
         String amountQuery = data.getProperty("amount");
         BigDecimal amount = new BigDecimal(amountQuery);
 
+        // Check if the amount is not positive
+        if ( amount.compareTo(BigDecimal.ZERO) != 1 ) {
+
+            res.status(401);
+            return res.status();
+
+        }
+
         if ( WalletStore.verifyPurchase() ) {
 
-            walletStore.addToBalance( uid, amount );
+            if ( isAdd ) {
+                walletStore.addToBalance( uid, amount );
+            } else {
+                walletStore.subtractFromBalance( uid, amount );
+            }
+
             res.status(200);
 
         } else {
@@ -317,6 +346,30 @@ public class Handler {
 
         return res.status();
 
+    }
+
+    /**
+     * Adds the amount specified to the user's balance.
+     * Operation can fail if user doesn't have a balance or if verifyPurchase() failed.
+     *
+     * @param req   contains the amount to be added
+     * @return      the HTTP status code
+     * @see WalletStore#verifyPurchase()
+      */
+    public int addToBalance( Request req, Response res ) {
+        return modifyBalance( req, res, true );
+    }
+
+    /**
+     * Subtracts the amount specified from the user's balance.
+     * Operation can fail if user doesn't have a balance or if verifyPurchase() failed.
+     *
+     * @param req   contains the amount to be subtracted
+     * @return      the HTTP status code
+     * @see WalletStore#verifyPurchase()
+     */
+    public int subtractFromBalance( Request req, Response res ) {
+        return modifyBalance( req, res, false );
     }
 
     /////////////// USER RELATION ACTIONS ///////////////
