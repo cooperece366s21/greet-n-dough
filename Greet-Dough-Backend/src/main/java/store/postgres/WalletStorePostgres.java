@@ -33,6 +33,7 @@ public class WalletStorePostgres implements WalletStore {
         // Check balances
         System.out.println( WalletStorePostgres.getBalance( steve.getID() ) );
         System.out.println( WalletStorePostgres.getBalance( juan.getID() ) );
+        System.out.println( WalletStorePostgres.getBalance(-1) );
 
         // Test changing balances
         WalletStorePostgres.addToBalance( steve.getID(), new BigDecimal("1.005") ); // Rounds to 1.01

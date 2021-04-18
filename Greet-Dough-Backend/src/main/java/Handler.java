@@ -293,19 +293,28 @@ public class Handler {
     }
 
     /////////////// WALLET ACTIONS ///////////////
+    /**
+     * The method returns the user's balance if the user is in the database.
+     * The method returns an empty string otherwise.
+     *
+     * @return the user's balance
+     */
     public String getBalance( Request req, Response res ) {
 
         res.type("application/json");
 
-        // Parse URL token parameter
-        String token = req.params("token");
+        // Check the token
+        Integer uid = validateToken( req, res );
+        if ( res.status() != 200 ) {
 
-        // Trade token for a UID in backend
-        Integer uid =  loginStore.getUserID(token);
+            System.err.println("Error code: " + res.status());
+            return "";
 
-        // Returns balance or null
-        res.status(200);
-        return walletStore.getBalance(uid).toString();
+        }
+
+        BigDecimal bal = walletStore.getBalance(uid);
+
+        return bal != null ? bal.toString() : "";
 
     }
 
