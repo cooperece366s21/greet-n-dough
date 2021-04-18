@@ -336,8 +336,8 @@ public class Handler {
         String amountQuery = data.getProperty("amount");
         BigDecimal amount = new BigDecimal(amountQuery);
 
-        // Check if the amount is not positive
-        if ( amount.compareTo(BigDecimal.ZERO) != 1 ) {
+        // Check if the amount is not positive or the decimal precision is greater than 2
+        if ( amount.compareTo(BigDecimal.ZERO) != 1 || amount.scale() > 2 ) {
 
             res.status(401);
             return res.status();
@@ -366,7 +366,8 @@ public class Handler {
      * Adds the amount specified to the user's balance.
      * Operation can fail if user doesn't have a balance or if verifyPurchase() failed.
      *
-     * @param req   contains the amount to be added
+     * @param req   contains the amount to be added;
+     *              amount must be positive (greater than 0) and have at most 2 decimal places
      * @return      the HTTP status code
      * @see WalletStore#verifyPurchase()
       */
@@ -378,7 +379,8 @@ public class Handler {
      * Subtracts the amount specified from the user's balance.
      * Operation can fail if user doesn't have a balance or if verifyPurchase() failed.
      *
-     * @param req   contains the amount to be subtracted
+     * @param req   contains the amount to be subtracted;
+     *              amount must be positive (greater than 0) and have at most 2 decimal places
      * @return      the HTTP status code
      * @see WalletStore#verifyPurchase()
      */
@@ -545,7 +547,7 @@ public class Handler {
 
     }
 
-    public Integer deletePost( Request req, Response res ) {
+    public int deletePost( Request req, Response res ) {
 
         int pid = Integer.parseInt( req.params(":id") );
         Post tempPost = postStore.getPost(pid);
@@ -634,7 +636,7 @@ public class Handler {
     }
     */
 
-    public Integer likePost( Request req, Response res ) {
+    public int likePost( Request req, Response res ) {
 
         res.type("application/json");
         Properties data = gson.fromJson(req.body(), Properties.class);
@@ -661,7 +663,7 @@ public class Handler {
 
     }
 
-    public Integer createComment( Request req, Response res ) {
+    public int createComment( Request req, Response res ) {
 
         res.type("application/json");
         Properties data = gson.fromJson(req.body(), Properties.class);

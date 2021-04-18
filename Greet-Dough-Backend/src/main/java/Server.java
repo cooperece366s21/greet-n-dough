@@ -174,6 +174,7 @@ public class Server {
         // uploadImage() will prompt user for a path
 
         post( "/wallet/add/:token/", handler::addToBalance, gson::toJson);
+        post( "/wallet/subtract/:token/", handler::subtractFromBalance, gson::toJson);
 
     }
 }
