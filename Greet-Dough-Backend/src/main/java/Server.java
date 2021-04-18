@@ -132,19 +132,19 @@ public class Server {
         // POST ROUTES
         ////////////////////
 
-        //  Returns post object
+        // Returns post object
         // curl localhost:5432/posts/0/
         get("/posts/:id/", handler::getPost, gson::toJson);
 
-        //  Creates a new post
+        // Creates a new post
         // curl -d "uid=0&contents=hello world" -X post localhost:5432/posts/
         post("/posts/", handler::createPost, gson::toJson);
 
-        //  Deletes post given postID
+        // Deletes post given postID
         // curl -X delete localhost:5432/posts/0
         delete("/posts/:id/", handler::deletePost, gson::toJson);
 
-        // returns feed if user is subscribed.
+        // Returns feed if user is subscribed.
         // curl -G -d "uid=1" -X post localhost:5432/users/0/feed/
 //        get("/users/:id/feed/", handler::getFeed, gson::toJson );
 

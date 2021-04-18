@@ -2,7 +2,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 import model.*;
-import org.eclipse.jetty.client.api.AuthenticationStore;
 import utility.Pair;
 import store.model.*;
 
@@ -317,7 +316,14 @@ public class Handler {
         // Parse the request
         Properties data = gson.fromJson(req.body(), Properties.class);
 
+        // Check the token
         Integer uid = validateToken( req, res );
+        if ( res.status() != 200 ) {
+
+            System.err.println("Error code: " + res.status());
+            return res.status();
+
+        }
 
         String amountQuery = data.getProperty("amount");
         BigDecimal amount = new BigDecimal(amountQuery);

@@ -5,7 +5,11 @@ import store.postgres.*;
 
 public class ResetDao {
 
-    public static void reset(Jdbi jdbi) {
+    /**
+     * Resets the databases associated with this project.
+     * DROP's and CREATE's all the tables.
+     */
+    public static void reset( Jdbi jdbi ) {
 
         UserStorePostgres UserStorePostgres = new UserStorePostgres(jdbi);
         WalletStorePostgres WalletStorePostgres = new WalletStorePostgres(jdbi);
