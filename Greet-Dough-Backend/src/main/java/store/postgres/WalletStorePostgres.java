@@ -7,8 +7,6 @@ import utility.ResetDao;
 import org.jdbi.v3.core.Jdbi;
 import java.math.BigDecimal;
 
-// Method to add directly to DB?
-// Need to have has()?
 public class WalletStorePostgres implements WalletStore {
 
     public static void main( String[] args ) {

@@ -44,9 +44,9 @@ public interface UserDao {
     List<User> searchUsers(@Bind("name") String name);
 
     @SqlUpdate("UPDATE users " +
-            "SET user_name = (:name) " +
+            "SET user_name = (:new_name) " +
             "WHERE user_id = (:user_id)")
     void changeName(@Bind("user_id") int user_id,
-                    @Bind("name") String name);
+                    @Bind("new_name") String new_name);
 
 }

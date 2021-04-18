@@ -50,11 +50,11 @@ public class UserStoreImpl extends StoreWithID<User> implements UserStore {
     }
 
     @Override
-    public void changeName( int uid, String name ) {
+    public void changeName( int uid, String newName ) {
 
         // Change the name
         User tempUser = getUser(uid);
-        tempUser.setName(name);
+        tempUser.setName(newName);
 
         super.add( tempUser.getID(), tempUser );
 

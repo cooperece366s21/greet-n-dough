@@ -23,6 +23,6 @@ public interface UserStore {
      */
     List<User> searchUsers( String name );
 
-    void changeName( int uid, String name );
+    void changeName( int uid, String newName );
 
 }

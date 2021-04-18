@@ -96,8 +96,8 @@ public class UserStorePostgres implements UserStore {
     }
 
     @Override
-    public void changeName( int uid, String name ) {
-        jdbi.useHandle( handle -> handle.attach(UserDao.class).changeName(uid, name) );
+    public void changeName( int uid, String newName ) {
+        jdbi.useHandle( handle -> handle.attach(UserDao.class).changeName(uid, newName) );
     }
 
 }

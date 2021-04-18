@@ -58,4 +58,14 @@ public interface PostDao {
             "WHERE user_id = (:user_id)")
     List<Post> getFeed(@Bind("user_id") int user_id);
 
+    @SqlUpdate("UPDATE posts " +
+            "SET post_title = (:new_title) " +
+            "WHERE post_id = (:post_id)")
+    void changeTitle(@Bind("post_id") int post_id, @Bind("new_title") String new_title );
+
+    @SqlUpdate("UPDATE posts " +
+            "SET post_contents = (:new_contents) " +
+            "WHERE post_id = (:post_id)")
+    void changeContents(@Bind("post_id") int post_id, @Bind("new_contents") String new_contents );
+
 }

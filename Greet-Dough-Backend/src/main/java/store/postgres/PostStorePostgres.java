@@ -33,10 +33,16 @@ public class PostStorePostgres implements PostStore {
         PostStorePostgres.deletePost( postAfterWrite.getID() );
 
         // Make some more posts
-        PostStorePostgres.addPost( "Feeling well today", "cuz it's a WELLness day hahahahhah", newUser.getID() );
+        Post poopPost = PostStorePostgres.addPost( "Feeling well today", "cuz it's a WELLness day hahahahhah", newUser.getID() );
         PostStorePostgres.addPost( "You can graduate with a bachelors and masters with 134 credits at other schools",
                                 "haha very cool!", newUser.getID() );
         System.out.println( PostStorePostgres.makeFeed( newUser.getID() ) );
+
+        // Test changing a post
+        PostStorePostgres.changeTitle( poopPost.getID(), "Not feeling well today" );
+        PostStorePostgres.changeContents( poopPost.getID(), "cuz it's still a wellness day" );
+        System.out.println( PostStorePostgres.getPost( poopPost.getID() ).getTitle() );
+        System.out.println( PostStorePostgres.getPost( poopPost.getID() ).getContents() );
 
         // Test deleting the user
         //      Should delete cascade the posts
@@ -98,8 +104,18 @@ public class PostStorePostgres implements PostStore {
     }
 
     @Override
-    public void deletePost( int ID ) {
-        jdbi.useHandle( handle -> handle.attach(PostDao.class).deletePost(ID) );
+    public void deletePost( int pid ) {
+        jdbi.useHandle( handle -> handle.attach(PostDao.class).deletePost(pid) );
+    }
+
+    @Override
+    public void changeTitle( int pid, String newTitle ) {
+        jdbi.useHandle( handle -> handle.attach(PostDao.class).changeTitle(pid, newTitle) );
+    }
+
+    @Override
+    public void changeContents( int pid, String newContents ) {
+        jdbi.useHandle( handle -> handle.attach(PostDao.class).changeContents(pid, newContents) );
     }
 
 }

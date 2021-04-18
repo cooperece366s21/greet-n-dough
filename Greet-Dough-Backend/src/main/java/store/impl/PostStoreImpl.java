@@ -22,6 +22,24 @@ public class PostStoreImpl extends StoreWithID<Post> implements PostStore {
         return super.get(pid);
     }
 
+    // Functions unique to PostStore
+    // I'm not sure how to grab the list of items, since the implementation doesnt have access
+    // I guess when we use database we wont have this issue of permissions.
+    @Override
+    public List<Post> makeFeed( int uid ) {
+
+        List<Post> usersPosts = new ArrayList<Post>();
+
+        for( Post post : this.getItems().values() ) {
+            if ( post.getUserID() == uid ) {
+                usersPosts.add(post);
+            }
+        }
+
+        return usersPosts;
+
+    }
+
     @Override
     public boolean hasPost( int pid ) {
         return super.has(pid);
@@ -50,21 +68,13 @@ public class PostStoreImpl extends StoreWithID<Post> implements PostStore {
         super.delete(pid);
     }
 
-    // Functions unique to PostStore
-    // I'm not sure how to grab the list of items, since the implementation doesnt have access
-    // I guess when we use database we wont have this issue of permissions.
     @Override
-    public List<Post> makeFeed( int uid ) {
+    public void changeTitle( int pid, String newTitle ) {
 
-        List<Post> usersPosts = new ArrayList<Post>();
+    }
 
-        for( Post post : this.getItems().values() ) {
-            if ( post.getUserID() == uid ) {
-                usersPosts.add(post);
-            }
-        }
-
-        return usersPosts;
+    @Override
+    public void changeContents( int pid, String newContents ) {
 
     }
 

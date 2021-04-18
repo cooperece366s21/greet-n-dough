@@ -8,6 +8,11 @@ public interface PostStore {
 
     Post getPost( int pid );
 
+    /**
+     * @return a list composed of every post made by a user
+     */
+    List<Post> makeFeed( int uid );
+
     boolean hasPost( int pid );
 
     Post addPost( String title, String contents, int uid );
@@ -16,9 +21,8 @@ public interface PostStore {
 
     void deletePost( int pid );
 
-    /**
-     * @return a list composed of every post made by a user
-      */
-    List<Post> makeFeed( int uid );
+    void changeTitle( int pid, String newTitle );
+
+    void changeContents( int pid, String newContents );
 
 }
