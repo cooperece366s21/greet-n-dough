@@ -32,6 +32,7 @@ public class UserStorePostgres implements UserStore {
         // Prints the names of the users given a list of users
         //      Playing around with mapping a list
         System.out.println( UserStorePostgres.searchUsers("Jo").stream().map(User::getName).collect(Collectors.toList()) );
+        System.out.println( UserStorePostgres.searchUsers("jo").stream().map(User::getName).collect(Collectors.toList()) );
 
         // Test changing the user's name
         UserStorePostgres.changeName( jon.getID(), "John" );

@@ -12,7 +12,7 @@ public interface WalletDao {
     void deleteTable();
 
     // user_balance can store up to 1000 digits in total
-    //      Limited to 2 digits on the right side of the decimal (cents)
+    //      Limited to 2 digits after the decimal (cents)
     @SqlUpdate("CREATE TABLE IF NOT EXISTS wallet( " +
             "user_id INT " +                    "NOT NULL, " +
             "user_balance NUMERIC(1000,2) " +   "NOT NULL " + "DEFAULT 0, " +

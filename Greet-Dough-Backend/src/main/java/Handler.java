@@ -336,7 +336,8 @@ public class Handler {
         String amountQuery = data.getProperty("amount");
         BigDecimal amount = new BigDecimal(amountQuery);
 
-        // Check if the amount is not positive or the decimal precision is greater than 2
+        // Check if the amount is not positive or the number of digits after the decimal is greater than 2
+        //      E.g. 0 or -1 or 1.005
         if ( amount.compareTo(BigDecimal.ZERO) != 1 || amount.scale() > 2 ) {
 
             res.status(401);
@@ -367,7 +368,7 @@ public class Handler {
      * Operation can fail if user doesn't have a balance or if verifyPurchase() failed.
      *
      * @param req   contains the amount to be added;
-     *              amount must be positive (greater than 0) and have at most 2 decimal places
+     *              amount must be positive (greater than 0) and have at most 2 digits after the decimal
      * @return      the HTTP status code
      * @see WalletStore#verifyPurchase()
       */

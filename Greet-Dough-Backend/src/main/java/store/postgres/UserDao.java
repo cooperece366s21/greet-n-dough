@@ -37,10 +37,10 @@ public interface UserDao {
             "WHERE user_id = (:user_id)")
     Optional<User> getUser(@Bind("user_id") int user_id);
 
-    // Returns all users whose names match the pattern "name*"
+    // Returns all users whose names match the pattern "name*" (case insensitive)
     @SqlQuery("SELECT * FROM users " +
-            "WHERE user_name " +
-            "SIMILAR TO :name || '%';" )
+            "WHERE LOWER(user_name) " +
+            "SIMILAR TO LOWER(:name) || '%';" )
     List<User> searchUsers(@Bind("name") String name);
 
     @SqlUpdate("UPDATE users " +
