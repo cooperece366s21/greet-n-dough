@@ -13,6 +13,7 @@ import api from "../../services/api";
 import {type} from "os";
 
 
+
 type Feed = {
     posts: post[]
 }

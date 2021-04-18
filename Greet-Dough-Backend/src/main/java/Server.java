@@ -168,10 +168,12 @@ public class Server {
         // curl -d "uid=1&contents=ok post!" -X post localhost:5432/posts/0/comments/
         post("/posts/:postID/comments/", handler::createComment, gson::toJson);
 
-
+        get("/wallet/get/:token/", handler::getBalance, gson::toJson);
         // Upload Image, which is createPost but imageID exists
         // curl -d "userID=0&contents=hello world&imageID=0" -X post localhost:5432/posts/
         // uploadImage() will prompt user for a path
+
+        post( "/wallet/add/:token/", handler::addToBalance, gson::toJson);
 
     }
 }

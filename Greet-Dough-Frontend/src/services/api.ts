@@ -138,6 +138,52 @@ export async function getUserFeed( cuid:number, uid:number ) {
 
 }
 
+export async function getWallet( authToken:string|null ) {
+
+    const res = await fetch(`${BACKEND_URL}/wallet/get/${authToken}/`, {
+        method: "get",
+        mode: "cors",
+        headers: {
+            "Content-Type": "application/json"
+        },
+    });
+
+    if ( res.ok ) {
+
+        return await res.json()
+            .then( body => {
+                return JSON.parse(body);
+            })
+
+    } else{
+        alert("ERROR: " + res.status );
+    }
+
+}
+
+export async function addToWallet( authToken:string|null, amount:string|null ) {
+    if (amount === ""){
+        alert("No value inserted!");
+        return;
+    }
+
+    const res = await fetch(`${BACKEND_URL}/wallet/add/${authToken}/`, {
+        method: "post",
+        mode: "cors",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ amount } )
+    });
+
+    if ( res.ok ) {
+        return 200;
+    } else {
+        alert(" Error adding money to wallet ");
+        return res.status;
+    }
+}
+
 export async function createPost( uid:number, contents:string ) {
 
     // alert( JSON.stringify({ uid, contents } ) )
@@ -168,6 +214,8 @@ let exports = {
     getUser,
     createPost,
     getUserFeed,
+    getWallet,
+    addToWallet,
 }
 
 export default exports

@@ -2,6 +2,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 import model.*;
+import org.eclipse.jetty.client.api.AuthenticationStore;
 import utility.Pair;
 import store.model.*;
 
@@ -271,17 +272,19 @@ public class Handler {
         }
     }
 
-
     /////////////// WALLET ACTIONS ///////////////
     public String getBalance( Request req, Response res ) {
 
         res.type("application/json");
-        Properties data = gson.fromJson(req.body(), Properties.class);
 
-        // Parse the request
-        int uid = Integer.parseInt( data.getProperty("uid") );
+        // Parse URL token parameter
+        String token = req.params("token");
+
+        // Trade token for a UID in backend
+        Integer uid =  loginStore.getUserID(token);
 
         // Returns balance or null
+        res.status(200);
         return walletStore.getBalance(uid).toString();
 
     }
@@ -293,10 +296,13 @@ public class Handler {
     public int addToBalance( Request req, Response res ) {
 
         res.type("application/json");
-        Properties data = gson.fromJson(req.body(), Properties.class);
 
         // Parse the request
-        int uid = Integer.parseInt( data.getProperty("uid") );
+        Properties data = gson.fromJson(req.body(), Properties.class);
+
+        String token = req.params("token");
+        Integer uid =  loginStore.getUserID(token);
+
         String amountQuery = data.getProperty("amount");
         BigDecimal amount = new BigDecimal(amountQuery);
 
@@ -707,8 +713,4 @@ public class Handler {
 //
 //    }
 
-
 }
-
-
-
