@@ -1,10 +1,11 @@
 package store.postgres;
 
+import model.Likes;
+
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
-
-import java.util.HashSet;
+import java.util.Optional;
 
 public interface LikeDao {
 
@@ -39,8 +40,6 @@ public interface LikeDao {
     @SqlUpdate("DROP TABLE IF EXISTS likes;")
     void deleteTable();
 
-    // is array agg on the constraint possible?
-    // instead can i just array agg after? yes, yes you can with a group by
     @SqlUpdate("CREATE TABLE IF NOT EXISTS likes( " +
             "post_id INT " +        "NOT NULL, " +
             "user_id INT " +        "NOT NULL, " +
@@ -62,11 +61,10 @@ public interface LikeDao {
     void deleteUserLike(@Bind("post_id") int post_id,
                         @Bind("user_id") int user_id);
 
-    // Potentially return a Likes object instead
-    // SELECT ARRAY_AGG(user_id) as userLikes FROM likes WHERE post_id = (:post_id) GROUP BY post_id
-    @SqlQuery("SELECT user_id FROM likes " +
-            "WHERE post_id = (:post_id);")
-    HashSet<Integer> getUserLikes(@Bind("post_id") int post_id);
+    @SqlQuery("SELECT post_id, ARRAY_AGG(user_id) as user_id_agg FROM likes " +
+            "WHERE post_id = (:post_id) " +
+            "GROUP BY post_id")
+    Optional<Likes> getUserLikes(@Bind("post_id") int post_id);
 
     @SqlQuery("SELECT EXISTS( " +
             "SELECT * from likes " +

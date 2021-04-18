@@ -36,6 +36,7 @@ public class LikeStorePostgres implements LikeStore {
 
         // Check who liked the post
         System.out.println( LikeStorePostgres.getLikes( newPost.getID() ).getUserLikes() );
+        System.out.println( LikeStorePostgres.getLikes( secondPost.getID() ).getUserLikes() );
 
         // Count how many people liked a post
         System.out.println( LikeStorePostgres.getLikes( newPost.getID() ).getLikeCount() );
@@ -69,13 +70,7 @@ public class LikeStorePostgres implements LikeStore {
 
     @Override
     public Likes getLikes( int pid ) {
-
-        HashSet<Integer> userLikes = jdbi.withHandle(handle -> handle.attach(LikeDao.class).getUserLikes(pid) );
-
-        // If userLikes is empty, return a null object
-        // Else, return the Likes object
-        return userLikes.size() != 0 ? new Likes( pid, userLikes ) : null;
-
+        return jdbi.withHandle(handle -> handle.attach(LikeDao.class).getUserLikes(pid) ).orElse( new Likes(pid) );
     }
 
     @Override

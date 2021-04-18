@@ -12,6 +12,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class GreetDoughJdbi {
 
@@ -25,7 +30,7 @@ public class GreetDoughJdbi {
         jdbi.registerRowMapper( new UserRowMapper() );
         jdbi.registerRowMapper( new PostRowMapper() );
         jdbi.registerRowMapper( new ImageRowMapper() );
-//        jdbi.registerRowMapper( new LikeRowMapper() );
+        jdbi.registerRowMapper( new LikeRowMapper() );
         jdbi.registerRowMapper( new CommentRowMapper() );
 
         return jdbi;
@@ -79,19 +84,23 @@ public class GreetDoughJdbi {
 
     }
 
-//    public static class LikeRowMapper implements RowMapper<Likes> {
-//
-//        @Override
-//        public Likes map( final ResultSet rs, final StatementContext ctx ) throws SQLException {
-//
-//            int pid = rs.getInt("post_id");
-//            int uid = rs.getInt("user_id");
-//
-//            return new Likes( pid, uid );
-//
-//        }
-//
-//    }
+    public static class LikeRowMapper implements RowMapper<Likes> {
+
+        @Override
+        public Likes map( final ResultSet rs, final StatementContext ctx ) throws SQLException {
+
+            int pid = rs.getInt("post_id");
+
+            // Convert the aggregated user_id's into a HashSet
+            HashSet<Integer> userLikes =
+                    Arrays.stream((Integer[]) rs.getArray("user_id_agg").getArray())
+                            .collect(Collectors.toCollection(HashSet::new));
+
+            return new Likes( pid, userLikes );
+
+        }
+
+    }
 
     public static class CommentRowMapper implements RowMapper<Comment> {
 

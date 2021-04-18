@@ -4,6 +4,13 @@ import model.Likes;
 
 public interface LikeStore {
 
+    /**
+     * The method returns a Likes object associated with the post.
+     * If there are no users that have liked the post,
+     * the userLikes member is created as an empty HashSet.
+     *
+     * @return a Likes object
+     */
     Likes getLikes( int pid );
 
     /**
