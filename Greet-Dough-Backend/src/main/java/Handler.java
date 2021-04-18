@@ -321,8 +321,6 @@ public class Handler {
     private int modifyBalance( Request req, Response res, boolean isAdd ) {
 
         res.type("application/json");
-
-        // Parse the request
         Properties data = gson.fromJson(req.body(), Properties.class);
 
         // Check the token
@@ -334,6 +332,7 @@ public class Handler {
 
         }
 
+        // Parse the request
         String amountQuery = data.getProperty("amount");
         BigDecimal amount = new BigDecimal(amountQuery);
 
