@@ -21,6 +21,7 @@ type Feed = {
 type post = {
     userID: number,
     imageID: number,
+    title: string,
     contents: string,
     time: Time,
     id: number,
@@ -71,16 +72,16 @@ class UserFeed extends  React.Component<any, any> {
             .then( feed =>  {
                 this.setState({feed: feed});
 
-                // alert(  this.state.feed.map( (post) => (
-                //     alert(post.contents)
-                // ))
-                // );
+                // this.state.feed?.map( (post) => (
+                //     alert( JSON.stringify(post) )
+                // ));
+
             })
     }
 
     render() {
         const feed = this.state.feed;
-        const listFeed = feed?.map( (post) => (
+        const listFeed = feed?.reverse().map( (post) => (
 
             <Box w={"100%"}
                  background={"yellow.50"}
@@ -88,7 +89,7 @@ class UserFeed extends  React.Component<any, any> {
                  borderWidth={"3px"}
                  borderRadius={"15px"}
                  borderColor={"gray.300"}>
-                <Text fontSize={"30px"} fontWeight={600}> TITLE HERE </Text>
+                <Text fontSize={"30px"} fontWeight={600}> { post.title } </Text>
                 <Text fontSize={"20px"}> {post.contents} </Text>
             </Box>
         ))

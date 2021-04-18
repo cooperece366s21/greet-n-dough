@@ -26,10 +26,10 @@ class PostForm extends React.Component<any, any> {
         invalid: false,
     }
 
-    async createPostWrapper( contents:string ) {
-        let uid = await api.getUserID();
+    async createPostWrapper( title:string, contents:string ) {
+        let token = localStorage.getItem("authToken");
 
-        let res = await api.createPost(uid, contents);
+        let res = await api.createPost(token, title, contents);
 
         if ( res === 200 ) {
             alert("Post successfully made!");
@@ -73,7 +73,7 @@ class PostForm extends React.Component<any, any> {
                         <Box float={'right'}>
 
                           <Button colorScheme={"green"}
-                                  onClick={ () => this.createPostWrapper(this.state.contents)}>
+                                  onClick={ () => this.createPostWrapper( this.state.title, this.state.contents)}>
                             submit
                           </Button>
 

@@ -99,7 +99,9 @@ public class Server {
         // curl localhost:5432/users/1/
         get("/users/:uid/", handler::getUser, gson::toJson);
 
-        get("users/:uid/feed/", handler::getUserFeed, gson::toJson);
+        get("/users/search/:name/", handler::searchUsers, gson::toJson);
+
+        get("/users/:uid/feed/", handler::getUserFeed, gson::toJson);
 
         // curl -H "Content-Type: application/json" --data "{"email":"a@gmail.com", "password":"123"}" localhost:5432/login
         post("/login/", handler::login, gson::toJson);
@@ -138,7 +140,7 @@ public class Server {
 
         // Creates a new post
         // curl -d "uid=0&contents=hello world" -X post localhost:5432/posts/
-        post("/posts/", handler::createPost, gson::toJson);
+        post("/posts/:token/", handler::createPost, gson::toJson);
 
         // Deletes post given postID
         // curl -X delete localhost:5432/posts/0
