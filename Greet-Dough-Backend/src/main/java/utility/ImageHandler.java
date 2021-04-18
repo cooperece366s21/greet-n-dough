@@ -19,14 +19,12 @@ public class ImageHandler {
 
     }
 
+    // Returns a path to /Greet-Dough-Backend/data/images/
     public Path setImageDir() {
 
+        // Should be /Greet-Dough-Backend/
         Path tempPath = fileSys.getPath( System.getProperty("user.dir") );
-
-        // Stores in Greet-Dough-Backend/data/images
-        Path newPath = fileSys.getPath( tempPath.toString() + File.separator + "data" + File.separator + "images" );
-
-        return newPath;
+        return fileSys.getPath( tempPath.toString() + File.separator + "data" + File.separator + "images" );
 
     }
 
@@ -71,7 +69,6 @@ public class ImageHandler {
 
             // Copies the file
             Files.copy(srcPath, destPath, StandardCopyOption.REPLACE_EXISTING);
-            return destPath.toString();
 
         } catch (IOException ioe) {
             ioe.printStackTrace();

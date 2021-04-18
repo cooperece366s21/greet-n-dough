@@ -10,12 +10,9 @@ import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class GreetDoughJdbi {
@@ -93,7 +90,7 @@ public class GreetDoughJdbi {
 
             // Convert the aggregated user_id's into a HashSet
             HashSet<Integer> userLikes =
-                    Arrays.stream((Integer[]) rs.getArray("user_id_agg").getArray())
+                    Arrays.stream( (Integer[]) rs.getArray("user_id_agg").getArray())
                             .collect(Collectors.toCollection(HashSet::new));
 
             return new Likes( pid, userLikes );
