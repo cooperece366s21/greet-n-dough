@@ -17,7 +17,22 @@ import {
 } from "@chakra-ui/react";
 import HeaderUser from "./HeaderUser";
 
+type HeaderStates = {
+    searchBar: string,
+}
+
+
 class Header extends React.Component<any, any>{
+
+    state: HeaderStates = {
+        searchBar: "",
+    }
+
+    searchHandler(keyboardEvent:any){
+        if (keyboardEvent.key === "Enter") {
+            window.location.replace("/search/" + this.state.searchBar)
+        }
+    }
 
     render() {
         return(
@@ -62,7 +77,12 @@ class Header extends React.Component<any, any>{
 
                         {/*User Search*/}
                         <Box w={'20%'}>
-                            <Input placeholder={'Search for a user'} bg={'gray.50'}/>
+                            <Input
+                                placeholder={'Search for a user'}
+                                bg={'gray.50'}
+                                onChange={ e => this.setState({searchBar: e.target.value})}
+                                onKeyDown={ e => this.searchHandler(e)}
+                                />
                         </Box>
 
                         {/*User Component*/}

@@ -15,8 +15,6 @@ function User() {
         <>
             < Header />
             <UserPageWrapper uid={uid} />
-            {/*<UserHeader uid={uid}/>*/}
-
         </>
 
     )

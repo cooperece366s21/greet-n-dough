@@ -114,6 +114,27 @@ export async function getUser( uid:number ) {
     }
 }
 
+export async function searchUser( name:string ) {
+
+    const res = await fetch( `${BACKEND_URL}//users/search/${name}/`, {
+        method: "get",
+        mode: "cors",
+        headers: {
+            "Content-Type": "application/json"
+        },
+    });
+
+    if (res.ok) {
+        return await res.json()
+            .then( body => {
+                return JSON.parse(body);
+            });
+    }
+    else {
+        alert("ERROR GRABBING FEED: " + res.status);
+    }
+}
+
 export async function getUserFeed( cuid:number, uid:number ) {
 
     const res = await fetch(`${BACKEND_URL}/users/${uid}/feed/`, {
@@ -124,9 +145,7 @@ export async function getUserFeed( cuid:number, uid:number ) {
         },
     });
 
-
-
-    if( res.ok ) {
+    if (res.ok) {
         return await res.json()
             .then(body => {
                 return JSON.parse(body);
@@ -184,17 +203,17 @@ export async function addToWallet( authToken:string|null, amount:string|null ) {
     }
 }
 
-export async function createPost( uid:number, contents:string ) {
+export async function createPost( token:string|null, title:string, contents:string ) {
 
-    // alert( JSON.stringify({ uid, contents } ) )
+    alert( JSON.stringify({ token, title, contents }) )
 
-    const res = await fetch(`${BACKEND_URL}/posts/`, {
+    const res = await fetch(`${BACKEND_URL}/posts/${token}/`, {
         method: "post",
         mode: "cors",
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({ uid, contents })
+        body: JSON.stringify({ title, contents })
     });
 
     if ( res.ok ) {
@@ -216,6 +235,7 @@ let exports = {
     getUserFeed,
     getWallet,
     addToWallet,
+    searchUser,
 }
 
 export default exports

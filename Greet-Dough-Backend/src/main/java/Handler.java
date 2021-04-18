@@ -143,6 +143,19 @@ public class Handler {
         }
     }
 
+    public String searchUsers( Request req, Response res ) throws JsonProcessingException {
+
+        res.type("application/json");
+        String name = req.params(":name");
+
+        System.out.println( "Found user " + name );
+
+        List<User> results = userStore.searchUsers(name);
+        res.status(200);
+        System.out.println( mapper.writeValueAsString(results) );
+        return mapper.writeValueAsString(results);
+    }
+
     public int createUser( Request req, Response res ) {
 
         res.type("application/json");
@@ -524,7 +537,7 @@ public class Handler {
         Properties data = gson.fromJson(req.body(), Properties.class);
 
         // Parse the request
-        int uid = Integer.parseInt( data.getProperty("uid") );
+        Integer uid = validateToken( req, res );
         String title = data.getProperty("title");
         String contents = data.getProperty("contents");
         String imageQuery = data.getProperty("imageQuery");
