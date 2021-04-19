@@ -22,31 +22,31 @@ public interface PasswordDao {
     void createTable();
 
     @SqlUpdate("INSERT INTO passwords (user_email, user_id, user_pass) " +
-            "VALUES (:user_email, :user_id, MD5(:user_pass) ) " +
+            "VALUES ( LOWER(:user_email), :user_id, MD5(:user_pass) ) " +
             "ON CONFLICT (user_email) DO NOTHING;")
     int addPassword(@Bind("user_email") String user_email,
                     @Bind("user_id") int user_id,
                     @Bind("user_pass") String user_pass);
 
     @SqlQuery("SELECT user_id FROM passwords " +
-            "WHERE (user_email, user_pass) = (:user_email, MD5(:user_pass) );")
+            "WHERE (user_email, user_pass) = ( LOWER(:user_email), MD5(:user_pass) );")
     Optional<Integer> isCorrectPassword(@Bind("user_email") String user_email,
                                         @Bind("user_pass") String user_pass);
 
     @SqlQuery("SELECT EXISTS( " +
             "SELECT * FROM passwords " +
-            "WHERE user_email = (:user_email));")
+            "WHERE user_email = (LOWER(:user_email)));")
     boolean hasEmail(@Bind("user_email") String user_email);
 
     @SqlUpdate("UPDATE passwords " +
-            "SET user_email = (:newEmail) " +
-            "WHERE user_email = (:oldEmail);")
+            "SET user_email = LOWER(:newEmail) " +
+            "WHERE user_email = LOWER(:oldEmail);")
     void changeEmail(@Bind("oldEmail") String oldEmail,
                      @Bind("newEmail") String newEmail);
 
     @SqlUpdate("UPDATE passwords " +
             "SET user_pass = MD5(:newPassword) " +
-            "WHERE user_email = (:email);")
+            "WHERE user_email = LOWER(:email);")
     void changePassword(@Bind("email") String email,
                         @Bind("newPassword") String newPassword);
 

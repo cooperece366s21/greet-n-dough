@@ -9,34 +9,6 @@ import java.util.Optional;
 
 public interface LikeDao {
 
-    // columns
-    // post_id, user_id
-
-    // users who like will show up
-    // if ids not in a set, to get like count
-        // SELECT post_id, COUNT(userid) AS likeCount
-            // FROM like
-        // WHERE post_id = (:post_id)
-        // GROUP BY post_id;
-
-    // in pure backend
-        // SELECT post_id, ARRAY_AGG(user_id) AS userLike
-            // FROM like
-        // WHERE post_id = (:post_id)
-        // GROUP BY post_id;
-
-    // in a set
-    // SELECT * FROM like WHERE post_id = (:post_id);
-        // then get the length of set
-
-    // add like if not a set
-        // INSERT INTO like (user_id, post_id) VALUES (:user_id, :post_id);
-
-    // how to insert a set, is it even necessary???
-
-    // remove like
-        // DELETE FROM like WHERE user_id = (:user_id);
-
     @SqlUpdate("DROP TABLE IF EXISTS likes;")
     void deleteTable();
 

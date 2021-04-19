@@ -154,6 +154,7 @@ public class Handler {
         res.status(200);
         System.out.println( mapper.writeValueAsString(results) );
         return mapper.writeValueAsString(results);
+
     }
 
     public int createUser( Request req, Response res ) {
@@ -303,6 +304,7 @@ public class Handler {
             return "";
 
         }
+
     }
 
     /////////////// WALLET ACTIONS ///////////////

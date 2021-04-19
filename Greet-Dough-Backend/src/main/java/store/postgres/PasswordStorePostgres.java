@@ -35,8 +35,8 @@ public class PasswordStorePostgres implements PasswordStore {
         System.out.println( PasswordStorePostgres.hasEmail(email) );
         System.out.println( PasswordStorePostgres.getUserID(email, pass) );
 
-        // Test adding a second password for the same email
-        if ( PasswordStorePostgres.addPassword( email, newUser.getID(), "lol" ) == 0 ) {
+        // Test adding a second password for the same email but lowercase
+        if ( PasswordStorePostgres.addPassword( email.toLowerCase(), newUser.getID(), "lol" ) == 0 ) {
             System.out.println("Duplicate Email");
         } else {
             System.err.println("SHOULD NOT HAPPEN!!!");
