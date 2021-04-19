@@ -349,7 +349,7 @@ public class Handler {
 
         // Parse the request
         String amountQuery = data.getProperty("amount");
-        BigDecimal amount = new BigDecimal(amountQuery);
+        BigDecimal amount = new BigDecimal(amountQuery).stripTrailingZeros();
 
         // Check if the amount is not positive or the number of digits after the decimal is greater than 2
         //      E.g. 0 or -1 or 1.005
