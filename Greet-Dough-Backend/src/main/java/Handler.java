@@ -292,7 +292,6 @@ public class Handler {
 //        Properties data = gson.fromJson(req.body(), Properties.class);
 //        Integer cuid = Integer.parseInt( data.getProperty("cuid") );
 
-        System.out.println("Doing logic stuff now");
         if ( userStore.hasUser(uid) ) {
 
             List<Post> feed = postStore.makeFeed(uid);
@@ -571,20 +570,28 @@ public class Handler {
 
     public int deletePost( Request req, Response res ) {
 
+        res.type("application/json");
+        System.out.println("Reached endpoint");
+        int uid = validateToken( req, res );
+        System.out.println("uid: " + uid);
         int pid = Integer.parseInt( req.params(":id") );
+        System.out.println("pid: " + pid);
         Post tempPost = postStore.getPost(pid);
 
         // Should cascade delete the image, comments, likes, etc.
-        postStore.deletePost(pid);
+        if ( uid == tempPost.getUserID()) {
+            postStore.deletePost(pid);
+        } else {
+            res.status(403);
+            return res.status(); // because the code below will trigger
+        }
 
         // Checks if the post was successfully deleted
         if ( postStore.hasPost(pid) ) {
-
+            res.status(404);
+        } else {
             System.out.println( gson.toJson(tempPost) );
             res.status(200);
-
-        } else {
-            res.status(404);
         }
 
         return res.status();

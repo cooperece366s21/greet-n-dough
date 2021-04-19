@@ -144,7 +144,7 @@ public class Server {
 
         // Deletes post given postID
         // curl -X delete localhost:5432/posts/0
-        delete("/posts/:id/", handler::deletePost, gson::toJson);
+        delete("/posts/:id/:token", handler::deletePost, gson::toJson);
 
         // Returns feed if user is subscribed.
         // curl -G -d "uid=1" -X post localhost:5432/users/0/feed/
