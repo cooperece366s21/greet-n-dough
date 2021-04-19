@@ -205,8 +205,6 @@ export async function addToWallet( authToken:string|null, amount:string|null ) {
 
 export async function createPost( token:string|null, title:string, contents:string ) {
 
-    alert( JSON.stringify({ token, title, contents }) )
-
     const res = await fetch(`${BACKEND_URL}/posts/${token}/`, {
         method: "post",
         mode: "cors",
@@ -225,17 +223,29 @@ export async function createPost( token:string|null, title:string, contents:stri
 
 }
 
+export async function deletePost( token:string|null, pid:number ) {
+    const res = await fetch(`${BACKEND_URL}/posts/${pid}/${token}`, {
+        method: "delete",
+        mode: "cors",
+        headers: {
+            "Content-Type": "application/json"
+        },
+    });
+
+    if ( res.ok ) {
+        alert("Succesfully deleted");
+        return 200;
+    } else{
+        alert("ERROR: " + res.status );
+    }
+}
+
 let exports = {
-    register,
-    login,
-    getUserID,
-    logout,
-    getUser,
-    createPost,
+    register, login, logout,
+    getUserID, getUser, searchUser,
+    createPost, deletePost,
+    getWallet, addToWallet,
     getUserFeed,
-    getWallet,
-    addToWallet,
-    searchUser,
 }
 
 export default exports

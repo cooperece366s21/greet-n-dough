@@ -6,6 +6,7 @@ import {
     SkeletonCircle,
     HStack,
     VStack,
+    Divider,
 } from "@chakra-ui/react";
 
 import {
@@ -51,27 +52,28 @@ class SearchPageWrapper extends React.Component<any, any> {
     render() {
         const users = this.state.results;
         const userTile = users?.map( (user) => (
-            <Box w="400px"  h="100px"  marginBottom="20px">
-                <HStack>
 
-                    <Box w="100px" h="100px">
-                        <SkeletonCircle size="95px" />
-                    </Box>
+            <>
+                <Box w="400px"  h="100px"  marginBottom="40px">
+                    <HStack>
 
-                    <Box h="100px" w="300px" >
-                        <VStack>
-                            <Box w="100%" float={"left"}>
-                                <Link to={`/user/${user.id}`}>
-                                    <Text fontSize={"20px"} fontWeight={600}> {user.name} </Text>
-                                </Link>
-                            </Box>
-                        </VStack>
-                    </Box>
+                        <Box w="100px" h="100px">
+                            <SkeletonCircle size="95px" />
+                        </Box>
 
-                </HStack>
+                        <Box h="100px" w="300px" >
+                            <VStack>
+                                <Box w="100%" float={"left"}>
+                                    <Link to={`/user/${user.id}`}>
+                                        <Text fontSize={"20px"} fontWeight={600}> {user.name} </Text>
+                                    </Link>
+                                </Box>
+                            </VStack>
+                        </Box>
 
-
-            </Box>
+                    </HStack>
+                </Box>
+            </>
         ))
 
         return (
@@ -92,4 +94,4 @@ class SearchPageWrapper extends React.Component<any, any> {
 
 }
 
-export default SearchPageWrapper
+export default SearchPageWrapper;

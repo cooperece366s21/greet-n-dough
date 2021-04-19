@@ -78,7 +78,11 @@ class UserPageWrapper extends React.Component<any, any> {
                     exists={this.state.exists}
                 />
 
-                <UserFeed uid={this.state.uid} cuid={this.state.cuid} />
+                <UserFeed
+                    uid={this.state.uid}
+                    cuid={this.state.cuid}
+                    hasOwnership={this.state.hasOwnership}
+                />
 
             </>
         )

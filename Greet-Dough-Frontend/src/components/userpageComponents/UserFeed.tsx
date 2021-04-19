@@ -8,6 +8,7 @@ import {
     Button,
     Text,
     StackDivider,
+    AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogBody, AlertDialogFooter,
 } from "@chakra-ui/react";
 import api from "../../services/api";
 import {type} from "os";
@@ -23,8 +24,8 @@ type post = {
     imageID: number,
     title: string,
     contents: string,
-    time: Time,
     id: number,
+    time: Time,
 }
 
 type Time = {
@@ -49,13 +50,18 @@ type FeedState = {
     cuid: number,
     uid: number,
     feed: post[] | null,
+    hasOwnership: boolean,
+    deleteAlert: boolean,
 }
+
 class UserFeed extends  React.Component<any, any> {
 
     state: FeedState = {
         cuid:-1,
         uid:-1,
         feed: null,
+        hasOwnership: false,
+        deleteAlert: false,
     }
 
     constructor(props:any) {
@@ -64,32 +70,109 @@ class UserFeed extends  React.Component<any, any> {
             cuid: props.cuid,
             uid: props.uid,
             feed: null,
+            hasOwnership: props.hasOwnership,
+            deleteAlert: false,
         }
     }
 
-    componentDidMount() {
+    refreshFeed() {
         api.getUserFeed( this.state.cuid, this.state.uid)
             .then( feed =>  {
-                this.setState({feed: feed});
-
-                // this.state.feed?.map( (post) => (
-                //     alert( JSON.stringify(post) )
-                // ));
-
+                this.setState({feed: feed.reverse()});
             })
+    }
+
+    componentDidMount() {
+        this.refreshFeed();
+    }
+
+    renderDeleteButton( pid:number ):any {
+        if (this.state.hasOwnership) {
+            return(
+                <>
+                    <Button
+                        onClick={ () => this.setState({deleteAlert: true})}
+                    >
+                        🗑
+                    </Button>
+
+                    {/* Largely the same sample code as in Chakra examples*/}
+                    <AlertDialog
+                        isOpen={ this.state.deleteAlert}
+                        onClose={ () => this.setState({deleteAlert: false})}
+                        leastDestructiveRef={ undefined }>
+                        <AlertDialogOverlay>
+                            <AlertDialogContent>
+                                <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                                    Delete Post
+                                </AlertDialogHeader>
+
+                                <AlertDialogBody>
+                                    Are you sure you want to delete this post?
+                                </AlertDialogBody>
+
+                                <AlertDialogFooter>
+
+                                    <Button onClick={ () => this.setState({deleteAlert: false})}>
+                                        Cancel
+                                    </Button>
+
+                                    <Button colorScheme="red" ml={3}
+                                            onClick={ () => {
+                                                alert(pid);
+                                                // api.deletePost(localStorage.getItem("authToken"), pid)
+                                                //     .then( () => {
+                                                //         this.refreshFeed();
+                                                //         this.setState({deleteAlert: false})
+                                                //     });
+                                            }}
+                                    >
+                                        Delete
+                                    </Button>
+
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialogOverlay>
+                    </AlertDialog>
+                </>
+            )
+        } else {
+            return( <> </> )
+        }
     }
 
     render() {
         const feed = this.state.feed;
-        const listFeed = feed?.reverse().map( (post) => (
 
+
+        const listFeed = feed?.map( (post) => (
             <Box w={"100%"}
                  background={"yellow.50"}
                  padding={"20px"}
                  borderWidth={"3px"}
                  borderRadius={"15px"}
-                 borderColor={"gray.300"}>
-                <Text fontSize={"30px"} fontWeight={600}> { post.title } </Text>
+                 borderColor={"gray.300"}
+            >
+                <Box w="100%">
+                    <HStack>
+                        <Box w="95%">
+                            <Text fontSize={"30px"} fontWeight={600}> { post.title } </Text>
+                        </Box>
+
+                        <Box w="5%">
+                            {this.state.hasOwnership &&
+                                <Button
+                                    onClick={ () => {
+                                        api.deletePost(localStorage.getItem("authToken"), post.id)
+                                            .then( () => this.refreshFeed() )
+                                }}>
+                                    🗑
+                                </Button>
+                            }
+                        </Box>
+                    </HStack>
+
+                </Box>
                 <Text fontSize={"20px"}> {post.contents} </Text>
             </Box>
         ))
