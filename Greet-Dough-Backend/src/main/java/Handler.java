@@ -106,7 +106,7 @@ public class Handler {
 
     /**
      * Checks if the token is valid.
-     * Sets res.status().
+     * Sets res.status(). Should check res.status() afterwards to verify success.
      *
      * @return   The uid associated with the token, or null if token is invalid
      */
@@ -572,14 +572,23 @@ public class Handler {
 
         res.type("application/json");
         System.out.println("Reached endpoint");
-        int uid = validateToken( req, res );
-        System.out.println("uid: " + uid);
+
+        // Check the token
+        Integer uid = validateToken( req, res );
+        if ( res.status() != 200 ) {
+
+            System.err.println("Error code: " + res.status());
+            return res.status();
+
+        }
+
         int pid = Integer.parseInt( req.params(":id") );
-        System.out.println("pid: " + pid);
         Post tempPost = postStore.getPost(pid);
+        System.out.println("uid: " + uid);
+        System.out.println("pid: " + pid);
 
         // Should cascade delete the image, comments, likes, etc.
-        if ( uid == tempPost.getUserID()) {
+        if ( uid == tempPost.getUserID() ) {
             postStore.deletePost(pid);
         } else {
             res.status(403);
