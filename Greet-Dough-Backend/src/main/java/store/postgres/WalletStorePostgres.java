@@ -6,6 +6,7 @@ import utility.ResetDao;
 
 import org.jdbi.v3.core.Jdbi;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class WalletStorePostgres implements WalletStore {
 
@@ -77,7 +78,7 @@ public class WalletStorePostgres implements WalletStore {
 
     @Override
     public void addUser( int uid ) {
-    addUser(uid, BigDecimal.ZERO);
+        addUser(uid, BigDecimal.ZERO);
     }
 
     @Override

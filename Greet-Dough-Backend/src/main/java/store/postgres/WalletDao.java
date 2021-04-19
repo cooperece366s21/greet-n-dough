@@ -11,10 +11,9 @@ public interface WalletDao {
     @SqlUpdate("DROP TABLE IF EXISTS wallet;")
     void deleteTable();
 
-    // user_balance can store up to 1000 digits in total
     @SqlUpdate("CREATE TABLE IF NOT EXISTS wallet( " +
             "user_id INT " +                    "NOT NULL, " +
-            "user_balance NUMERIC(1000) " +   "NOT NULL " + "DEFAULT 0, " +
+            "user_balance NUMERIC " +     "NOT NULL " + "DEFAULT 0, " +
             "PRIMARY KEY(user_id), " +
             "CONSTRAINT fk_user " + "FOREIGN KEY(user_id) " +
                 "REFERENCES users(user_id) " + "ON DELETE CASCADE " +

@@ -6,6 +6,7 @@ import utility.Pair;
 import store.model.*;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -311,10 +312,15 @@ public class Handler {
     /**
      * The method returns the user's balance if the user is in the database.
      * The method returns an empty string otherwise.
+     * The string returned has 2 digits after the decimal.
      *
-     * @return the user's balance
+     *
+     * @throws ArithmeticException  if the user's balance has more than 2 digits
+     *                              after the decimal (excluding trailing zeros).
+     *                              Should never happen.
+     * @return                      the user's balance
      */
-    public String getBalance( Request req, Response res ) {
+    public String getBalance( Request req, Response res ) throws ArithmeticException {
 
         res.type("application/json");
 
@@ -329,7 +335,7 @@ public class Handler {
 
         BigDecimal bal = walletStore.getBalance(uid);
 
-        return bal != null ? bal.toString() : "";
+        return bal != null ? bal.setScale(2, RoundingMode.UNNECESSARY).toString() : "";
 
     }
 
