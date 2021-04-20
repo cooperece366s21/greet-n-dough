@@ -104,10 +104,11 @@ public class Handler {
 
     /**
      * Checks if the user specified by uid owns the post.
+     * Sets res.status().
      *
-     * @return true if the user owns the post, false otherwise
+     * @return  true if the user owns the post; false otherwise
      */
-    private boolean checkOwnership( int uid, int pid, Response res ) {
+    private boolean hasOwnership(int uid, int pid, Response res ) {
 
         if ( postStore.getPost(pid).getUserID() != uid ) {
 
@@ -125,22 +126,23 @@ public class Handler {
 
     /**
      * Checks if the token is valid.
-     * Sets res.status(). Should check res.status() afterwards to verify success.
+     * Sets res.status().
      *
-     * @return   The uid associated with the token, or null if token is invalid
+     * @return   true if the token is valid; false otherwise
      */
-    private Integer validateToken( Request req, Response res ) {
+    private boolean isValidToken(String token, Response res ) {
 
-        String token = req.headers("token");
-        Integer uid = loginStore.getUserID(token);
+        if ( loginStore.hasSession(token) ) {
 
-        if ( uid == null ) {
-            res.status(401);
-        } else {
             res.status(200);
-        }
+            return true;
 
-        return uid;
+        } else {
+
+            res.status(401);
+            return false;
+
+        }
 
     }
 
@@ -320,13 +322,11 @@ public class Handler {
         res.type("application/json");
 
         // Check the token
-        Integer uid = validateToken( req, res );
-        if ( res.status() != 200 ) {
-
-            System.err.println("Error code: " + res.status());
-            return "";
-
+        String token = req.headers("token");
+        if ( !isValidToken( token, res ) ) {
+            return null;
         }
+        int uid = loginStore.getUserID(token);
 
         BigDecimal bal = walletStore.getBalance(uid);
 
@@ -340,13 +340,11 @@ public class Handler {
         Properties data = gson.fromJson(req.body(), Properties.class);
 
         // Check the token
-        Integer uid = validateToken( req, res );
-        if ( res.status() != 200 ) {
-
-            System.err.println("Error code: " + res.status());
+        String token = req.headers("token");
+        if ( !isValidToken( token, res ) ) {
             return res.status();
-
         }
+        int uid = loginStore.getUserID(token);
 
         // Parse the request
         String amountQuery = data.getProperty("amount");
@@ -605,8 +603,14 @@ public class Handler {
         res.type("application/json");
         Properties data = gson.fromJson(req.body(), Properties.class);
 
+        // Check the token
+        String token = req.headers("token");
+        if ( !isValidToken( token, res ) ) {
+            return res.status();
+        }
+        int uid = loginStore.getUserID(token);
+
         // Parse the request
-        Integer uid = validateToken( req, res );
         String title = data.getProperty("title");
         String contents = data.getProperty("contents");
         String imageQuery = data.getProperty("imageQuery");
@@ -635,14 +639,13 @@ public class Handler {
         System.out.println("Reached endpoint");
 
         // Check the token
-        Integer uid = validateToken( req, res );
-        if ( res.status() != 200 ) {
-
-            System.err.println("Error code: " + res.status());
+        String token = req.headers("token");
+        if ( !isValidToken( token, res ) ) {
             return res.status();
-
         }
+        int uid = loginStore.getUserID(token);
 
+        // Parse the request
         int pid = Integer.parseInt( req.params(":id") );
         Post tempPost = postStore.getPost(pid);
         System.out.println("uid: " + uid);
@@ -652,16 +655,20 @@ public class Handler {
         if ( uid == tempPost.getUserID() ) {
             postStore.deletePost(pid);
         } else {
+
             res.status(403);
             return res.status(); // because the code below will trigger
+
         }
 
         // Checks if the post was successfully deleted
         if ( postStore.hasPost(pid) ) {
             res.status(404);
         } else {
+
             System.out.println( gson.toJson(tempPost) );
             res.status(200);
+
         }
 
         return res.status();
@@ -682,17 +689,15 @@ public class Handler {
         Properties data = gson.fromJson(req.body(), Properties.class);
 
         // Check the token
-        Integer uid = validateToken( req, res );
-        if ( res.status() != 200 ) {
-
-            System.err.println("Error code: " + res.status());
+        String token = req.headers("token");
+        if ( !isValidToken( token, res ) ) {
             return res.status();
-
         }
+        int uid = loginStore.getUserID(token);
 
         // Check if the user owns the post
         int pid = Integer.parseInt( data.getProperty("pid") );
-        if ( !checkOwnership( uid, pid, res ) ) {
+        if ( !hasOwnership( uid, pid, res ) ) {
             return res.status();
         }
 
@@ -751,13 +756,11 @@ public class Handler {
         System.out.println(pid);
 
         // Check the token
-        Integer uid = validateToken( req, res );
-        if ( res.status() != 200 ) {
-
-            System.err.println("Error code: " + res.status());
+        String token = req.headers("token");
+        if ( !isValidToken( token, res ) ) {
             return null;
-
         }
+        int uid = loginStore.getUserID(token);
         System.out.println(uid);
 
 //        int status = checkUserPostPerms(uid, pid);
@@ -806,13 +809,11 @@ public class Handler {
         Properties data = gson.fromJson(req.body(), Properties.class);
 
         // Check the token
-        Integer uid = validateToken( req, res );
-        if ( res.status() != 200 ) {
-
-            System.err.println("Error code: " + res.status());
+        String token = req.headers("token");
+        if ( !isValidToken( token, res ) ) {
             return res.status();
-
         }
+        int uid = loginStore.getUserID(token);
 
         // Parse the request
         int pid = Integer.parseInt( data.getProperty("pid") );
