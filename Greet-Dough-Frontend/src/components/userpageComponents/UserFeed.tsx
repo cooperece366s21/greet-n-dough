@@ -5,6 +5,7 @@ import {
     HStack,
     Center,
     Input,
+    Divider,
     Button,
     Text,
     StackDivider,
@@ -98,7 +99,7 @@ class UserFeed extends  React.Component<any, any> {
 
                     {/* Largely the same sample code as in Chakra examples*/}
                     <AlertDialog
-                        isOpen={ this.state.deleteAlert}
+                        isOpen={ this.state.deleteAlert }
                         onClose={ () => this.setState({deleteAlert: false})}
                         leastDestructiveRef={ undefined }>
                         <AlertDialogOverlay>
@@ -146,15 +147,19 @@ class UserFeed extends  React.Component<any, any> {
 
 
         const listFeed = feed?.map( (post) => (
-            <Box w={"100%"}
-                 background={"yellow.50"}
-                 padding={"20px"}
-                 borderWidth={"3px"}
-                 borderRadius={"15px"}
-                 borderColor={"gray.300"}
-            >
-                <Box w="100%">
-                    <HStack>
+            <>
+                <Box w={"100%"}
+                     padding={"20px"}
+                     borderWidth={"1px"}
+                     borderTopRadius={"15px"}
+                     borderLeftRadius={"5px"}
+                     borderRightRadius={"5px"}
+                     borderBottomColor={"gray.500"}
+                >
+
+                    {/* Upper Region, TITLE and DELETE*/}
+                    <HStack w={"100%"}>
+
                         <Box w="95%">
                             <Text fontSize={"30px"} fontWeight={600}> { post.title } </Text>
                         </Box>
@@ -170,18 +175,57 @@ class UserFeed extends  React.Component<any, any> {
                                 </Button>
                             }
                         </Box>
+
+                    </HStack>
+
+
+                    {/* CONTENT field */}
+                    <Box>
+                        <Text fontSize={"20px"}> {post.contents} </Text>
+                    </Box>
+
+                    <HStack w={"100%"} marginTop={"10px"}>
+                        <Box>
+                            <Text color={"orange.400"}> Likes : </Text>
+                        </Box>
+                    </HStack>
+
+                    {/*  LIKES/COMMENT button field */}
+                    <HStack w={"100%"} marginTop={"10px"}>
+
+                        <Box w={"50%"} >
+                            <Text textAlign={"center"} cursor={"pointer"} borderRadius={"10px"}
+                                  _hover={{
+                                      background: "yellow.200",
+                                  }}
+                                  onClick={ () => api.addLike(localStorage.getItem("authToken"), post.id)}
+                            >
+                                👍 Like
+                            </Text>
+                        </Box>
+
+                        <Box w={"50%"}>
+                            <Text textAlign={"center"} cursor={"pointer"} borderRadius={"10px"}
+                                  _hover={{
+                                      background: "yellow.200",
+                                  }}>
+                                💬 Comment
+                            </Text>
+                        </Box>
+
                     </HStack>
 
                 </Box>
-                <Text fontSize={"20px"}> {post.contents} </Text>
-            </Box>
+
+                <Divider orientation={"horizontal"} w={"100%"} h={"20px"} opacity={0} />
+            </>
         ))
 
 
         return (
             <Center w="100%" marginTop={"50px"}>
 
-            <VStack w={"70%"} >
+            <VStack w={"60%"} >
                 { listFeed }
             </VStack>
 

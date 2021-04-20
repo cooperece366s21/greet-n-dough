@@ -125,6 +125,21 @@ public class Handler {
 
     }
 
+    private Integer validateTokenBody( Request req, Response res ) {
+        Properties data = gson.fromJson(req.body(), Properties.class);
+
+        String token = data.getProperty("token");
+        Integer uid = loginStore.getUserID(token);
+
+        if ( uid == null ) {
+            res.status(401);
+        } else {
+            res.status(200);
+        }
+
+        return uid;
+    }
+
     /////////////// USER ACTIONS ///////////////
     public String getUser( Request req, Response res ) throws JsonProcessingException {
 
@@ -638,10 +653,16 @@ public class Handler {
         Properties data = gson.fromJson(req.body(), Properties.class);
 
         // Parse the request
-        int pid = Integer.parseInt( data.getProperty("pid") );
-        int uid = Integer.parseInt( data.getProperty("uid") );
-        int status = checkUserPostPerms(uid, pid);
-        res.status(status);
+        int pid = Integer.parseInt( req.params(":pid") );
+        System.out.println(pid);
+
+        int uid = validateTokenBody( req, res );
+        System.out.println(uid);
+
+//        int status = checkUserPostPerms(uid, pid);
+//        res.status(status);
+        // Assume it works cause we dont have subs yet
+        res.status(200);
 
         if ( res.status() == 200 ) {
             return likeStore.getLikes(pid).getUserLikes();
@@ -676,14 +697,20 @@ public class Handler {
 
     public int likePost( Request req, Response res ) {
 
+        System.out.println("Reached endpoint");
+
         res.type("application/json");
         Properties data = gson.fromJson(req.body(), Properties.class);
 
         // Parse the request
-        int pid = Integer.parseInt( data.getProperty("pid") );
-        int uid = Integer.parseInt( data.getProperty("uid") );
-        int status = checkUserPostPerms(uid, pid);
-        res.status(status);
+        int pid = Integer.parseInt( req.params(":pid") );
+
+        int uid = validateTokenBody( req, res );
+
+//        int status = checkUserPostPerms(uid, pid);
+//        res.status(status);
+        // assume match for now
+        res.status(200);
 
         if ( res.status() == 200 ) {
 

@@ -154,11 +154,11 @@ public class Server {
         ////////////////////
 
         // curl -G -d "uid=1" localhost:5432/posts/0/likes/
-        get("/posts/:postID/likes/", handler::getLikes, gson::toJson);
+        get("/posts/:pid/likes/", handler::getLikes, gson::toJson);
 
         // Like, put request
         // curl -d "uid=0" -X post localhost:5432/posts/0/addLike/
-        post("/posts/:postID/addLike/", handler::likePost, gson::toJson);
+        post("/posts/:pid/likes/", handler::likePost, gson::toJson);
 
         // COMMENTS ROUTES
         /////////////////////
@@ -168,7 +168,7 @@ public class Server {
 
         // Comment, post for now, put request since we are updating something about the post??
         // curl -d "uid=1&contents=ok post!" -X post localhost:5432/posts/0/comments/
-        post("/posts/:postID/comments/", handler::createComment, gson::toJson);
+        post("/posts/:pid/comments/", handler::createComment, gson::toJson);
 
         get("/wallet/get/:token/", handler::getBalance, gson::toJson);
         // Upload Image, which is createPost but imageID exists
@@ -176,6 +176,7 @@ public class Server {
         // uploadImage() will prompt user for a path
 
         post( "/wallet/add/:token/", handler::addToBalance, gson::toJson);
+
         post( "/wallet/subtract/:token/", handler::subtractFromBalance, gson::toJson);
 
     }

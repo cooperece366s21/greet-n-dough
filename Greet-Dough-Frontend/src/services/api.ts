@@ -240,12 +240,55 @@ export async function deletePost( token:string|null, pid:number ) {
     }
 }
 
+export async function addLike( token:string|null, pid:number ) {
+
+    const res = await fetch(`${BACKEND_URL}/posts/${pid}/likes/`, {
+        method: "post",
+        mode: "cors",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ token })
+    });
+
+    if (res.ok) {
+        alert("Good?")
+    } else {
+        alert("Bad");
+    }
+
+
+}
+
+export async function getLikes(token: string|null, pid: number) {
+
+    if (typeof token == "string") {
+        const res = await fetch(`${BACKEND_URL}/posts/${pid}/likes/`, {
+            method: "get",
+            mode: "cors",
+            headers: {
+                "Content-Type": "application/json",
+                "token" : token,
+            },
+            body: JSON.stringify({ token })
+        });
+    }
+}
+
 let exports = {
-    register, login, logout,
-    getUserID, getUser, searchUser,
-    createPost, deletePost,
-    getWallet, addToWallet,
+    register,
+    login,
+    logout,
+    getUserID,
+    getUser,
+    searchUser,
+    createPost,
+    deletePost,
+    getWallet,
+    addToWallet,
     getUserFeed,
+    addLike,
+    getLikes,
 }
 
 export default exports
