@@ -31,12 +31,10 @@ export async function getUserID(): Promise<number> {
 
     if ( res.ok ) {
 
-        let resJSON = await res.json()
-            .then( body => {
-                return ( JSON.parse(body).uid );
-            })
-
-        return resJSON;
+        return await res.json()
+            .then(body => {
+                return (JSON.parse(body).uid);
+            });
 
     }
 
@@ -148,11 +146,12 @@ export async function getUserFeed( cuid:number, uid:number ) {
     if (res.ok) {
         return await res.json()
             .then(body => {
-                return JSON.parse(body);
+                return body.map.feed.myArrayList;
             });
 
     } else {
         alert("ERROR GRABBING FEED: " + res.status );
+        return null;
     }
 
 }
@@ -267,9 +266,10 @@ export async function addLike( token:string|null, pid:number ) {
     });
 
     if (res.ok) {
-        alert("Good?")
+        return 200;
     } else {
-        alert("Bad");
+        alert("ERROR LIKING POST: " + res.status);
+        return res.status;
     }
 
 

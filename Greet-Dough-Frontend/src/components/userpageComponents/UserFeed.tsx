@@ -14,43 +14,50 @@ import {
 import api from "../../services/api";
 import {type} from "os";
 
-
-
-type Feed = {
-    posts: post[]
-}
-
-type post = {
+type Post = {
+    ID: number,
     userID: number,
-    imageID: number,
     title: string,
     contents: string,
-    id: number,
+    timeCreated: TimeCreated,
     time: Time,
 }
 
-type Time = {
-    nano: number,
+type TimeCreated = {
+    date: Date,
+}
+
+type Date = {
     year: number,
-    monthValue: number,
+    month: number,
+    day: number,
+}
+
+type Time = {
     hour: number,
     minute: number,
     second: number,
-    month: string,
-    dayOfWeek: number,
-    dayOfYear: number,
-    chronology: Chronology,
+    nano: number,
 }
 
 type Chronology = {
     id: string, // ISO
-    calendaryType: string // iso8601
+    calendarType: string // iso8601
+}
+
+type Map = {
+    map: PostObject,
+}
+
+type PostObject = {
+    post: Post,
+    likeCount : number,
 }
 
 type FeedState = {
     cuid: number,
     uid: number,
-    feed: post[] | null,
+    feed: Map[] | null,
     hasOwnership: boolean,
     deleteAlert: boolean,
 }
@@ -79,7 +86,9 @@ class UserFeed extends  React.Component<any, any> {
     refreshFeed() {
         api.getUserFeed( this.state.cuid, this.state.uid)
             .then( feed =>  {
-                this.setState({feed: feed.reverse()});
+                if( feed != null ) {
+                    this.setState({feed: feed.reverse()});
+                }
             })
     }
 
@@ -146,7 +155,7 @@ class UserFeed extends  React.Component<any, any> {
         const feed = this.state.feed;
 
 
-        const listFeed = feed?.map( (post) => (
+        const listFeed = feed?.map( (e) => (
             <>
                 <Box w={"100%"}
                      padding={"20px"}
@@ -161,14 +170,14 @@ class UserFeed extends  React.Component<any, any> {
                     <HStack w={"100%"}>
 
                         <Box w="95%">
-                            <Text fontSize={"30px"} fontWeight={600}> { post.title } </Text>
+                            <Text fontSize={"30px"} fontWeight={600}> { e.map.post.title } </Text>
                         </Box>
 
                         <Box w="5%">
                             {this.state.hasOwnership &&
                                 <Button
                                     onClick={ () => {
-                                        api.deletePost(localStorage.getItem("authToken"), post.id)
+                                        api.deletePost(localStorage.getItem("authToken"), e.map.post.ID)
                                             .then( () => this.refreshFeed() )
                                 }}>
                                     🗑
@@ -181,12 +190,12 @@ class UserFeed extends  React.Component<any, any> {
 
                     {/* CONTENT field */}
                     <Box>
-                        <Text fontSize={"20px"}> {post.contents} </Text>
+                        <Text fontSize={"20px"}> {e.map.post.contents} </Text>
                     </Box>
 
                     <HStack w={"100%"} marginTop={"10px"}>
                         <Box>
-                            <Text color={"orange.400"}> Likes : </Text>
+                            <Text color={"orange.400"}> Likes : { e.map.likeCount } </Text>
                         </Box>
                     </HStack>
 
@@ -198,7 +207,9 @@ class UserFeed extends  React.Component<any, any> {
                                   _hover={{
                                       background: "yellow.200",
                                   }}
-                                  onClick={ () => api.addLike(localStorage.getItem("authToken"), post.id)}
+                                  onClick={ () => api.addLike(localStorage.getItem("authToken"), e.map.post.ID)
+                                      .then( () => this.refreshFeed() )
+                                  }
                             >
                                 👍 Like
                             </Text>
