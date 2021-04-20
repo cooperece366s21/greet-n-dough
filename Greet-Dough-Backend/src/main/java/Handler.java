@@ -641,7 +641,7 @@ public class Handler {
         int pid = Integer.parseInt( req.params(":pid") );
         System.out.println(pid);
 
-        int uid = validateTokenBody( req, res );
+        int uid = validateToken( req, res );
         System.out.println(uid);
 
 //        int status = checkUserPostPerms(uid, pid);
