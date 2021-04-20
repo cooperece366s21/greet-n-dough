@@ -1,9 +1,10 @@
 package store.postgres;
 
 import model.User;
+import utility.ResetDao;
+
 import org.jdbi.v3.core.Jdbi;
 import org.junit.jupiter.api.Test;
-import utility.ResetDao;
 
 import java.math.BigDecimal;
 
@@ -30,7 +31,7 @@ class WalletStorePostgresTest extends WalletStorePostgres {
         User juan = userStorePostgres.addUser("Juan Lam");
 
         // Test retrieving an invalid user
-        assert ( walletStorePostgres.getBalance( steve.getID() ) == null );
+        assertNull ( walletStorePostgres.getBalance( steve.getID() ) );
 
         // Test adding a user
         walletStorePostgres.addUser( steve.getID() );
@@ -39,12 +40,12 @@ class WalletStorePostgresTest extends WalletStorePostgres {
         // Check balances
         assert ( walletStorePostgres.getBalance( steve.getID() ).compareTo( BigDecimal.ZERO ) == 0 );   // Should be 0 by default
         assert ( walletStorePostgres.getBalance( juan.getID() ).compareTo( new BigDecimal("10.50") ) == 0 );
-        assert ( walletStorePostgres.getBalance(-1) == null );                              // Should be null b/c user doesn't exist
+        assertNull ( walletStorePostgres.getBalance(-1) );                                      // Should be null b/c user doesn't exist
 
         // Test .stripTrailingZeros()
         BigDecimal amount = new BigDecimal("150000");
         amount = amount.stripTrailingZeros();
-        assert ( !(amount.compareTo(BigDecimal.ZERO) != 1 || amount.scale() > 2) );
+        assertFalse ( amount.compareTo(BigDecimal.ZERO) != 1 || amount.scale() > 2 );
 
         // Test changing balances
         walletStorePostgres.addToBalance( steve.getID(), new BigDecimal("1.005") );
@@ -54,7 +55,7 @@ class WalletStorePostgresTest extends WalletStorePostgres {
         // Check balances
         assert ( walletStorePostgres.getBalance( steve.getID() ).compareTo( new BigDecimal("1.005") ) == 0 );
         assert ( walletStorePostgres.getBalance( juan.getID() ).compareTo( BigDecimal.TEN ) == 0 );
-        assert ( walletStorePostgres.getBalance(-1) == null );
+        assertNull ( walletStorePostgres.getBalance(-1) );
 
     }
 

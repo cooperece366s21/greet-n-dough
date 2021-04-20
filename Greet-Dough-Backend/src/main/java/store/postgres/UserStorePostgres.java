@@ -2,46 +2,11 @@ package store.postgres;
 
 import model.User;
 import store.model.UserStore;
-import utility.ResetDao;
 
 import org.jdbi.v3.core.Jdbi;
 import java.util.LinkedList;
-import java.util.stream.Collectors;
 
 public class UserStorePostgres implements UserStore {
-
-    // For testing purposes
-    public static void main( String[] args ) {
-
-        Jdbi jdbi = GreetDoughJdbi.create("jdbc:postgresql://localhost:4321/greetdough");
-        UserStorePostgres UserStorePostgres = new UserStorePostgres(jdbi);
-
-        // Used to DROP and CREATE all tables
-        ResetDao.reset(jdbi);
-
-        // Test adding and retrieving a user
-        User newUser = UserStorePostgres.addUser("Josh");
-        User userAfterWrite = UserStorePostgres.getUser( newUser.getID() );
-        System.out.println( userAfterWrite.getID() + " " + userAfterWrite.getName() );
-        System.out.println( UserStorePostgres.hasUser(newUser.getID()) );
-
-        // Test searching for a user given the first portion of their name
-        User jon = UserStorePostgres.addUser("Jon");
-
-        // Prints the names of the users given a list of users
-        //      Playing around with mapping a list
-        System.out.println( UserStorePostgres.searchUsers("Jo").stream().map(User::getName).collect(Collectors.toList()) );
-        System.out.println( UserStorePostgres.searchUsers("jo").stream().map(User::getName).collect(Collectors.toList()) );
-
-        // Test changing the user's name
-        UserStorePostgres.changeName( jon.getID(), "John" );
-        System.out.println( UserStorePostgres.getUser( jon.getID() ).getName() );
-
-        // Test deleting the user
-        UserStorePostgres.deleteUser( userAfterWrite.getID() );
-        System.out.println( UserStorePostgres.getUser() );
-
-    }
 
     private final Jdbi jdbi;
 

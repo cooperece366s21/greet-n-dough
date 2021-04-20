@@ -1,8 +1,6 @@
 package store.postgres;
 
-import model.User;
 import store.model.WalletStore;
-import utility.ResetDao;
 
 import org.jdbi.v3.core.Jdbi;
 import java.math.BigDecimal;
@@ -45,7 +43,7 @@ public class WalletStorePostgres implements WalletStore {
 
     @Override
     public void subtractFromBalance( int uid, BigDecimal amount ) {
-        addToBalance(uid, amount.negate());
+        addToBalance( uid, amount.negate() );
     }
 
 }

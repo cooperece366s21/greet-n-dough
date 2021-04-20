@@ -198,6 +198,14 @@ public class Handler {
 
         }
 
+        // Check that the username and password are at least 1 character long
+        if ( username.length() < 1 || password.length() < 1 ) {
+
+            res.status(403);
+            return res.status();
+
+        }
+
         User tempUser = userStore.addUser(username);
 
         // Attempt to add a password associated with the email
