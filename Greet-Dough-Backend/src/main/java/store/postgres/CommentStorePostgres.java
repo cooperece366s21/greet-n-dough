@@ -8,11 +8,11 @@ import utility.ResetDao;
 
 import org.jdbi.v3.core.Jdbi;
 
-import java.util.List;
+import java.util.LinkedList;
 
 public class CommentStorePostgres implements CommentStore {
 
-    // Connection test function
+    // For testing purposes
     public static void main( String[] args ) {
 
         Jdbi jdbi = GreetDoughJdbi.create("jdbc:postgresql://localhost:4321/greetdough");
@@ -46,43 +46,20 @@ public class CommentStorePostgres implements CommentStore {
         System.out.println(CommentStorePostgres.hasComment(cidTemp));
 
         // Get the list of parent comments under a post
-        List<Comment> yeetPostParents = CommentStorePostgres.getParents(post1.getID());
+        LinkedList<Comment> yeetPostParents = CommentStorePostgres.getParents(post1.getID());
         yeetPostParents.forEach( x -> System.out.println( x.getContents() ) );
 
         // Get the list of replies under a parent comment
-        List<Comment> yeetPostReplies = CommentStorePostgres.getReplies( comment2.getID() );
+        LinkedList<Comment> yeetPostReplies = CommentStorePostgres.getReplies( comment2.getID() );
         yeetPostReplies.forEach( x -> System.out.println( x.getContents() ) );
 
         // Test deleting the post
         //      Should delete cascade the comments
-        //PostStorePostgres.deletePost( post1.getID() );
-        //System.out.println( CommentStorePostgres.getParents( post1.getID() ) );
-        //System.out.println( CommentStorePostgres.getComment( comment1.getID() ) );
+        PostStorePostgres.deletePost( post1.getID() );
+        System.out.println( CommentStorePostgres.getParents( post1.getID() ) );
+        System.out.println( CommentStorePostgres.getComment( comment1.getID() ) );
 
     }
-
-    // given a postid
-    // return with hierarchy
-    // single depth replies
-
-    // canComment() check if post_id exists
-
-    // on frontend you choose post and then choose a comment to reply to
-    // requires boolean canReply()
-    // checks if the given comment_id exists
-    // true
-    // feed the parentID, the comment i'm trying to reply to
-    // insertComment(uid, content, parentID)
-    // insert uid, content, parentID  (commentID auto generated key)
-    // false
-    // return status error, comment doesnt exist
-
-    // regular comment
-    // insertComment(uid, content, null)
-
-    // Columns: commentID, uid, content, parentID
-    // commentID -> another commentID (parentID)
-
 
     private final Jdbi jdbi;
 
@@ -104,12 +81,12 @@ public class CommentStorePostgres implements CommentStore {
     }
 
     @Override
-    public List<Comment> getReplies( int parentID ) {
+    public LinkedList<Comment> getReplies( int parentID ) {
         return jdbi.withHandle( handle -> handle.attach(CommentDao.class).getReplies(parentID) );
     }
 
     @Override
-    public List<Comment> getParents( int pid ) {
+    public LinkedList<Comment> getParents( int pid ) {
         return jdbi.withHandle( handle -> handle.attach(CommentDao.class).getParents(pid) );
     }
 
@@ -135,25 +112,6 @@ public class CommentStorePostgres implements CommentStore {
     public boolean isParent( int cid ) {
         return jdbi.withHandle( handle -> handle.attach(CommentDao.class).isParent(cid) );
     }
-
-    /*
-    identify a post
-        make a list of every parent_id
-            // array_agg(parent_id) where post_id = (:post_id)
-        in handler loop through each parent_id
-            call getReplies
-
-    comments section:
-        parent 1
-            replies
-            replies
-            replies
-        parent 2
-            replies
-        parent 3
-        parent 4
-            replies
-    */
 
 }
 

@@ -6,7 +6,6 @@ import utility.ResetDao;
 
 import org.jdbi.v3.core.Jdbi;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 public class WalletStorePostgres implements WalletStore {
 

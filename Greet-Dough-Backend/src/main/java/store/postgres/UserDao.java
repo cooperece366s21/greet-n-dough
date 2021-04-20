@@ -6,7 +6,7 @@ import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
-import java.util.List;
+import java.util.LinkedList;
 import java.util.Optional;
 
 public interface UserDao {
@@ -31,7 +31,7 @@ public interface UserDao {
 
     @SqlQuery("SELECT * FROM users " +
             "ORDER BY user_name")
-    List<User> listUsers();
+    LinkedList<User> listUsers();
 
     @SqlQuery("SELECT * FROM users " +
             "WHERE user_id = (:user_id)")
@@ -41,7 +41,7 @@ public interface UserDao {
     @SqlQuery("SELECT * FROM users " +
             "WHERE LOWER(user_name) " +
             "SIMILAR TO LOWER(:name) || '%';" )
-    List<User> searchUsers(@Bind("name") String name);
+    LinkedList<User> searchUsers(@Bind("name") String name);
 
     @SqlUpdate("UPDATE users " +
             "SET user_name = (:new_name) " +

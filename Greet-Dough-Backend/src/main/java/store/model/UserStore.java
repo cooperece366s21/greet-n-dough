@@ -2,7 +2,7 @@ package store.model;
 
 import model.User;
 
-import java.util.List;
+import java.util.LinkedList;
 
 public interface UserStore {
 
@@ -21,7 +21,7 @@ public interface UserStore {
      * @param   name    a string representing the first portion of a user's name
      * @return          a list of users, where each user's name matches the regex expression
      */
-    List<User> searchUsers( String name );
+    LinkedList<User> searchUsers( String name );
 
     void changeName( int uid, String newName );
 

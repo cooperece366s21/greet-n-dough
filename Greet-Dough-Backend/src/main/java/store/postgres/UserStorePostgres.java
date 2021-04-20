@@ -5,10 +5,9 @@ import store.model.UserStore;
 import utility.ResetDao;
 
 import org.jdbi.v3.core.Jdbi;
-import java.util.List;
+import java.util.LinkedList;
 import java.util.stream.Collectors;
 
-// ADD PROFILE PICTURES
 public class UserStorePostgres implements UserStore {
 
     // For testing purposes
@@ -68,7 +67,7 @@ public class UserStorePostgres implements UserStore {
      *
      * @return all users in the database
      */
-    public List<User> getUser() {
+    public LinkedList<User> getUser() {
         return jdbi.withHandle( handle -> handle.attach(UserDao.class).listUsers() );
     }
 
@@ -91,7 +90,7 @@ public class UserStorePostgres implements UserStore {
     }
 
     @Override
-    public List<User> searchUsers( String name ) {
+    public LinkedList<User> searchUsers( String name ) {
         return jdbi.withHandle( handle -> handle.attach(UserDao.class).searchUsers(name) );
     }
 

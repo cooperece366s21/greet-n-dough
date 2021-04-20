@@ -4,7 +4,7 @@ import model.Comment;
 import store.model.StoreWithID;
 import store.model.CommentStore;
 
-import java.util.List;
+import java.util.LinkedList;
 
 public class CommentStoreImpl extends StoreWithID<Comment> implements CommentStore {
 
@@ -22,12 +22,12 @@ public class CommentStoreImpl extends StoreWithID<Comment> implements CommentSto
     }
 
     @Override
-    public List<Comment> getReplies( int parent_id ) {
+    public LinkedList<Comment> getReplies( int parent_id ) {
         return null;
     }
 
     @Override
-    public List<Comment> getParents( int pid ) {
+    public LinkedList<Comment> getParents( int pid ) {
         return null;
     }
 

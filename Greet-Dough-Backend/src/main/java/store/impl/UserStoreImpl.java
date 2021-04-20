@@ -4,7 +4,7 @@ import model.User;
 import store.model.StoreWithID;
 import store.model.UserStore;
 
-import java.util.List;
+import java.util.LinkedList;
 
 public class UserStoreImpl extends StoreWithID<User> implements UserStore {
 
@@ -45,7 +45,7 @@ public class UserStoreImpl extends StoreWithID<User> implements UserStore {
     }
 
     @Override
-    public List<User> searchUsers( String name ) {
+    public LinkedList<User> searchUsers( String name ) {
         return null;
     }
 
