@@ -39,6 +39,10 @@ public class Likes implements Serializable {
         this.userLikes.remove(uid);
     }
 
+    public boolean hasUserLike( int uid ) {
+        return this.userLikes.contains(uid);
+    }
+
     // No dislike option
     // Author of post can like their own post, we believe in self-confidence
 }

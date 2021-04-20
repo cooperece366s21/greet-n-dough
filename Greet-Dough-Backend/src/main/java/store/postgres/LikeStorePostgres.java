@@ -8,11 +8,9 @@ import utility.ResetDao;
 
 import org.jdbi.v3.core.Jdbi;
 
-import java.util.HashSet;
-
 public class LikeStorePostgres implements LikeStore {
 
-    // test function
+    // For testing purposes
     public static void main( String[] args ) {
 
         Jdbi jdbi = GreetDoughJdbi.create("jdbc:postgresql://localhost:4321/greetdough");

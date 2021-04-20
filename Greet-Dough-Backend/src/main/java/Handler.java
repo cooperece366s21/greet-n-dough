@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Properties;
 
 import com.google.gson.Gson;
+import org.json.*;
 import spark.Request;
 import spark.Response;
 
@@ -520,22 +521,34 @@ public class Handler {
  */
 
     /////////////// POST ACTIONS ///////////////
-    public Post getPost( Request req, Response res ) {
+
+    /**
+     * @return a json object containing the post and like count
+     */
+    public JSONObject getPost( Request req, Response res ) {
 
         int pid = Integer.parseInt( req.params(":id") );
 
-        if ( postStore.hasPost(pid) ) {
+        if ( !postStore.hasPost(pid) ) {
 
-            res.status(200);
             System.err.println("Post does not exist");
-            return postStore.getPost(pid);
-
-        } else {
-
             res.status(404);
             return null;
 
         }
+
+        JSONObject json = new JSONObject();
+
+        // Get the post
+        Post tempPost = postStore.getPost(pid);
+        json.put( "post", tempPost );
+
+        // Get the likes
+        Likes tempLikes = likeStore.getLikes(pid);
+        json.put( "likeCount", tempLikes.getLikeCount() );
+
+        res.status(200);
+        return json;
 
     }
 
@@ -649,12 +662,14 @@ public class Handler {
         // Assume it works cause we dont have subs yet
         res.status(200);
 
-        if ( res.status() == 200 ) {
-            return likeStore.getLikes(pid).getUserLikes();
+        if ( res.status() != 200 ) {
+
+            System.err.println("Error code: " + res.status() );
+            return null;
+
         }
 
-        System.err.println("Error code: " + res.status() );
-        return null;
+        return likeStore.getLikes(pid).getUserLikes();
 
     }
 
