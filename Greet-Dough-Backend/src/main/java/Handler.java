@@ -811,12 +811,12 @@ public class Handler {
         // Check the token
         String token = req.headers("token");
         if ( !isValidToken( token, res ) ) {
+            res.status(403);
             return res.status();
         }
         int uid = loginStore.getUserID(token);
 
-        // Parse the request
-        int pid = Integer.parseInt( data.getProperty("pid") );
+        int pid = Integer.parseInt( req.params(":pid") );
 
 //        int status = checkUserPostPerms(uid, pid);
 //        res.status(status);
