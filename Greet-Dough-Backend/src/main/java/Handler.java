@@ -103,6 +103,27 @@ public class Handler {
     }
 
     /**
+     * Checks if the user specified by uid owns the post.
+     *
+     * @return true if the user owns the post, false otherwise
+     */
+    private boolean checkOwnership( int uid, int pid, Response res ) {
+
+        if ( postStore.getPost(pid).getUserID() != uid ) {
+
+            res.status(401);
+            return false;
+
+        } else {
+
+            res.status(200);
+            return true;
+
+        }
+
+    }
+
+    /**
      * Checks if the token is valid.
      * Sets res.status(). Should check res.status() afterwards to verify success.
      *
@@ -647,15 +668,48 @@ public class Handler {
 
     }
 
+    /**
+     * The method changes the title and/or contents of the
+     * specified post.
+     *
+     * @param   req     contains the pid of the post to be changed;
+     *                  optionally includes the title or contents of the
+     *                  new post
+     */
     public int editPost( Request req, Response res ) {
 
         res.type("application/json");
         Properties data = gson.fromJson(req.body(), Properties.class);
 
-        // Parse the request
+        // Check the token
         Integer uid = validateToken( req, res );
-        String title = data.getProperty("title");
-        String contents = data.getProperty("contents");
+        if ( res.status() != 200 ) {
+
+            System.err.println("Error code: " + res.status());
+            return res.status();
+
+        }
+
+        // Check if the user owns the post
+        int pid = Integer.parseInt( data.getProperty("pid") );
+        if ( !checkOwnership( uid, pid, res ) ) {
+            return res.status();
+        }
+
+        // Parse the request
+        String newTitle = data.getProperty("title");
+        String newContents = data.getProperty("contents");
+
+        // Change the desired fields
+        if ( newTitle != null ) {
+            postStore.changeTitle( pid, newTitle );
+        }
+        if ( newContents != null ) {
+            postStore.changeContents( pid, newContents );
+        }
+
+        res.status(200);
+        return res.status();
 
     }
 
@@ -696,7 +750,14 @@ public class Handler {
         int pid = Integer.parseInt( req.params(":pid") );
         System.out.println(pid);
 
-        int uid = validateToken( req, res );
+        // Check the token
+        Integer uid = validateToken( req, res );
+        if ( res.status() != 200 ) {
+
+            System.err.println("Error code: " + res.status());
+            return null;
+
+        }
         System.out.println(uid);
 
 //        int status = checkUserPostPerms(uid, pid);
@@ -744,10 +805,17 @@ public class Handler {
         res.type("application/json");
         Properties data = gson.fromJson(req.body(), Properties.class);
 
-        // Parse the request
-        int pid = Integer.parseInt( req.params(":pid") );
+        // Check the token
+        Integer uid = validateToken( req, res );
+        if ( res.status() != 200 ) {
 
-        int uid = validateToken( req, res );
+            System.err.println("Error code: " + res.status());
+            return res.status();
+
+        }
+
+        // Parse the request
+        int pid = Integer.parseInt( data.getProperty("pid") );
 
 //        int status = checkUserPostPerms(uid, pid);
 //        res.status(status);
