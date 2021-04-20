@@ -157,18 +157,20 @@ export async function getUserFeed( cuid:number, uid:number ) {
 
 }
 
-export async function getWallet( authToken:string|null ) {
+export async function getWallet( token:string|null ) {
 
-    const res = await fetch(`${BACKEND_URL}/wallet/get/${authToken}/`, {
+    if ( token==null ) return (403);
+
+    const res = await fetch(`${BACKEND_URL}/wallet/`, {
         method: "get",
         mode: "cors",
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "token": token,
         },
     });
 
     if ( res.ok ) {
-
         return await res.json()
             .then( body => {
                 return JSON.parse(body);
@@ -180,17 +182,20 @@ export async function getWallet( authToken:string|null ) {
 
 }
 
-export async function addToWallet( authToken:string|null, amount:string|null ) {
+export async function addToWallet( token:string|null, amount:string|null ) {
     if (amount === ""){
         alert("No value inserted!");
         return;
     }
 
-    const res = await fetch(`${BACKEND_URL}/wallet/add/${authToken}/`, {
+    if ( token==null ) return (403);
+
+    const res = await fetch(`${BACKEND_URL}/wallet/add/`, {
         method: "post",
         mode: "cors",
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "token": token,
         },
         body: JSON.stringify({ amount } )
     });
@@ -205,11 +210,14 @@ export async function addToWallet( authToken:string|null, amount:string|null ) {
 
 export async function createPost( token:string|null, title:string, contents:string ) {
 
-    const res = await fetch(`${BACKEND_URL}/posts/${token}/`, {
+    if ( token==null ) return (403);
+
+    const res = await fetch(`${BACKEND_URL}/posts/`, {
         method: "post",
         mode: "cors",
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "token": token,
         },
         body: JSON.stringify({ title, contents })
     });
@@ -224,11 +232,15 @@ export async function createPost( token:string|null, title:string, contents:stri
 }
 
 export async function deletePost( token:string|null, pid:number ) {
-    const res = await fetch(`${BACKEND_URL}/posts/${pid}/${token}`, {
+
+    if ( token==null ) return (403);
+
+    const res = await fetch(`${BACKEND_URL}/posts/${pid}/`, {
         method: "delete",
         mode: "cors",
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "token": token,
         },
     });
 
@@ -242,11 +254,14 @@ export async function deletePost( token:string|null, pid:number ) {
 
 export async function addLike( token:string|null, pid:number ) {
 
+    if ( token==null ) return (403);
+
     const res = await fetch(`${BACKEND_URL}/posts/${pid}/likes/`, {
         method: "post",
         mode: "cors",
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "token": token,
         },
         body: JSON.stringify({ token })
     });
@@ -262,18 +277,20 @@ export async function addLike( token:string|null, pid:number ) {
 
 export async function getLikes(token: string|null, pid: number) {
 
-    if (typeof token == "string") {
-        const res = await fetch(`${BACKEND_URL}/posts/${pid}/likes/`, {
-            method: "get",
-            mode: "cors",
-            headers: {
-                "Content-Type": "application/json",
-                "token" : token,
-            },
-            body: JSON.stringify({ token })
-        });
-    }
+    if ( token==null ) return (403);
+
+    const res = await fetch(`${BACKEND_URL}/posts/${pid}/likes/`, {
+        method: "get",
+        mode: "cors",
+        headers: {
+            "Content-Type": "application/json",
+            "token" : token,
+        },
+        body: JSON.stringify({ token })
+    });
+
 }
+
 
 let exports = {
     register,

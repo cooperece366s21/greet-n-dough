@@ -140,11 +140,11 @@ public class Server {
 
         // Creates a new post
         // curl -d "uid=0&contents=hello world" -X post localhost:5432/posts/
-        post("/posts/:token/", handler::createPost, gson::toJson);
+        post("/posts/", handler::createPost, gson::toJson);
 
         // Deletes post given postID
         // curl -X delete localhost:5432/posts/0
-        delete("/posts/:id/:token", handler::deletePost, gson::toJson);
+        delete("/posts/:id/", handler::deletePost, gson::toJson);
 
         // Returns feed if user is subscribed.
         // curl -G -d "uid=1" -X post localhost:5432/users/0/feed/
@@ -170,14 +170,14 @@ public class Server {
         // curl -d "uid=1&contents=ok post!" -X post localhost:5432/posts/0/comments/
         post("/posts/:pid/comments/", handler::createComment, gson::toJson);
 
-        get("/wallet/get/:token/", handler::getBalance, gson::toJson);
+        get("/wallet/", handler::getBalance, gson::toJson);
         // Upload Image, which is createPost but imageID exists
         // curl -d "userID=0&contents=hello world&imageID=0" -X post localhost:5432/posts/
         // uploadImage() will prompt user for a path
 
-        post( "/wallet/add/:token/", handler::addToBalance, gson::toJson);
+        post( "/wallet/add/", handler::addToBalance, gson::toJson);
 
-        post( "/wallet/subtract/:token/", handler::subtractFromBalance, gson::toJson);
+        post( "/wallet/subtract/", handler::subtractFromBalance, gson::toJson);
 
     }
 }

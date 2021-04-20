@@ -112,7 +112,7 @@ public class Handler {
      */
     private Integer validateToken( Request req, Response res ) {
 
-        String token = req.params("token");
+        String token = req.headers("token");
         Integer uid = loginStore.getUserID(token);
 
         if ( uid == null ) {
@@ -123,21 +123,6 @@ public class Handler {
 
         return uid;
 
-    }
-
-    private Integer validateTokenBody( Request req, Response res ) {
-        Properties data = gson.fromJson(req.body(), Properties.class);
-
-        String token = data.getProperty("token");
-        Integer uid = loginStore.getUserID(token);
-
-        if ( uid == null ) {
-            res.status(401);
-        } else {
-            res.status(200);
-        }
-
-        return uid;
     }
 
     /////////////// USER ACTIONS ///////////////
@@ -705,7 +690,7 @@ public class Handler {
         // Parse the request
         int pid = Integer.parseInt( req.params(":pid") );
 
-        int uid = validateTokenBody( req, res );
+        int uid = validateToken( req, res );
 
 //        int status = checkUserPostPerms(uid, pid);
 //        res.status(status);
