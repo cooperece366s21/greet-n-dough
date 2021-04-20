@@ -6,7 +6,7 @@ import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
-import java.util.List;
+import java.util.LinkedList;
 import java.util.Optional;
 
 public interface PostDao {
@@ -48,7 +48,7 @@ public interface PostDao {
 
     @SqlQuery("SELECT * FROM posts " +
             "ORDER BY user_id")
-    List<Post> listPosts();
+    LinkedList<Post> listPosts();
 
     @SqlQuery("SELECT * FROM posts " +
             "WHERE post_id = (:post_id)")
@@ -56,7 +56,7 @@ public interface PostDao {
 
     @SqlQuery("SELECT * FROM posts " +
             "WHERE user_id = (:user_id)")
-    List<Post> getFeed(@Bind("user_id") int user_id);
+    LinkedList<Post> getFeed(@Bind("user_id") int user_id);
 
     @SqlUpdate("UPDATE posts " +
             "SET post_title = (:new_title) " +

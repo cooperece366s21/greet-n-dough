@@ -2,7 +2,7 @@ package store.model;
 
 import model.Post;
 
-import java.util.List;
+import java.util.LinkedList;
 
 public interface PostStore {
 
@@ -11,7 +11,7 @@ public interface PostStore {
     /**
      * @return a list composed of every post made by a user
      */
-    List<Post> makeFeed( int uid );
+    LinkedList<Post> makeFeed(int uid );
 
     boolean hasPost( int pid );
 

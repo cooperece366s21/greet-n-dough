@@ -6,7 +6,8 @@ import store.model.PostStore;
 import utility.ResetDao;
 
 import org.jdbi.v3.core.Jdbi;
-import java.util.List;
+
+import java.util.LinkedList;
 
 public class PostStorePostgres implements PostStore {
 
@@ -76,12 +77,12 @@ public class PostStorePostgres implements PostStore {
      *
      * @return all posts in the database
      */
-    public List<Post> getPost() {
+    public LinkedList<Post> getPost() {
         return jdbi.withHandle( handle -> handle.attach(PostDao.class).listPosts() );
     }
 
     @Override
-    public List<Post> makeFeed( int uid ) {
+    public LinkedList<Post> makeFeed( int uid ) {
         return jdbi.withHandle( handle -> handle.attach(PostDao.class).getFeed(uid) );
     }
 

@@ -5,6 +5,7 @@ import store.model.StoreWithID;
 import store.model.PostStore;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class PostStoreImpl extends StoreWithID<Post> implements PostStore {
@@ -26,9 +27,9 @@ public class PostStoreImpl extends StoreWithID<Post> implements PostStore {
     // I'm not sure how to grab the list of items, since the implementation doesnt have access
     // I guess when we use database we wont have this issue of permissions.
     @Override
-    public List<Post> makeFeed( int uid ) {
+    public LinkedList<Post> makeFeed( int uid ) {
 
-        List<Post> usersPosts = new ArrayList<Post>();
+        LinkedList<Post> usersPosts = new LinkedList<>();
 
         for( Post post : this.getItems().values() ) {
             if ( post.getUserID() == uid ) {

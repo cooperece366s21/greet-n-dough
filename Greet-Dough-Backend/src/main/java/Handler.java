@@ -7,10 +7,7 @@ import store.model.*;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 import com.google.gson.Gson;
 import org.json.*;
@@ -184,7 +181,7 @@ public class Handler {
         //      If return value is 0, attempt was unsuccessful
         if ( passwordStore.addPassword( email, tempUser.getID(), password ) == 0 ) {
 
-            System.err.println( "Cannot add password for email" + email );
+            System.err.println( "Cannot add password for email: " + email );
             res.status(409);
             return res.status();
 
@@ -282,29 +279,6 @@ public class Handler {
         System.out.println( res.body() );
         res.status(200);
         return res.body();
-
-    }
-
-    public String getUserFeed( Request req, Response res ) throws JsonProcessingException {
-
-        res.type("application/json");
-        int uid = Integer.parseInt( req.params(":uid") );
-
-//        Properties data = gson.fromJson(req.body(), Properties.class);
-//        Integer cuid = Integer.parseInt( data.getProperty("cuid") );
-
-        if ( userStore.hasUser(uid) ) {
-
-            List<Post> feed = postStore.makeFeed(uid);
-            res.status(200);
-            return mapper.writeValueAsString(feed);
-
-        } else {
-
-            res.status(404);
-            return "";
-
-        }
 
     }
 
@@ -523,7 +497,29 @@ public class Handler {
     /////////////// POST ACTIONS ///////////////
 
     /**
-     * @return a json object containing the post and like count
+     * The method combines a Post object with its corresponding
+     * like count.
+     *
+     * @return a JSONObject with the Post object and like count
+     */
+    private JSONObject combinePostLikes( int pid ) {
+
+        JSONObject json = new JSONObject();
+
+        // Get the post
+        Post tempPost = postStore.getPost(pid);
+        json.put( "post", tempPost );
+
+        // Get the likes
+        Likes tempLikes = likeStore.getLikes(pid);
+        json.put( "likeCount", tempLikes.getLikeCount() );
+
+        return json;
+
+    }
+
+    /**
+     * @return a JSONObject containing the Post object and like count
      */
     public JSONObject getPost( Request req, Response res ) {
 
@@ -537,15 +533,46 @@ public class Handler {
 
         }
 
+        // Get the post and like count
+        JSONObject json = combinePostLikes(pid);
+
+        res.status(200);
+        return json;
+
+    }
+
+    /**
+     * The method returns a JSONObject containing a list of
+     * JSONObjects that contain the Post object and like count.
+     * Each JSONObject in the list represents an individual post.
+     *
+     * @return a JSONObject containing a list of JSONObjects
+     */
+    public JSONObject getUserFeed( Request req, Response res ) throws JsonProcessingException {
+
+        res.type("application/json");
+        int uid = Integer.parseInt( req.params(":uid") );
+
+//        Properties data = gson.fromJson(req.body(), Properties.class);
+//        Integer cuid = Integer.parseInt( data.getProperty("cuid") );
+
+        if ( !userStore.hasUser(uid) ) {
+
+            res.status(404);
+            return null;
+
+        }
+
+        // Get the feed and convert each post into a JSONObject
+        LinkedList<Post> feed = postStore.makeFeed(uid);
+        LinkedList<JSONObject> listJSON = new LinkedList<>();
+        for ( Post tempPost : feed ) {
+            listJSON.add( combinePostLikes( tempPost.getID() ) );
+        }
+
+        // Store the list in a JSONObject
         JSONObject json = new JSONObject();
-
-        // Get the post
-        Post tempPost = postStore.getPost(pid);
-        json.put( "post", tempPost );
-
-        // Get the likes
-        Likes tempLikes = likeStore.getLikes(pid);
-        json.put( "likeCount", tempLikes.getLikeCount() );
+        json.put( "feed", listJSON );
 
         res.status(200);
         return json;
@@ -619,6 +646,21 @@ public class Handler {
         return res.status();
 
     }
+
+    public int editPost( Request req, Response res ) {
+
+        res.type("application/json");
+        Properties data = gson.fromJson(req.body(), Properties.class);
+
+        // Parse the request
+        Integer uid = validateToken( req, res );
+        String title = data.getProperty("title");
+        String contents = data.getProperty("contents");
+
+    }
+
+
+
 
 //    public List<Post> getFeed( Request req, Response res ) {
 //
