@@ -108,7 +108,7 @@ public class Handler {
      *
      * @return  true if the user owns the post; false otherwise
      */
-    private boolean hasOwnership(int uid, int pid, Response res ) {
+    private boolean hasOwnership( int uid, int pid, Response res ) {
 
         if ( postStore.getPost(pid).getUserID() != uid ) {
 
@@ -130,7 +130,7 @@ public class Handler {
      *
      * @return   true if the token is valid; false otherwise
      */
-    private boolean isValidToken(String token, Response res ) {
+    private boolean isValidToken( String token, Response res ) {
 
         if ( loginStore.hasSession(token) ) {
 
@@ -811,7 +811,6 @@ public class Handler {
         // Check the token
         String token = req.headers("token");
         if ( !isValidToken( token, res ) ) {
-            res.status(403);
             return res.status();
         }
         int uid = loginStore.getUserID(token);

@@ -9,53 +9,6 @@ import java.math.BigDecimal;
 
 public class WalletStorePostgres implements WalletStore {
 
-    public static void main( String[] args ) {
-
-        Jdbi jdbi = GreetDoughJdbi.create("jdbc:postgresql://localhost:4321/greetdough");
-        UserStorePostgres UserStorePostgres = new UserStorePostgres(jdbi);
-        WalletStorePostgres WalletStorePostgres = new WalletStorePostgres(jdbi);
-
-        // Used to DROP and CREATE all tables
-        ResetDao.reset(jdbi);
-
-        User steve = UserStorePostgres.addUser("Steve Ree");
-        User juan = UserStorePostgres.addUser("Juan Lam");
-
-        // Test retrieving an invalid user
-        System.out.println( WalletStorePostgres.getBalance( steve.getID() ) );
-
-        // Test adding a user
-        WalletStorePostgres.addUser( steve.getID() );
-        WalletStorePostgres.addUser( juan.getID(), new BigDecimal("10.50") );
-
-        // Check balances
-        System.out.println( WalletStorePostgres.getBalance( steve.getID() ) );
-        System.out.println( WalletStorePostgres.getBalance( juan.getID() ) );
-        System.out.println( WalletStorePostgres.getBalance(-1) );
-
-        // Testing .stripTrailingZeros()
-        BigDecimal amount = new BigDecimal("150000");
-        System.out.println(amount);
-        amount = amount.stripTrailingZeros();
-        System.out.println(amount);
-        if ( amount.compareTo(BigDecimal.ZERO) != 1 || amount.scale() > 2 ) {
-            System.out.println("bad");
-        } else {
-            System.out.println("good");
-        }
-
-        // Test changing balances
-        WalletStorePostgres.addToBalance( steve.getID(), new BigDecimal("1.005") ); // Rounds to 1.01
-        WalletStorePostgres.subtractFromBalance( juan.getID(), new BigDecimal("0.50") );
-        WalletStorePostgres.addToBalance( -1, new BigDecimal("15") );
-
-        // Check balances
-        System.out.println( WalletStorePostgres.getBalance( steve.getID() ) );
-        System.out.println( WalletStorePostgres.getBalance( juan.getID() ) );
-        System.out.println( WalletStorePostgres.getBalance(-1) );
-
-    }
-
     private final Jdbi jdbi;
 
     public WalletStorePostgres( final Jdbi jdbi ) {
