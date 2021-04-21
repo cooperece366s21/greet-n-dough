@@ -13,51 +13,16 @@ import {
 } from "@chakra-ui/react";
 import api from "../../services/api";
 import {type} from "os";
+import {PostObject} from "../../services/types";
 
-type Post = {
-    ID: number,
-    userID: number,
-    title: string,
-    contents: string,
-    timeCreated: TimeCreated,
-    time: Time,
-}
-
-type TimeCreated = {
-    date: Date,
-}
-
-type Date = {
-    year: number,
-    month: number,
-    day: number,
-}
-
-type Time = {
-    hour: number,
-    minute: number,
-    second: number,
-    nano: number,
-}
-
-type Chronology = {
-    id: string, // ISO
-    calendarType: string // iso8601
-}
-
-type Map = {
+type Entry = {
     map: PostObject,
-}
-
-type PostObject = {
-    post: Post,
-    likeCount : number,
 }
 
 type FeedState = {
     cuid: number,
     uid: number,
-    feed: Map[] | null,
+    feed: Entry[] | null,
     hasOwnership: boolean,
     deleteAlert: boolean,
 }
@@ -169,8 +134,17 @@ class UserFeed extends  React.Component<any, any> {
                     {/* Upper Region, TITLE and DELETE*/}
                     <HStack w={"100%"}>
 
-                        <Box w="95%">
+                        <Box w="90%">
                             <Text fontSize={"30px"} fontWeight={600}> { e.map.post.title } </Text>
+                        </Box>
+
+                        <Box w="5%">
+                            {this.state.hasOwnership &&
+                            <Button
+                                onClick={()=> alert("edit post or something") }>
+                                📋
+                            </Button>
+                            }
                         </Box>
 
                         <Box w="5%">
