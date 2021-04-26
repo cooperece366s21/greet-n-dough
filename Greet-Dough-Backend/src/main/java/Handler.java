@@ -604,9 +604,9 @@ public class Handler {
      * JSONObjects that contain the Post object and like count.
      * Each JSONObject in the list represents an individual post.
      *
-     * @return a JSONObject containing a list of JSONObjects
+     * @return a list of JSONObjects
      */
-    public JSONObject getUserFeed( Request req, Response res ) throws JsonProcessingException {
+    public LinkedList<JSONObject> getUserFeed( Request req, Response res ) {
 
         res.type("application/json");
         int uid = Integer.parseInt( req.params(":uid") );
@@ -617,7 +617,7 @@ public class Handler {
         if ( !userStore.hasUser(uid) ) {
 
             res.status(404);
-            return new JSONObject();
+            return new LinkedList<>();
 
         }
 
@@ -628,12 +628,8 @@ public class Handler {
             listJSON.add( combinePostLikes( tempPost.getID() ) );
         }
 
-        // Store the list in a JSONObject
-        JSONObject json = new JSONObject();
-        json.put( "feed", listJSON );
-
         res.status(200);
-        return json;
+        return listJSON;
 
     }
 
