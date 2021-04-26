@@ -36,7 +36,7 @@ class ImageStorePostgresTest extends ImageStorePostgres {
         User komodo = userStorePostgres.addUser("Komodo");
 
         // Test empty returns
-        assert ( imageStorePostgres.getImage().equals( new LinkedList<Image>() ) );
+        assert ( imageStorePostgres.getImage().isEmpty() );
         assertNull ( imageStorePostgres.getImage(1) );
 
         // Get local image

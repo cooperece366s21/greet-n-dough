@@ -20,4 +20,6 @@ public interface CommentStore {
 
     boolean isParent( int cid );
 
+    void deleteComment( int cid );
+
 }

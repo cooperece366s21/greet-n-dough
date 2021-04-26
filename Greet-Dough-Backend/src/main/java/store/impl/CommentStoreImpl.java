@@ -59,5 +59,10 @@ public class CommentStoreImpl extends StoreWithID<Comment> implements CommentSto
         return false;
     }
 
+    @Override
+    public void deleteComment( int cid ) {
+
+    }
+
 
 }

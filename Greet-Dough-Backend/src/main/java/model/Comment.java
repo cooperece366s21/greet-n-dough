@@ -51,4 +51,23 @@ public class Comment implements Serializable {
         return getParentID() != null;
     }
 
+    public boolean equals( Comment tempComment ) {
+
+        if (    this.getID() == tempComment.getID() &&
+                this.getUserID() == tempComment.getUserID() &&
+                this.getPostID() == tempComment.getPostID() &&
+                this.getContents().equals( tempComment.getContents() ) ) {
+
+            // Check the parent IDs (needed b/c of potential null pointer exception)
+            if ( this.getParentID() != null && tempComment.getParentID() != null &&
+                    this.getParentID().equals( tempComment.getParentID() ) ) {
+                return true;
+            } else return this.getParentID() == null && tempComment.getParentID() == null;
+
+        }
+
+        return false;
+
+    }
+
 }

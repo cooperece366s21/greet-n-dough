@@ -59,5 +59,9 @@ public interface CommentDao {
                     "parent_id IS null);")
     boolean isParent(@Bind("comment_id") int comment_id);
 
+    @SqlUpdate("DELETE FROM comments " +
+            "WHERE comment_id = (:comment_id);")
+    void deleteComment(@Bind("comment_id") int comment_id);
+
 }
 
