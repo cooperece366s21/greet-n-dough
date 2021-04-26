@@ -1,62 +1,9 @@
 package store.postgres;
 
-import model.User;
 import store.model.PasswordStore;
-import utility.ResetDao;
 import org.jdbi.v3.core.Jdbi;
 
-/////////////////////////////////////////////// CHANGE HASH TO SHA256
 public class PasswordStorePostgres implements PasswordStore {
-
-    // For testing purposes
-    public static void main( String[] args ) {
-
-        Jdbi jdbi = GreetDoughJdbi.create("jdbc:postgresql://localhost:4321/greetdough");
-        UserStorePostgres UserStorePostgres = new UserStorePostgres(jdbi);
-        PasswordStorePostgres PasswordStorePostgres = new PasswordStorePostgres(jdbi);
-
-        // Used to DROP and CREATE all tables
-        ResetDao.reset(jdbi);
-
-        // Create a user
-        User newUser = UserStorePostgres.addUser("B. Ryan");
-        User userAfterWrite = UserStorePostgres.getUser( newUser.getID() );
-
-        // Add the user with an associated email and password
-        String email = "SweetNDough@gmail.com";
-        String pass = "password123";
-        if ( PasswordStorePostgres.addPassword( email, newUser.getID(), pass ) == 0 ) {
-            System.err.println("Duplicate Email");
-        } else {
-            System.out.println("Password Insert Successful");
-        }
-
-        // Check if the password is correct
-        System.out.println( PasswordStorePostgres.hasEmail(email) );
-        System.out.println( PasswordStorePostgres.getUserID(email, pass) );
-
-        // Test adding a second password for the same email but lowercase
-        if ( PasswordStorePostgres.addPassword( email.toLowerCase(), newUser.getID(), "lol" ) == 0 ) {
-            System.out.println("Duplicate Email");
-        } else {
-            System.err.println("SHOULD NOT HAPPEN!!!");
-        }
-
-        // Test changing the email/password
-        String newEmail = "WheatNGrow@aol.com";
-        String newPass = "password1234";
-        PasswordStorePostgres.changeEmail( email, newEmail );
-        PasswordStorePostgres.changePassword( newEmail, newPass );
-
-        // Check if update was successful
-        System.out.println( PasswordStorePostgres.hasEmail(newEmail) );
-        System.out.println( PasswordStorePostgres.getUserID(newEmail, newPass) );
-
-        // Test deleting the user
-        UserStorePostgres.deleteUser( userAfterWrite.getID() );
-        System.out.println( PasswordStorePostgres.hasEmail(email) );
-
-    }
 
     private final Jdbi jdbi;
 

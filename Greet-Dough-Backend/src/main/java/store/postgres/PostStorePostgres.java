@@ -1,9 +1,7 @@
 package store.postgres;
 
-import model.User;
 import model.Post;
 import store.model.PostStore;
-import utility.ResetDao;
 
 import org.jdbi.v3.core.Jdbi;
 
