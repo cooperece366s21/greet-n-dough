@@ -15,21 +15,21 @@ public interface PasswordStore {
     /**
      * Gets the uid given an email and a password.
      * The method returns the associated uid if the email and password match an entry in the database.
-     * The method returns null if there is no match
+     * The method returns null if there is no match.
      *
      * @return the associated uid
       */
     Integer getUserID( String email, String password );
 
     /**
-     * Checks if email already has an associated password
+     * Checks if email already has an associated password.
       */
     boolean hasEmail( String email );
 
     void changeEmail( String oldEmail, String newEmail );
 
     /**
-     * The method should only be used after checking getUserID() to validate the old password
+     * The method should only be used after checking getUserID() to validate the old password.
       */
     void changePassword( String email, String newPassword );
 

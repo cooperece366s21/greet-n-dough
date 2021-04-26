@@ -35,7 +35,7 @@ public interface PasswordDao {
 
     @SqlQuery("SELECT EXISTS( " +
             "SELECT * FROM passwords " +
-            "WHERE user_email = (LOWER(:user_email)));")
+            "WHERE user_email = LOWER(:user_email));")
     boolean hasEmail(@Bind("user_email") String user_email);
 
     @SqlUpdate("UPDATE passwords " +

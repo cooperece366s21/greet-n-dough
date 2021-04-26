@@ -5,56 +5,11 @@ import model.Post;
 import model.Image;
 import store.model.ImageStore;
 import utility.ImageHandler;
-import utility.ResetDao;
-
 import org.jdbi.v3.core.Jdbi;
 
-import java.io.File;
-import java.nio.file.*;
 import java.util.List;
 
 public class ImageStorePostgres implements ImageStore {
-
-    // For testing purposes
-    public static void main( String[] args ) {
-
-        Jdbi jdbi = GreetDoughJdbi.create("jdbc:postgresql://localhost:4321/greetdough");
-        UserStorePostgres UserStorePostgres = new UserStorePostgres(jdbi);
-        PostStorePostgres PostStorePostgres = new PostStorePostgres(jdbi);
-        ImageStorePostgres ImageStorePostgres = new ImageStorePostgres(jdbi);
-
-        // Used to DROP and CREATE all tables
-        ResetDao.reset(jdbi);
-
-        User komodo = UserStorePostgres.addUser("Komodo");
-
-        // Test empty returns
-        System.out.println( ImageStorePostgres.getImage() );
-        System.out.println( ImageStorePostgres.getImage(1) );
-
-        // Get local image
-        FileSystem fileSys = FileSystems.getDefault();
-        Path tempPath = fileSys.getPath( System.getProperty("user.dir") );
-        for ( int a=0; a<3; a++ ) {
-            tempPath = tempPath.getParent();
-        }
-        Path newPath = fileSys.getPath( tempPath.toString() + File.separator + "beardKoolmodo.png" );
-        System.out.println(newPath.toString());
-
-        // Test copying and saving an image
-        Image selfie = ImageStorePostgres.addImage( newPath.toString(), komodo.getID() );
-
-        // Test adding a post with an image
-        Post newPost = PostStorePostgres.addPost( "Feeling cute, might delete later", "first!", komodo.getID(), selfie.getID() );
-        System.out.println( newPost.getID() + " " + newPost.getUserID() +
-                " " + newPost.getImageID() + " " + newPost.getContents() );
-
-        // Test deleting the post
-        //      Should delete cascade the image
-        PostStorePostgres.deletePost( newPost.getID() );
-        System.out.println( ImageStorePostgres.getImage( selfie.getID() ).getPath() );
-
-    }
 
     private final Jdbi jdbi;
     private final ImageHandler ImageHandler;
