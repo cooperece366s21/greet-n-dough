@@ -1,6 +1,5 @@
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.JsonObject;
 import model.*;
 import utility.Pair;
 import store.model.*;
@@ -335,9 +334,9 @@ public class Handler {
         System.out.println(uid + " Logged in!");
 
         String cookie = loginStore.addSession(uid);
-        JsonObject cookieJSON = new JsonObject();
-        cookieJSON.addProperty("authToken", cookie);
-        res.body( String.valueOf(cookieJSON) );
+        JSONObject cookieJSON = new JSONObject();
+        cookieJSON.put("authToken", cookie);
+        res.body( cookieJSON.toString() );
 
         System.out.println( res.body() );
         res.status(200);
