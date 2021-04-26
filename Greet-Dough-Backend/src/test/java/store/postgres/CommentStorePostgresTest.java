@@ -49,7 +49,7 @@ class CommentStorePostgresTest extends CommentStorePostgres {
 
         // Test retrieving a reply comment
         Comment replyCommentAfterWrite = commentStorePostgres.getComment( reply.getID() );
-        assert ( replyCommentAfterWrite.equals( reply ) );
+        assert ( replyCommentAfterWrite.equals(reply) );
 
         // Test retrieving the list of parent comments under a post
         LinkedList<Comment> postParents = commentStorePostgres.getParents( post1.getID() );

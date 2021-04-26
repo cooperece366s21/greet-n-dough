@@ -11,48 +11,6 @@ import java.util.LinkedList;
 
 public class PostStorePostgres implements PostStore {
 
-    // For testing purposes
-    public static void main( String[] args ) {
-
-        Jdbi jdbi = GreetDoughJdbi.create("jdbc:postgresql://localhost:4321/greetdough");
-        UserStorePostgres UserStorePostgres = new UserStorePostgres(jdbi);
-        PostStorePostgres PostStorePostgres = new PostStorePostgres(jdbi);
-
-        // Used to DROP and CREATE all tables
-        ResetDao.reset(jdbi);
-
-        User newUser = UserStorePostgres.addUser("Bill");
-
-        // Test adding and retrieving a post
-        Post newPost = PostStorePostgres.addPost( "My first post!", "testing123", newUser.getID() );
-        Post postAfterWrite = PostStorePostgres.getPost( newPost.getID() );
-        System.out.println( postAfterWrite.getID() + " " + postAfterWrite.getUserID() + " " +
-                            postAfterWrite.getImageID() + " " + postAfterWrite.getContents() + " " +
-                            postAfterWrite.getTime() );
-
-        // Test deleting the post
-        PostStorePostgres.deletePost( postAfterWrite.getID() );
-
-        // Make some more posts
-        Post poopPost = PostStorePostgres.addPost( "Feeling well today", "cuz it's a WELLness day hahahahhah", newUser.getID() );
-        PostStorePostgres.addPost( "You can graduate with a bachelors and masters with 134 credits at other schools",
-                                "haha very cool!", newUser.getID() );
-        System.out.println( PostStorePostgres.makeFeed( newUser.getID() ) );
-
-        // Test changing a post
-        PostStorePostgres.changeTitle( poopPost.getID(), "Not feeling well today" );
-        PostStorePostgres.changeContents( poopPost.getID(), "cuz it's still a wellness day" );
-        System.out.println( PostStorePostgres.getPost( poopPost.getID() ).getTitle() );
-        System.out.println( PostStorePostgres.getPost( poopPost.getID() ).getContents() );
-
-        // Test deleting the user
-        //      Should delete cascade the posts
-        UserStorePostgres.deleteUser( newUser.getID() );
-        System.out.println( PostStorePostgres.makeFeed( newUser.getID() ) );
-        System.out.println( PostStorePostgres.getPost() );
-
-    }
-
     private final Jdbi jdbi;
 
     public PostStorePostgres( final Jdbi jdbi ) {

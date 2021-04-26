@@ -160,7 +160,7 @@ public class Handler {
         } else {
 
             res.status(404);
-            return null;
+            return "";
 
         }
     }
@@ -252,27 +252,59 @@ public class Handler {
 
     }
 
+    /**
+     * The method changes the name of the specified user.
+     *
+     * @param   req     contains the uid of the post to be changed;
+     *                  also includes the new name of the user
+     */
+    public int editUser( Request req, Response res ) {
+
+        res.type("application/json");
+        Properties data = gson.fromJson(req.body(), Properties.class);
+
+        // Check the token
+        String token = req.headers("token");
+        if ( !isValidToken( token, res ) ) {
+            return res.status();
+        }
+        int uid = loginStore.getUserID(token);
+
+        // Parse the request
+        String newName = data.getProperty("name");
+
+        // Check if the request was formatted correctly
+        if ( newName == null ) {
+
+            res.status(400);
+            return res.status();
+
+        }
+
+        // Change the desired fields
+        userStore.changeName( uid, newName );
+        res.status(200);
+
+        return res.status();
+
+    }
+
     public String tokenToID( Request req, Response res ) {
 
         res.type("application/json");
         Properties data = gson.fromJson(req.body(), Properties.class);
 
-        // Parse the request
+        // Check the token
         String token = data.getProperty("authToken");
-
-        Integer uid = loginStore.getUserID(token);
-
-        if ( uid == null ) {
-
-            res.status(401);
+        if ( !isValidToken( token, res ) ) {
             return "";
-
         }
+        int uid = loginStore.getUserID(token);
 
         // Not sure if this body part is required, since we are returning uid?
-        JsonObject uidJSON = new JsonObject();
-        uidJSON.addProperty("uid", uid);
-        res.body( String.valueOf(uidJSON) );
+        JSONObject uidJSON = new JSONObject();
+        uidJSON.put("uid", uid);
+        res.body( uidJSON.toString() );
 
         res.status(200);
         return res.body();
@@ -332,7 +364,7 @@ public class Handler {
         // Check the token
         String token = req.headers("token");
         if ( !isValidToken( token, res ) ) {
-            return null;
+            return "";
         }
         int uid = loginStore.getUserID(token);
 
@@ -392,7 +424,7 @@ public class Handler {
      * @param req   contains the amount to be added;
      *              amount must be positive (greater than 0) and have at most 2 digits after the decimal
      * @return      the HTTP status code
-     * @see WalletStore#verifyPurchase()
+     * @see         WalletStore#verifyPurchase()
       */
     public int addToBalance( Request req, Response res ) {
         return modifyBalance( req, res, true );
@@ -405,7 +437,7 @@ public class Handler {
      * @param req   contains the amount to be subtracted;
      *              amount must be positive (greater than 0) and have at most 2 decimal places
      * @return      the HTTP status code
-     * @see WalletStore#verifyPurchase()
+     * @see         WalletStore#verifyPurchase()
      */
     public int subtractFromBalance( Request req, Response res ) {
         return modifyBalance( req, res, false );
@@ -556,7 +588,7 @@ public class Handler {
 
             System.err.println("Post does not exist");
             res.status(404);
-            return null;
+            return new JSONObject();
 
         }
 
@@ -586,7 +618,7 @@ public class Handler {
         if ( !userStore.hasUser(uid) ) {
 
             res.status(404);
-            return null;
+            return new JSONObject();
 
         }
 
@@ -688,8 +720,8 @@ public class Handler {
      * specified post.
      *
      * @param   req     contains the pid of the post to be changed;
-     *                  optionally includes the title or contents of the
-     *                  new post
+     *                  optionally includes the new title or new contents
+     *                  of the post
      */
     public int editPost( Request req, Response res ) {
 
@@ -712,6 +744,14 @@ public class Handler {
         // Parse the request
         String newTitle = data.getProperty("title");
         String newContents = data.getProperty("contents");
+
+        // Check if the request was formatted properly
+        if ( newTitle == null && newContents == null ) {
+
+            res.status(400);
+            return res.status();
+
+        }
 
         // Change the desired fields
         if ( newTitle != null ) {
@@ -766,7 +806,7 @@ public class Handler {
         // Check the token
         String token = req.headers("token");
         if ( !isValidToken( token, res ) ) {
-            return null;
+            return new HashSet<>();
         }
         int uid = loginStore.getUserID(token);
         System.out.println(uid);
@@ -779,7 +819,7 @@ public class Handler {
         if ( res.status() != 200 ) {
 
             System.err.println("Error code: " + res.status() );
-            return null;
+            return new HashSet<>();
 
         }
 
@@ -896,7 +936,7 @@ public class Handler {
     }
 
     // havent checked permissions for this yet
-    public List<Comment> getParentComments( Request req, Response res ) {
+    public LinkedList<Comment> getParentComments( Request req, Response res ) {
 
         res.type("application/json");
         Properties data = gson.fromJson(req.body(), Properties.class);
@@ -910,7 +950,7 @@ public class Handler {
         if ( res.status() != 200 ) {
 
             System.err.println("Error code: " + res.status());
-            return null;
+            return new LinkedList<>();
 
         }
 
@@ -919,7 +959,7 @@ public class Handler {
 
     }
 
-    public List<Comment> getRepliesComments( Request req, Response res ) {
+    public LinkedList<Comment> getRepliesComments( Request req, Response res ) {
 
         res.type("application/json");
         Properties data = gson.fromJson(req.body(), Properties.class);
@@ -934,7 +974,7 @@ public class Handler {
         if ( res.status() != 200 ) {
 
             System.err.println("Error code: " + res.status());
-            return null;
+            return new LinkedList<>();
 
         }
 
@@ -942,6 +982,7 @@ public class Handler {
 
     }
 
+    // Currently not implemented
     public int deleteComment( Request req, Response res ) {
 
         return res.status();
