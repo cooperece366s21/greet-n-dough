@@ -32,7 +32,7 @@ public class UserStorePostgres implements UserStore {
      *
      * @return all users in the database
      */
-    public LinkedList<User> getUser() {
+    protected LinkedList<User> getUser() {
         return jdbi.withHandle( handle -> handle.attach(UserDao.class).listUsers() );
     }
 

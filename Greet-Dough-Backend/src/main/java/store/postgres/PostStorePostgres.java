@@ -77,7 +77,7 @@ public class PostStorePostgres implements PostStore {
      *
      * @return all posts in the database
      */
-    public LinkedList<Post> getPost() {
+    protected LinkedList<Post> getPost() {
         return jdbi.withHandle( handle -> handle.attach(PostDao.class).listPosts() );
     }
 

@@ -11,7 +11,6 @@ import java.io.File;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
-import java.util.LinkedList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -61,6 +60,18 @@ class ImageStorePostgresTest extends ImageStorePostgres {
 
         // Test retrieving the image
         assert ( imageStorePostgres.getImage( selfie.getID() ).getPath().equals( selfie.getPath() ) );
+
+        // Test soft deleting and then clearing an image
+        Image tempImage = imageStorePostgres.addImage( newPath.toString(), komodo.getID() );
+        assert ( imageStorePostgres.getImage().size() == 2 );
+
+        // Check that the number of rows is still the same
+        imageStorePostgres.deleteImage( tempImage.getID() );
+        assert ( imageStorePostgres.getImage().size() == 2 );
+
+        // Check that the soft deleted row has been removed
+        imageStorePostgres.clearDeleted();
+        assert ( imageStorePostgres.getImage().size() == 1 );
 
         // Test deleting the user
         //      Should delete cascade the image

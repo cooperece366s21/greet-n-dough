@@ -39,7 +39,7 @@ public class ImageStorePostgres implements ImageStore {
      *
      * @return all images in the database
      */
-    public List<Image> getImage() {
+    protected List<Image> getImage() {
         return jdbi.withHandle( handle -> handle.attach(ImageDao.class).listImages() );
     }
 
@@ -65,6 +65,16 @@ public class ImageStorePostgres implements ImageStore {
     @Override
     public void deleteImage( int iid ) {
         jdbi.useHandle( handle -> handle.attach(ImageDao.class).deleteImage(iid) );
+    }
+
+    @Override
+    public void clearDeleted() {
+
+        List<Image> deletedImages = jdbi.withHandle( handle -> handle.attach(ImageDao.class).clearDeleted() );
+        for ( Image img : deletedImages ) {
+            ImageHandler.deleteImage( img.getPath() );
+        }
+
     }
 
 }

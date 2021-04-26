@@ -48,6 +48,11 @@ public class ImageStoreImpl extends StoreWithID<Image> implements ImageStore {
     }
 
     @Override
+    public void clearDeleted() {
+
+    }
+
+    @Override
     public List<Image> makeGallery( int uid ) {
         return null;
     }

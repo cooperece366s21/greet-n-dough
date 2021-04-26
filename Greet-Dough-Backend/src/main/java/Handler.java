@@ -942,6 +942,12 @@ public class Handler {
 
     }
 
+    public int deleteComment( Request req, Response res ) {
+
+        return res.status();
+
+    }
+
 //    public ArrayList<Comment> getComments( Request req, Response res ) {
 //
 //        int pid = Integer.parseInt( req.params(":pid") );

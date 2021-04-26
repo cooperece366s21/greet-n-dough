@@ -18,6 +18,7 @@ public interface ImageDao {
             "image_id SERIAL " +    "NOT NULL, " +
             "user_id INT " +        "NOT NULL, " +
             "path TEXT " +          "NOT NULL, " +
+            "is_deleted BOOLEAN " + "NOT NULL " + "DEFAULT FALSE, " +
             "PRIMARY KEY(image_id), " +
             "CONSTRAINT fk_user " + "FOREIGN KEY(user_id) " +
                 "REFERENCES users(user_id) " + "ON DELETE CASCADE " +
@@ -30,20 +31,31 @@ public interface ImageDao {
     int addImage(@Bind("path") String path,
                  @Bind("user_id") int user_id);
 
-    @SqlUpdate("DELETE FROM images " +
+    @SqlUpdate("UPDATE images " +
+            "SET is_deleted = true " +
             "WHERE image_id = (:image_id);")
     void deleteImage(@Bind("image_id") int image_id);
+
+    /**
+     * @return a list of images deleted from the table
+     */
+    @SqlQuery("DELETE FROM images " +
+            "WHERE is_deleted = true " +
+            "RETURNING *;")
+    List<Image> clearDeleted();
 
     @SqlQuery("SELECT * FROM images " +
             "ORDER BY user_id")
     List<Image> listImages();
 
     @SqlQuery("SELECT * FROM images " +
-            "WHERE image_id = (:image_id)")
+            "WHERE image_id = (:image_id) AND " +
+            "is_deleted = false")
     Optional<Image> getImage(@Bind("image_id") int image_id);
 
     @SqlQuery("SELECT * FROM images " +
-            "WHERE user_id = (:user_id)")
+            "WHERE user_id = (:user_id) AND " +
+            "is_deleted = false")
     List<Image> getGallery(@Bind("user_id") int user_id);
 
 }

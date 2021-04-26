@@ -65,16 +65,36 @@ public class ImageHandler {
         try {
 
             // Creates the file to write to
-            new File( destPath.toString() ).createNewFile();
+            // Checks if creation was successful
+            if ( !new File( destPath.toString() ).createNewFile() ) {
+                return null;
+            }
 
             // Copies the file
             Files.copy(srcPath, destPath, StandardCopyOption.REPLACE_EXISTING);
+            return destPath.toString();
 
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
 
-        return destPath.toString();
+        return null;
+
+    }
+
+    // From https://docs.oracle.com/javase/tutorial/essential/io/delete.html
+    public void deleteImage( String path ) {
+
+        try {
+            Files.delete( fileSys.getPath(path) );
+        } catch ( NoSuchFileException x ) {
+            System.err.format("%s: no such" + " file or directory%n", path);
+        } catch ( DirectoryNotEmptyException x ) {
+            System.err.format("%s not empty%n", path);
+        } catch ( IOException x ) {
+            // File permission problems are caught here.
+            System.err.println(x);
+        }
 
     }
 
