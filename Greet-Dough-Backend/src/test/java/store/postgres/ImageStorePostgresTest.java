@@ -32,11 +32,11 @@ class ImageStorePostgresTest extends ImageStorePostgres {
         // Used to DROP and CREATE all tables
         ResetDao.reset(jdbi);
 
-        User komodo = userStorePostgres.addUser("Komodo");
+        User newUser = userStorePostgres.addUser("Komodo");
 
         // Test empty returns
         assert ( imageStorePostgres.getImage().isEmpty() );
-        assertNull ( imageStorePostgres.getImage(1) );
+        assertNull( imageStorePostgres.getImage(1) );
 
         // Get local image
         FileSystem fileSys = FileSystems.getDefault();
@@ -47,13 +47,13 @@ class ImageStorePostgresTest extends ImageStorePostgres {
         Path newPath = fileSys.getPath( tempPath.toString() + File.separator + "beardKoolmodo.png" );
 
         // Test copying and saving an image
-        Image selfie = imageStorePostgres.addImage( newPath.toString(), komodo.getID() );
+        Image selfie = imageStorePostgres.addImage( newPath.toString(), newUser.getID() );
 
         // Test adding a post with an image
         String title = "Feeling cute, might delete later";
         String contents = "first!";
-        Post newPost = postStorePostgres.addPost( title, contents, komodo.getID(), selfie.getID() );
-        assert ( newPost.getUserID() == komodo.getID() );
+        Post newPost = postStorePostgres.addPost( title, contents, newUser.getID(), selfie.getID() );
+        assert ( newPost.getUserID() == newUser.getID() );
         assert ( newPost.getImageID() == selfie.getID() );
         assert ( newPost.getTitle().equals( title ) );
         assert ( newPost.getContents().equals( contents ) );
@@ -62,7 +62,7 @@ class ImageStorePostgresTest extends ImageStorePostgres {
         assert ( imageStorePostgres.getImage( selfie.getID() ).getPath().equals( selfie.getPath() ) );
 
         // Test soft deleting and then clearing an image
-        Image tempImage = imageStorePostgres.addImage( newPath.toString(), komodo.getID() );
+        Image tempImage = imageStorePostgres.addImage( newPath.toString(), newUser.getID() );
         assert ( imageStorePostgres.getImage().size() == 2 );
 
         // Check that the number of rows is still the same
@@ -75,7 +75,7 @@ class ImageStorePostgresTest extends ImageStorePostgres {
 
         // Test deleting the user
         //      Should delete cascade the image
-        userStorePostgres.deleteUser( komodo.getID() );
+        userStorePostgres.deleteUser( newUser.getID() );
         assertNull ( imageStorePostgres.getImage( selfie.getID() ) );
 
     }

@@ -35,7 +35,7 @@ class UserStorePostgresTest extends UserStorePostgres {
         assert ( userStorePostgres.hasUser( josh.getID() ) );
 
         // Test searching for a user given the first portion of their name
-        User jon = userStorePostgres.addUser("Jon");
+        User newUser = userStorePostgres.addUser("Jon");
 
         // Prints the names of the users given a list of users
         //      Playing around with mapping a list
@@ -47,12 +47,12 @@ class UserStorePostgresTest extends UserStorePostgres {
                     .equals(correctList) );
 
         // Test changing the user's name
-        userStorePostgres.changeName( jon.getID(), "John" );
-        assert ( userStorePostgres.getUser(jon.getID()).getName().equals("John") );
+        userStorePostgres.changeName( newUser.getID(), "John" );
+        assert ( userStorePostgres.getUser(newUser.getID()).getName().equals("John") );
 
         // Test deleting the user
         userStorePostgres.deleteUser( josh.getID() );
-        assertNull ( userStorePostgres.getUser( josh.getID() ) );
+        assertNull( userStorePostgres.getUser( josh.getID() ) );
 
     }
 

@@ -53,7 +53,7 @@ class PasswordStorePostgresTest extends PasswordStorePostgres {
         // Test deleting the user
         //      Should delete cascade the email and password
         userStorePostgres.deleteUser( newUser.getID() );
-        assertFalse ( passwordStorePostgres.hasEmail(email) );
+        assertFalse( passwordStorePostgres.hasEmail(email) );
 
     }
 

@@ -1,6 +1,7 @@
 package store.postgres;
 
 import store.model.PasswordStore;
+
 import org.jdbi.v3.core.Jdbi;
 
 public class PasswordStorePostgres implements PasswordStore {

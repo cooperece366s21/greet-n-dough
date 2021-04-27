@@ -4,6 +4,7 @@ import model.User;
 import store.model.UserStore;
 
 import org.jdbi.v3.core.Jdbi;
+
 import java.util.LinkedList;
 
 public class UserStorePostgres implements UserStore {

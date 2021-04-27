@@ -64,14 +64,14 @@ class CommentStorePostgresTest extends CommentStorePostgres {
 
         // Test deleting a comment
         commentStorePostgres.deleteComment( parent1.getID() );
-        assertNull ( commentStorePostgres.getComment( parent1.getID() ) );
+        assertNull( commentStorePostgres.getComment( parent1.getID() ) );
 
         // Test deleting the post
         //      Should delete cascade the comments
         postStorePostgres.deletePost( post1.getID() );
         assert ( commentStorePostgres.getParents( post1.getID() ).isEmpty() );
-        assertNull ( commentStorePostgres.getComment( parent2.getID() ) );
-        assertNull ( commentStorePostgres.getComment( reply.getID() ) );
+        assertNull( commentStorePostgres.getComment( parent2.getID() ) );
+        assertNull( commentStorePostgres.getComment( reply.getID() ) );
 
     }
 

@@ -3,6 +3,7 @@ package store.postgres;
 import store.model.WalletStore;
 
 import org.jdbi.v3.core.Jdbi;
+
 import java.math.BigDecimal;
 
 public class WalletStorePostgres implements WalletStore {

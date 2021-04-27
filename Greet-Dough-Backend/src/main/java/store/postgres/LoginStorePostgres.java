@@ -1,39 +1,10 @@
 package store.postgres;
 
-import model.User;
 import store.model.LoginStore;
-import utility.ResetDao;
+
 import org.jdbi.v3.core.Jdbi;
 
 public class LoginStorePostgres implements LoginStore {
-
-    // For testing purposes
-    public static void main(String[] args) {
-
-        Jdbi jdbi = GreetDoughJdbi.create("jdbc:postgresql://localhost:4321/greetdough");
-        UserStorePostgres UserStorePostgres = new UserStorePostgres(jdbi);
-        LoginStorePostgres LoginStorePostgres = new LoginStorePostgres(jdbi);
-
-        // Used to DROP and CREATE all tables
-        ResetDao.reset(jdbi);
-
-        // Create a user and get a token for that user
-        User newUser = UserStorePostgres.addUser("Dan");
-        String token = LoginStorePostgres.addSession( newUser.getID() );
-
-        // Get the user ID using the token
-        Integer uid = LoginStorePostgres.getUserID(token);
-
-        System.out.println( LoginStorePostgres.hasSession(token) );
-        System.out.println( LoginStorePostgres.getUserID("abc") );
-        System.out.println(uid);
-        System.out.println(token);
-
-        // Test deleting a session
-        LoginStorePostgres.deleteSession(token);
-        System.out.println( LoginStorePostgres.hasSession(token) );
-
-    }
 
     private final Jdbi jdbi;
 

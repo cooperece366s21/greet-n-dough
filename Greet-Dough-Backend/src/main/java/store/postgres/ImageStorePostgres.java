@@ -1,10 +1,9 @@
 package store.postgres;
 
-import model.User;
-import model.Post;
 import model.Image;
 import store.model.ImageStore;
 import utility.ImageHandler;
+
 import org.jdbi.v3.core.Jdbi;
 
 import java.util.List;

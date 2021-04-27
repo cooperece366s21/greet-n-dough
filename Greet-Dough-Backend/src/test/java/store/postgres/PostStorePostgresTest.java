@@ -36,7 +36,7 @@ class PostStorePostgresTest extends PostStorePostgres {
 
         // Test deleting the post
         postStorePostgres.deletePost( postAfterWrite.getID() );
-        assertNull ( postStorePostgres.getPost( newPost.getID() ) );
+        assertNull( postStorePostgres.getPost( newPost.getID() ) );
 
         // Make some more posts
         Post poopPost1 = postStorePostgres.addPost( "Feeling well today", "cuz it's a WELLness day hahahahhah", newUser.getID() );
