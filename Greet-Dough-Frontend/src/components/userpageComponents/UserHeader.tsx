@@ -21,6 +21,8 @@ type UserState = {
     posts: number | null;
     exists: boolean | null;
     hasOwnership : boolean | null;
+    editing: boolean;
+    editedName : string | null;
 }
 
 class UserHeader extends React.Component<any, any> {
@@ -32,6 +34,8 @@ class UserHeader extends React.Component<any, any> {
         posts: null,
         exists: null,
         hasOwnership: null,
+        editing: false,
+        editedName: null,
     }
 
     constructor(props:any) {
@@ -43,6 +47,8 @@ class UserHeader extends React.Component<any, any> {
             posts:null,
             exists: props.exists,
             hasOwnership: props.hasOwnership,
+            editing: false,
+            editedName: null,
         }
     }
 
@@ -72,11 +78,44 @@ class UserHeader extends React.Component<any, any> {
                         <Box w="100%" h="80px" >
                             <HStack>
 
-                                <Text fontSize={'4xl'} fontWeight={500}> {this.state.name} </Text>
 
-                                {/*<Text> FOLLOWERS </Text>*/}
-                                {/*<Text> POSTS </Text>*/}
+                                { this.state.editing ?
+                                    <Input
+                                        placeholder={this.state.name}  size="lg"
+                                        onChange={ e => this.setState( {editedName: e.target.value }) }
+                                    />
+                                    : <Text fontSize={'4xl'} fontWeight={500} w="80%"> {this.state.name} </Text>
+                                }
 
+                                { this.state.hasOwnership && !this.state.editing ?
+                                    <Button onClick={() => this.setState({editing: true})}>
+                                        ✏
+                                    </Button>
+                                    : <> </>
+                                }
+
+                                { this.state.editing ?
+                                    <>
+
+                                    <Button onClick={() => {
+                                        this.setState({editing: false});
+                                        api.editUser( localStorage.getItem("authToken"), this.state.editedName)
+                                            .then( res => {
+                                                if(res===200){
+                                                    this.setState({name: this.state.editedName})
+                                                }
+                                            })
+                                    }}>
+                                        ✔
+                                    </Button>
+
+                                    <Button onClick={() => this.setState({editing: false})}>
+                                        ❌
+                                    </Button>
+
+                                    </>
+                                    : <> </>
+                                }
 
                             </HStack>
                         </Box>

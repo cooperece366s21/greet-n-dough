@@ -133,6 +133,27 @@ export async function searchUser( name:string ) {
     }
 }
 
+export async function editUser( token:string|null, name:string|null ) {
+    if ( token==null ) return (403);
+
+    const res = await fetch(`${BACKEND_URL}/users/`, {
+        method: "put",
+        mode: "cors",
+        headers: {
+            "Content-Type": "application/json",
+            "token": token,
+        },
+        body: JSON.stringify({ name })
+    });
+
+    if ( res.ok ) {
+        return 200;
+    } else {
+        // maybe some other code here for specific errors?
+        return res.status;
+    }
+}
+
 export async function getUserFeed( cuid:number, uid:number ) {
 
     const res = await fetch(`${BACKEND_URL}/users/${uid}/feed/`, {
@@ -146,7 +167,7 @@ export async function getUserFeed( cuid:number, uid:number ) {
     if (res.ok) {
         return await res.json()
             .then(body => {
-                return body.map.feed.myArrayList;
+                return body;
             });
 
     } else {
@@ -306,6 +327,7 @@ let exports = {
     getUserFeed,
     addLike,
     getLikes,
+    editUser,
 }
 
 export default exports

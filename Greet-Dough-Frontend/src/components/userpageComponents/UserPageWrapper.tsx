@@ -38,24 +38,25 @@ class UserPageWrapper extends React.Component<any, any> {
 
     componentDidMount() {
 
-        api.getUser(this.state.uid)
-            .then( user => {
-                if( user === 404 ) {
-                    this.setState( {exists: false} );
-                    return;
-                }
-                this.setState( {
-                    name: user.name,
-                    exists: true,
-                });
-
-            });
-
         api.getUserID()
             .then( cuid => {
-                ( cuid === parseInt(String(this.state.uid)) ) ?
+                cuid === parseInt(String(this.state.uid)) ?
                     this.setState({hasOwnership:true, cuid:cuid}) :
                     this.setState({hasOwnership:false, cuid:cuid});
+
+                api.getUser(this.state.uid)
+                    .then( user => {
+
+                        if( user === 404 ) {
+                            this.setState( {exists: false} );
+                            return;
+                        }
+
+                        this.setState( {
+                            name: user.name,
+                            exists: true,
+                        });
+                    })
             })
     }
 
