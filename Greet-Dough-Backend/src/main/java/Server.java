@@ -1,18 +1,20 @@
-import org.checkerframework.checker.units.qual.C;
 import org.jdbi.v3.core.Jdbi;
-import store.impl.*;
 import store.postgres.*;
 import store.relation.*;
 import store.model.*;
 
 import com.google.gson.Gson;
+import utility.Cleaner;
 import utility.ResetDao;
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import static spark.Spark.*;
 
 public class Server {
-
-    ////////////////// Members //////////////////
+    
     private static UserStore userStore;
     private static PostStore postStore;
     private static ImageStore imageStore;
@@ -26,6 +28,8 @@ public class Server {
     private static PostCommentStore postCommentStore = new PostCommentStoreImpl();
 
     private static Gson gson = new Gson();
+    private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private static Cleaner cleaner = new Cleaner();
 
     public static void main( String[] args ) {
 
@@ -38,6 +42,10 @@ public class Server {
         });
         port(5432);
         init();
+
+        // Schedule a task to clean up the database
+        // Executes every hour
+        scheduler.scheduleAtFixedRate(cleaner, 0, 1, TimeUnit.HOURS);
 
         // Copy pasted from
         // https://gist.github.com/saeidzebardast/e375b7d17be3e0f4dddf
