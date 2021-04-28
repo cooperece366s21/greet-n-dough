@@ -26,6 +26,7 @@ public interface ProfileDao {
                 @Bind("profile_picture_id") Integer profile_picture_id);
 
     //@SqlQuery("SELECT bio FROM profiles WHERE user_id = (:user_id);")
+    //String getBio(@Bind("user_id") int user_id);
 
     @SqlUpdate("UPDATE profiles " +
             "SET bio = (:new_bio) " +
