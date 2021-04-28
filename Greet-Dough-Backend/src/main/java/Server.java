@@ -144,6 +144,8 @@ public class Server {
         // curl -d "uid=0&contents=hello world" -X post localhost:5432/posts/
         post("/posts/", handler::createPost, gson::toJson);
 
+        put("/posts/", handler::editPost, gson::toJson);
+
         // Deletes post given postID
         // curl -X delete localhost:5432/posts/0
         delete("/posts/:id/", handler::deletePost, gson::toJson);

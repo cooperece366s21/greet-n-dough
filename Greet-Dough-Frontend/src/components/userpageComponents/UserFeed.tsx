@@ -120,7 +120,8 @@ class UserFeed extends  React.Component<any, any> {
         const feed = this.state.feed;
 
 
-        const listFeed = feed?.map( (e) => (
+        const listFeed = feed?.map( (e,k) => (
+
             <>
                 <Box w={"100%"}
                      padding={"20px"}
@@ -141,8 +142,8 @@ class UserFeed extends  React.Component<any, any> {
                         <Box w="5%">
                             {this.state.hasOwnership &&
                             <Button
-                                onClick={()=> alert("edit post or something") }>
-                                📋
+                                onClick={()=> window.location.replace("/edit/" + e.map.post.ID.toString() ) }>
+                                ✏
                             </Button>
                             }
                         </Box>

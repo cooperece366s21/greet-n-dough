@@ -39,6 +39,15 @@ class PostForm extends React.Component<any, any> {
         }
     }
 
+    renderSubmitButton(){
+        return(
+            <Button colorScheme={"green"}
+                    onClick={ () => this.createPostWrapper( this.state.title, this.state.contents)}>
+                submit
+            </Button>
+        )
+    }
+
     render() {
 
         return (
@@ -57,6 +66,7 @@ class PostForm extends React.Component<any, any> {
                                size={'lg'}
                                errorBorderCOlor={'tomato'}
                                marginBottom={"40px"}
+                               value={this.state.title}
                         />
 
                         <Center>
@@ -68,15 +78,12 @@ class PostForm extends React.Component<any, any> {
                                   onChange={ e => this.setState( {contents: e.target.value }) }
                                   isInvalid={this.state.invalid}
                                   size={'lg'}
-                                  errorBorderCOlor={'tomato'} />
+                                  errorBorderCOlor={'tomato'}
+                                  value={this.state.contents}
+                        />
 
                         <Box float={'right'}>
-
-                          <Button colorScheme={"green"}
-                                  onClick={ () => this.createPostWrapper( this.state.title, this.state.contents)}>
-                            submit
-                          </Button>
-
+                            {this.renderSubmitButton()}
                         </Box>
 
                     </Box>

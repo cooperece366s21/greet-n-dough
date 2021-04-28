@@ -1,5 +1,6 @@
 export const BACKEND_URL = "http://localhost:5432";
 
+// USER API CALLS
 function getCurrentToken(): string {
     return localStorage.getItem("authToken") || "";
 }
@@ -177,6 +178,8 @@ export async function getUserFeed( cuid:number, uid:number ) {
 
 }
 
+// WALLET API CALLS
+
 export async function getWallet( token:string|null ) {
 
     if ( token==null ) return (403);
@@ -228,6 +231,8 @@ export async function addToWallet( token:string|null, amount:string|null ) {
     }
 }
 
+// POST API CALLS
+
 export async function createPost( token:string|null, title:string, contents:string ) {
 
     if ( token==null ) return (403);
@@ -249,6 +254,51 @@ export async function createPost( token:string|null, title:string, contents:stri
         return res.status;
     }
 
+}
+
+export async function getPost( token:string|null, pid:number ) {
+    if ( token==null ) return (403);
+
+    const res = await fetch(`${BACKEND_URL}/posts/${pid}/`, {
+        method: "get",
+        mode: "cors",
+        headers: {
+            "Content-Type": "application/json",
+            "token": token,
+        },
+    });
+
+    if ( res.ok ) {
+        return await res.json()
+            .then( body => {
+                return body.map;
+            })
+
+    } else{
+        alert("ERROR: " + res.status );
+    }
+
+}
+
+export async function editPost( token:string|null, pid:string, title:string, contents:string ) {
+    if ( token==null ) return (403);
+
+    const res = await fetch(`${BACKEND_URL}/posts/`, {
+        method: "put",
+        mode: "cors",
+        headers: {
+            "Content-Type": "application/json",
+            "token": token,
+        },
+        body: JSON.stringify({ pid, title, contents })
+    });
+
+    if ( res.ok ) {
+        return 200;
+    } else {
+        // maybe some other code here for specific errors?
+        return res.status;
+    }
 }
 
 export async function deletePost( token:string|null, pid:number ) {
@@ -320,14 +370,19 @@ let exports = {
     getUserID,
     getUser,
     searchUser,
+    editUser,
+    getUserFeed,
+
     createPost,
+    editPost,
+    getPost,
     deletePost,
+
     getWallet,
     addToWallet,
-    getUserFeed,
+
     addLike,
     getLikes,
-    editUser,
 }
 
 export default exports

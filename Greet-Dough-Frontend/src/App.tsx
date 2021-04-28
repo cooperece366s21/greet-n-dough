@@ -8,6 +8,7 @@ import Register from "./pages/Register";
 import User from "./pages/User";
 import Create from "./pages/Create";
 import Search from "./pages/Search";
+import Edit from "./pages/Edit";
 import { ChakraProvider } from "@chakra-ui/react";
 
 import {
@@ -40,6 +41,8 @@ function App() {
                 <Route path="/search/:name" component={Search}/>
 
                 <Route exact path="/create" component={Create} />
+
+                <Route path="/edit/:pid" component={Edit} />
 
             </Switch>
 
