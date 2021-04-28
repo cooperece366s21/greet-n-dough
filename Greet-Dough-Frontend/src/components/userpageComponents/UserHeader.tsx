@@ -22,7 +22,7 @@ type UserState = {
     exists: boolean | null;
     hasOwnership : boolean | null;
     editing: boolean;
-    editedName : string | null;
+    editedName : string;
 }
 
 class UserHeader extends React.Component<any, any> {
@@ -35,7 +35,7 @@ class UserHeader extends React.Component<any, any> {
         exists: null,
         hasOwnership: null,
         editing: false,
-        editedName: null,
+        editedName: "",
     }
 
     constructor(props:any) {
@@ -48,7 +48,7 @@ class UserHeader extends React.Component<any, any> {
             exists: props.exists,
             hasOwnership: props.hasOwnership,
             editing: false,
-            editedName: null,
+            editedName: "",
         }
     }
 
@@ -81,14 +81,18 @@ class UserHeader extends React.Component<any, any> {
 
                                 { this.state.editing ?
                                     <Input
-                                        placeholder={this.state.name}  size="lg"
+                                        placeholder={this.state.editedName}  size="lg"
                                         onChange={ e => this.setState( {editedName: e.target.value }) }
+                                        value={this.state.editedName}
                                     />
                                     : <Text fontSize={'4xl'} fontWeight={500} w="80%"> {this.state.name} </Text>
                                 }
 
                                 { this.state.hasOwnership && !this.state.editing ?
-                                    <Button onClick={() => this.setState({editing: true})}>
+                                    <Button onClick={() => this.setState({
+                                        editing: true,
+                                        editedName: this.state.name,
+                                    })}>
                                         ✏
                                     </Button>
                                     : <> </>
