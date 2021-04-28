@@ -25,8 +25,13 @@ public interface UserDao {
     @GetGeneratedKeys("user_id")
     int insertUser(@Bind("user_name") String user_name);
 
-    @SqlUpdate("DELETE FROM users " +
-            "WHERE user_id = (:user_id);")
+    @SqlUpdate("BEGIN;" +
+            "DELETE FROM users " +
+                "WHERE user_id = (:user_id);" +
+            "UPDATE images " +
+                "SET is_deleted = true " +
+                "WHERE user_id = (:user_id);" +
+            "COMMIT;")
     void deleteUser(@Bind("user_id") int user_id);
 
     @SqlQuery("SELECT * FROM users " +

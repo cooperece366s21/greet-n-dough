@@ -7,8 +7,8 @@ import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 public interface ProfileDao {
 
     @SqlUpdate("CREATE TABLE IF NOT EXISTS profiles( " +
-            "user_id INT " + "NOT NULL, " +
-            "bio TEXT " + "NOT NULL, " +
+            "user_id INT " +            "NOT NULL, " +
+            "bio TEXT " +               "NOT NULL, " +
             "profile_picture_id INT " + "NULL, " +
             "PRIMARY KEY(user_id), " +
             "CONSTRAINT fk_user " + "FOREIGN KEY(user_id) " +
@@ -29,7 +29,7 @@ public interface ProfileDao {
 
     @SqlQuery("UPDATE profiles " +
             "SET bio = (:new_bio) " +
-            "WHERE user_id = (:user_id)")
+            "WHERE user_id = (:user_id);")
     void changeBio(@Bind("user_id") int user_id,
                    @Bind("new_bio") String new_bio);
 }

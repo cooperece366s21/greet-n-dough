@@ -15,15 +15,15 @@ public class ProfileStorePostgres implements ProfileStore {
     }
 
     public void init() {
-        jdbi.useHandle(handle -> handle.attach(ProfileDao.class).deleteTable());
+        jdbi.useHandle( handle -> handle.attach(ProfileDao.class).deleteTable() );
     }
 
     public void delete() {
-        jdbi.useHandle(handle -> handle.attach(ProfileDao.class).createTable());
+        jdbi.useHandle( handle -> handle.attach(ProfileDao.class).createTable() );
     }
 
     @Override
-    public void addBio(int uid, String bio) {
+    public void addBio( int uid, String bio ) {
         jdbi.useHandle( handle -> handle.attach(ProfileDao.class).addBio( uid, bio, null ) );
     }
 
@@ -37,8 +37,8 @@ public class ProfileStorePostgres implements ProfileStore {
     // changeBio
         // sqlupdate with UPDATE profiles SET bio = new_bio WHERE user_id = user_id
     @Override
-    public void changeBio( int uid, String new_bio ){
-        jdbi.useHandle( handle -> handle.attach(ProfileDao.class).changeBio(uid, new_bio));
+    public void changeBio( int uid, String newBio ) {
+        jdbi.useHandle( handle -> handle.attach(ProfileDao.class).changeBio( uid, newBio ) );
     }
 
 }

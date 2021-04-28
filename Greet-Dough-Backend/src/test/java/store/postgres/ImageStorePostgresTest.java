@@ -78,6 +78,10 @@ class ImageStorePostgresTest extends ImageStorePostgres {
         userStorePostgres.deleteUser( newUser.getID() );
         assertNull ( imageStorePostgres.getImage( selfie.getID() ) );
 
+        // Check that the soft deleted row has been removed
+        imageStorePostgres.clearDeleted();
+        assert ( imageStorePostgres.getImage().size() == 0 );
+
     }
 
 }
