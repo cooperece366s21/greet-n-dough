@@ -16,7 +16,7 @@ public class ImageStorePostgres implements ImageStore {
     public ImageStorePostgres( final Jdbi jdbi ) {
 
         this.jdbi = jdbi;
-        this.imageHandler = new ImageHandler();
+        this.imageHandler = new ImageHandler("images");
 
     }
 

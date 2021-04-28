@@ -9,11 +9,13 @@ import store.postgres.ImageStorePostgres;
  */
 public class Cleaner implements Runnable {
 
-    private static final Jdbi jdbi = GreetDoughJdbi.create("jdbc:postgresql://localhost:4321/greetdough");
     private final ImageStorePostgres imageStorePostgres;
 
     public Cleaner() {
+
+        Jdbi jdbi = GreetDoughJdbi.create("jdbc:postgresql://localhost:4321/greetdough");
         imageStorePostgres = new ImageStorePostgres(jdbi);
+
     }
 
     @Override

@@ -12,19 +12,25 @@ public class ImageHandler {
     private static final int MAX_FILENAME_SIZE = 10;
     private static final FileSystem fileSys = FileSystems.getDefault();
 
-    public ImageHandler() {
+    /**
+     * @param   folderName  the desired name of the folder to save images to
+     */
+    public ImageHandler( String folderName ) {
 
-        this.imageDir = setImageDir();
+        this.imageDir = setImageDir(folderName);
         this.filenameGen = new Random();
 
     }
 
-    // Returns a path to /Greet-Dough-Backend/data/images/
-    public Path setImageDir() {
+    /**
+     * @param   folderName  the desired name of the folder to save images to
+     * @return              a path to /Greet-Dough-Backend/data/{folderName}
+      */
+    private Path setImageDir( String folderName ) {
 
         // Should be /Greet-Dough-Backend/
         Path tempPath = fileSys.getPath( System.getProperty("user.dir") );
-        return fileSys.getPath( tempPath.toString() + File.separator + "data" + File.separator + "images" );
+        return fileSys.getPath( tempPath.toString() + File.separator + "data" + File.separator + folderName );
 
     }
 
