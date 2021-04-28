@@ -1,12 +1,15 @@
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import model.*;
+import utility.ImageHandler;
 import utility.Pair;
 import store.model.*;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.google.gson.Gson;
 import org.json.*;
@@ -26,8 +29,15 @@ public class Handler {
     private final PasswordStore passwordStore;
     private final LoginStore loginStore;
     private final WalletStore walletStore;
+
     private final Gson gson = new Gson();
-    ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
+    private final ImageHandler imageHandler;
+
+    // Defines the accepted file extensions for images
+    private static final HashSet<String> validImageFileExtensions = Stream
+                            .of(".png",".jpg")
+                            .collect( Collectors.toCollection(HashSet::new) );
 
     public Handler(UserStore userStore,
                    PostStore postStore,
@@ -52,6 +62,7 @@ public class Handler {
         this.passwordStore = passwordStore;
         this.loginStore = loginStore;
         this.walletStore = walletStore;
+        this.imageHandler = new ImageHandler();
 
     }
 
@@ -124,7 +135,7 @@ public class Handler {
     }
 
     /**
-     * Checks if the token is valid.
+     * The method checks if the token is valid.
      * Sets res.status().
      *
      * @return   true if the token is valid; false otherwise
@@ -144,6 +155,31 @@ public class Handler {
         }
 
     }
+
+    /**
+     * The method checks if the given filename is valid.
+     *
+     * @return  true if the filename is valid; false otherwise
+     */
+    private boolean isValidImageFile( String filename, Response res ) {
+
+        String extension = imageHandler.getFileExtension(filename);
+
+        // Check if the extension is valid
+        if ( validImageFileExtensions.contains(extension) ) {
+
+            res.status(200);
+            return true;
+
+        } else {
+
+            res.status(403);
+            return false;
+
+        }
+
+    }
+
 
     /////////////// USER ACTIONS ///////////////
     public String getUser( Request req, Response res ) throws JsonProcessingException {
