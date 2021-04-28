@@ -12,6 +12,11 @@ public class ImageHandler {
     private static final int MAX_FILENAME_SIZE = 10;
     private static final FileSystem fileSys = FileSystems.getDefault();
 
+
+    public ImageHandler() {
+        this("images");
+    }
+
     /**
      * @param   folderName  the desired name of the folder to save images to
      */
@@ -35,6 +40,10 @@ public class ImageHandler {
     }
 
     // From https://stackoverflow.com/a/21974043
+    /**
+     * @return  the extension of the provided file including the dot
+     *          (.png)
+     */
     public String getFileExtension( String filename ) {
 
         String extension = "";
