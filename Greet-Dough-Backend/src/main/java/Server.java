@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 import static spark.Spark.*;
 
 public class Server {
-    
+
     private static UserStore userStore;
     private static PostStore postStore;
     private static ImageStore imageStore;
@@ -29,7 +29,7 @@ public class Server {
 
     private static Gson gson = new Gson();
     private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    private static Cleaner cleaner = new Cleaner();
+    private static final Cleaner cleaner = new Cleaner();
 
     public static void main( String[] args ) {
 
