@@ -15,11 +15,11 @@ public class WalletStorePostgres implements WalletStore {
     }
 
     public void delete() {
-        jdbi.useHandle(handle -> handle.attach(WalletDao.class).deleteTable());
+        jdbi.useHandle( handle -> handle.attach(WalletDao.class).deleteTable() );
     }
 
     public void init() {
-        jdbi.useHandle(handle -> handle.attach(WalletDao.class).createTable());
+        jdbi.useHandle( handle -> handle.attach(WalletDao.class).createTable() );
     }
 
     @Override

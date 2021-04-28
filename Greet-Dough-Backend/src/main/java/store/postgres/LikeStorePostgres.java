@@ -14,11 +14,11 @@ public class LikeStorePostgres implements LikeStore {
     }
 
     public void delete() {
-        jdbi.useHandle(handle -> handle.attach(LikeDao.class).deleteTable());
+        jdbi.useHandle( handle -> handle.attach(LikeDao.class).deleteTable() );
     }
 
     public void init() {
-        jdbi.useHandle(handle -> handle.attach(LikeDao.class).createTable());
+        jdbi.useHandle( handle -> handle.attach(LikeDao.class).createTable() );
     }
 
     @Override

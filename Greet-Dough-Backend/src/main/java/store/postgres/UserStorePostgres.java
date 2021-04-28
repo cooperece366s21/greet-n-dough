@@ -16,11 +16,11 @@ public class UserStorePostgres implements UserStore {
     }
 
     public void delete() {
-        jdbi.useHandle(handle -> handle.attach(UserDao.class).deleteTable());
+        jdbi.useHandle( handle -> handle.attach(UserDao.class).deleteTable() );
     }
 
     public void init() {
-        jdbi.useHandle(handle -> handle.attach(UserDao.class).createTable());
+        jdbi.useHandle( handle -> handle.attach(UserDao.class).createTable() );
     }
 
     @Override

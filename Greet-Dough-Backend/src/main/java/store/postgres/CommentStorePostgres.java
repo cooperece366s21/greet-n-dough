@@ -16,11 +16,11 @@ public class CommentStorePostgres implements CommentStore {
     }
 
     public void delete() {
-        jdbi.useHandle(handle -> handle.attach(CommentDao.class).deleteTable());
+        jdbi.useHandle( handle -> handle.attach(CommentDao.class).deleteTable() );
     }
 
     public void init() {
-        jdbi.useHandle(handle -> handle.attach(CommentDao.class).createTable());
+        jdbi.useHandle( handle -> handle.attach(CommentDao.class).createTable() );
     }
 
     @Override

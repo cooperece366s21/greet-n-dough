@@ -13,11 +13,11 @@ public class PasswordStorePostgres implements PasswordStore {
     }
 
     public void delete() {
-        jdbi.useHandle(handle -> handle.attach(PasswordDao.class).deleteTable());
+        jdbi.useHandle( handle -> handle.attach(PasswordDao.class).deleteTable() );
     }
 
     public void init() {
-        jdbi.useHandle(handle -> handle.attach(PasswordDao.class).createTable());
+        jdbi.useHandle( handle -> handle.attach(PasswordDao.class).createTable() );
     }
 
     @Override

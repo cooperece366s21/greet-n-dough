@@ -11,21 +11,21 @@ import java.util.List;
 public class ImageStorePostgres implements ImageStore {
 
     private final Jdbi jdbi;
-    private final ImageHandler ImageHandler;
+    private final ImageHandler imageHandler;
 
     public ImageStorePostgres( final Jdbi jdbi ) {
 
         this.jdbi = jdbi;
-        this.ImageHandler = new ImageHandler();
+        this.imageHandler = new ImageHandler();
 
     }
 
     public void delete() {
-        jdbi.useHandle(handle -> handle.attach(ImageDao.class).deleteTable());
+        jdbi.useHandle( handle -> handle.attach(ImageDao.class).deleteTable() );
     }
 
     public void init() {
-        jdbi.useHandle(handle -> handle.attach(ImageDao.class).createTable());
+        jdbi.useHandle( handle -> handle.attach(ImageDao.class).createTable() );
     }
 
     @Override
@@ -55,7 +55,7 @@ public class ImageStorePostgres implements ImageStore {
     @Override
     public Image addImage( String path, int uid ) {
 
-        String newPath = ImageHandler.copyImage(path);
+        String newPath = imageHandler.copyImage(path);
         int ID = jdbi.withHandle( handle -> handle.attach(ImageDao.class).addImage( newPath, uid ) );
         return getImage(ID);
 
@@ -71,7 +71,7 @@ public class ImageStorePostgres implements ImageStore {
 
         List<Image> deletedImages = jdbi.withHandle( handle -> handle.attach(ImageDao.class).clearDeleted() );
         for ( Image img : deletedImages ) {
-            ImageHandler.deleteImage( img.getPath() );
+            imageHandler.deleteImage( img.getPath() );
         }
 
     }

@@ -16,11 +16,11 @@ public class PostStorePostgres implements PostStore {
     }
 
     public void delete() {
-        jdbi.useHandle(handle -> handle.attach(PostDao.class).deleteTable());
+        jdbi.useHandle( handle -> handle.attach(PostDao.class).deleteTable() );
     }
 
     public void init() {
-        jdbi.useHandle(handle -> handle.attach(PostDao.class).createTable());
+        jdbi.useHandle( handle -> handle.attach(PostDao.class).createTable() );
     }
 
     @Override

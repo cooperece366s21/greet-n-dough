@@ -14,11 +14,11 @@ public class ProfileStorePostgres implements ProfileStore {
         this.jdbi = jdbi;
     }
 
-    public void init() {
+    public void delete() {
         jdbi.useHandle( handle -> handle.attach(ProfileDao.class).deleteTable() );
     }
 
-    public void delete() {
+    public void init() {
         jdbi.useHandle( handle -> handle.attach(ProfileDao.class).createTable() );
     }
 
