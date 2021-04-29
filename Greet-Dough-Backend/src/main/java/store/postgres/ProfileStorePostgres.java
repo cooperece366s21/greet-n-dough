@@ -28,19 +28,6 @@ public class ProfileStorePostgres implements ProfileStore {
         jdbi.useHandle( handle -> handle.attach(ProfileDao.class).createTable() );
     }
 
-    // add bio with profile pic
-        // will need to add constraint on the original table on a profile image store
-            // might be necessary since profile image is not a post image
-    //@Override
-    //public
-
-    // getBio
-        // query on user_id
-    @Override
-    public Profile getBio(int uid ) {
-        return jdbi.withHandle( handle -> handle.attach(ProfileDao.class).getBio(uid) );
-    }
-
     @Override
     public Profile getProfile( int uid ) {
         return jdbi.withHandle( handle -> handle.attach(ProfileDao.class).getProfile(uid) );
