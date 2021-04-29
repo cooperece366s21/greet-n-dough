@@ -25,4 +25,9 @@ public interface LoginStore {
       */
     Integer getUserID( String token );
 
+    /**
+     * Deletes all soft deleted user tokens.
+     */
+    void clearDeleted();
+
 }
