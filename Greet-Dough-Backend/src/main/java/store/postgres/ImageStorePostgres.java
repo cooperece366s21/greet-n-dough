@@ -38,8 +38,8 @@ public class ImageStorePostgres implements ImageStore {
      *
      * @return all images in the database
      */
-    protected List<Image> getImage() {
-        return jdbi.withHandle( handle -> handle.attach(ImageDao.class).listImages() );
+    protected List<Image> getAllImages() {
+        return jdbi.withHandle( handle -> handle.attach(ImageDao.class).getAllImages() );
     }
 
     @Override

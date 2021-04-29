@@ -33,8 +33,8 @@ public class PostStorePostgres implements PostStore {
      *
      * @return all posts in the database
      */
-    protected LinkedList<Post> getPost() {
-        return jdbi.withHandle( handle -> handle.attach(PostDao.class).listPosts() );
+    protected LinkedList<Post> getAllPosts() {
+        return jdbi.withHandle( handle -> handle.attach(PostDao.class).getAllPosts() );
     }
 
     @Override

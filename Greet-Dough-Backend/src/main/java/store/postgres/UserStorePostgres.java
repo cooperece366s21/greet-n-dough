@@ -33,8 +33,8 @@ public class UserStorePostgres implements UserStore {
      *
      * @return all users in the database
      */
-    protected LinkedList<User> getUser() {
-        return jdbi.withHandle( handle -> handle.attach(UserDao.class).listUsers() );
+    protected LinkedList<User> getAllUsers() {
+        return jdbi.withHandle( handle -> handle.attach(UserDao.class).getAllUsers() );
     }
 
     @Override

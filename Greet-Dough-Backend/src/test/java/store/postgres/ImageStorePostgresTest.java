@@ -35,7 +35,7 @@ class ImageStorePostgresTest extends ImageStorePostgres {
         User newUser = userStorePostgres.addUser("Komodo");
 
         // Test empty returns
-        assert ( imageStorePostgres.getImage().isEmpty() );
+        assert ( imageStorePostgres.getAllImages().isEmpty() );
         assertNull( imageStorePostgres.getImage(1) );
 
         // Get local image
@@ -63,15 +63,15 @@ class ImageStorePostgresTest extends ImageStorePostgres {
 
         // Test soft deleting and then clearing an image
         Image tempImage = imageStorePostgres.addImage( newUser.getID(), newPath.toString() );
-        assert ( imageStorePostgres.getImage().size() == 2 );
+        assert ( imageStorePostgres.getAllImages().size() == 2 );
 
         // Check that the number of rows is still the same
         imageStorePostgres.deleteImage( tempImage.getID() );
-        assert ( imageStorePostgres.getImage().size() == 2 );
+        assert ( imageStorePostgres.getAllImages().size() == 2 );
 
         // Check that the soft deleted row has been removed
         imageStorePostgres.clearDeleted();
-        assert ( imageStorePostgres.getImage().size() == 1 );
+        assert ( imageStorePostgres.getAllImages().size() == 1 );
 
         // Test deleting the user
         //      Should delete cascade the image
@@ -80,7 +80,7 @@ class ImageStorePostgresTest extends ImageStorePostgres {
 
         // Check that the soft deleted row has been removed
         imageStorePostgres.clearDeleted();
-        assert ( imageStorePostgres.getImage().size() == 0 );
+        assert ( imageStorePostgres.getAllImages().size() == 0 );
 
     }
 

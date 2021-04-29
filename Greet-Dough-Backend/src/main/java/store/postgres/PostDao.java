@@ -47,25 +47,25 @@ public interface PostDao {
     Boolean containsPost(@Bind("post_id") int post_id);
 
     @SqlQuery("SELECT * FROM posts " +
-            "ORDER BY user_id")
-    LinkedList<Post> listPosts();
+            "ORDER BY user_id;")
+    LinkedList<Post> getAllPosts();
 
     @SqlQuery("SELECT * FROM posts " +
-            "WHERE post_id = (:post_id)")
+            "WHERE post_id = (:post_id);")
     Optional<Post> getPost(@Bind("post_id") int post_id);
 
     @SqlQuery("SELECT * FROM posts " +
-            "WHERE user_id = (:user_id)")
+            "WHERE user_id = (:user_id);")
     LinkedList<Post> getFeed(@Bind("user_id") int user_id);
 
     @SqlUpdate("UPDATE posts " +
             "SET post_title = (:new_title) " +
-            "WHERE post_id = (:post_id)")
+            "WHERE post_id = (:post_id);")
     void changeTitle(@Bind("post_id") int post_id, @Bind("new_title") String new_title );
 
     @SqlUpdate("UPDATE posts " +
             "SET post_contents = (:new_contents) " +
-            "WHERE post_id = (:post_id)")
+            "WHERE post_id = (:post_id);")
     void changeContents(@Bind("post_id") int post_id, @Bind("new_contents") String new_contents );
 
 }

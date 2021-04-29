@@ -43,17 +43,17 @@ public interface ImageDao {
     List<Image> clearDeleted();
 
     @SqlQuery("SELECT * FROM images " +
-            "ORDER BY user_id")
-    List<Image> listImages();
+            "ORDER BY user_id;")
+    List<Image> getAllImages();
 
     @SqlQuery("SELECT * FROM images " +
             "WHERE image_id = (:image_id) AND " +
-            "is_deleted = false")
+                "is_deleted = FALSE;")
     Optional<Image> getImage(@Bind("image_id") int image_id);
 
     @SqlQuery("SELECT * FROM images " +
             "WHERE user_id = (:user_id) AND " +
-            "is_deleted = false")
+                "is_deleted = FALSE")
     List<Image> getGallery(@Bind("user_id") int user_id);
 
 }
