@@ -6,17 +6,17 @@ public class Profile implements Serializable {
 
     private int userID;
     private String bio;
-    private Integer profileImageID;
+    private String path;
 
-    public Profile( int userID, String bio ) {
-        this( userID, bio, null);
+    public Profile( int uid, String bio ) {
+        this( uid, bio, null);
     }
 
-    public Profile( int userID, String bio, Integer profileImageID ) {
+    public Profile( int uid, String bio, String path ) {
 
-        this.userID = userID;
+        this.userID = uid;
         this.bio = bio;
-        this.profileImageID = profileImageID;
+        this.path = path;
     }
 
     public int getUserID() {
@@ -27,8 +27,15 @@ public class Profile implements Serializable {
         return this.bio;
     }
 
-    public Integer getProfileImageID() {
-        return this.profileImageID;
+    public String getPath() {
+        return this.path;
+    }
+
+    public boolean equals( Profile tempProfile ) {
+
+        return  this.getBio().equals( tempProfile.getBio() ) &&
+                this.getPath().equals( tempProfile.getPath() );
+
     }
 
 }

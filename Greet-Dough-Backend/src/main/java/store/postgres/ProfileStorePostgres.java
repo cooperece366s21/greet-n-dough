@@ -1,5 +1,6 @@
 package store.postgres;
 
+import model.Profile;
 import store.model.ProfileStore;
 import utility.ImageHandler;
 
@@ -13,8 +14,10 @@ public class ProfileStorePostgres implements ProfileStore {
     private final ImageHandler imageHandler;
 
     public ProfileStorePostgres( final Jdbi jdbi ) {
+
         this.jdbi = jdbi;
-        this.imageHandler = new ImageHandler("pfp");
+        this.imageHandler = new ImageHandler("profile_pictures");
+
     }
 
     public void delete() {
@@ -23,11 +26,6 @@ public class ProfileStorePostgres implements ProfileStore {
 
     public void init() {
         jdbi.useHandle( handle -> handle.attach(ProfileDao.class).createTable() );
-    }
-
-    @Override
-    public void addBio( int uid, String bio ) {
-        jdbi.useHandle( handle -> handle.attach(ProfileDao.class).addBio( uid, bio, null ) );
     }
 
     // add bio with profile pic
@@ -43,11 +41,33 @@ public class ProfileStorePostgres implements ProfileStore {
     //    return jdbi.withHandle( handle -> handle.attach(ProfileDao.class).getBio(uid) );
     //}
 
+    @Override
+    public Profile getProfile( int uid ) {
+        return jdbi.withHandle( handle -> handle.attach(ProfileDao.class).getProfile(uid) );
+    }
+
+    @Override
+    public Profile addProfile( int uid, String bio, String path ) {
+
+        String savedPath = imageHandler.copyImage(path);
+        jdbi.useHandle( handle -> handle.attach(ProfileDao.class).addProfile( uid, bio, savedPath ) );
+        return getProfile(uid);
+
+    }
+
     // changeBio
         // sqlupdate with UPDATE profiles SET bio = new_bio WHERE user_id = user_id
     @Override
     public void changeBio( int uid, String newBio ) {
         jdbi.useHandle( handle -> handle.attach(ProfileDao.class).changeBio( uid, newBio ) );
+    }
+
+    @Override
+    public void changeProfilePicture( int uid, String newPath ) {
+
+        String savedPath = imageHandler.copyImage(newPath);
+        jdbi.useHandle( handle -> handle.attach(ProfileDao.class).changeProfilePicture( uid, savedPath ) );
+
     }
 
 }
