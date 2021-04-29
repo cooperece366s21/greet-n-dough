@@ -36,10 +36,10 @@ public class ProfileStorePostgres implements ProfileStore {
 
     // getBio
         // query on user_id
-    //@Override
-    //public Profile getBio( int uid ) {
-    //    return jdbi.withHandle( handle -> handle.attach(ProfileDao.class).getBio(uid) );
-    //}
+    @Override
+    public Profile getBio(int uid ) {
+        return jdbi.withHandle( handle -> handle.attach(ProfileDao.class).getBio(uid) );
+    }
 
     @Override
     public Profile getProfile( int uid ) {

@@ -191,5 +191,9 @@ public class Server {
 
         post( "/wallet/subtract/", handler::subtractFromBalance, gson::toJson);
 
+        // IMAGE ROUTES
+
+        post( "/images/", handler::createImage, gson::toJson );
+
     }
 }

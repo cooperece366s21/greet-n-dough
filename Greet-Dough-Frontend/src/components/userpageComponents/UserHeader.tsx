@@ -11,6 +11,8 @@ import {
 import {Link} from "react-router-dom";
 import api from "../../services/api";
 import CreatePostButton from "../createPostComponents/CreatePostButton";
+import ImageUploader from "react-images-upload";
+
 import { withRouter } from 'react-router-dom';
 
 
@@ -21,8 +23,10 @@ type UserState = {
     posts: number | null;
     exists: boolean | null;
     hasOwnership : boolean | null;
+
     editing: boolean;
     editedName : string;
+    uploadedPicture : File | null;
 }
 
 class UserHeader extends React.Component<any, any> {
@@ -34,8 +38,10 @@ class UserHeader extends React.Component<any, any> {
         posts: null,
         exists: null,
         hasOwnership: null,
+
         editing: false,
         editedName: "",
+        uploadedPicture: null,
     }
 
     constructor(props:any) {
@@ -47,9 +53,15 @@ class UserHeader extends React.Component<any, any> {
             posts:null,
             exists: props.exists,
             hasOwnership: props.hasOwnership,
+
             editing: false,
             editedName: "",
+            uploadedPicture: null,
         }
+    }
+
+    onDrop(picture:File) {
+        this.setState({ uploadedPicture: picture });
     }
 
     renderError() {
@@ -68,7 +80,25 @@ class UserHeader extends React.Component<any, any> {
                 <Center marginTop="40px">
 
                      <Box w="175px" height="175px" borderWidth="0px" >
-                         <SkeletonCircle size="175px" />
+                         {this.state.editing ?
+                             <ImageUploader
+                                 withIcon={false}
+                                 withPreview={true}
+                                 buttonText="Choose image"
+                                 onChange={ e => {
+
+                                     if (e.length!==1) {
+                                         alert("Remove some files");
+                                         return;
+                                     }
+                                     this.onDrop(e[0]);
+                                 }
+                                 }
+                                 imgExtension={[".jpg", ".gif", ".png", ".gif"]}
+                                 maxFileSize={5242880}
+                             /> :
+                             <SkeletonCircle size="175px"/>
+                         }
                      </Box>
 
                     {/* RHS TEXT CONTAINER*/}
@@ -109,6 +139,8 @@ class UserHeader extends React.Component<any, any> {
                                                     this.setState({name: this.state.editedName})
                                                 }
                                             })
+                                        api.postImage( localStorage.getItem("authToken"), this.state.uploadedPicture)
+                                            .then( () => alert("yo poggies") )
                                     }}>
                                         ✔
                                     </Button>

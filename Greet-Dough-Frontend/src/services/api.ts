@@ -362,6 +362,33 @@ export async function getLikes(token: string|null, pid: number) {
 
 }
 
+// IMAGE API CALLS
+
+export async function postImage( token:string|null, file:File|null) {
+    if ( token==null ) return (403);
+    if ( file==null ) return (403);
+
+    const form = new FormData();
+    form.append( "file", file );
+
+    const res = await fetch(`${BACKEND_URL}/images/`, {
+        method: "post",
+        mode: "cors",
+        headers: {
+            "enctype": "multipart/form-data",
+            "token": token,
+        },
+        body: form,
+    });
+
+    if (res.ok){
+        alert('good');
+    } else{
+        alert('oopsie!');
+    }
+
+}
+
 
 let exports = {
     register,
@@ -377,6 +404,7 @@ let exports = {
     editPost,
     getPost,
     deletePost,
+    postImage,
 
     getWallet,
     addToWallet,
