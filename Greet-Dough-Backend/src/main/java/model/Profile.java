@@ -17,6 +17,7 @@ public class Profile implements Serializable {
         this.userID = userID;
         this.bio = bio;
         this.profileImageID = profileImageID;
+
     }
 
     public int getUserID() {

@@ -8,7 +8,11 @@ public interface ProfileStore {
 
     // getBio
         // query on user_id
-    // Profile getBio(int uid);
+    //Profile getBio(int uid);
+
+    // getBio
+        // query on user_id
+    Profile getBio(int uid);
 
     // changeBio
         // sqlupdate with UPDATE profiles SET bio = new_bio WHERE user_id = user_id

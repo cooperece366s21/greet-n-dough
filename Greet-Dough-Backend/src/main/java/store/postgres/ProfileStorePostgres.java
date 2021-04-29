@@ -1,5 +1,6 @@
 package store.postgres;
 
+import model.Profile;
 import store.model.ProfileStore;
 import utility.ImageHandler;
 
@@ -38,10 +39,10 @@ public class ProfileStorePostgres implements ProfileStore {
 
     // getBio
         // query on user_id
-    //@Override
-    //public Profile getBio( int uid ) {
-    //    return jdbi.withHandle( handle -> handle.attach(ProfileDao.class).getBio(uid) );
-    //}
+    @Override
+    public Profile getBio(int uid ) {
+        return jdbi.withHandle( handle -> handle.attach(ProfileDao.class).getBio(uid) );
+    }
 
     // changeBio
         // sqlupdate with UPDATE profiles SET bio = new_bio WHERE user_id = user_id
