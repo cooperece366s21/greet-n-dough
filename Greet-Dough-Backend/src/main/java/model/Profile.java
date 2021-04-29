@@ -8,6 +8,10 @@ public class Profile implements Serializable {
     private String bio;
     private String path;
 
+    public Profile( int uid ) {
+        this( uid, null, null );
+    }
+
     public Profile( int uid, String bio ) {
         this( uid, bio, null);
     }

@@ -59,7 +59,16 @@ public class ImageHandler {
 
     }
 
+    /**
+     * Copies the image at the specified path.
+     * @return  the path to the copied image;
+     *          if path is null, returns null
+     */
     public String copyImage( String path ) {
+
+        if ( path == null ) {
+            return null;
+        }
 
         Path srcPath = fileSys.getPath(path);
         String extension = getFileExtension(path);
@@ -99,6 +108,10 @@ public class ImageHandler {
 
     // From https://docs.oracle.com/javase/tutorial/essential/io/delete.html
     public void deleteImage( String path ) {
+
+        if ( path == null ) {
+            return;
+        }
 
         try {
             Files.delete( fileSys.getPath(path) );
