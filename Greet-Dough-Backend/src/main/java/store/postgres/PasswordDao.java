@@ -14,7 +14,7 @@ public interface PasswordDao {
     @SqlUpdate("CREATE TABLE IF NOT EXISTS passwords( " +
             "user_email TEXT " +    "NOT NULL, " +
             "user_id INT " +        "NOT NULL, " +
-            "user_pass TEXT " +     "NOT NULL, " +
+            "user_pass BYTEA " +    "NOT NULL, " +
             "PRIMARY KEY(user_email), " +
             "CONSTRAINT fk_user " + "FOREIGN KEY(user_id) " +
                 "REFERENCES users(user_id) " + "ON DELETE CASCADE " +
@@ -22,14 +22,14 @@ public interface PasswordDao {
     void createTable();
 
     @SqlUpdate("INSERT INTO passwords (user_email, user_id, user_pass) " +
-            "VALUES ( LOWER(:user_email), :user_id, MD5(:user_pass) ) " +
+            "VALUES ( LOWER(:user_email), :user_id, SHA256( CAST(:user_pass AS BYTEA) ) ) " +
             "ON CONFLICT (user_email) DO NOTHING;")
     int addPassword(@Bind("user_email") String user_email,
                     @Bind("user_id") int user_id,
                     @Bind("user_pass") String user_pass);
 
     @SqlQuery("SELECT user_id FROM passwords " +
-            "WHERE (user_email, user_pass) = ( LOWER(:user_email), MD5(:user_pass) );")
+            "WHERE (user_email, user_pass) = ( LOWER(:user_email), SHA256( CAST(:user_pass AS BYTEA) ) );")
     Optional<Integer> isCorrectPassword(@Bind("user_email") String user_email,
                                         @Bind("user_pass") String user_pass);
 
@@ -39,15 +39,15 @@ public interface PasswordDao {
     boolean hasEmail(@Bind("user_email") String user_email);
 
     @SqlUpdate("UPDATE passwords " +
-            "SET user_email = LOWER(:newEmail) " +
-            "WHERE user_email = LOWER(:oldEmail);")
-    void changeEmail(@Bind("oldEmail") String oldEmail,
-                     @Bind("newEmail") String newEmail);
+            "SET user_email = LOWER(:new_email) " +
+            "WHERE user_email = LOWER(:old_email);")
+    void changeEmail(@Bind("old_email") String old_email,
+                     @Bind("new_email") String new_email);
 
     @SqlUpdate("UPDATE passwords " +
-            "SET user_pass = MD5(:newPassword) " +
-            "WHERE user_email = LOWER(:email);")
-    void changePassword(@Bind("email") String email,
-                        @Bind("newPassword") String newPassword);
+            "SET user_pass = SHA256( CAST(:new_pass AS BYTEA) ) " +
+            "WHERE user_email = LOWER(:user_email);")
+    void changePassword(@Bind("user_email") String user_email,
+                        @Bind("new_pass") String new_pass);
 
 }
