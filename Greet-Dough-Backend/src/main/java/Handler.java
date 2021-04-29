@@ -40,6 +40,7 @@ public class Handler {
     private final PasswordStore passwordStore;
     private final LoginStore loginStore;
     private final WalletStore walletStore;
+    private final ProfileStore profileStore;
 
     private final Gson gson = new Gson();
     private final ObjectMapper mapper = new ObjectMapper();
@@ -60,7 +61,8 @@ public class Handler {
                    PostCommentStore postCommentStore,
                    PasswordStore passwordStore,
                    LoginStore loginStore,
-                   WalletStore walletStore) {
+                   WalletStore walletStore,
+                   ProfileStore profileStore) {
 
         this.userStore = userStore;
         this.postStore = postStore;
@@ -73,6 +75,8 @@ public class Handler {
         this.passwordStore = passwordStore;
         this.loginStore = loginStore;
         this.walletStore = walletStore;
+        this.profileStore = profileStore;
+
         this.imageHandler = new ImageHandler();
 
     }
@@ -267,6 +271,10 @@ public class Handler {
         // Creates a balance for the user
         //      Default $0
         walletStore.addUser( tempUser.getID() );
+
+        // Create a profile for the user
+        //      Default empty bio and empty profile picture
+        profileStore.addProfile( tempUser.getID() );
 
         System.out.println( "User Created: " + tempUser.getName() + ", " + tempUser.getID() );
         System.out.println( "PASSWORD STORED\n" );

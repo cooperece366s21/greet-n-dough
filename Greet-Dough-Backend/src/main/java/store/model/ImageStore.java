@@ -19,7 +19,7 @@ public interface ImageStore {
 
     /**
      * Soft deletes the image associated with the provided iid.
-     * Image should not appear in subsequent queries.
+     * The specified Image should not appear in subsequent queries.
      */
     void deleteImage( int iid );
 

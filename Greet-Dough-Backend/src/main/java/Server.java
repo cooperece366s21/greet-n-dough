@@ -23,6 +23,7 @@ public class Server {
     private static CommentStore commentStore;
     private static LoginStore loginStore;
     private static WalletStore walletStore;
+    private static ProfileStore profileStore;
     private static SubStore subStore = new SubStoreImpl();
     private static FollowStore followStore = new FollowStoreImpl();
     private static PostCommentStore postCommentStore = new PostCommentStoreImpl();
@@ -85,6 +86,7 @@ public class Server {
         passwordStore = new PasswordStorePostgres(jdbi);
         loginStore = new LoginStorePostgres(jdbi);
         walletStore = new WalletStorePostgres(jdbi);
+        profileStore = new ProfileStorePostgres(jdbi);
 
         Handler handler = new Handler(
                 Server.userStore,
@@ -97,7 +99,8 @@ public class Server {
                 Server.postCommentStore,
                 Server.passwordStore,
                 Server.loginStore,
-                Server.walletStore
+                Server.walletStore,
+                Server.profileStore
                 );
 
         // USER ROUTES
