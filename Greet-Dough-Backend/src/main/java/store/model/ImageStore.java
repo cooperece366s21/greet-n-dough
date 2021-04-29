@@ -15,7 +15,7 @@ public interface ImageStore {
 
     boolean hasImage( int iid );
 
-    Image addImage( String path, int uid );
+    Image addImage( int uid, String path );
 
     /**
      * Soft deletes the image associated with the provided iid.

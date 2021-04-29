@@ -29,7 +29,7 @@ public class ImageStoreImpl extends StoreWithID<Image> implements ImageStore {
     }
 
     @Override
-    public Image addImage( String path, int uid ) {
+    public Image addImage( int uid, String path ) {
 
         // Create image
         int iid = super.getFreeID();

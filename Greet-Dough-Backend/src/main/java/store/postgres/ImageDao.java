@@ -26,8 +26,8 @@ public interface ImageDao {
     @SqlUpdate("INSERT INTO images (user_id, path) " +
             "VALUES (:user_id, :path);")
     @GetGeneratedKeys("image_id")
-    int addImage(@Bind("path") String path,
-                 @Bind("user_id") int user_id);
+    int addImage(@Bind("user_id") int user_id,
+                 @Bind("path") String path);
 
     @SqlUpdate("UPDATE images " +
             "SET is_deleted = true " +
