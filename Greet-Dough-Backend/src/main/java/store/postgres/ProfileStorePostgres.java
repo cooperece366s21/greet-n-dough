@@ -6,8 +6,6 @@ import utility.ImageHandler;
 
 import org.jdbi.v3.core.Jdbi;
 
-import store.model.ProfileStore;
-
 public class ProfileStorePostgres implements ProfileStore {
 
     private final Jdbi jdbi;
