@@ -5,8 +5,14 @@ import utility.ImageHandler;
 import utility.Pair;
 import store.model.*;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -15,6 +21,11 @@ import com.google.gson.Gson;
 import org.json.*;
 import spark.Request;
 import spark.Response;
+
+import javax.servlet.MultipartConfigElement;
+import javax.servlet.ServletException;
+
+import static spark.Spark.staticFiles;
 
 public class Handler {
 
@@ -795,6 +806,24 @@ public class Handler {
         res.status(200);
         return res.status();
 
+    }
+
+    public int createImage( Request req, Response res ) throws IOException, ServletException {
+
+        File uploadDir = new File("upload");
+
+        uploadDir.mkdir();
+
+        Path tempFile = Files.createTempFile(uploadDir.toPath(), "", "");
+
+        req.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
+
+        try (InputStream is = req.raw().getPart("file").getInputStream()) {
+            Files.copy( is, tempFile, StandardCopyOption.REPLACE_EXISTING);
+            res.status(200);
+        }
+
+        return res.status();
     }
 
 
