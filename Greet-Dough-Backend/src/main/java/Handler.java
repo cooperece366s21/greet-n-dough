@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -822,11 +823,17 @@ public class Handler {
 
         uploadDir.mkdir();
 
-        Path tempFile = Files.createTempFile(uploadDir.toPath(), "", "");
-
         req.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
 
         try (InputStream is = req.raw().getPart("file").getInputStream()) {
+
+            String fileType =  new String(
+                    req.raw().getPart("fileType").getInputStream().readAllBytes(),
+                    StandardCharsets.UTF_8
+            );
+
+            Path tempFile = Files.createTempFile(uploadDir.toPath(), "", fileType);
+
             Files.copy( is, tempFile, StandardCopyOption.REPLACE_EXISTING);
             res.status(200);
         }

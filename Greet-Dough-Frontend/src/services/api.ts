@@ -371,6 +371,9 @@ export async function postImage( token:string|null, file:File|null) {
     const form = new FormData();
     form.append( "file", file );
 
+    let fileType = "." + file.type.slice( file.type.indexOf("/")+1 );
+    form.append( "fileType", fileType );
+
     const res = await fetch(`${BACKEND_URL}/images/`, {
         method: "post",
         mode: "cors",
