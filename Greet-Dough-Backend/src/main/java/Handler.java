@@ -828,18 +828,24 @@ public class Handler {
 
         File uploadDir = new File(IMAGE_DIR);
         uploadDir.mkdir();
+
         req.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
 
         try (InputStream is = req.raw().getPart("file").getInputStream()) {
 
+            // Grab bytes from FE form to figure out filetype
             String fileType =  new String(
                     req.raw().getPart("fileType").getInputStream().readAllBytes(),
                     StandardCharsets.UTF_8
             );
 
+            // Creates a temporary file (it is randomly generated numbers)
             Path tempFile = Files.createTempFile(uploadDir.toPath(), "", fileType);
+
+            // Replace the temp file with the binary data recieved from FE.
             Files.copy( is, tempFile, StandardCopyOption.REPLACE_EXISTING);
 
+            // Replace the name with a UUID so it is more randomized
             File generatedName = new File(
                     IMAGE_DIR + "/" +
                             UUID.randomUUID().toString() + fileType
@@ -848,7 +854,13 @@ public class Handler {
             if( ! tempFile.toFile().renameTo(generatedName) ) {
                 System.err.println("Error changing filename");
             }
-            
+
+            // Note that the above code should be condensed into something in the imageStore later.
+            // derek already has written something, but the above code above does the same thing.
+            // something weird was happening with giving URL's to the imageHandler.copyPath() function
+            // so im just going to use this for now so I can continue working rather than debugging.
+
+            imageStore.addImage( uid,  IMAGE_DIR + "/" + generatedName.getName() );
             System.err.println("Created file: " + generatedName.getName() );
 
             res.status(200);
