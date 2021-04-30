@@ -134,8 +134,9 @@ export async function searchUser( name:string ) {
     }
 }
 
-export async function editUser( token:string|null, name:string|null ) {
-    if ( token==null ) return (403);
+export async function editUser(token:string|null, name:string|null, bio:string|null ) {
+    if ( token==null || name==null ) return (403);
+
 
     const res = await fetch(`${BACKEND_URL}/users/`, {
         method: "put",
@@ -144,7 +145,7 @@ export async function editUser( token:string|null, name:string|null ) {
             "Content-Type": "application/json",
             "token": token,
         },
-        body: JSON.stringify({ name })
+        body: JSON.stringify({ name, bio })
     });
 
     if ( res.ok ) {
@@ -176,6 +177,27 @@ export async function getUserFeed( cuid:number, uid:number ) {
         return null;
     }
 
+}
+
+export async function getUserProfile( uid:number ) {
+
+    const res = await fetch(`${BACKEND_URL}/profile/${uid}/`, {
+        headers: {
+            "Content-Type": "application/json"
+        },
+    });
+
+    if ( res.ok ) {
+
+        return await res.json()
+            .then(body => {
+                return body;
+            });
+
+    } else {
+        // maybe some other code here for specific errors?
+        return res.status;
+    }
 }
 
 // WALLET API CALLS
@@ -423,7 +445,9 @@ let exports = {
     getUserID,
     getUser,
     searchUser,
-    editUser,
+
+    getUserProfile,
+    editUser: editUser,
     getUserFeed,
 
     createPost,

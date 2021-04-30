@@ -215,6 +215,19 @@ public class Handler {
         }
     }
 
+    public JSONObject getUserProfile( Request req, Response res ) {
+        res.type("application/json");
+        int uid = Integer.parseInt( req.params(":uid") );
+
+        JSONObject jsonToReturn = new JSONObject();
+
+        jsonToReturn.put("name", userStore.getUser(uid).getName() );
+        jsonToReturn.put("bio", profileStore.getProfile(uid).getBio() );
+        jsonToReturn.put("profilePicture", profileStore.getProfile(uid).getPath() );
+
+        return jsonToReturn;
+    }
+
     public String searchUsers( Request req, Response res ) throws JsonProcessingException {
 
         res.type("application/json");
@@ -326,23 +339,25 @@ public class Handler {
 
         // Parse the request
         String newName = data.getProperty("name");
+        String newBio = data.getProperty("bio");
+        System.err.println(newBio);
 
         // Check if the request was formatted correctly
-        if ( newName == null ) {
-
+        if ( newName == null | newName.equals("") ) {
             res.status(400);
             return res.status();
-
         }
 
         // Change the desired fields
         userStore.changeName( uid, newName );
+        profileStore.changeBio( uid, newBio );
         res.status(200);
 
         return res.status();
 
     }
 
+<<<<<<< Updated upstream
     public int changeBio( Request req, Response res ) {
 
         // Users can add a bio regardless if the
@@ -373,6 +388,8 @@ public class Handler {
 
     }
 
+=======
+>>>>>>> Stashed changes
     // Need to properly map profile fields to JSONObject
 /*
     public JSONObject getProfile ( Request req, Response res ) throws JsonProcessingException {

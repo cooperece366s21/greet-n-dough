@@ -13,6 +13,8 @@ type PassdownStates = {
     name : string | null,
     exists : boolean | null,  // Null state for rendering blank when not yet explicitly set to boolean
     hasOwnership : boolean | null,
+    bio : string | null,
+    profilePicture: string | null,
 }
 
 class UserPageWrapper extends React.Component<any, any> {
@@ -23,6 +25,8 @@ class UserPageWrapper extends React.Component<any, any> {
         name: "",
         exists: null,
         hasOwnership: null,
+        bio: null,
+        profilePicture: null,
     }
 
     constructor(props:any) {
@@ -33,10 +37,25 @@ class UserPageWrapper extends React.Component<any, any> {
             name : null,
             exists: null,
             hasOwnership: null,
+            bio: null,
+            profilePicture: null,
         }
     }
 
     componentDidMount() {
+
+        api.getUserProfile( this.state.uid )
+            .then( r => {
+
+                if ( r.map.bio !== null ) {
+                    this.setState({bio: r.map.bio});
+                }
+
+                if ( r.map.profilePicture !== null ) {
+                    this.setState({profilePicture: r.map.profilePicture})
+                }
+
+            } );
 
         api.getUserID()
             .then( cuid => {
@@ -79,6 +98,8 @@ class UserPageWrapper extends React.Component<any, any> {
                     name={this.state.name}
                     hasOwnership={this.state.hasOwnership}
                     exists={this.state.exists}
+                    bio={this.state.bio}
+                    profilePicture={this.state.profilePicture}
                 />
 
                 <UserFeed

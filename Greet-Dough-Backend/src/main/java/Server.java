@@ -108,7 +108,11 @@ public class Server {
 
         // Returns user given an id
         // curl localhost:5432/users/1/
+
         get("/users/:uid/", handler::getUser, gson::toJson);
+
+        // biography and profile picture
+        get("/profile/:uid/", handler::getUserProfile, gson::toJson);
 
         get("/users/search/:name/", handler::searchUsers, gson::toJson);
 

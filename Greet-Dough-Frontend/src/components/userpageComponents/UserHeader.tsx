@@ -17,45 +17,50 @@ import { withRouter } from 'react-router-dom';
 
 
 type UserState = {
-    uid: number;
-    name: string;
-    followers: number | null;
-    posts: number | null;
+    editing: boolean;
     exists: boolean | null;
     hasOwnership : boolean | null;
 
-    editing: boolean;
+    uid: number;
+    name: string;
+    bio: string | null;
+    profilePicture: string | null;
+
     editedName : string;
+    editedBio : string | null;
     uploadedPicture : File | null;
 }
 
 class UserHeader extends React.Component<any, any> {
 
     state: UserState = {
-        uid: -1,
-        name: "",
-        followers:  null,
-        posts: null,
         exists: null,
         hasOwnership: null,
-
         editing: false,
+
+        uid: -1,
+        name: "",
+        bio: null,
+        profilePicture: null,
+
         editedName: "",
+        editedBio: null,
         uploadedPicture: null,
     }
 
     constructor(props:any) {
         super(props);
         this.state = {
-            uid: props.uid,
-            name: props.name,
-            followers: null,
-            posts:null,
             exists: props.exists,
             hasOwnership: props.hasOwnership,
-
             editing: false,
+
+            uid: props.uid,
+            name: props.name,
+            bio: props.bio,
+            profilePicture: props.profilePicture,
             editedName: "",
+            editedBio: props.bio,
             uploadedPicture: null,
         }
     }
@@ -132,15 +137,22 @@ class UserHeader extends React.Component<any, any> {
                                     <>
 
                                     <Button onClick={() => {
+
                                         this.setState({editing: false});
-                                        api.editUser( localStorage.getItem("authToken"), this.state.editedName)
+
+                                        api.editUser(
+                                            localStorage.getItem("authToken"),
+                                            this.state.editedName,
+                                            this.state.editedBio,
+                                        )
                                             .then( res => {
                                                 if(res===200){
                                                     this.setState({name: this.state.editedName})
                                                 }
                                             })
+
                                         api.postImage( localStorage.getItem("authToken"), this.state.uploadedPicture)
-                                            .then( () => alert("yo poggies") )
+
                                     }}>
                                         ✔
                                     </Button>
@@ -158,7 +170,14 @@ class UserHeader extends React.Component<any, any> {
 
                         {/*LOWER TEXT CONTAINER*/}
                         <Box w="80%" h="95px"  paddingTop="30px">
-                            <Text> Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloribus eligendi minus nam sequi ullam. A ab alias commodi fugiat magni nobis non, perspiciatis quibusdam quis quos, ullam ut voluptas voluptatum?</Text>
+                            {this.state.editing ?
+                                <Input
+                                    placeholder={this.state.bio? this.state.bio : ""} size="lg"
+                                    onChange={ e => this.setState( {editedBio: e.target.value }) }
+                                    value={this.state.editedBio ? this.state.editedBio : ""}
+                                /> :
+                                <Text> {this.state.bio ? this.state.bio : "No biography"} </Text>
+                            }
                         </Box>
 
                     </Box>
