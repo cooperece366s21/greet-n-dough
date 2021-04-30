@@ -1,6 +1,5 @@
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.JsonElement;
 import model.*;
 import utility.ImageHandler;
 import utility.Pair;
@@ -9,7 +8,6 @@ import store.model.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
@@ -27,8 +25,6 @@ import spark.Response;
 
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletException;
-
-import static spark.Spark.staticFiles;
 
 public class Handler {
 
