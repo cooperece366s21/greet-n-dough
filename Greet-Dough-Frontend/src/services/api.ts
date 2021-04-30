@@ -394,6 +394,27 @@ export async function postImage( token:string|null, file:File|null) {
 
 }
 
+export async function getAllUserImages( token:string|null, uid:number ) {
+    if ( token==null ) return (403);
+
+    const res = await fetch(`${BACKEND_URL}/images/${uid}/`, {
+        method: "get",
+        mode: "cors",
+        headers: {
+            "Content-Type": "application/json",
+            "token" : token,
+        },
+    });
+
+    if (res.ok) {
+        res.json()
+            .then( json => alert( JSON.stringify(json) ) )
+        return 200;
+    } else {
+        alert( res.status );
+    }
+}
+
 
 let exports = {
     register,
@@ -409,7 +430,9 @@ let exports = {
     editPost,
     getPost,
     deletePost,
+
     postImage,
+    getAllUserImages,
 
     getWallet,
     addToWallet,

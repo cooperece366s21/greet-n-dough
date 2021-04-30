@@ -56,6 +56,8 @@ class UserPageWrapper extends React.Component<any, any> {
                             name: user.name,
                             exists: true,
                         });
+
+                        api.getAllUserImages(localStorage.getItem("authToken"), this.state.uid);
                     })
             })
     }

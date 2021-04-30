@@ -1,5 +1,6 @@
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonElement;
 import model.*;
 import utility.ImageHandler;
 import utility.Pair;
@@ -8,6 +9,7 @@ import store.model.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
@@ -867,6 +869,29 @@ public class Handler {
         }
 
         return res.status();
+    }
+
+    public LinkedList<JSONObject> makeGallery( Request req, Response res ) throws JsonProcessingException {
+
+        res.type("application/json");
+        int uid = Integer.parseInt( req.params(":uid") );
+
+        if ( !userStore.hasUser(uid) ) {
+
+            res.status(404);
+            return new LinkedList<>();
+
+        }
+
+        List<Image> images = imageStore.makeGallery(uid);
+        LinkedList<JSONObject> jsonList = new LinkedList<JSONObject>();
+
+        for( Image img : images ) {
+            jsonList.add( new JSONObject(img) );
+        }
+
+        return jsonList;
+
     }
 
 //    public List<Post> getFeed( Request req, Response res ) {

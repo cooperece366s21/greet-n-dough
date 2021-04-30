@@ -198,5 +198,7 @@ public class Server {
 
         post( "/images/", handler::createImage, gson::toJson );
 
+        get( "/images/:uid/", handler::makeGallery, gson::toJson );
+
     }
 }
