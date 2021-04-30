@@ -347,6 +347,62 @@ public class Handler {
 
     }
 
+    public int changeBio( Request req, Response res ) {
+
+        // Users can add a bio regardless if the
+
+        res.type("application/json");
+        Properties data = gson.fromJson(req.body(), Properties.class);
+
+        int uid = Integer.parseInt( data.getProperty("uid") );
+        String newBio = data.getProperty("bio");
+
+        // Check if the status is not OK
+        if ( res.status() != 200 ) {
+
+            System.err.println("Error code: " + res.status());
+            return res.status();
+
+        }
+
+        // Change the bio
+        // If not null, add the newBio
+        // Else "delete" the bio
+
+        if ( newBio != null ) {
+            profileStore.changeBio( uid, newBio );
+        }
+        else {
+            profileStore.deleteBio(uid);
+        }
+
+        res.status(200);
+        return res.status();
+
+    }
+
+    // Need to properly map profile fields to JSONObject
+/*
+    public JSONObject getProfile ( Request req, Response res ) throws JsonProcessingException {
+
+        //res.type("application/json");
+        //Properties data = gson.fromJson(req.body(), Properties.class);
+
+        //int uid = Integer.parseInt( data.getProperty("uid") );
+
+        int uid = Integer.parseInt( req.params(":uid") );
+
+        Profile tempProfile = profileStore.getProfile(uid);
+
+        JSONObject tempJSON = new JSONObject();
+        tempJSON.put("profile",tempProfile);
+
+        res.status(200);
+        return tempJSON;
+
+    }
+*/
+
     public String tokenToID( Request req, Response res ) {
 
         res.type("application/json");
