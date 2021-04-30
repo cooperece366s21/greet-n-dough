@@ -885,7 +885,7 @@ public class Handler {
 
         req.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
 
-        try (InputStream is = req.raw().getPart("file").getInputStream()) {
+        try ( InputStream is = req.raw().getPart("file").getInputStream() ) {
 
             // Grab bytes from FE form to figure out filetype
             String fileType =  new String(
@@ -894,10 +894,10 @@ public class Handler {
             );
 
             // Creates a temporary file (it is randomly generated numbers)
-            Path tempFile = Files.createTempFile(uploadDir.toPath(), "", fileType);
+            Path tempFile = Files.createTempFile( uploadDir.toPath(), "", fileType );
 
             // Replace the temp file with the binary data recieved from FE.
-            Files.copy( is, tempFile, StandardCopyOption.REPLACE_EXISTING);
+            Files.copy( is, tempFile, StandardCopyOption.REPLACE_EXISTING );
 
             // Replace the name with a UUID so it is more randomized
             File generatedName = new File(
@@ -905,7 +905,7 @@ public class Handler {
                             UUID.randomUUID().toString() + fileType
             );
 
-            if( ! tempFile.toFile().renameTo(generatedName) ) {
+            if ( !tempFile.toFile().renameTo(generatedName) ) {
                 System.err.println("Error changing filename");
             }
 
@@ -918,9 +918,11 @@ public class Handler {
             System.err.println("Created file: " + generatedName.getName() );
 
             res.status(200);
+
         }
 
         return res.status();
+
     }
 
     public LinkedList<JSONObject> makeGallery( Request req, Response res ) throws JsonProcessingException {
