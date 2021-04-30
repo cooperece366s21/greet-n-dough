@@ -357,39 +357,6 @@ public class Handler {
 
     }
 
-<<<<<<< Updated upstream
-    public int changeBio( Request req, Response res ) {
-
-        // Users can add a bio regardless if the
-        res.type("application/json");
-        Properties data = gson.fromJson(req.body(), Properties.class);
-
-        // Check the token
-        String token = req.headers("token");
-        if ( !isValidToken( token, res ) ) {
-            return res.status();
-        }
-        int uid = loginStore.getUserID(token);
-
-        String newBio = data.getProperty("bio");
-
-        // Change the bio
-        // If not null, add the newBio
-        // Else "delete" the bio
-        if ( newBio != null ) {
-            profileStore.changeBio( uid, newBio );
-        }
-        else {
-            profileStore.deleteBio(uid);
-        }
-
-        res.status(200);
-        return res.status();
-
-    }
-
-=======
->>>>>>> Stashed changes
     // Need to properly map profile fields to JSONObject
 /*
     public JSONObject getProfile ( Request req, Response res ) throws JsonProcessingException {

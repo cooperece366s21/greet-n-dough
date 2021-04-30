@@ -430,7 +430,7 @@ export async function getAllUserImages( token:string|null, uid:number ) {
 
     if (res.ok) {
         res.json()
-            .then( json => alert( JSON.stringify(json) ) )
+            // .then( json => alert( JSON.stringify(json) ) )
         return 200;
     } else {
         alert( res.status );
