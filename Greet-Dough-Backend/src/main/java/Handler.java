@@ -810,7 +810,7 @@ public class Handler {
 
     public int createImage( Request req, Response res ) throws IOException, ServletException {
 
-        File uploadDir = new File("upload");
+        File uploadDir = new File("image-assets");
 
         uploadDir.mkdir();
 

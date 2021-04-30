@@ -19,6 +19,7 @@ type PostState = {
     contents: string;
     invalid: boolean;
     pid: string;
+    pictures: File[] | null;
 }
 
 class EditPostForm extends PostForm{
@@ -28,6 +29,7 @@ class EditPostForm extends PostForm{
         contents: "",
         invalid: false,
         pid: "",
+        pictures: null,
     }
 
     constructor(props:any) {
@@ -37,6 +39,7 @@ class EditPostForm extends PostForm{
             contents: "",
             invalid: false,
             pid: props.pid,
+            pictures: null,
         }
     }
 

@@ -2,3 +2,4 @@
 *target/
 *.iml
 Greet-Dough-Backend/src/main/java/store/postgres/BaseDAO.java
+Greet-Dough-Backend/image-assets/*

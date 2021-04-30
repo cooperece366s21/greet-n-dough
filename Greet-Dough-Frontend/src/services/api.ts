@@ -383,8 +383,10 @@ export async function postImage( token:string|null, file:File|null) {
 
     if (res.ok){
         alert('good');
+        return 200;
     } else{
         alert('oopsie!');
+        return res.status;
     }
 
 }

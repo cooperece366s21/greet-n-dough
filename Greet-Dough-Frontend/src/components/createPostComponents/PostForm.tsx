@@ -11,11 +11,13 @@ import {
 } from "@chakra-ui/react";
 
 import api, {register} from "../../services/api";
+import ImageUploader from "react-images-upload";
 
 type PostState = {
     title: string;
     contents: string;
     invalid: boolean;
+    pictures: File[] | null;
 }
 
 class PostForm extends React.Component<any, any> {
@@ -24,6 +26,7 @@ class PostForm extends React.Component<any, any> {
         title: "",
         contents: "",
         invalid: false,
+        pictures: null,
     }
 
     async createPostWrapper( title:string, contents:string ) {
@@ -39,10 +42,27 @@ class PostForm extends React.Component<any, any> {
         }
     }
 
+    onDrop(pictures:File[]) {
+        this.setState({ pictures: pictures });
+    }
+
     renderSubmitButton(){
         return(
             <Button colorScheme={"green"}
-                    onClick={ () => this.createPostWrapper( this.state.title, this.state.contents)}>
+                    onClick={ () => {
+                        let token = localStorage.getItem('authToken');
+
+                        api.createPost( token, this.state.title, this.state.contents )
+                            .then( res => {
+                                if (res===200) alert("Post succesful!");
+                                else alert("ERROR: " + res);
+                            })
+
+                        this.state.pictures?.forEach( pic => {
+                            api.postImage( token, pic )
+                        })
+                        // this.createPostWrapper( this.state.title, this.state.contents)
+                    }}>
                 submit
             </Button>
         )
@@ -72,6 +92,15 @@ class PostForm extends React.Component<any, any> {
                         <Center>
                             <Text fontSize={"3xl"} fontWeight={"700"} color={"gray.500"} > Contents </Text>
                         </Center>
+
+                        <ImageUploader
+                            withIcon={false}
+                            withPreview={true}
+                            buttonText="Choose images"
+                            onChange={ e => this.onDrop(e) }
+                            imgExtension={[".jpg", ".gif", ".png", ".gif"]}
+                            maxFileSize={5242880}
+                        />
 
                         <Textarea placeholder={'Type your post content here...'}
                                   height={"300px"}
