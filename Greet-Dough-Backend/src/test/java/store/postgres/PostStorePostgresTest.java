@@ -59,7 +59,7 @@ class PostStorePostgresTest extends PostStorePostgres {
         //      Should delete cascade the posts
         userStorePostgres.deleteUser( newUser.getID() );
         assert ( postStorePostgres.makeFeed( newUser.getID() ).isEmpty() );
-        assert ( postStorePostgres.getPost().isEmpty() );
+        assert ( postStorePostgres.getAllPosts().isEmpty() );
 
     }
 

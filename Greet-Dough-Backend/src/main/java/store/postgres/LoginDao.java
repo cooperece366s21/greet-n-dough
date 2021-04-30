@@ -36,30 +36,8 @@ public interface LoginDao {
                     "timestamp > NOW() - INTERVAL '1 hour';")
     Optional<Integer> getUserID(@Bind("user_token") String user_token );
 
-    // Invalidates tokens after a specified amount of time
-    //      Takes place before an INSERT
-    // From https://www.the-art-of-web.com/sql/trigger-delete-old/
-    @SqlUpdate( "CREATE OR REPLACE FUNCTION delete_old_rows() RETURNS trigger " +
-                    "LANGUAGE plpgsql " +
-                    "AS $$ " +
-                "DECLARE " +
-                    "row_count int; " +
-                "BEGIN " +
-                    "DELETE FROM login WHERE timestamp < NOW() - INTERVAL '1 hour'; " +
-                    "IF found THEN " +
-                        "GET DIAGNOSTICS row_count = ROW_COUNT; " +
-                    "RAISE NOTICE 'DELETE % row(s) FROM login', row_count; " +
-                    "END IF; " +
-                    "RETURN NULL; " +
-                "END; " +
-                "$$; ")
-    void createTrigger();
-
-    @SqlUpdate("CREATE TRIGGER trigger_delete_old_rows " +
-                    "BEFORE INSERT ON login " +
-                    "EXECUTE PROCEDURE delete_old_rows();")
-    void setTrigger();
-
-
+    @SqlUpdate("DELETE FROM login " +
+            "WHERE timestamp > NOW() - INTERVAL '1 hour';")
+    void clearDeleted();
 
 }

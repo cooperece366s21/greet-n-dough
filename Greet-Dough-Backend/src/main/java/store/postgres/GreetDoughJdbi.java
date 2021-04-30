@@ -29,6 +29,7 @@ public class GreetDoughJdbi {
         jdbi.registerRowMapper( new ImageRowMapper() );
         jdbi.registerRowMapper( new LikeRowMapper() );
         jdbi.registerRowMapper( new CommentRowMapper() );
+        jdbi.registerRowMapper( new ProfileRowMapper() );
 
         return jdbi;
 
@@ -111,6 +112,21 @@ public class GreetDoughJdbi {
             Integer parentID = rs.getObject("parent_id", Integer.class);
 
             return new Comment( content, cid, uid, pid, parentID );
+
+        }
+
+    }
+
+    public static class ProfileRowMapper implements RowMapper<Profile> {
+
+        @Override
+        public Profile map( final ResultSet rs, final StatementContext ctx ) throws SQLException {
+
+            int uid = rs.getInt("user_id");
+            String bio = rs.getString("user_bio");
+            String path = rs.getString("profile_picture_path");
+
+            return new Profile( uid, bio, path );
 
         }
 

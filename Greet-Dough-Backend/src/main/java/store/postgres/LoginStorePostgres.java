@@ -17,11 +17,7 @@ public class LoginStorePostgres implements LoginStore {
     }
 
     public void init() {
-
         jdbi.useHandle( handle -> handle.attach(LoginDao.class).createTable() );
-        jdbi.useHandle( handle -> handle.attach(LoginDao.class).createTrigger() );
-        jdbi.useHandle( handle -> handle.attach(LoginDao.class).setTrigger() );
-
     }
 
     @Override
@@ -42,6 +38,11 @@ public class LoginStorePostgres implements LoginStore {
     @Override
     public Integer getUserID( String token ) {
         return jdbi.withHandle( handle -> handle.attach(LoginDao.class).getUserID(token) ).orElse(null);
+    }
+
+    @Override
+    public void clearDeleted() {
+        jdbi.useHandle(handle -> handle.attach(LoginDao.class).clearDeleted() );
     }
 
 }

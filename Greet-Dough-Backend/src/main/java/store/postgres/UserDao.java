@@ -31,12 +31,15 @@ public interface UserDao {
             "UPDATE images " +
                 "SET is_deleted = true " +
                 "WHERE user_id = (:user_id);" +
+            "UPDATE profiles " +
+                "SET is_deleted = true " +
+                "WHERE user_id = (:user_id);" +
             "COMMIT;")
     void deleteUser(@Bind("user_id") int user_id);
 
     @SqlQuery("SELECT * FROM users " +
             "ORDER BY user_name")
-    LinkedList<User> listUsers();
+    LinkedList<User> getAllUsers();
 
     @SqlQuery("SELECT * FROM users " +
             "WHERE user_id = (:user_id)")

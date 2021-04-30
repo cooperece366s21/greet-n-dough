@@ -6,7 +6,8 @@ import utility.ImageHandler;
 
 import org.jdbi.v3.core.Jdbi;
 
-import store.model.ProfileStore;
+import java.util.LinkedList;
+import java.util.List;
 
 public class ProfileStorePostgres implements ProfileStore {
 
@@ -14,8 +15,10 @@ public class ProfileStorePostgres implements ProfileStore {
     private final ImageHandler imageHandler;
 
     public ProfileStorePostgres( final Jdbi jdbi ) {
+
         this.jdbi = jdbi;
-        this.imageHandler = new ImageHandler("pfp");
+        this.imageHandler = new ImageHandler("profile_pictures");
+
     }
 
     public void delete() {
@@ -27,28 +30,75 @@ public class ProfileStorePostgres implements ProfileStore {
     }
 
     @Override
-    public void addBio( int uid, String bio ) {
-        jdbi.useHandle( handle -> handle.attach(ProfileDao.class).addBio( uid, bio, null ) );
+    public Profile getProfile( int uid ) {
+        return jdbi.withHandle( handle -> handle.attach(ProfileDao.class).getProfile(uid) ).orElse( new Profile(uid) );
     }
 
-    // add bio with profile pic
-        // will need to add constraint on the original table on a profile image store
-            // might be necessary since profile image is not a post image
-    //@Override
-    //public
+    /**
+     * Currently only used for testing.
+     *
+     * @return all profiles in the database
+     */
+    public LinkedList<Profile> getAllProfiles() {
+        return jdbi.withHandle( handle -> handle.attach(ProfileDao.class).getAllProfiles() );
+    }
 
-    // getBio
-        // query on user_id
     @Override
-    public Profile getBio(int uid ) {
-        return jdbi.withHandle( handle -> handle.attach(ProfileDao.class).getBio(uid) );
+    public Profile addProfile( int uid ) {
+        return addProfile( uid, null );
     }
 
-    // changeBio
-        // sqlupdate with UPDATE profiles SET bio = new_bio WHERE user_id = user_id
+    @Override
+    public Profile addProfile( int uid, String bio ) {
+        return addProfile( uid, bio, null );
+    }
+
+    @Override
+    public Profile addProfile( int uid, String bio, String path ) {
+
+        String savedPath = imageHandler.copyImage(path);
+        jdbi.useHandle( handle -> handle.attach(ProfileDao.class).addProfile( uid, bio, savedPath ) );
+        return getProfile(uid);
+
+    }
+
     @Override
     public void changeBio( int uid, String newBio ) {
         jdbi.useHandle( handle -> handle.attach(ProfileDao.class).changeBio( uid, newBio ) );
+    }
+
+    @Override
+    public void changeProfilePicture( int uid, String newPath ) {
+
+        String savedPath = imageHandler.copyImage(newPath);
+        jdbi.useHandle( handle -> handle.attach(ProfileDao.class).changeProfilePicture( uid, savedPath ) );
+
+    }
+
+    @Override
+    public void deleteBio( int uid ) {
+        jdbi.useHandle( handle -> handle.attach(ProfileDao.class).deleteBio(uid) );
+    }
+
+    @Override
+    public void deleteProfilePicture( int uid ) {
+
+        // Delete the profile picture from the profile_pictures directory
+        Profile tempProfile = getProfile(uid);
+        imageHandler.deleteImage( tempProfile.getPath() );
+
+        jdbi.useHandle( handle -> handle.attach(ProfileDao.class).deleteProfilePicture(uid) );
+
+    }
+
+    @Override
+    public void clearDeleted() {
+
+        List<Profile> deletedProfiles = jdbi.withHandle(handle -> handle.attach(ProfileDao.class).clearDeleted() );
+        for ( Profile profile : deletedProfiles ) {
+            imageHandler.deleteImage( profile.getPath() );
+        }
+
     }
 
 }
