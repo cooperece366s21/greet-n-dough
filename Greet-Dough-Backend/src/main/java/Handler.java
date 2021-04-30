@@ -46,6 +46,7 @@ public class Handler {
     private final Gson gson = new Gson();
     private final ObjectMapper mapper = new ObjectMapper();
     private final ImageHandler imageHandler;
+    String IMAGE_DIR = "image-assets";
 
     // Defines the accepted file extensions for images
     private static final HashSet<String> validImageFileExtensions = Stream
@@ -819,10 +820,14 @@ public class Handler {
 
     public int createImage( Request req, Response res ) throws IOException, ServletException {
 
-        File uploadDir = new File("image-assets");
+        String token = req.headers("token");
+        if ( !isValidToken( token, res ) ) {
+            return res.status();
+        }
+        int uid = loginStore.getUserID(token);
 
+        File uploadDir = new File(IMAGE_DIR);
         uploadDir.mkdir();
-
         req.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
 
         try (InputStream is = req.raw().getPart("file").getInputStream()) {
@@ -833,16 +838,24 @@ public class Handler {
             );
 
             Path tempFile = Files.createTempFile(uploadDir.toPath(), "", fileType);
-
             Files.copy( is, tempFile, StandardCopyOption.REPLACE_EXISTING);
+
+            File generatedName = new File(
+                    IMAGE_DIR + "/" +
+                            UUID.randomUUID().toString() + fileType
+            );
+
+            if( ! tempFile.toFile().renameTo(generatedName) ) {
+                System.err.println("Error changing filename");
+            }
+            
+            System.err.println("Created file: " + generatedName.getName() );
+
             res.status(200);
         }
 
         return res.status();
     }
-
-
-
 
 //    public List<Post> getFeed( Request req, Response res ) {
 //
