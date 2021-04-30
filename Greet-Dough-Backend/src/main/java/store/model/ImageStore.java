@@ -20,7 +20,15 @@ public interface ImageStore {
 
     boolean hasImage( int iid );
 
-    Image addImage( int uid, String path );
+    /**
+     * Copies the image file specified by {@code path}. Can optionally delete the
+     * original file after copying.
+     *
+     * @param   deleteOriginalImage a boolean specifying whether the original file
+     *                              at {@code path} should be deleted after being copied
+     * @return                      an Image object associated with the specified file
+     */
+    Image addImage( int uid, String path, boolean deleteOriginalImage );
 
     /**
      * Soft deletes the image associated with the provided iid.

@@ -33,8 +33,7 @@ public class ImageStoreImpl extends StoreWithID<Image> implements ImageStore {
         return super.has(iid);
     }
 
-    @Override
-    public Image addImage( int uid, String path ) {
+    private Image addImage( int uid, String path ) {
 
         // Create image
         int iid = super.getFreeID();
@@ -45,6 +44,11 @@ public class ImageStoreImpl extends StoreWithID<Image> implements ImageStore {
         this.add( tempImage.getID(), tempImage );
         return tempImage;
 
+    }
+
+    @Override
+    public Image addImage( int uid, String path, boolean deleteOriginalImage ) {
+        return addImage( uid, path );
     }
 
     @Override

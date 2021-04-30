@@ -876,8 +876,8 @@ public class Handler {
             // Replace the temp file with the binary data received from FE.
             Files.copy( is, tempFile, StandardCopyOption.REPLACE_EXISTING );
 
-            // Copy the image
-            imageStore.addImage( uid, tempFile.toString() );
+            // Copy the image and delete after copying
+            imageStore.addImage( uid, tempFile.toString(), true );
             System.err.println("Created file: " + tempFile.toString() );
 
             res.status(200);
@@ -888,7 +888,7 @@ public class Handler {
 
     }
 
-    public LinkedList<JSONObject> makeGallery( Request req, Response res ) throws JsonProcessingException {
+    public LinkedList<JSONObject> makeGallery( Request req, Response res ) {
 
         res.type("application/json");
         int uid = Integer.parseInt( req.params(":uid") );
@@ -901,7 +901,7 @@ public class Handler {
         }
 
         List<Image> images = imageStore.makeGallery(uid);
-        LinkedList<JSONObject> jsonList = new LinkedList<JSONObject>();
+        LinkedList<JSONObject> jsonList = new LinkedList<>();
 
         for( Image img : images ) {
             jsonList.add( new JSONObject(img) );

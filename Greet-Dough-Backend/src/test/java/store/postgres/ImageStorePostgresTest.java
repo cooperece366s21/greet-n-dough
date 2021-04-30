@@ -47,7 +47,7 @@ class ImageStorePostgresTest extends ImageStorePostgres {
         Path newPath = fileSys.getPath( tempPath.toString() + File.separator + "beardKoolmodo.png" );
 
         // Test copying and saving an image
-        Image selfie = imageStorePostgres.addImage( newUser.getID(), newPath.toString() );
+        Image selfie = imageStorePostgres.addImage( newUser.getID(), newPath.toString(), false );
 
         // Test adding a post with an image
         String title = "Feeling cute, might delete later";
@@ -62,7 +62,7 @@ class ImageStorePostgresTest extends ImageStorePostgres {
         assert ( imageStorePostgres.getImage( selfie.getID() ).getPath().equals( selfie.getPath() ) );
 
         // Test soft deleting and then clearing an image
-        Image tempImage = imageStorePostgres.addImage( newUser.getID(), newPath.toString() );
+        Image tempImage = imageStorePostgres.addImage( newUser.getID(), newPath.toString(), false );
         assert ( imageStorePostgres.getAllImages().size() == 2 );
 
         // Check that the number of rows is still the same
