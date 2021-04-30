@@ -44,19 +44,6 @@ class UserPageWrapper extends React.Component<any, any> {
 
     componentDidMount() {
 
-        api.getUserProfile( this.state.uid )
-            .then( r => {
-
-                if ( r.map.bio !== null ) {
-                    this.setState({bio: r.map.bio});
-                }
-
-                if ( r.map.profilePicture !== null ) {
-                    this.setState({profilePicture: r.map.profilePicture})
-                }
-
-            } );
-
         api.getUserID()
             .then( cuid => {
                 cuid === parseInt(String(this.state.uid)) ?
@@ -71,12 +58,28 @@ class UserPageWrapper extends React.Component<any, any> {
                             return;
                         }
 
-                        this.setState( {
-                            name: user.name,
-                            exists: true,
-                        });
+                        api.getUserProfile( this.state.uid )
+                            .then( res => {
 
-                        api.getAllUserImages(localStorage.getItem("authToken"), this.state.uid);
+                                if ( res.map.bio !== null ) {
+                                    this.setState({bio: res.map.bio});
+                                }
+
+                                if ( res.map.profilePicture !== null ) {
+                                    this.setState({profilePicture: res.map.profilePicture})
+                                }
+
+                                // THIS LINE BELOW IS CRITICAL
+                                // Once you set exist to true, the userHeader component will render.
+                                // If you try to set something after this, it won't work!
+                                this.setState( {
+                                    name: user.name,
+                                    exists: true,
+                                });
+
+                            } );
+
+                        // api.getAllUserImages(localStorage.getItem("authToken"), this.state.uid);
                     })
             })
     }
