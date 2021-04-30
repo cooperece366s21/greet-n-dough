@@ -43,8 +43,7 @@ public class Handler {
 
     private final Gson gson = new Gson();
     private final ObjectMapper mapper = new ObjectMapper();
-    private final ImageHandler imageHandler;
-    String IMAGE_DIR = "data/temp";
+    String TEMP_DIR = "data" + File.separator + "temp";     // Directory to create image file from bytes
 
     // Defines the accepted file extensions for images
     private static final HashSet<String> validImageFileExtensions = Stream
@@ -76,8 +75,6 @@ public class Handler {
         this.loginStore = loginStore;
         this.walletStore = walletStore;
         this.profileStore = profileStore;
-
-        this.imageHandler = new ImageHandler();
 
     }
 
@@ -178,7 +175,7 @@ public class Handler {
      */
     private boolean isValidImageFile( String filename, Response res ) {
 
-        String extension = imageHandler.getFileExtension(filename);
+        String extension = ImageHandler.getFileExtension(filename);
 
         // Check if the extension is valid
         if ( validImageFileExtensions.contains(extension) ) {
@@ -860,7 +857,7 @@ public class Handler {
         }
         int uid = loginStore.getUserID(token);
 
-        File uploadDir = new File(IMAGE_DIR);
+        File uploadDir = new File(TEMP_DIR);
         uploadDir.mkdir();
 
         req.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
@@ -876,7 +873,7 @@ public class Handler {
             // Creates a temporary file (it is randomly generated numbers)
             Path tempFile = Files.createTempFile( uploadDir.toPath(), "", fileType );
 
-            // Replace the temp file with the binary data recieved from FE.
+            // Replace the temp file with the binary data received from FE.
             Files.copy( is, tempFile, StandardCopyOption.REPLACE_EXISTING );
 
             // Copy the image

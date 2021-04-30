@@ -9,13 +9,8 @@ public class ImageHandler {
 
     private final Path imageDir;
     private final Random filenameGen;
-    private static final int MAX_FILENAME_SIZE = 10;
+    private static final int MAX_FILENAME_SIZE = 15;
     private static final FileSystem fileSys = FileSystems.getDefault();
-
-
-    public ImageHandler() {
-        this("images");
-    }
 
     /**
      * @param   folderName  the desired name of the folder to save images to
@@ -35,7 +30,14 @@ public class ImageHandler {
 
         // Should be /Greet-Dough-Backend/
         Path tempPath = fileSys.getPath( System.getProperty("user.dir") );
-        return fileSys.getPath( tempPath.toString() + File.separator + "data" + File.separator + folderName );
+
+        // Should be /Greet-Dough-Backend/data/{folderName}
+        Path dirPath = fileSys.getPath( tempPath.toString() + File.separator + "data" + File.separator + folderName );
+
+        // Creates the directory if it doesn't exist
+        new File( dirPath.toString() ).mkdir();
+
+        return dirPath;
 
     }
 
@@ -44,7 +46,7 @@ public class ImageHandler {
      * @return  the extension of the provided file including the dot
      *          (.png)
      */
-    public String getFileExtension( String filename ) {
+    public static String getFileExtension( String filename ) {
 
         String extension = "";
 
@@ -60,6 +62,23 @@ public class ImageHandler {
     }
 
     /**
+     * Generates a random alphanumeric filename containing
+     * characters from '0' to 'z'.
+     * From https://www.baeldung.com/java-random-string
+     *
+     * @return  a string with length {@value MAX_FILENAME_SIZE}
+     */
+    public String genRandomName() {
+
+        return filenameGen.ints(48,122+1)
+                .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
+                .limit( MAX_FILENAME_SIZE )
+                .collect( StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append )
+                .toString();
+
+    }
+
+    /**
      * Copies the image at the specified path.
      * @return  the path to the copied image;
      *          if path is null, returns null
@@ -71,16 +90,10 @@ public class ImageHandler {
         }
 
         Path srcPath = fileSys.getPath(path);
-        String extension = getFileExtension(path);
+        String extension = ImageHandler.getFileExtension(path);
 
-        // Generate a random alphanumeric filename
-        //      Characters from '0' to 'z'
-        // From https://www.baeldung.com/java-random-string
-        String filename = filenameGen.ints(48,122+1)
-                .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
-                .limit( MAX_FILENAME_SIZE )
-                .collect( StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append )
-                .toString();
+        // Get a random name for the file
+        String filename = genRandomName();
 
         // Writes to imageDir/{RANDOM_NAME}
         Path destPath = fileSys.getPath( imageDir.toString() + File.separator + filename + extension );

@@ -19,6 +19,11 @@ public class ImageStoreImpl extends StoreWithID<Image> implements ImageStore {
     }
 
     @Override
+    public String getImageDir() {
+        return null;
+    }
+
+    @Override
     public Image getImage( int iid ) {
         return super.get(iid);
     }

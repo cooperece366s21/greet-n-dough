@@ -12,11 +12,12 @@ public class ImageStorePostgres implements ImageStore {
 
     private final Jdbi jdbi;
     private final ImageHandler imageHandler;
+    private static final String imageDir = "images";
 
     public ImageStorePostgres( final Jdbi jdbi ) {
 
         this.jdbi = jdbi;
-        this.imageHandler = new ImageHandler("images");
+        this.imageHandler = new ImageHandler(imageDir);
 
     }
 
@@ -26,6 +27,11 @@ public class ImageStorePostgres implements ImageStore {
 
     public void init() {
         jdbi.useHandle( handle -> handle.attach(ImageDao.class).createTable() );
+    }
+
+    @Override
+    public String getImageDir() {
+        return ImageStorePostgres.imageDir;
     }
 
     @Override
@@ -56,7 +62,7 @@ public class ImageStorePostgres implements ImageStore {
     public Image addImage( int uid, String path ) {
 
         String savedPath = imageHandler.copyImage(path);
-        int ID = jdbi.withHandle( handle -> handle.attach(ImageDao.class).addImage( uid, path ) );
+        int ID = jdbi.withHandle( handle -> handle.attach(ImageDao.class).addImage( uid, savedPath ) );
         return getImage(ID);
 
     }

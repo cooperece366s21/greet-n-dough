@@ -6,10 +6,15 @@ import java.util.List;
 
 public interface ImageStore {
 
+    /**
+     * @return  the directory where the image files are saved
+     */
+    String getImageDir();
+
     Image getImage( int iid );
 
     /**
-     * @return a list of images owned by a user
+     * @return  a list of images owned by a user
       */
     List<Image> makeGallery( int uid );
 
