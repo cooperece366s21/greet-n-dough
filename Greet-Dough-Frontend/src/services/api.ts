@@ -455,7 +455,7 @@ let exports = {
     getPost,
     deletePost,
 
-    postImage,
+    uploadProfilePicture: postImage,
     getAllUserImages,
 
     getWallet,

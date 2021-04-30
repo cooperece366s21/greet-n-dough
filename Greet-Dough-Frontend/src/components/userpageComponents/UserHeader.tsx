@@ -79,114 +79,119 @@ class UserHeader extends React.Component<any, any> {
 
     renderUser() {
 
-         return(
+        let nameAndEditButtons = <HStack>
+
+
+            { this.state.editing ?
+                <Input
+                    placeholder={this.state.editedName}  size="lg"
+                    onChange={ e => this.setState( {editedName: e.target.value }) }
+                    value={this.state.editedName}
+                />
+                : <Text fontSize={'4xl'} fontWeight={500} w="80%"> {this.state.name} </Text>
+            }
+
+            { this.state.hasOwnership && !this.state.editing ?
+                <Button onClick={() => this.setState({
+                    editing: true,
+                    editedName: this.state.name,
+                })}>
+                    ✏
+                </Button>
+                : <> </>
+            }
+
+            { this.state.editing ?
+                <>
+
+                    <Button onClick={() => {
+
+                        this.setState({editing: false});
+                        let token = localStorage.getItem("authToken");
+
+                        api.editUser(token,  this.state.editedName,  this.state.editedBio )
+                            .then( res => {
+                                if(res===200){
+                                    // As to not need to refresh to see changes
+                                    this.setState({
+                                        name: this.state.editedName,
+                                        bio: this.state.editedBio,
+                                    })
+                                }
+                            })
+
+                        api.uploadProfilePicture( token, this.state.uploadedPicture );
+
+                    }}>
+                        ✔
+                    </Button>
+
+                    <Button onClick={() => this.setState({editing: false})}>
+                        ❌
+                    </Button>
+
+                </>
+                : <> </>
+            }
+
+        </HStack>;
+        let profilePicture = <>{this.state.editing ?
+            <ImageUploader
+                withIcon={false}
+                withPreview={true}
+                buttonText="Choose image"
+                onChange={e => {
+
+                    if (e.length !== 1) {
+                        alert("Remove some files");
+                        return;
+                    }
+                    this.onDrop(e[0]);
+                }
+                }
+                imgExtension={[".jpg", ".gif", ".png", ".gif"]}
+                maxFileSize={5242880}
+            /> :
+            <SkeletonCircle size="175px"/>
+        }</>;
+        let biography = <>{this.state.editing ?
+            <Input
+                placeholder={this.state.bio ? this.state.bio : ""} size="lg"
+                onChange={e => this.setState({editedBio: e.target.value})}
+                value={this.state.editedBio ? this.state.editedBio : ""}
+            /> :
+            <Text> {this.state.bio ? this.state.bio : "No biography"} </Text>
+        }</>;
+        return(
 
              <>
-                <Center marginTop="40px">
+                 <Center marginTop="40px">
 
-                     <Box w="175px" height="175px" borderWidth="0px" >
-                         {this.state.editing ?
-                             <ImageUploader
-                                 withIcon={false}
-                                 withPreview={true}
-                                 buttonText="Choose image"
-                                 onChange={ e => {
-
-                                     if (e.length!==1) {
-                                         alert("Remove some files");
-                                         return;
-                                     }
-                                     this.onDrop(e[0]);
-                                 }
-                                 }
-                                 imgExtension={[".jpg", ".gif", ".png", ".gif"]}
-                                 maxFileSize={5242880}
-                             /> :
-                             <SkeletonCircle size="175px"/>
-                         }
+                     {/* PROFILE PICTURE*/}
+                     <Box w="175px" height="175px" borderWidth="0px">
+                         {profilePicture}
                      </Box>
 
-                    {/* RHS TEXT CONTAINER*/}
-                    <Box w="45%" height="175px" marginLeft={"20px"} borderWidth="0px">
+                     {/* RHS TEXT CONTAINER*/}
+                     <Box w="45%" height="175px" marginLeft={"20px"} borderWidth="0px">
 
-                        {/*UPPER TEXT CONTAINER*/}
-                        <Box w="100%" h="80px" >
-                            <HStack>
+                         {/*UPPER TEXT CONTAINER*/}
+                         <Box w="100%" h="80px">
+                             {nameAndEditButtons}
+                         </Box>
 
+                         {/*LOWER TEXT CONTAINER*/}
+                         <Box w="80%" h="95px" paddingTop="30px">
+                             {biography}
+                         </Box>
 
-                                { this.state.editing ?
-                                    <Input
-                                        placeholder={this.state.editedName}  size="lg"
-                                        onChange={ e => this.setState( {editedName: e.target.value }) }
-                                        value={this.state.editedName}
-                                    />
-                                    : <Text fontSize={'4xl'} fontWeight={500} w="80%"> {this.state.name} </Text>
-                                }
+                     </Box>
 
-                                { this.state.hasOwnership && !this.state.editing ?
-                                    <Button onClick={() => this.setState({
-                                        editing: true,
-                                        editedName: this.state.name,
-                                    })}>
-                                        ✏
-                                    </Button>
-                                    : <> </>
-                                }
-
-                                { this.state.editing ?
-                                    <>
-
-                                    <Button onClick={() => {
-
-                                        this.setState({editing: false});
-
-                                        api.editUser(
-                                            localStorage.getItem("authToken"),
-                                            this.state.editedName,
-                                            this.state.editedBio,
-                                        )
-                                            .then( res => {
-                                                if(res===200){
-                                                    this.setState({name: this.state.editedName})
-                                                }
-                                            })
-
-                                        api.postImage( localStorage.getItem("authToken"), this.state.uploadedPicture)
-
-                                    }}>
-                                        ✔
-                                    </Button>
-
-                                    <Button onClick={() => this.setState({editing: false})}>
-                                        ❌
-                                    </Button>
-
-                                    </>
-                                    : <> </>
-                                }
-
-                            </HStack>
-                        </Box>
-
-                        {/*LOWER TEXT CONTAINER*/}
-                        <Box w="80%" h="95px"  paddingTop="30px">
-                            {this.state.editing ?
-                                <Input
-                                    placeholder={this.state.bio? this.state.bio : ""} size="lg"
-                                    onChange={ e => this.setState( {editedBio: e.target.value }) }
-                                    value={this.state.editedBio ? this.state.editedBio : ""}
-                                /> :
-                                <Text> {this.state.bio ? this.state.bio : "No biography"} </Text>
-                            }
-                        </Box>
-
-                    </Box>
-
-                </Center>
+                 </Center>
 
                  <Center>
                      <Box marginTop="30px" marginLeft="40%">
-                         <CreatePostButton hasOwnership={this.state.hasOwnership} />
+                         <CreatePostButton hasOwnership={this.state.hasOwnership}/>
                      </Box>
                  </Center>
 

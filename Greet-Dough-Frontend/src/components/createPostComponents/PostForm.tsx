@@ -59,7 +59,7 @@ class PostForm extends React.Component<any, any> {
                             })
 
                         this.state.pictures?.forEach( pic => {
-                            api.postImage( token, pic )
+                            api.uploadProfilePicture( token, pic )
                         })
                         // this.createPostWrapper( this.state.title, this.state.contents)
                     }}>
