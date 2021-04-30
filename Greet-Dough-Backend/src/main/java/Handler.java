@@ -350,25 +350,21 @@ public class Handler {
     public int changeBio( Request req, Response res ) {
 
         // Users can add a bio regardless if the
-
         res.type("application/json");
         Properties data = gson.fromJson(req.body(), Properties.class);
 
-        int uid = Integer.parseInt( data.getProperty("uid") );
-        String newBio = data.getProperty("bio");
-
-        // Check if the status is not OK
-        if ( res.status() != 200 ) {
-
-            System.err.println("Error code: " + res.status());
+        // Check the token
+        String token = req.headers("token");
+        if ( !isValidToken( token, res ) ) {
             return res.status();
-
         }
+        int uid = loginStore.getUserID(token);
+
+        String newBio = data.getProperty("bio");
 
         // Change the bio
         // If not null, add the newBio
         // Else "delete" the bio
-
         if ( newBio != null ) {
             profileStore.changeBio( uid, newBio );
         }
