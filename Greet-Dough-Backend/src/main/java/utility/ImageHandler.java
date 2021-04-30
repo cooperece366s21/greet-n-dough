@@ -82,7 +82,7 @@ public class ImageHandler {
                 .collect( StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append )
                 .toString();
 
-        // Writes to imageDir/RANDOM_NAME
+        // Writes to imageDir/{RANDOM_NAME}
         Path destPath = fileSys.getPath( imageDir.toString() + File.separator + filename + extension );
 
         // Attempt to save the image
@@ -95,7 +95,7 @@ public class ImageHandler {
             }
 
             // Copies the file
-            Files.copy(srcPath, destPath, StandardCopyOption.REPLACE_EXISTING);
+            Files.copy( srcPath, destPath, StandardCopyOption.REPLACE_EXISTING );
             return destPath.toString();
 
         } catch (IOException ioe) {

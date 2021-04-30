@@ -44,7 +44,7 @@ public class Handler {
     private final Gson gson = new Gson();
     private final ObjectMapper mapper = new ObjectMapper();
     private final ImageHandler imageHandler;
-    String IMAGE_DIR = "image-assets";
+    String IMAGE_DIR = "data/temp";
 
     // Defines the accepted file extensions for images
     private static final HashSet<String> validImageFileExtensions = Stream
@@ -879,23 +879,9 @@ public class Handler {
             // Replace the temp file with the binary data recieved from FE.
             Files.copy( is, tempFile, StandardCopyOption.REPLACE_EXISTING );
 
-            // Replace the name with a UUID so it is more randomized
-            File generatedName = new File(
-                    IMAGE_DIR + "/" +
-                            UUID.randomUUID().toString() + fileType
-            );
-
-            if ( !tempFile.toFile().renameTo(generatedName) ) {
-                System.err.println("Error changing filename");
-            }
-
-            // Note that the above code should be condensed into something in the imageStore later.
-            // derek already has written something, but the above code above does the same thing.
-            // something weird was happening with giving URL's to the imageHandler.copyPath() function
-            // so im just going to use this for now so I can continue working rather than debugging.
-
-            imageStore.addImage( uid,  IMAGE_DIR + "/" + generatedName.getName() );
-            System.err.println("Created file: " + generatedName.getName() );
+            // Copy the image
+            imageStore.addImage( uid, tempFile.toString() );
+            System.err.println("Created file: " + tempFile.toString() );
 
             res.status(200);
 

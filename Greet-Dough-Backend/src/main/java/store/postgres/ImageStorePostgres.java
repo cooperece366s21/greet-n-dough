@@ -55,7 +55,7 @@ public class ImageStorePostgres implements ImageStore {
     @Override
     public Image addImage( int uid, String path ) {
 
-//        String savedPath = imageHandler.copyImage(path);
+        String savedPath = imageHandler.copyImage(path);
         int ID = jdbi.withHandle( handle -> handle.attach(ImageDao.class).addImage( uid, path ) );
         return getImage(ID);
 
