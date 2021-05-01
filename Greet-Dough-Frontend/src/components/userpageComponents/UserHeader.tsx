@@ -156,7 +156,7 @@ class UserHeader extends React.Component<any, any> {
                 maxFileSize={5242880}
             /> :
             this.state.profilePicture ?
-                <img src={this.state.profilePicture} /> :
+                <Image src={this.state.profilePicture} height="175px" width="175px" borderRadius="full" /> :
                 <SkeletonCircle size="175px"/>
         }</>;
         let biography = <>{this.state.editing ?
