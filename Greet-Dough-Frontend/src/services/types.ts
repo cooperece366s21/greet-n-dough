@@ -31,6 +31,7 @@ type Map = {
 type PostObject = {
     post: Post,
     likeCount : number,
+    images: string,
 }
 
 type FeedState = {

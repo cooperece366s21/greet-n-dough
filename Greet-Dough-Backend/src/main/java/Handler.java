@@ -645,17 +645,23 @@ public class Handler {
      *
      * @return a JSONObject with the Post object and like count
      */
-    private JSONObject combinePostLikes( int pid ) {
+    private JSONObject makePostJson(int pid ) {
 
         JSONObject json = new JSONObject();
 
         // Get the post
         Post tempPost = postStore.getPost(pid);
+
         json.put( "post", tempPost );
 
         // Get the likes
         Likes tempLikes = likeStore.getLikes(pid);
         json.put( "likeCount", tempLikes.getLikeCount() );
+
+        if (tempPost.getImageID()!=null) {
+            json.put("images",  imageStore.getImage(tempPost.getImageID()).getPath() );
+        }
+
 
         return json;
 
@@ -677,7 +683,7 @@ public class Handler {
         }
 
         // Get the post and like count
-        JSONObject json = combinePostLikes(pid);
+        JSONObject json = makePostJson(pid);
 
         res.status(200);
         return json;
@@ -710,7 +716,7 @@ public class Handler {
         LinkedList<Post> feed = postStore.makeFeed(uid);
         LinkedList<JSONObject> listJSON = new LinkedList<>();
         for ( Post tempPost : feed ) {
-            listJSON.add( combinePostLikes( tempPost.getID() ) );
+            listJSON.add( makePostJson( tempPost.getID() ) );
         }
 
         res.status(200);

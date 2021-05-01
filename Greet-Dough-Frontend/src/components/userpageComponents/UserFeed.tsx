@@ -8,6 +8,7 @@ import {
     Divider,
     Button,
     Text,
+    Image,
     StackDivider,
     AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogBody, AlertDialogFooter,
 } from "@chakra-ui/react";
@@ -52,6 +53,17 @@ class UserFeed extends  React.Component<any, any> {
         api.getUserFeed( this.state.cuid, this.state.uid)
             .then( feed =>  {
                 if( feed != null ) {
+                    feed.forEach( (i:Entry, k:number) => {
+
+                        // image url formatting so it correctly references public folder
+                        if (i.map.images != undefined) {
+                            let url:string = i.map.images;
+                            url = "/" + url.slice(url.indexOf("data"));
+                            url = url.replaceAll("\\", "/");
+                            feed[k].map.images = url;
+                        }
+
+                    });
                     this.setState({feed: feed.reverse()});
                 }
             })
@@ -121,7 +133,6 @@ class UserFeed extends  React.Component<any, any> {
 
 
         const listFeed = feed?.map( (e,k) => (
-
             <>
                 <Box w={"100%"}
                      padding={"20px"}
@@ -164,8 +175,13 @@ class UserFeed extends  React.Component<any, any> {
 
 
                     {/* CONTENT field */}
+
                     <Box>
-                        <Text fontSize={"20px"}> {e.map.post.contents} </Text>
+                        <Center>
+                            { e.map.images ? <Image src={e.map.images}/> : <></>}
+                        </Center>
+
+                        <Text fontSize={"20px"}> {e.map.post.contents}  </Text>
                     </Box>
 
                     <HStack w={"100%"} marginTop={"10px"}>
