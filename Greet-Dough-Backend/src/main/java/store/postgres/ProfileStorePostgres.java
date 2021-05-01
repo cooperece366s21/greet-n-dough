@@ -1,6 +1,7 @@
 package store.postgres;
 
 import model.Profile;
+import store.model.ImageStore;
 import store.model.ProfileStore;
 import utility.ImageHandler;
 import utility.PathDefs;
@@ -8,18 +9,19 @@ import utility.PathDefs;
 import org.jdbi.v3.core.Jdbi;
 
 import java.util.LinkedList;
-import java.util.List;
 
 public class ProfileStorePostgres implements ProfileStore {
 
     private final Jdbi jdbi;
     private final ImageHandler imageHandler;
+    private final ImageStore imageStore;
     private static final String imageDir = PathDefs.PFP_DIR;
 
     public ProfileStorePostgres( final Jdbi jdbi ) {
 
         this.jdbi = jdbi;
         this.imageHandler = new ImageHandler(imageDir);
+        this.imageStore = new ImageStorePostgres(jdbi, imageDir);
 
     }
 
@@ -59,7 +61,11 @@ public class ProfileStorePostgres implements ProfileStore {
     public Profile addProfile( int uid, String bio, String path, boolean deleteOriginalImage ) {
 
         jdbi.useHandle( handle -> handle.attach(ProfileDao.class).addProfile( uid, bio ) );
-        changeProfilePicture( uid, path, deleteOriginalImage );
+
+        if ( path != null ) {
+            changeProfilePicture( uid, path, deleteOriginalImage );
+        }
+
         return getProfile(uid);
 
     }
@@ -72,11 +78,15 @@ public class ProfileStorePostgres implements ProfileStore {
     @Override
     public void changeProfilePicture( int uid, String newPath, boolean deleteOriginalImage ) {
 
-        String savedPath = imageHandler.copyImage(newPath);
-        jdbi.useHandle( handle -> handle.attach(ProfileDao.class).changeProfilePicture( uid, savedPath ) );
+        // Get the iid of the old profile picture (if exists)
+        Integer oldPFP = getProfile(uid).getImageID();
 
-        if ( deleteOriginalImage ) {
-            imageHandler.deleteImage(newPath);
+        int iid = imageStore.addImage( uid, newPath, deleteOriginalImage ).getID();
+        jdbi.useHandle( handle -> handle.attach(ProfileDao.class).changeProfilePicture( uid, iid ) );
+
+        // Delete the old profile picture after successfully adding the new profile picture
+        if ( oldPFP != null ) {
+            imageStore.deleteImage(oldPFP);
         }
 
     }
@@ -86,24 +96,17 @@ public class ProfileStorePostgres implements ProfileStore {
         jdbi.useHandle( handle -> handle.attach(ProfileDao.class).deleteBio(uid) );
     }
 
+    /**
+     * Assumes the profile has an existing profile picture.
+     */
     @Override
     public void deleteProfilePicture( int uid ) {
 
         // Delete the profile picture from the profile_pictures directory
-        Profile tempProfile = getProfile(uid);
-        imageHandler.deleteImage( tempProfile.getPath() );
+        Integer iid = getProfile(uid).getImageID();
+        imageStore.deleteImage(iid);
 
         jdbi.useHandle( handle -> handle.attach(ProfileDao.class).deleteProfilePicture(uid) );
-
-    }
-
-    @Override
-    public void clearDeleted() {
-
-        List<Profile> deletedProfiles = jdbi.withHandle(handle -> handle.attach(ProfileDao.class).clearDeleted() );
-        for ( Profile profile : deletedProfiles ) {
-            imageHandler.deleteImage( profile.getPath() );
-        }
 
     }
 

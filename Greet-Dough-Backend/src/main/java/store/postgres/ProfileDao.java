@@ -6,7 +6,6 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Optional;
 
 public interface ProfileDao {
@@ -14,9 +13,10 @@ public interface ProfileDao {
     @SqlUpdate("CREATE TABLE IF NOT EXISTS profiles( " +
             "user_id INT " +                "NOT NULL, " +
             "user_bio TEXT " +              "NULL, " +
-            "profile_picture_path TEXT " +  "NULL, " +
-            "is_deleted BOOLEAN " +         "NOT NULL " + "DEFAULT FALSE, " +
-            "PRIMARY KEY(user_id) " +
+            "image_id INT " +               "NULL, " +
+            "PRIMARY KEY(user_id), " +
+            "CONSTRAINT fk_image " + "FOREIGN KEY(image_id) " +
+                "REFERENCES images(image_id) " +
             ");")
     void createTable();
 
@@ -24,8 +24,7 @@ public interface ProfileDao {
     void deleteTable();
 
     @SqlQuery("SELECT * FROM profiles " +
-            "WHERE user_id = (:user_id) AND " +
-                "is_deleted = FALSE;")
+            "WHERE user_id = (:user_id);")
     Optional<Profile> getProfile(@Bind("user_id") int user_id);
 
     @SqlQuery("SELECT * FROM profiles " +
@@ -39,17 +38,15 @@ public interface ProfileDao {
 
     @SqlUpdate("UPDATE profiles " +
             "SET user_bio = (:new_bio) " +
-            "WHERE user_id = (:user_id) AND " +
-                "is_deleted = FALSE;")
+            "WHERE user_id = (:user_id);")
     void changeBio(@Bind("user_id") int user_id,
                    @Bind("new_bio") String new_bio);
 
     @SqlUpdate("UPDATE profiles " +
-            "SET profile_picture_path = (:new_profile_picture_path) " +
-            "WHERE user_id = (:user_id) AND " +
-                "is_deleted = FALSE;")
+            "SET image_id = (:new_image_id) " +
+            "WHERE user_id = (:user_id);")
     void changeProfilePicture(@Bind("user_id") int user_id,
-                              @Bind("new_profile_picture_path") String new_profile_picture_path);
+                              @Bind("new_image_id") int new_image_id);
 
     @SqlUpdate("UPDATE profiles " +
             "SET user_bio = NULL " +
@@ -57,16 +54,8 @@ public interface ProfileDao {
     void deleteBio(@Bind("user_id") int user_id);
 
     @SqlUpdate("UPDATE profiles " +
-            "SET profile_picture_path = NULL " +
+            "SET image_id = NULL " +
             "WHERE user_id = (:user_id);")
     void deleteProfilePicture(@Bind("user_id") int user_id);
-
-    /**
-     * @return a list of profiles deleted from the table
-     */
-    @SqlQuery("DELETE FROM profiles " +
-            "WHERE is_deleted = true " +
-            "RETURNING *;")
-    List<Profile> clearDeleted();
 
 }

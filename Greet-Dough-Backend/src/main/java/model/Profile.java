@@ -4,9 +4,9 @@ import java.io.Serializable;
 
 public class Profile implements Serializable {
 
-    private int userID;
+    private final int userID;
     private String bio;
-    private String path;
+    private Integer imageID;
 
     public Profile( int uid ) {
         this( uid, null, null );
@@ -16,11 +16,11 @@ public class Profile implements Serializable {
         this( uid, bio, null);
     }
 
-    public Profile( int uid, String bio, String path ) {
+    public Profile( int uid, String bio, Integer iid ) {
 
         this.userID = uid;
         this.bio = bio;
-        this.path = path;
+        this.imageID = iid;
         
     }
 
@@ -32,14 +32,23 @@ public class Profile implements Serializable {
         return this.bio;
     }
 
-    public String getPath() {
-        return this.path;
+    public Integer getImageID() {
+        return this.imageID;
     }
 
     public boolean equals( Profile tempProfile ) {
 
-        return  this.getBio().equals( tempProfile.getBio() ) &&
-                this.getPath().equals( tempProfile.getPath() );
+        if (    this.getUserID() == tempProfile.getUserID() &&
+                this.getBio().equals( tempProfile.getBio() ) ) {
+
+            if ( this.getImageID() != null && tempProfile.getImageID() != null &&
+                    this.getImageID().equals( tempProfile.getImageID() ) ) {
+                return true;
+            } else return this.getImageID() == null && tempProfile.getImageID() == null;
+
+        }
+
+        return false;
 
     }
 

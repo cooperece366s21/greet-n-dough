@@ -24,7 +24,7 @@ public interface ImageStore {
      * Copies the image file specified by {@code path}. Can optionally delete the
      * original file after copying.
      *
-     * @param   deleteOriginalImage a boolean specifying whether the original file
+     * @param   deleteOriginalImage a boolean specifying whether the file
      *                              at {@code path} should be deleted after being copied
      * @return                      an Image object associated with the specified file
      */

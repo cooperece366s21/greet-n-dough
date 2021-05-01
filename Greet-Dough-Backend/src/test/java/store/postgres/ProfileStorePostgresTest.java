@@ -54,13 +54,13 @@ class ProfileStorePostgresTest extends ProfileStorePostgres {
 
         // Add a profile
         profileStorePostgres.addProfile( newUser.getID(), newBio, newPath, false );
-        assert ( profileStorePostgres.getProfile( newUser.getID() ).getPath() != null );
+        assert ( profileStorePostgres.getProfile( newUser.getID() ).getImageID() != null );
 
         // Test deleting the profile picture
         profileStorePostgres.deleteProfilePicture( newUser.getID() );
 
         // Test the retrieved profile
-        assert ( profileStorePostgres.getProfile( newUser.getID() ).getPath() == null );
+        assert ( profileStorePostgres.getProfile( newUser.getID() ).getImageID() == null );
         assert ( profileStorePostgres.getAllProfiles().size() == 1 );
 
         // Reset the store for other tests
@@ -79,37 +79,8 @@ class ProfileStorePostgresTest extends ProfileStorePostgres {
         profileStorePostgres.deleteBio( newUser.getID() );
 
         // Test the retrieved profile
-        assert ( profileStorePostgres.getProfile( newUser.getID() ).getPath() == null );
+        assert ( profileStorePostgres.getProfile( newUser.getID() ).getImageID() == null );
         assert ( profileStorePostgres.getAllProfiles().size() == 1 );
-
-        // Reset the store for other tests
-        profileStorePostgres.delete();
-
-    }
-
-    @Test
-    void testClearDeleted() {
-
-        // Add a profile
-        profileStorePostgres.addProfile( newUser.getID(), newBio, newPath, false );
-        assert ( profileStorePostgres.getAllProfiles().size() == 1 );
-
-        // Test deleting the user
-        userStorePostgres.deleteUser( newUser.getID() );
-        Profile tempProfile = profileStorePostgres.getProfile( newUser.getID() );
-        assert ( profileStorePostgres.getAllProfiles().size() == 1 );
-
-        // Test the retrieved profile
-        assertNull( tempProfile.getBio() );
-        assertNull( tempProfile.getPath() );
-
-        profileStorePostgres.clearDeleted();
-
-        // Test clearing the soft deleted profiles
-        assert ( profileStorePostgres.getAllProfiles().isEmpty() );
-
-        // Add the user back
-        newUser = userStorePostgres.addUser( newUser.getName() );
 
         // Reset the store for other tests
         profileStorePostgres.delete();
@@ -126,7 +97,7 @@ class ProfileStorePostgresTest extends ProfileStorePostgres {
         // Test the profile contents
         assert ( newProfile.getUserID() == newUser.getID() );
         assert ( newProfile.getBio().equals(newBio) );
-        assert ( newProfile.getPath() == null );
+        assert ( newProfile.getImageID() == null );
 
         // Reset the store for other tests
         profileStorePostgres.delete();

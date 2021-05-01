@@ -188,6 +188,16 @@ public class Handler {
 
     }
 
+    /**
+     * @return  a string representing a url to the profile picture if exists;
+     *          an empty string ("") otherwise
+     */
+    private String getUrlToPFP( int uid ) {
+
+        Integer iid = profileStore.getProfile(uid).getImageID();
+        return (iid != null) ? imageStore.getImage(iid).getPath() : "";
+
+    }
 
     /////////////// USER ACTIONS ///////////////
     public String getUser( Request req, Response res ) throws JsonProcessingException {
@@ -208,16 +218,18 @@ public class Handler {
     }
 
     public JSONObject getUserProfile( Request req, Response res ) {
+
         res.type("application/json");
         int uid = Integer.parseInt( req.params(":uid") );
 
         JSONObject jsonToReturn = new JSONObject();
 
-        jsonToReturn.put("name", userStore.getUser(uid).getName() );
-        jsonToReturn.put("bio", profileStore.getProfile(uid).getBio() );
-        jsonToReturn.put("profilePicture", profileStore.getProfile(uid).getPath() );
+        jsonToReturn.put( "name", userStore.getUser(uid).getName() );
+        jsonToReturn.put( "bio", profileStore.getProfile(uid).getBio() );
+        jsonToReturn.put( "profilePicture", getUrlToPFP(uid) );
 
         return jsonToReturn;
+
     }
 
     public String searchUsers( Request req, Response res ) throws JsonProcessingException {
@@ -670,7 +682,7 @@ public class Handler {
             JSONObject tempCommentJson = new JSONObject(comment);
             int uid =  tempCommentJson.getInt("userID");
             tempCommentJson.put("username", userStore.getUser(uid).getName() );
-            tempCommentJson.put("avatar", profileStore.getProfile(uid).getPath() );
+            tempCommentJson.put("avatar", getUrlToPFP(uid) );
             comments.add( tempCommentJson );
 
         }
@@ -764,7 +776,7 @@ public class Handler {
         if ( image.equals("") ) {
             System.err.println("No image assigned with post");
         } else {
-            Image createdImage = this.createImage(req, res, "image", "fileType");
+            Image createdImage = this.createImage( req, res, "image", "fileType" );
             iid = createdImage.getID();
         }
 
@@ -775,11 +787,10 @@ public class Handler {
             return res.status();
 
         }
-//
+
         Post tempPost = postStore.addPost( title, contents, uid, iid );
-//
         System.out.println( gson.toJson(tempPost) );
-//
+
         res.status(200);
         return res.status();
 
@@ -911,7 +922,7 @@ public class Handler {
         // Save the bytes from the request
         String pathToTempFile = saveImage( req, res, partName, partTypeName );
         if ( res.status() != 200 ) {
-            System.err.println("Something went wrong inside the save Image function");
+            System.err.println("Something went wrong inside saveImage()");
             return new Image("", -1, -1);
         }
 

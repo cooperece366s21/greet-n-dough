@@ -14,12 +14,25 @@ public class ImageStorePostgres implements ImageStore {
 
     private final Jdbi jdbi;
     private final ImageHandler imageHandler;
-    private static final String imageDir = PathDefs.IMAGE_DIR;
+    private final String imageDir;
 
+    /**
+     * Uses {@link PathDefs#IMAGE_DIR} as the default directory.
+     */
     public ImageStorePostgres( final Jdbi jdbi ) {
+        this( jdbi, PathDefs.IMAGE_DIR );
+    }
+
+    /**
+     * Used for ProfileStorePostgres.
+     *
+     * @param customDir specifies the directory to copy images to
+     */
+    public ImageStorePostgres( final Jdbi jdbi, String customDir ) {
 
         this.jdbi = jdbi;
-        this.imageHandler = new ImageHandler(imageDir);
+        this.imageHandler = new ImageHandler(customDir);
+        this.imageDir = customDir;
 
     }
 
@@ -33,7 +46,7 @@ public class ImageStorePostgres implements ImageStore {
 
     @Override
     public String getImageDir() {
-        return ImageStorePostgres.imageDir;
+        return this.imageDir;
     }
 
     @Override

@@ -124,9 +124,9 @@ public class GreetDoughJdbi {
 
             int uid = rs.getInt("user_id");
             String bio = rs.getString("user_bio");
-            String path = rs.getString("profile_picture_path");
+            Integer iid = rs.getObject("image_id", Integer.class);
 
-            return new Profile( uid, bio, path );
+            return new Profile( uid, bio, iid );
 
         }
 

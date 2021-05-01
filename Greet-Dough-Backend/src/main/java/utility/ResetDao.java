@@ -13,8 +13,8 @@ public class ResetDao {
 
         UserStorePostgres userStorePostgres = new UserStorePostgres(jdbi);
         WalletStorePostgres walletStorePostgres = new WalletStorePostgres(jdbi);
-        ProfileStorePostgres profileStorePostgres = new ProfileStorePostgres(jdbi);
         ImageStorePostgres imageStorePostgres = new ImageStorePostgres(jdbi);
+        ProfileStorePostgres profileStorePostgres = new ProfileStorePostgres(jdbi);
         PostStorePostgres postStorePostgres = new PostStorePostgres(jdbi);
         CommentStorePostgres commentStorePostgres = new CommentStorePostgres(jdbi);
         LikeStorePostgres likeStorePostgres = new LikeStorePostgres(jdbi);
@@ -27,16 +27,16 @@ public class ResetDao {
         likeStorePostgres.delete();
         commentStorePostgres.delete();
         postStorePostgres.delete();
-        imageStorePostgres.delete();
         profileStorePostgres.delete();
+        imageStorePostgres.delete();
         walletStorePostgres.delete();
         userStorePostgres.delete();
 
         // Initialize the databases
         userStorePostgres.init();
         walletStorePostgres.init();
-        profileStorePostgres.init();
         imageStorePostgres.init();
+        profileStorePostgres.init();
         postStorePostgres.init();
         commentStorePostgres.init();
         likeStorePostgres.init();

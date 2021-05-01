@@ -22,7 +22,7 @@ public interface ProfileStore {
      * The method creates a profile with the specified bio
      * and profile picture.
      *
-     * @param   deleteOriginalImage a boolean specifying whether the original file
+     * @param   deleteOriginalImage a boolean specifying whether the file
      *                              at {@code path} should be deleted after being copied
      */
     Profile addProfile( int uid, String bio, String path, boolean deleteOriginalImage );
@@ -32,18 +32,13 @@ public interface ProfileStore {
     void deleteBio( int uid );
 
     /**
-     * @param   deleteOriginalImage a boolean specifying whether the original file
+     * The previous profile picture will be deleted, if it exists.
+     *
+     * @param   deleteOriginalImage a boolean specifying whether the file
      *                              at {@code newPath} should be deleted after being copied
      */
     void changeProfilePicture( int uid, String newPath, boolean deleteOriginalImage );
 
     void deleteProfilePicture( int uid );
-
-    /**
-     * Deletes all soft deleted profile pictures.
-     * Removes the profile pictures from the
-     * profile_pictures directory and from the database.
-     */
-    void clearDeleted();
 
 }

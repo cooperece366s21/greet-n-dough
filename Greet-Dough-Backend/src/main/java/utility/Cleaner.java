@@ -13,14 +13,12 @@ public class Cleaner implements Runnable {
 
     private final ImageStorePostgres imageStorePostgres;
     private final LoginStorePostgres loginStorePostgres;
-    private final ProfileStorePostgres profileStorePostgres;
 
     public Cleaner() {
 
         Jdbi jdbi = GreetDoughJdbi.create("jdbc:postgresql://localhost:4321/greetdough");
         imageStorePostgres = new ImageStorePostgres(jdbi);
         loginStorePostgres = new LoginStorePostgres(jdbi);
-        profileStorePostgres = new ProfileStorePostgres(jdbi);
 
     }
 
@@ -29,7 +27,6 @@ public class Cleaner implements Runnable {
 
         imageStorePostgres.clearDeleted();
         loginStorePostgres.clearDeleted();
-        profileStorePostgres.clearDeleted();
 
     }
 
