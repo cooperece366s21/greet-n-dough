@@ -3,6 +3,7 @@ package store.postgres;
 import model.Profile;
 import store.model.ProfileStore;
 import utility.ImageHandler;
+import utility.PathDefs;
 
 import org.jdbi.v3.core.Jdbi;
 
@@ -13,11 +14,12 @@ public class ProfileStorePostgres implements ProfileStore {
 
     private final Jdbi jdbi;
     private final ImageHandler imageHandler;
+    private static final String imageDir = PathDefs.PFP_DIR;
 
     public ProfileStorePostgres( final Jdbi jdbi ) {
 
         this.jdbi = jdbi;
-        this.imageHandler = new ImageHandler("profile_pictures");
+        this.imageHandler = new ImageHandler(imageDir);
 
     }
 

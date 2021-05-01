@@ -1,11 +1,11 @@
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import model.*;
+import store.model.*;
 import utility.ImageHandler;
 import utility.Pair;
-import store.model.*;
+import utility.PathDefs;
 
-import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
@@ -36,7 +36,7 @@ public class Handler {
 
     private final Gson gson = new Gson();
     private final ObjectMapper mapper = new ObjectMapper();
-    String TEMP_DIR = "data/temp";     // Directory to temporarily store image file from bytes
+
 
     // Defines the accepted file extensions for images
     private static final HashSet<String> validImageFileExtensions = Stream
@@ -852,7 +852,7 @@ public class Handler {
 
         req.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
 
-        String pathToTempFile = ImageHandler.copyFromBytes( TEMP_DIR, req, res );
+        String pathToTempFile = ImageHandler.copyFromBytes( PathDefs.TEMP_DIR, req, res );
         if ( res.status() != 200 ) {
 
             System.err.println("Failed to copy the file from bytes.");
@@ -873,6 +873,7 @@ public class Handler {
         }
         int uid = loginStore.getUserID(token);
 
+        // Save the bytes from the request
         String pathToTempFile = saveImage( req, res );
         if ( res.status() != 200 ) {
             return res.status();
@@ -896,6 +897,7 @@ public class Handler {
         }
         int uid = loginStore.getUserID(token);
 
+        // Save the bytes from the request
         String pathToTempFile = saveImage( req, res );
         if ( res.status() != 200 ) {
             return res.status();

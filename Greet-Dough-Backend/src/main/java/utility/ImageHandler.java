@@ -26,20 +26,20 @@ public class ImageHandler {
     }
 
     /**
-     * @param   folderName  the desired name of the folder to save images to
-     * @return              a path to /Greet-Dough-Frontend/data/{folderName}
+     * @param   path  the relative path to the desired directory (from Greet-Dough-Backend)
+     * @return        an absolute path to the desired directory
       */
-    private Path setImageDir( String folderName ) {
+    private Path setImageDir( String path ) {
 
-        // Should be /Greet-Dough-Backend/
-        Path tempPath = fileSys.getPath( System.getProperty("user.dir") ).resolveSibling("Greet-Dough-Frontend").resolve("public");
-        System.err.println(tempPath);
+        // Get the relative path
+        Path tempPath = Paths.get(path);
 
-        // Should be /Greet-Dough-Backend/data/{folderName}
-        Path dirPath = fileSys.getPath( tempPath.toString() + File.separator + "data" + File.separator + folderName );
+        // Should be an absolute path to Greet-Dough-Backend/{path}
+        Path dirPath = fileSys.getPath( System.getProperty("user.dir") + tempPath.toString() ).normalize();
 
-        // Creates the directory if it doesn't exist
-        new File( dirPath.toString() ).mkdir();
+        // Creates the directory (including all parent directories)
+        //      if it doesn't exist
+        new File( dirPath.toString() ).mkdirs();
 
         return dirPath;
 
@@ -65,10 +65,10 @@ public class ImageHandler {
 
     }
 
+    // From From https://www.baeldung.com/java-random-string
     /**
      * Generates a random alphanumeric filename containing
      * characters from '0' to 'z'.
-     * From https://www.baeldung.com/java-random-string
      *
      * @return  a string with length {@value MAX_FILENAME_SIZE}
      */
@@ -87,8 +87,9 @@ public class ImageHandler {
      */
     public static String copyFromBytes( String destDir, Request req, Response res ) {
 
-        // Creates the directory if it doesn't exist
-        new File(destDir).mkdir();
+        // Creates the directory (and all parent directories)
+        //      if it doesn't exist
+        new File(destDir).mkdirs();
 
         try ( InputStream is = req.raw().getPart("file").getInputStream() ) {
 

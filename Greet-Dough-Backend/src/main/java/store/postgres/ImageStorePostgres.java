@@ -4,6 +4,8 @@ import model.Image;
 import store.model.ImageStore;
 import utility.ImageHandler;
 
+import utility.PathDefs;
+
 import org.jdbi.v3.core.Jdbi;
 
 import java.util.List;
@@ -12,7 +14,7 @@ public class ImageStorePostgres implements ImageStore {
 
     private final Jdbi jdbi;
     private final ImageHandler imageHandler;
-    private static final String imageDir = "../../Greet-Dough-Frontend/data/images";
+    private static final String imageDir = PathDefs.IMAGE_DIR;
 
     public ImageStorePostgres( final Jdbi jdbi ) {
 
