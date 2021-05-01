@@ -27,12 +27,12 @@ public class ImageHandler {
 
     /**
      * @param   folderName  the desired name of the folder to save images to
-     * @return              a path to /Greet-Dough-Backend/data/{folderName}
+     * @return              a path to /Greet-Dough-Frontend/data/{folderName}
       */
     private Path setImageDir( String folderName ) {
 
         // Should be /Greet-Dough-Backend/
-        Path tempPath = fileSys.getPath( System.getProperty("user.dir") ).resolveSibling("greet-dough-frontend");
+        Path tempPath = fileSys.getPath( System.getProperty("user.dir") ).resolveSibling("Greet-Dough-Frontend");
         System.err.println(tempPath);
 
         // Should be /Greet-Dough-Backend/data/{folderName}
@@ -82,8 +82,13 @@ public class ImageHandler {
 
     }
 
-
+    /**
+     * Sets res.status().
+     */
     public static String copyFromBytes( String destDir, Request req, Response res ) {
+
+        // Creates the directory if it doesn't exist
+        new File(destDir).mkdir();
 
         try ( InputStream is = req.raw().getPart("file").getInputStream() ) {
 

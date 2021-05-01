@@ -12,7 +12,7 @@ public class ImageStorePostgres implements ImageStore {
 
     private final Jdbi jdbi;
     private final ImageHandler imageHandler;
-    private static final String imageDir = "../../greet-dough-frontend/images";
+    private static final String imageDir = "../../Greet-Dough-Frontend/data/images";
 
     public ImageStorePostgres( final Jdbi jdbi ) {
 

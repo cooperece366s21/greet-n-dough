@@ -6,14 +6,8 @@ import utility.Pair;
 import store.model.*;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -24,7 +18,6 @@ import spark.Request;
 import spark.Response;
 
 import javax.servlet.MultipartConfigElement;
-import javax.servlet.ServletException;
 
 public class Handler {
 
@@ -43,7 +36,7 @@ public class Handler {
 
     private final Gson gson = new Gson();
     private final ObjectMapper mapper = new ObjectMapper();
-    String TEMP_DIR = "data" + File.separator + "temp";     // Directory to create image file from bytes
+    String TEMP_DIR = "data/temp";     // Directory to temporarily store image file from bytes
 
     // Defines the accepted file extensions for images
     private static final HashSet<String> validImageFileExtensions = Stream
@@ -201,8 +194,7 @@ public class Handler {
         if ( userStore.hasUser(uid) ) {
 
             res.status(200);
-            String userJSON = mapper.writeValueAsString( userStore.getUser(uid) );
-            return userJSON;
+            return mapper.writeValueAsString( userStore.getUser(uid) );
 
         } else {
 
@@ -340,16 +332,18 @@ public class Handler {
         System.err.println(newBio);
 
         // Check if the request was formatted correctly
-        if ( newName == null | newName.equals("") ) {
+        if ( newName == null || newName.equals("") ) {
+
             res.status(400);
             return res.status();
+
         }
 
         // Change the desired fields
         userStore.changeName( uid, newName );
         profileStore.changeBio( uid, newBio );
-        res.status(200);
 
+        res.status(200);
         return res.status();
 
     }
@@ -849,16 +843,12 @@ public class Handler {
 
     }
 
-    public Image createImage( Request req, Response res ) throws IOException, ServletException {
-
-        String token = req.headers("token");
-        if ( !isValidToken( token, res ) ) {
-            return new Image("", -1, -1);
-        }
-        int uid = loginStore.getUserID(token);
-
-        File uploadDir = new File(TEMP_DIR);
-        uploadDir.mkdir();
+    /**
+     * Saves an image from bytes.
+     *
+     * @return  a string representing the path to the saved image
+     */
+    private String saveImage( Request req, Response res ) {
 
         req.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
 
@@ -866,36 +856,57 @@ public class Handler {
         if ( res.status() != 200 ) {
 
             System.err.println("Failed to copy the file from bytes.");
-            return new Image("", -1, -1);
+            return null;
+
         }
 
-        // Copy the image and delete after copying
-        Image createdImage = imageStore.addImage( uid, pathToTempFile, true );
-        System.err.println("Created file: " + pathToTempFile );
-
-        res.status(200);
-
-        return createdImage;
+        return pathToTempFile;
 
     }
 
-    public int uploadProfilePicture( Request req, Response res ) throws IOException, ServletException {
+    public int createImage( Request req, Response res ) {
 
+        // Check the token
         String token = req.headers("token");
         if ( !isValidToken( token, res ) ) {
             return res.status();
         }
         int uid = loginStore.getUserID(token);
 
-        Image createdImage = this.createImage( req, res );
-
-        if( createdImage.getUserID()==-1 ){
+        String pathToTempFile = saveImage( req, res );
+        if ( res.status() != 200 ) {
             return res.status();
         }
-        profileStore.changeProfilePicture(uid, createdImage.getPath(), true);
+
+        // Copy the image and delete after copying
+        imageStore.addImage( uid, pathToTempFile, true );
+        System.out.println("Created file: " + pathToTempFile );
 
         res.status(200);
         return res.status();
+
+    }
+
+    public int uploadProfilePicture( Request req, Response res ) {
+
+        // Check the token
+        String token = req.headers("token");
+        if ( !isValidToken( token, res ) ) {
+            return res.status();
+        }
+        int uid = loginStore.getUserID(token);
+
+        String pathToTempFile = saveImage( req, res );
+        if ( res.status() != 200 ) {
+            return res.status();
+        }
+
+        // Copy the image and delete after copying
+        profileStore.changeProfilePicture( uid, pathToTempFile, true );
+
+        res.status(200);
+        return res.status();
+
     }
 
     public LinkedList<JSONObject> makeGallery( Request req, Response res ) {
@@ -949,7 +960,6 @@ public class Handler {
     public HashSet<Integer> getLikes( Request req, Response res ) {
 
         res.type("application/json");
-        Properties data = gson.fromJson(req.body(), Properties.class);
 
         // Parse the request
         int pid = Integer.parseInt( req.params(":pid") );
@@ -1006,7 +1016,6 @@ public class Handler {
         System.out.println("Reached endpoint");
 
         res.type("application/json");
-        Properties data = gson.fromJson(req.body(), Properties.class);
 
         // Check the token
         String token = req.headers("token");
