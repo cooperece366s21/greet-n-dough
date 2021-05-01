@@ -29,6 +29,7 @@ type FeedState = {
     deleteAlert: boolean,
     openComments: number, // number indicates what post id to open comments for
     comment: string,
+    commentingOnPost: boolean,
 }
 
 class UserFeed extends  React.Component<any, any> {
@@ -41,6 +42,7 @@ class UserFeed extends  React.Component<any, any> {
         deleteAlert: false,
         openComments: -1,
         comment: "",
+        commentingOnPost: false,
     }
 
     constructor(props:any) {
@@ -53,6 +55,7 @@ class UserFeed extends  React.Component<any, any> {
             deleteAlert: false,
             openComments: -1,
             comment: "",
+            commentingOnPost: false,
         }
     }
 
@@ -233,27 +236,39 @@ class UserFeed extends  React.Component<any, any> {
 
                     {/* COMMENT field*/}
                     { this.state.openComments === k ?
+                        <>
+                            {this.state.commentingOnPost ?
+                                <Box borderWidth="1px" marginTop="10px"  borderTopColor="gray.300">
 
-                        <Box borderWidth="1px" marginTop="10px"  borderTopColor="gray.300">
+                                    <Textarea
+                                        marginTop="5px"
+                                        placeholder={"type comment here"}
+                                        onChange={ (e) => this.setState({comment: e.target.value})}
 
-                            <Textarea
-                                marginTop="5px"
-                                placeholder={"type comment here"}
-                                onChange={ (e) => this.setState({comment: e.target.value})}
+                                    />
 
-                            />
+                                    <Box w="100%">
 
-                            <Box w="100%">
-                                <Button
-                                    float="right"
-                                    colorScheme="yellow"
-                                    onClick={() => alert(this.state.comment)}
-                                >
-                                    Comment
-                                </Button>
-                            </Box>
+                                        <Button float="right" colorScheme="red" marginLeft="15px"
+                                                onClick={() => this.setState({commentingOnPost: false}) } >
+                                            Cancel
+                                        </Button>
 
-                        </Box> : <></>
+                                        <Button float="right" colorScheme="green" onClick={() => alert(this.state.comment)}>
+                                            Comment
+                                        </Button>
+
+                                    </Box>
+
+                                </Box> :
+                                <Center>
+                                    <Button marginTop="10px"
+                                            onClick={ () => this.setState({commentingOnPost: true})}>
+                                        Comment on post
+                                    </Button>
+                                </Center>
+                            }
+                        </> : <> </>
                     }
                 </Box>
                 <Divider orientation={"horizontal"} w={"100%"} h={"20px"} opacity={0} />
