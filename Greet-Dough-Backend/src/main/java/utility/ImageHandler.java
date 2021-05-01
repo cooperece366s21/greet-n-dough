@@ -32,7 +32,8 @@ public class ImageHandler {
     private Path setImageDir( String folderName ) {
 
         // Should be /Greet-Dough-Backend/
-        Path tempPath = fileSys.getPath( System.getProperty("user.dir") );
+        Path tempPath = fileSys.getPath( System.getProperty("user.dir") ).resolveSibling("greet-dough-frontend");
+        System.err.println(tempPath);
 
         // Should be /Greet-Dough-Backend/data/{folderName}
         Path dirPath = fileSys.getPath( tempPath.toString() + File.separator + "data" + File.separator + folderName );
