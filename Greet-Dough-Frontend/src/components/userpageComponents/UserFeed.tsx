@@ -6,6 +6,7 @@ import {
     Center,
     Input,
     Divider,
+    Textarea,
     Button,
     Text,
     Image,
@@ -26,6 +27,8 @@ type FeedState = {
     feed: Entry[] | null,
     hasOwnership: boolean,
     deleteAlert: boolean,
+    openComments: number, // number indicates what post id to open comments for
+    comment: string,
 }
 
 class UserFeed extends  React.Component<any, any> {
@@ -36,6 +39,8 @@ class UserFeed extends  React.Component<any, any> {
         feed: null,
         hasOwnership: false,
         deleteAlert: false,
+        openComments: -1,
+        comment: "",
     }
 
     constructor(props:any) {
@@ -46,6 +51,8 @@ class UserFeed extends  React.Component<any, any> {
             feed: null,
             hasOwnership: props.hasOwnership,
             deleteAlert: false,
+            openComments: -1,
+            comment: "",
         }
     }
 
@@ -208,17 +215,47 @@ class UserFeed extends  React.Component<any, any> {
 
                         <Box w={"50%"}>
                             <Text textAlign={"center"} cursor={"pointer"} borderRadius={"10px"}
-                                  _hover={{
-                                      background: "yellow.200",
-                                  }}>
-                                💬 Comment
+                                  _hover={{background: "yellow.200"}}
+                                  onClick={ () => {
+                                      if ( this.state.openComments == k ) {
+                                          this.setState({openComments: -1})
+                                      } else {
+                                          this.setState({openComments: k});
+                                      }
+
+                                  }}
+                            >
+                                💬 Open comments
                             </Text>
                         </Box>
 
                     </HStack>
 
-                </Box>
+                    {/* COMMENT field*/}
+                    { this.state.openComments === k ?
 
+                        <Box borderWidth="1px" marginTop="10px"  borderTopColor="gray.300">
+
+                            <Textarea
+                                marginTop="5px"
+                                placeholder={"type comment here"}
+                                onChange={ (e) => this.setState({comment: e.target.value})}
+
+                            />
+
+                            <Box w="100%">
+                                <Button
+                                    float="right"
+                                    colorScheme="yellow"
+                                    onClick={() => alert(this.state.comment)}
+                                >
+                                    Comment
+                                </Button>
+                            </Box>
+
+                        </Box> : <></>
+                    }
+                </Box>
                 <Divider orientation={"horizontal"} w={"100%"} h={"20px"} opacity={0} />
             </>
         ))
