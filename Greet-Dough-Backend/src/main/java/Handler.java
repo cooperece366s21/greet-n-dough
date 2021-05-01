@@ -862,27 +862,19 @@ public class Handler {
 
         req.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
 
-        try ( InputStream is = req.raw().getPart("file").getInputStream() ) {
+        String pathToTempFile = ImageHandler.copyFromBytes( TEMP_DIR, req, res );
+        if ( res.status() != 200 ) {
 
-            // Grab bytes from FE form to figure out filetype
-            String fileType =  new String(
-                    req.raw().getPart("fileType").getInputStream().readAllBytes(),
-                    StandardCharsets.UTF_8
-            );
-
-            // Creates a temporary file (it is randomly generated numbers)
-            Path tempFile = Files.createTempFile( uploadDir.toPath(), "", fileType );
-
-            // Replace the temp file with the binary data received from FE.
-            Files.copy( is, tempFile, StandardCopyOption.REPLACE_EXISTING );
-
-            // Copy the image and delete after copying
-            imageStore.addImage( uid, tempFile.toString(), true );
-            System.err.println("Created file: " + tempFile.toString() );
-
-            res.status(200);
+            System.err.println("Failed to copy the file from bytes.");
+            return res.status();
 
         }
+
+        // Copy the image and delete after copying
+        imageStore.addImage( uid, pathToTempFile, true );
+        System.err.println("Created file: " + pathToTempFile );
+
+        res.status(200);
 
         return res.status();
 
