@@ -105,7 +105,6 @@ public class ImageHandler {
                     StandardCharsets.UTF_8
             );
 
-
             String destPath = destDir + File.separator + ImageHandler.genRandomName() + fileType;
 
             // Creates a file to store the bytes

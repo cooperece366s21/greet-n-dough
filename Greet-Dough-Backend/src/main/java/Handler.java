@@ -645,7 +645,7 @@ public class Handler {
      *
      * @return a JSONObject with the Post object and like count
      */
-    private JSONObject makePostJson(int pid ) {
+    private JSONObject makePostJson( int pid ) {
 
         JSONObject json = new JSONObject();
 
@@ -658,10 +658,10 @@ public class Handler {
         Likes tempLikes = likeStore.getLikes(pid);
         json.put( "likeCount", tempLikes.getLikeCount() );
 
-        if (tempPost.getImageID()!=null) {
-            json.put("images",  imageStore.getImage(tempPost.getImageID()).getPath() );
+        Integer iid = tempPost.getImageID();
+        if ( iid != null ) {
+            json.put("images",  imageStore.getImage(iid).getPath() );
         }
-
 
         return json;
 
