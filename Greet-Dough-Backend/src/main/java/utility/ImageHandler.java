@@ -48,7 +48,7 @@ public class ImageHandler {
     // From https://stackoverflow.com/a/21974043
     /**
      * @return  the extension of the provided file including the dot
-     *          (.png)
+     *          (.png) or nothing if the file has no extension
      */
     public static String getFileExtension( String filename ) {
 
@@ -65,7 +65,7 @@ public class ImageHandler {
 
     }
 
-    // From From https://www.baeldung.com/java-random-string
+    // From https://www.baeldung.com/java-random-string
     /**
      * Generates a random alphanumeric filename containing
      * characters from '0' to 'z'.
@@ -83,7 +83,13 @@ public class ImageHandler {
     }
 
     /**
+     * Saves an image stored in bytes in req to the specified directory,
+     * with a random file name.
      * Sets res.status().
+     *
+     * @param   destDir the directory to save the file to
+     * @return          a string representing the path to the saved file if successful;
+     *                  null otherwise
      */
     public static String copyFromBytes( String destDir, Request req, Response res ) {
 
