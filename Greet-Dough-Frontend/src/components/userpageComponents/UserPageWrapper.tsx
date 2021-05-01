@@ -61,12 +61,16 @@ class UserPageWrapper extends React.Component<any, any> {
                         api.getUserProfile( this.state.uid )
                             .then( res => {
 
-                                if ( res.map.bio !== null ) {
+                                if ( res.map.bio !== undefined ) {
                                     this.setState({bio: res.map.bio});
                                 }
 
-                                if ( res.map.profilePicture !== null ) {
+                                if ( res.map.profilePicture !== undefined ) {
                                     let url:string = res.map.profilePicture;
+                                     url = "/" + url.slice(url.indexOf("data"));
+                                     url = url.replaceAll("\\", "/");
+                                     alert(url);
+
                                     this.setState({profilePicture: url})
                                 }
 
