@@ -663,6 +663,20 @@ public class Handler {
             json.put("images",  imageStore.getImage(iid).getPath() );
         }
 
+        // Shaping the comment field to be much nicer for the frontend
+        LinkedList<JSONObject> comments = new LinkedList<>();
+        for( Comment comment: commentStore.getParents(pid) ) {
+
+            JSONObject tempCommentJson = new JSONObject(comment);
+            int uid =  tempCommentJson.getInt("userID");
+            tempCommentJson.put("username", userStore.getUser(uid).getName() );
+            tempCommentJson.put("avatar", profileStore.getProfile(uid).getPath() );
+            comments.add( tempCommentJson );
+
+        }
+        
+        json.put( "comments", comments.toArray() );
+
         return json;
 
     }
@@ -1074,17 +1088,24 @@ public class Handler {
     public int createComment( Request req, Response res ) {
 
         res.type("application/json");
-        Properties data = gson.fromJson(req.body(), Properties.class);
+
+        String token = req.headers("token");
+        if ( !isValidToken( token, res ) ) {
+            return res.status();
+        }
+        int uid = loginStore.getUserID(token);
 
         // Parse the request
+        Properties data = gson.fromJson(req.body(), Properties.class);
         int pid = Integer.parseInt( data.getProperty("pid") );
-        int uid = Integer.parseInt( data.getProperty("uid") );
-        String contentQuery = data.getProperty("contents");
-        String parent = data.getProperty("parent_id");
-        Integer parent_id = (parent != null) ? Integer.parseInt(parent) : null;
+        String contents = data.getProperty("contents");
+        String parent = data.getProperty("parentId");
 
-        int status = checkUserPostPerms(uid, pid);
-        res.status(status);
+        // Frontend sends a -1 in the JSON if there is no parent id, AKA comment on main post
+        Integer parentId = (Integer.parseInt(parent) != -1) ? Integer.parseInt(parent) : null;
+
+//        int status = checkUserPostPerms(uid, pid);
+//        res.status(status);
 
         // Check if the status is not OK
         if ( res.status() != 200 ) {
@@ -1094,12 +1115,12 @@ public class Handler {
 
         }
 
-        if ( parent_id == null ) {
-            commentStore.addComment( contentQuery, uid, pid );
+        if ( parentId == null ) {
+            commentStore.addComment( contents, uid, pid );
         } else {
 
-            // Check if the desired parent_id exists
-            if ( !commentStore.hasComment(parent_id) ) {
+            // Check if the desired parentId exists
+            if ( !commentStore.hasComment(parentId) ) {
 
                 res.status(404);
                 return res.status();
@@ -1108,8 +1129,8 @@ public class Handler {
 
             // Checks if the desired parent comment does not also have a parent
             //      to ensure depth 1
-            if ( commentStore.isParent(parent_id) ) {
-                commentStore.addComment( contentQuery, uid, pid, parent_id );
+            if ( commentStore.isParent(parentId) ) {
+                commentStore.addComment( contents, uid, pid, parentId );
             } else {
                 System.err.println("Error code: " + res.status());
             }

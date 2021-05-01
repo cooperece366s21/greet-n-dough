@@ -254,7 +254,15 @@ class UserFeed extends  React.Component<any, any> {
                                             Cancel
                                         </Button>
 
-                                        <Button float="right" colorScheme="green" onClick={() => alert(this.state.comment)}>
+                                        <Button float="right" colorScheme="green"
+                                                onClick={() => {
+                                                    api.makeComment(
+                                                        localStorage.getItem("authToken"),
+                                                        e.map.post.ID,
+                                                        this.state.comment,
+                                                        null,
+                                                    ).then( () => this.refreshFeed() );
+                                                }}>
                                             Comment
                                         </Button>
 

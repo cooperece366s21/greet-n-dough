@@ -187,7 +187,7 @@ public class Server {
 
         // Comment, post for now, put request since we are updating something about the post??
         // curl -d "uid=1&contents=ok post!" -X post localhost:5432/posts/0/comments/
-        post("/posts/:pid/comments/", handler::createComment, gson::toJson);
+        post("/posts/comments/", handler::createComment, gson::toJson);
 
         get("/wallet/", handler::getBalance, gson::toJson);
         // Upload Image, which is createPost but imageID exists

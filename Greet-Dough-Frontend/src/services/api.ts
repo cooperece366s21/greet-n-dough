@@ -169,6 +169,7 @@ export async function getUserFeed( cuid:number, uid:number ) {
     if (res.ok) {
         return await res.json()
             .then(body => {
+                alert(JSON.stringify(body))
                 return body;
             });
 
@@ -399,6 +400,33 @@ export async function getLikes(token: string|null, pid: number) {
 
 }
 
+// COMMENT API CALLS
+
+export async function makeComment( token: string|null, pid:number, contents:string, parentId:number|null) {
+    if ( token==null ) return (403);
+
+    parentId = parentId==null ? -1 : parentId;
+
+    const res = await fetch(`${BACKEND_URL}/posts/comments/`, {
+        method: "post",
+        mode: "cors",
+        headers: {
+            "Content-Type": "application/json",
+            "token": token,
+        },
+        body: JSON.stringify({ pid, contents, parentId })
+    });
+
+    if (res.ok) {
+        return 200;
+    } else {
+        alert("ERROR :" +res.status);
+        return res.status;
+    }
+}
+
+
+
 // IMAGE API CALLS
 
 export async function uploadProfilePicture(token:string|null, file:File|null) {
@@ -469,6 +497,8 @@ let exports = {
     editPost,
     getPost,
     deletePost,
+
+    makeComment,
 
     uploadProfilePicture,
     getAllUserImages,
