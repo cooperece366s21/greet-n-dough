@@ -191,6 +191,7 @@ export async function getUserProfile( uid:number ) {
 
         return await res.json()
             .then(body => {
+                alert(JSON.stringify(body));
                 return body;
             });
 
@@ -386,7 +387,7 @@ export async function getLikes(token: string|null, pid: number) {
 
 // IMAGE API CALLS
 
-export async function postImage( token:string|null, file:File|null) {
+export async function uploadProfilePicture(token:string|null, file:File|null) {
     if ( token==null ) return (403);
     if ( file==null ) return (403);
 
@@ -396,7 +397,7 @@ export async function postImage( token:string|null, file:File|null) {
     let fileType = "." + file.type.slice( file.type.indexOf("/")+1 );
     form.append( "fileType", fileType );
 
-    const res = await fetch(`${BACKEND_URL}/images/`, {
+    const res = await fetch(`${BACKEND_URL}/user/profilepic/`, {
         method: "post",
         mode: "cors",
         headers: {
@@ -407,10 +408,10 @@ export async function postImage( token:string|null, file:File|null) {
     });
 
     if (res.ok){
-        alert('good');
+        alert('Upload good');
         return 200;
     } else{
-        alert('oopsie!');
+        alert('Upload bad');
         return res.status;
     }
 
@@ -455,7 +456,7 @@ let exports = {
     getPost,
     deletePost,
 
-    uploadProfilePicture: postImage,
+    uploadProfilePicture,
     getAllUserImages,
 
     getWallet,

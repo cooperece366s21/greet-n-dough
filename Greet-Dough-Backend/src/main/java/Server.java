@@ -202,6 +202,8 @@ public class Server {
 
         post( "/images/", handler::createImage, gson::toJson );
 
+        post( "/user/profilepic/", handler::uploadProfilePicture, gson::toJson);
+
         get( "/images/:uid/", handler::makeGallery, gson::toJson );
 
     }

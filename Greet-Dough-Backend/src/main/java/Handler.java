@@ -849,11 +849,11 @@ public class Handler {
 
     }
 
-    public int createImage( Request req, Response res ) throws IOException, ServletException {
+    public Image createImage( Request req, Response res ) throws IOException, ServletException {
 
         String token = req.headers("token");
         if ( !isValidToken( token, res ) ) {
-            return res.status();
+            return new Image("", -1, -1);
         }
         int uid = loginStore.getUserID(token);
 
@@ -866,18 +866,36 @@ public class Handler {
         if ( res.status() != 200 ) {
 
             System.err.println("Failed to copy the file from bytes.");
-            return res.status();
-
+            return new Image("", -1, -1);
         }
 
         // Copy the image and delete after copying
-        imageStore.addImage( uid, pathToTempFile, true );
+        Image createdImage = imageStore.addImage( uid, pathToTempFile, true );
         System.err.println("Created file: " + pathToTempFile );
 
         res.status(200);
 
-        return res.status();
+        return createdImage;
 
+    }
+
+    public int uploadProfilePicture( Request req, Response res ) throws IOException, ServletException {
+
+        String token = req.headers("token");
+        if ( !isValidToken( token, res ) ) {
+            return res.status();
+        }
+        int uid = loginStore.getUserID(token);
+
+        Image createdImage = this.createImage( req, res );
+
+        if( createdImage.getUserID()==-1 ){
+            return res.status();
+        }
+        profileStore.changeProfilePicture(uid, createdImage.getPath(), true);
+
+        res.status(200);
+        return res.status();
     }
 
     public LinkedList<JSONObject> makeGallery( Request req, Response res ) {

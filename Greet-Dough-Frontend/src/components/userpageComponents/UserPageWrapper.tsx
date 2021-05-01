@@ -66,7 +66,8 @@ class UserPageWrapper extends React.Component<any, any> {
                                 }
 
                                 if ( res.map.profilePicture !== null ) {
-                                    this.setState({profilePicture: res.map.profilePicture})
+                                    let url:string = res.map.profilePicture;
+                                    this.setState({profilePicture: url})
                                 }
 
                                 // THIS LINE BELOW IS CRITICAL

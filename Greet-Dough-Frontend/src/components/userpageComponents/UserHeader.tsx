@@ -5,6 +5,7 @@ import {
     HStack,
     Center,
     Input,
+    Image,
     Button,
     Flex, Text, SkeletonCircle,
 } from "@chakra-ui/react";
@@ -135,7 +136,9 @@ class UserHeader extends React.Component<any, any> {
             }
 
         </HStack>;
-        let profilePicture = <>{this.state.editing ?
+        let profilePicture = <>
+
+            {this.state.editing ?
             <ImageUploader
                 withIcon={false}
                 withPreview={true}
@@ -152,7 +155,9 @@ class UserHeader extends React.Component<any, any> {
                 imgExtension={[".jpg", ".gif", ".png", ".gif"]}
                 maxFileSize={5242880}
             /> :
-            <SkeletonCircle size="175px"/>
+            this.state.profilePicture ?
+                <img src={this.state.profilePicture} /> :
+                <SkeletonCircle size="175px"/>
         }</>;
         let biography = <>{this.state.editing ?
             <Input

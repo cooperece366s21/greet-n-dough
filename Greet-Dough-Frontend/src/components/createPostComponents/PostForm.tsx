@@ -7,6 +7,7 @@ import {
     Textarea,
     Input,
     Button,
+    Image,
 
 } from "@chakra-ui/react";
 
