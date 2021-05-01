@@ -91,19 +91,20 @@ public class ImageHandler {
      * @return          a string representing the path to the saved file if successful;
      *                  null otherwise
      */
-    public static String copyFromBytes( String destDir, Request req, Response res ) {
+    public static String copyFromBytes( String destDir, Request req, Response res, String partName, String partTypeName ) {
 
         // Creates the directory (and all parent directories)
         //      if it doesn't exist
         new File(destDir).mkdirs();
 
-        try ( InputStream is = req.raw().getPart("file").getInputStream() ) {
+        try ( InputStream is = req.raw().getPart(partName).getInputStream() ) {
 
             // Grab bytes from FE form to figure out filetype
             String fileType =  new String(
-                    req.raw().getPart("fileType").getInputStream().readAllBytes(),
+                    req.raw().getPart(partTypeName).getInputStream().readAllBytes(),
                     StandardCharsets.UTF_8
             );
+
 
             String destPath = destDir + File.separator + ImageHandler.genRandomName() + fileType;
 

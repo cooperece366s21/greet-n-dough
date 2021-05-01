@@ -6,8 +6,10 @@ import utility.ImageHandler;
 import utility.Pair;
 import utility.PathDefs;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -18,6 +20,7 @@ import spark.Request;
 import spark.Response;
 
 import javax.servlet.MultipartConfigElement;
+import javax.servlet.ServletException;
 
 public class Handler {
 
@@ -715,10 +718,14 @@ public class Handler {
 
     }
 
-    public int createPost( Request req, Response res ) {
+    private String readFormField( Request req, String partName ) throws IOException, ServletException {
+        return new String(
+                req.raw().getPart(partName).getInputStream().readAllBytes(),
+                StandardCharsets.UTF_8
+        );
+    }
 
-        res.type("application/json");
-        Properties data = gson.fromJson(req.body(), Properties.class);
+    public int createPost( Request req, Response res ) throws IOException, ServletException {
 
         // Check the token
         String token = req.headers("token");
@@ -728,10 +735,18 @@ public class Handler {
         int uid = loginStore.getUserID(token);
 
         // Parse the request
-        String title = data.getProperty("title");
-        String contents = data.getProperty("contents");
-        String imageQuery = data.getProperty("imageQuery");
-        Integer iid = (imageQuery != null) ? Integer.parseInt(imageQuery) : null;
+        req.raw().setAttribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
+        String title =  readFormField(req, "title");
+        String contents = readFormField(req, "contents");
+        String image = readFormField(req, "image");
+        Integer iid = null;
+
+        if ( image.equals("") ) {
+            System.err.println("No image assigned with post");
+        } else {
+            Image createdImage = this.createImage(req, res, "image", "fileType");
+            iid = createdImage.getID();
+        }
 
         if ( !userStore.hasUser(uid) ) {
 
@@ -740,11 +755,11 @@ public class Handler {
             return res.status();
 
         }
-
+//
         Post tempPost = postStore.addPost( title, contents, uid, iid );
-
+//
         System.out.println( gson.toJson(tempPost) );
-
+//
         res.status(200);
         return res.status();
 
@@ -848,11 +863,11 @@ public class Handler {
      *
      * @return  a string representing the path to the saved image
      */
-    private String saveImage( Request req, Response res ) {
+    private String saveImage( Request req, Response res, String partName, String partTypeName ) {
 
         req.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
 
-        String pathToTempFile = ImageHandler.copyFromBytes( PathDefs.TEMP_DIR, req, res );
+        String pathToTempFile = ImageHandler.copyFromBytes( PathDefs.TEMP_DIR, req, res, partName, partTypeName );
         if ( res.status() != 200 ) {
 
             System.err.println("Failed to copy the file from bytes.");
@@ -864,27 +879,28 @@ public class Handler {
 
     }
 
-    public int createImage( Request req, Response res ) {
+    private Image createImage( Request req, Response res, String partName, String partTypeName ) {
 
         // Check the token
         String token = req.headers("token");
         if ( !isValidToken( token, res ) ) {
-            return res.status();
+            return new Image("", -1, -1);
         }
         int uid = loginStore.getUserID(token);
 
         // Save the bytes from the request
-        String pathToTempFile = saveImage( req, res );
+        String pathToTempFile = saveImage( req, res, partName, partTypeName );
         if ( res.status() != 200 ) {
-            return res.status();
+            System.err.println("Something went wrong inside the save Image function");
+            return new Image("", -1, -1);
         }
 
         // Copy the image and delete after copying
-        imageStore.addImage( uid, pathToTempFile, true );
+        Image createdImage = imageStore.addImage( uid, pathToTempFile, true );
         System.out.println("Created file: " + pathToTempFile );
 
         res.status(200);
-        return res.status();
+        return createdImage;
 
     }
 
@@ -898,7 +914,7 @@ public class Handler {
         int uid = loginStore.getUserID(token);
 
         // Save the bytes from the request
-        String pathToTempFile = saveImage( req, res );
+        String pathToTempFile = saveImage( req, res, "file", "fileType" );
         if ( res.status() != 200 ) {
             return res.status();
         }

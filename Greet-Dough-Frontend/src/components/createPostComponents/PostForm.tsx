@@ -30,19 +30,6 @@ class PostForm extends React.Component<any, any> {
         pictures: null,
     }
 
-    async createPostWrapper( title:string, contents:string ) {
-        let token = localStorage.getItem("authToken");
-
-        let res = await api.createPost(token, title, contents);
-
-        if ( res === 200 ) {
-            alert("Post successfully made!");
-        }
-        else {
-            alert("SOMETHING WENT VERY WRONG");
-        }
-    }
-
     onDrop(pictures:File[]) {
         this.setState({ pictures: pictures });
     }
@@ -53,16 +40,12 @@ class PostForm extends React.Component<any, any> {
                     onClick={ () => {
                         let token = localStorage.getItem('authToken');
 
-                        api.createPost( token, this.state.title, this.state.contents )
+                        api.createPost( token, this.state.title, this.state.contents, this.state.pictures )
                             .then( res => {
                                 if (res===200) alert("Post succesful!");
                                 else alert("ERROR: " + res);
                             })
 
-                        this.state.pictures?.forEach( pic => {
-                            api.uploadProfilePicture( token, pic )
-                        })
-                        // this.createPostWrapper( this.state.title, this.state.contents)
                     }}>
                 submit
             </Button>

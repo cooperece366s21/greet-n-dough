@@ -69,8 +69,6 @@ class UserPageWrapper extends React.Component<any, any> {
                                     let url:string = res.map.profilePicture;
                                      url = "/" + url.slice(url.indexOf("data"));
                                      url = url.replaceAll("\\", "/");
-                                     alert(url);
-
                                     this.setState({profilePicture: url})
                                 }
 

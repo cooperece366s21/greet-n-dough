@@ -191,7 +191,7 @@ export async function getUserProfile( uid:number ) {
 
         return await res.json()
             .then(body => {
-                alert(JSON.stringify(body));
+                // alert(JSON.stringify(body));
                 return body;
             });
 
@@ -256,18 +256,32 @@ export async function addToWallet( token:string|null, amount:string|null ) {
 
 // POST API CALLS
 
-export async function createPost( token:string|null, title:string, contents:string ) {
+export async function createPost( token:string|null, title:string, contents:string, pictures:File[]|null) {
 
     if ( token==null ) return (403);
+
+
+    let form = new FormData();
+    form.set('title', title);
+    form.set('contents', contents);
+
+    if (pictures) {
+        let singleImage = pictures[0];
+        form.set('image', singleImage);
+        let fileType = "." + singleImage.type.slice( singleImage.type.indexOf("/")+1 );
+        form.set('fileType', fileType);
+    } else {
+        form.set('image', '');
+    }
 
     const res = await fetch(`${BACKEND_URL}/posts/`, {
         method: "post",
         mode: "cors",
         headers: {
-            "Content-Type": "application/json",
+            "enctype": "multipart/form-data",
             "token": token,
         },
-        body: JSON.stringify({ title, contents })
+        body: form,
     });
 
     if ( res.ok ) {

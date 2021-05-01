@@ -200,7 +200,7 @@ public class Server {
 
         // IMAGE ROUTES
 
-        post( "/images/", handler::createImage, gson::toJson );
+//        post( "/images/", handler::createImage, gson::toJson );
 
         post( "/user/profilepic/", handler::uploadProfilePicture, gson::toJson);
 
