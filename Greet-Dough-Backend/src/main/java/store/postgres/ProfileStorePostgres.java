@@ -50,14 +50,14 @@ public class ProfileStorePostgres implements ProfileStore {
 
     @Override
     public Profile addProfile( int uid, String bio ) {
-        return addProfile( uid, bio, null );
+        return addProfile( uid, bio, null, false );
     }
 
     @Override
-    public Profile addProfile( int uid, String bio, String path ) {
+    public Profile addProfile( int uid, String bio, String path, boolean deleteOriginalImage ) {
 
-        String savedPath = imageHandler.copyImage(path);
-        jdbi.useHandle( handle -> handle.attach(ProfileDao.class).addProfile( uid, bio, savedPath ) );
+        jdbi.useHandle( handle -> handle.attach(ProfileDao.class).addProfile( uid, bio ) );
+        changeProfilePicture( uid, path, deleteOriginalImage );
         return getProfile(uid);
 
     }
@@ -68,10 +68,14 @@ public class ProfileStorePostgres implements ProfileStore {
     }
 
     @Override
-    public void changeProfilePicture( int uid, String newPath ) {
+    public void changeProfilePicture( int uid, String newPath, boolean deleteOriginalImage ) {
 
         String savedPath = imageHandler.copyImage(newPath);
         jdbi.useHandle( handle -> handle.attach(ProfileDao.class).changeProfilePicture( uid, savedPath ) );
+
+        if ( deleteOriginalImage ) {
+            imageHandler.deleteImage(newPath);
+        }
 
     }
 

@@ -32,11 +32,10 @@ public interface ProfileDao {
             "ORDER BY user_id;")
     LinkedList<Profile> getAllProfiles();
 
-    @SqlUpdate("INSERT INTO profiles (user_id, user_bio, profile_picture_path) " +
-            "VALUES (:user_id, :user_bio, :profile_picture_path);")
+    @SqlUpdate("INSERT INTO profiles (user_id, user_bio) " +
+            "VALUES (:user_id, :user_bio);")
     void addProfile(@Bind("user_id") int user_id,
-                    @Bind("user_bio") String user_bio,
-                    @Bind("profile_picture_path") String profile_picture_path);
+                    @Bind("user_bio") String user_bio);
 
     @SqlUpdate("UPDATE profiles " +
             "SET user_bio = (:new_bio) " +

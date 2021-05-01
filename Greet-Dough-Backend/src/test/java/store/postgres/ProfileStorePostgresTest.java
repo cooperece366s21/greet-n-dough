@@ -53,7 +53,7 @@ class ProfileStorePostgresTest extends ProfileStorePostgres {
     void testDeleteProfilePicture() {
 
         // Add a profile
-        profileStorePostgres.addProfile( newUser.getID(), newBio, newPath );
+        profileStorePostgres.addProfile( newUser.getID(), newBio, newPath, false );
         assert ( profileStorePostgres.getProfile( newUser.getID() ).getPath() != null );
 
         // Test deleting the profile picture
@@ -91,7 +91,7 @@ class ProfileStorePostgresTest extends ProfileStorePostgres {
     void testClearDeleted() {
 
         // Add a profile
-        profileStorePostgres.addProfile( newUser.getID(), newBio, newPath );
+        profileStorePostgres.addProfile( newUser.getID(), newBio, newPath, false );
         assert ( profileStorePostgres.getAllProfiles().size() == 1 );
 
         // Test deleting the user
@@ -137,7 +137,7 @@ class ProfileStorePostgresTest extends ProfileStorePostgres {
     void testGetProfile() {
 
         // Add a profile
-        Profile newProfile = profileStorePostgres.addProfile( newUser.getID(), newBio, newPath );
+        Profile newProfile = profileStorePostgres.addProfile( newUser.getID(), newBio, newPath, false );
 
         // Test retrieving the profile
         assert ( profileStorePostgres.getProfile( newUser.getID() ).equals(newProfile) );
