@@ -26,7 +26,6 @@ public class Server {
     private static ProfileStore profileStore;
     private static SubStore subStore = new SubStoreImpl();
     private static FollowStore followStore = new FollowStoreImpl();
-    private static PostCommentStore postCommentStore = new PostCommentStoreImpl();
 
     private static Gson gson = new Gson();
     private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
@@ -96,7 +95,6 @@ public class Server {
                 Server.commentStore,
                 Server.subStore,
                 Server.followStore,
-                Server.postCommentStore,
                 Server.passwordStore,
                 Server.loginStore,
                 Server.walletStore,

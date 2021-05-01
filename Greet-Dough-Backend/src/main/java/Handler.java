@@ -30,7 +30,6 @@ public class Handler {
     private final LikeStore likeStore;
     private final SubStore subStore;
     private final FollowStore followStore;
-    private final PostCommentStore postCommentStore;
     private final CommentStore commentStore;
     private final PasswordStore passwordStore;
     private final LoginStore loginStore;
@@ -53,7 +52,6 @@ public class Handler {
                    CommentStore commentStore,
                    SubStore subStore,
                    FollowStore followStore,
-                   PostCommentStore postCommentStore,
                    PasswordStore passwordStore,
                    LoginStore loginStore,
                    WalletStore walletStore,
@@ -66,7 +64,6 @@ public class Handler {
         this.commentStore = commentStore;
         this.subStore = subStore;
         this.followStore = followStore;
-        this.postCommentStore = postCommentStore;
         this.passwordStore = passwordStore;
         this.loginStore = loginStore;
         this.walletStore = walletStore;
@@ -1205,28 +1202,5 @@ public class Handler {
         return res.status();
 
     }
-
-//    public ArrayList<Comment> getComments( Request req, Response res ) {
-//
-//        int pid = Integer.parseInt( req.params(":pid") );
-//        int uid = Integer.parseInt( req.queryParams("uid") );
-//        int status = checkUserPostPerms(uid, pid);
-//        ArrayList<Comment> comments = new ArrayList<>();
-//        res.status(status);
-//
-//        if ( res.status() == 200 ) {
-//
-//            ArrayList<Integer> cidList = postCommentStore.getComments(pid);
-//            for ( Integer ID : cidList ) {
-//                comments.add( commentStore.getComment(ID) );
-//            }
-//
-//        } else {
-//            System.err.println("Error code: " + res.status());
-//        }
-//
-//        return comments;
-//
-//    }
 
 }
