@@ -15,8 +15,10 @@ public interface ProfileDao {
             "user_bio TEXT " +              "NULL, " +
             "image_id INT " +               "NULL, " +
             "PRIMARY KEY(user_id), " +
+            "CONSTRAINT fk_user " + "FOREIGN KEY(user_id) " +
+                "REFERENCES users(user_id) " + "ON DELETE CASCADE, " +
             "CONSTRAINT fk_image " + "FOREIGN KEY(image_id) " +
-                "REFERENCES images(image_id) " +
+                "REFERENCES images(image_id) " + "ON DELETE SET DEFAULT " +
             ");")
     void createTable();
 
@@ -52,10 +54,5 @@ public interface ProfileDao {
             "SET user_bio = NULL " +
             "WHERE user_id = (:user_id);")
     void deleteBio(@Bind("user_id") int user_id);
-
-    @SqlUpdate("UPDATE profiles " +
-            "SET image_id = NULL " +
-            "WHERE user_id = (:user_id);")
-    void deleteProfilePicture(@Bind("user_id") int user_id);
 
 }
