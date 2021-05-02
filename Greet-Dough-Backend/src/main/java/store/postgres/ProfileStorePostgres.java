@@ -103,9 +103,10 @@ public class ProfileStorePostgres implements ProfileStore {
     public void deleteProfilePicture( int uid ) {
 
         // Delete the profile picture
-        // Foreign key constraint should automatically set image_id field to null
         Integer iid = getProfile(uid).getImageID();
         imageStore.deleteImage(iid);
+
+        jdbi.useHandle( handle -> handle.attach(ProfileDao.class).deleteProfilePicture(uid) );
 
     }
 

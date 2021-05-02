@@ -55,4 +55,9 @@ public interface ProfileDao {
             "WHERE user_id = (:user_id);")
     void deleteBio(@Bind("user_id") int user_id);
 
+    @SqlUpdate("UPDATE profiles " +
+            "SET image_id = NULL " +
+            "WHERE user_id = (:user_id);")
+    void deleteProfilePicture(@Bind("user_id") int user_id);
+
 }
