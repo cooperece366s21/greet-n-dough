@@ -35,6 +35,9 @@ class LikeStorePostgresTest extends LikeStorePostgres {
         Post newPost = postStorePostgres.addPost( "My first post", "first!", newUser.getID() );
         Post secondPost = postStorePostgres.addPost( "My second post", "haha very cool!", newUser.getID() );
 
+        // Check empty likes
+        assert ( likeStorePostgres.getLikes( newPost.getID() ).getLikeCount() == 0 );
+
         // Like one post
         likeStorePostgres.addUserLike( newPost.getID(), newUser.getID() );
         likeStorePostgres.addUserLike( newPost.getID(), tempUser.getID() );

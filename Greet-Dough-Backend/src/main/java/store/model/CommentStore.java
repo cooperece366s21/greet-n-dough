@@ -2,15 +2,15 @@ package store.model;
 
 import model.Comment;
 
-import java.util.LinkedList;
+import java.util.List;
 
 public interface CommentStore {
 
     Comment getComment( int cid );
 
-    LinkedList<Comment> getReplies( int parent_id );
+    List<Comment> getReplies( int parent_id );
 
-    LinkedList<Comment> getParents( int pid );
+    List<Comment> getParents(int pid );
 
     Comment addComment( String contents, int uid, int pid, Integer parent_id );
 

@@ -6,6 +6,7 @@ import store.model.CommentStore;
 import org.jdbi.v3.core.Jdbi;
 
 import java.util.LinkedList;
+import java.util.List;
 
 public class CommentStorePostgres implements CommentStore {
 
@@ -29,12 +30,12 @@ public class CommentStorePostgres implements CommentStore {
     }
 
     @Override
-    public LinkedList<Comment> getReplies( int parentID ) {
+    public List<Comment> getReplies(int parentID ) {
         return jdbi.withHandle( handle -> handle.attach(CommentDao.class).getReplies(parentID) );
     }
 
     @Override
-    public LinkedList<Comment> getParents( int pid ) {
+    public List<Comment> getParents( int pid ) {
         return jdbi.withHandle( handle -> handle.attach(CommentDao.class).getParents(pid) );
     }
 

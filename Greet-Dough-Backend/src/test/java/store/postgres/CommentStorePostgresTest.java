@@ -7,7 +7,7 @@ import org.jdbi.v3.core.Jdbi;
 import org.junit.jupiter.api.Test;
 import utility.ResetDao;
 
-import java.util.LinkedList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -52,15 +52,15 @@ class CommentStorePostgresTest extends CommentStorePostgres {
         assert ( replyCommentAfterWrite.equals(reply) );
 
         // Test retrieving the list of parent comments under a post
-        LinkedList<Comment> postParents = commentStorePostgres.getParents( newPost.getID() );
+        List<Comment> postParents = commentStorePostgres.getParents( newPost.getID() );
         assert ( postParents.size() == 2 );
         assert ( postParents.get(0).getContents().equals(contents1) );
         assert ( postParents.get(1).getContents().equals(contents2) );
 
         // Test retrieving the list of replies under a parent comment
-        LinkedList<Comment> postReplies = commentStorePostgres.getReplies( parent2.getID() );
+        List<Comment> postReplies = commentStorePostgres.getReplies( parent2.getID() );
         assert ( postReplies.size() == 1 );
-        assert ( postReplies.getFirst().getContents().equals(contents3) );
+        assert ( postReplies.get(0).getContents().equals(contents3) );
 
         // Test deleting a comment
         commentStorePostgres.deleteComment( parent1.getID() );
