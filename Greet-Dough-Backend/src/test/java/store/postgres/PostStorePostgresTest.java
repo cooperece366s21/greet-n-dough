@@ -6,7 +6,7 @@ import org.jdbi.v3.core.Jdbi;
 import org.junit.jupiter.api.Test;
 import utility.ResetDao;
 
-import java.util.LinkedList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -42,7 +42,7 @@ class PostStorePostgresTest extends PostStorePostgres {
         Post poopPost1 = postStorePostgres.addPost( "Feeling well today", "cuz it's a WELLness day hahahahhah", newUser.getID() );
         Post poopPost2 = postStorePostgres.addPost( "You can graduate with a bachelors and masters with 134 credits at other schools",
                 "haha very cool!", newUser.getID() );
-        LinkedList<Post> feed = postStorePostgres.makeFeed( newUser.getID() );
+        List<Post> feed = postStorePostgres.makeFeed( newUser.getID() );
         assert ( feed.size() == 2 );
         assert ( feed.get(0).equals( poopPost1 ) );
         assert ( feed.get(1).equals( poopPost2 ) );

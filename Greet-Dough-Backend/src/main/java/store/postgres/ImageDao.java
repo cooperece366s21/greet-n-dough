@@ -11,49 +11,49 @@ import java.util.Optional;
 
 public interface ImageDao {
 
-    @SqlUpdate("DROP TABLE IF EXISTS images;")
+    @SqlUpdate( "DROP TABLE IF EXISTS images;")
     void deleteTable();
 
-    @SqlUpdate("CREATE TABLE IF NOT EXISTS images( " +
-            "image_id SERIAL " +    "NOT NULL, " +
-            "user_id INT " +        "NOT NULL, " +
-            "path TEXT " +          "NOT NULL, " +
-            "is_deleted BOOLEAN " + "NOT NULL " + "DEFAULT FALSE, " +
-            "PRIMARY KEY(image_id) " +
-            ");")
+    @SqlUpdate( "CREATE TABLE IF NOT EXISTS images( " +
+                    "image_id SERIAL " +    "NOT NULL, " +
+                    "user_id INT " +        "NOT NULL, " +
+                    "path TEXT " +          "NOT NULL, " +
+                    "is_deleted BOOLEAN " + "NOT NULL " + "DEFAULT FALSE, " +
+                    "PRIMARY KEY(image_id) " +
+                ");")
     void createTable();
 
-    @SqlUpdate("INSERT INTO images (user_id, path) " +
-            "VALUES (:user_id, :path);")
+    @SqlUpdate( "INSERT INTO images (user_id, path) " +
+                    "VALUES (:user_id, :path);")
     @GetGeneratedKeys("image_id")
     int addImage(@Bind("user_id") int user_id,
                  @Bind("path") String path);
 
-    @SqlUpdate("UPDATE images " +
-            "SET is_deleted = true " +
-            "WHERE image_id = (:image_id);")
+    @SqlUpdate( "UPDATE images " +
+                    "SET is_deleted = true " +
+                    "WHERE image_id = (:image_id);")
     void deleteImage(@Bind("image_id") int image_id);
 
     /**
      * @return a list of images deleted from the table
      */
-    @SqlQuery("DELETE FROM images " +
-            "WHERE is_deleted = true " +
-            "RETURNING *;")
+    @SqlQuery(  "DELETE FROM images " +
+                    "WHERE is_deleted = true " +
+                    "RETURNING *;")
     List<Image> clearDeleted();
 
-    @SqlQuery("SELECT * FROM images " +
-            "ORDER BY user_id;")
+    @SqlQuery(  "SELECT * FROM images " +
+                    "ORDER BY user_id;")
     List<Image> getAllImages();
 
-    @SqlQuery("SELECT * FROM images " +
-            "WHERE image_id = (:image_id) AND " +
-                "is_deleted = FALSE;")
+    @SqlQuery(  "SELECT * FROM images " +
+                    "WHERE image_id = (:image_id) AND " +
+                        "is_deleted = FALSE;")
     Optional<Image> getImage(@Bind("image_id") int image_id);
 
-    @SqlQuery("SELECT * FROM images " +
-            "WHERE user_id = (:user_id) AND " +
-                "is_deleted = FALSE")
+    @SqlQuery(  "SELECT * FROM images " +
+                    "WHERE user_id = (:user_id) AND " +
+                        "is_deleted = FALSE")
     List<Image> getGallery(@Bind("user_id") int user_id);
 
 }
