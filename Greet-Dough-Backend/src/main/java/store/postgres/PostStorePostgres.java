@@ -6,6 +6,7 @@ import store.model.PostStore;
 import org.jdbi.v3.core.Jdbi;
 
 import java.util.LinkedList;
+import java.util.List;
 
 public class PostStorePostgres implements PostStore {
 
@@ -33,12 +34,12 @@ public class PostStorePostgres implements PostStore {
      *
      * @return all posts in the database
      */
-    protected LinkedList<Post> getAllPosts() {
+    protected List<Post> getAllPosts() {
         return jdbi.withHandle( handle -> handle.attach(PostDao.class).getAllPosts() );
     }
 
     @Override
-    public LinkedList<Post> makeFeed( int uid ) {
+    public List<Post> makeFeed( int uid ) {
         return jdbi.withHandle( handle -> handle.attach(PostDao.class).getFeed(uid) );
     }
 
@@ -49,15 +50,27 @@ public class PostStorePostgres implements PostStore {
 
     @Override
     public Post addPost( String title, String contents, int uid ) {
-        return addPost( title, contents, uid, null );
+        return addPost( title, contents, uid, new LinkedList<>() );
     }
 
     @Override
-    public Post addPost( String title, String contents, int uid, Integer iid ) {
+    public Post addPost( String title, String contents, int uid, List<Integer> iidList ) {
 
-        int ID = jdbi.withHandle( handle -> handle.attach(PostDao.class).addPost( title, contents, uid, iid ) );
-        return getPost(ID);
+        // Add the post
+        int pid = jdbi.withHandle( handle -> handle.attach(PostDao.class).addPost( title, contents, uid ) );
 
+        // Add the images
+        for ( int iid : iidList ) {
+            addPostImage( pid, iid );
+        }
+
+        return getPost(pid);
+
+    }
+
+    @Override
+    public void addPostImage( int pid, int iid ) {
+        jdbi.useHandle( handle -> handle.attach(PostDao.class).addPostImage( pid, iid ) );
     }
 
     @Override

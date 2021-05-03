@@ -667,10 +667,10 @@ public class Handler {
         Likes tempLikes = likeStore.getLikes(pid);
         json.put( "likeCount", tempLikes.getLikeCount() );
 
-        Integer iid = tempPost.getImageID();
-        if ( iid != null ) {
-            json.put("images",  imageStore.getImage(iid).getPath() );
-        }
+//        Integer iid = tempPost.getImageID();
+//        if ( iid != null ) {
+//            json.put("images",  imageStore.getImage(iid).getPath() );
+//        }
 
         // Shaping the comment field to be much nicer for the frontend
         LinkedList<JSONObject> comments = new LinkedList<>();
@@ -720,7 +720,7 @@ public class Handler {
      *
      * @return a list of JSONObjects
      */
-    public LinkedList<JSONObject> getUserFeed( Request req, Response res ) {
+    public List<JSONObject> getUserFeed( Request req, Response res ) {
 
         res.type("application/json");
         int uid = Integer.parseInt( req.params(":uid") );
@@ -736,8 +736,8 @@ public class Handler {
         }
 
         // Get the feed and convert each post into a JSONObject
-        LinkedList<Post> feed = postStore.makeFeed(uid);
-        LinkedList<JSONObject> listJSON = new LinkedList<>();
+        List<Post> feed = postStore.makeFeed(uid);
+        List<JSONObject> listJSON = new LinkedList<>();
         for ( Post tempPost : feed ) {
             listJSON.add( makePostJson( tempPost.getID() ) );
         }
@@ -754,6 +754,22 @@ public class Handler {
         );
     }
 
+    // ToDo: Write this
+    private List<Integer> parsePostImages( Request req, Response res ) throws IOException, ServletException {
+
+        String image = readFormField(req, "image");
+
+//        if ( image.equals("") ) {
+//            System.err.println("No image assigned with post");
+//        } else {
+//            Image createdImage = this.createImage( req, res, "image", "fileType" );
+//            iid = createdImage.getID();
+//        }
+
+        return null;
+
+    }
+
     public int createPost( Request req, Response res ) throws IOException, ServletException {
 
         // Check the token
@@ -767,16 +783,11 @@ public class Handler {
         req.raw().setAttribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
         String title =  readFormField(req, "title");
         String contents = readFormField(req, "contents");
-        String image = readFormField(req, "image");
-        Integer iid = null;
 
-        if ( image.equals("") ) {
-            System.err.println("No image assigned with post");
-        } else {
-            Image createdImage = this.createImage( req, res, "image", "fileType" );
-            iid = createdImage.getID();
-        }
+        // Get the images if they exist
+        List<Integer> iidList = parsePostImages( req, res );
 
+        // Shouldn't need this
         if ( !userStore.hasUser(uid) ) {
 
             res.status(404);
@@ -785,13 +796,17 @@ public class Handler {
 
         }
 
-        Post tempPost = postStore.addPost( title, contents, uid, iid );
+        Post tempPost = postStore.addPost( title, contents, uid, iidList );
         System.out.println( gson.toJson(tempPost) );
 
         res.status(200);
         return res.status();
 
     }
+
+    // ToDo: deletePostImage() or deleteImage()
+    // Both would be implemented by ImageStore.deleteImage()
+    // Check if user is the owner
 
     public int deletePost( Request req, Response res ) {
 
@@ -955,7 +970,7 @@ public class Handler {
 
     }
 
-    public LinkedList<JSONObject> makeGallery( Request req, Response res ) {
+    public List<JSONObject> makeGallery( Request req, Response res ) {
 
         res.type("application/json");
         int uid = Integer.parseInt( req.params(":uid") );
@@ -968,7 +983,7 @@ public class Handler {
         }
 
         List<Image> images = imageStore.makeGallery(uid);
-        LinkedList<JSONObject> jsonList = new LinkedList<>();
+        List<JSONObject> jsonList = new LinkedList<>();
 
         for( Image img : images ) {
             jsonList.add( new JSONObject(img) );
@@ -1150,7 +1165,7 @@ public class Handler {
     }
 
     // havent checked permissions for this yet
-    public LinkedList<Comment> getParentComments( Request req, Response res ) {
+    public List<Comment> getParentComments( Request req, Response res ) {
 
         res.type("application/json");
         Properties data = gson.fromJson(req.body(), Properties.class);
@@ -1173,7 +1188,7 @@ public class Handler {
 
     }
 
-    public LinkedList<Comment> getRepliesComments( Request req, Response res ) {
+    public List<Comment> getRepliesComments( Request req, Response res ) {
 
         res.type("application/json");
         Properties data = gson.fromJson(req.body(), Properties.class);

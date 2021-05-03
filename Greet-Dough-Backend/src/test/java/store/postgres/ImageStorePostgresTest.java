@@ -11,6 +11,8 @@ import java.io.File;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.util.LinkedList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -48,13 +50,15 @@ class ImageStorePostgresTest extends ImageStorePostgres {
 
         // Test copying and saving an image
         Image selfie = imageStorePostgres.addImage( newUser.getID(), newPath.toString(), false );
+        List<Integer> iidList = new LinkedList<>();
+        iidList.add( selfie.getID() );
 
         // Test adding a post with an image
         String title = "Feeling cute, might delete later";
         String contents = "first!";
-        Post newPost = postStorePostgres.addPost( title, contents, newUser.getID(), selfie.getID() );
+        Post newPost = postStorePostgres.addPost( title, contents, newUser.getID(), iidList );
         assert ( newPost.getUserID() == newUser.getID() );
-        assert ( newPost.getImageID() == selfie.getID() );
+        assert ( newPost.getImageIDList() == iidList );
         assert ( newPost.getTitle().equals( title ) );
         assert ( newPost.getContents().equals( contents ) );
 

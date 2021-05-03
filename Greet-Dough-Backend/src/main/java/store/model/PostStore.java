@@ -2,7 +2,7 @@ package store.model;
 
 import model.Post;
 
-import java.util.LinkedList;
+import java.util.List;
 
 public interface PostStore {
 
@@ -11,13 +11,15 @@ public interface PostStore {
     /**
      * @return a list composed of every post made by a user
      */
-    LinkedList<Post> makeFeed(int uid );
+    List<Post> makeFeed( int uid );
 
     boolean hasPost( int pid );
 
     Post addPost( String title, String contents, int uid );
 
-    Post addPost( String title, String contents, int uid, Integer iid );
+    Post addPost( String title, String contents, int uid, List<Integer> iidList );
+
+    void addPostImage( int pid, int iid );
 
     void deletePost( int pid );
 

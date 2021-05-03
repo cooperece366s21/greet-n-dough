@@ -8,11 +8,14 @@ import org.jdbi.v3.core.statement.StatementContext;
 import org.jdbi.v3.postgres.PostgresPlugin;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 
+import java.sql.Array;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class GreetDoughJdbi {
@@ -56,12 +59,22 @@ public class GreetDoughJdbi {
 
             int pid = rs.getInt("post_id");
             int uid = rs.getInt("user_id");
-            Integer iid = rs.getObject("image_id", Integer.class);
             String title = rs.getString("post_title");
             String contents = rs.getString("post_contents");
             LocalDateTime timeCreated = rs.getObject("time_created", LocalDateTime.class);
 
-            return new Post( title, contents, pid, uid, iid, timeCreated );
+            // Convert the aggregated image_id's into a List
+            Array temp = rs.getArray("image_id_agg");
+            List<Integer> iidList;
+            if ( temp == null ) {
+                iidList = new LinkedList<>();
+            } else {
+                iidList =
+                        Arrays.stream( (Integer[]) temp.getArray() )
+                                .collect(Collectors.toCollection(LinkedList::new));
+            }
+
+            return new Post( title, contents, pid, uid, iidList, timeCreated );
 
         }
 
@@ -91,7 +104,7 @@ public class GreetDoughJdbi {
 
             // Convert the aggregated user_id's into a HashSet
             HashSet<Integer> userLikes =
-                    Arrays.stream( (Integer[]) rs.getArray("user_id_agg").getArray())
+                    Arrays.stream( (Integer[]) rs.getArray("user_id_agg").getArray() )
                             .collect(Collectors.toCollection(HashSet::new));
 
             return new Likes( pid, userLikes );

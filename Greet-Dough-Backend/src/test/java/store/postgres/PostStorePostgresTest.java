@@ -44,8 +44,8 @@ class PostStorePostgresTest extends PostStorePostgres {
                 "haha very cool!", newUser.getID() );
         List<Post> feed = postStorePostgres.makeFeed( newUser.getID() );
         assert ( feed.size() == 2 );
-        assert ( feed.get(0).equals( poopPost1 ) );
-        assert ( feed.get(1).equals( poopPost2 ) );
+        assert ( ( feed.get(0).equals(poopPost1) && feed.get(1).equals(poopPost2) ) ||
+                ( feed.get(0).equals(poopPost2) && feed.get(1).equals(poopPost1) ) );
 
         // Test changing a post
         String newTitle = "Not feeling well today";

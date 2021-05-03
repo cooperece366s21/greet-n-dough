@@ -4,7 +4,6 @@ import model.Post;
 import store.model.StoreWithID;
 import store.model.PostStore;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -27,9 +26,9 @@ public class PostStoreImpl extends StoreWithID<Post> implements PostStore {
     // I'm not sure how to grab the list of items, since the implementation doesnt have access
     // I guess when we use database we wont have this issue of permissions.
     @Override
-    public LinkedList<Post> makeFeed( int uid ) {
+    public List<Post> makeFeed( int uid ) {
 
-        LinkedList<Post> usersPosts = new LinkedList<>();
+        List<Post> usersPosts = new LinkedList<>();
 
         for( Post post : this.getItems().values() ) {
             if ( post.getUserID() == uid ) {
@@ -48,19 +47,29 @@ public class PostStoreImpl extends StoreWithID<Post> implements PostStore {
 
     @Override
     public Post addPost( String title, String contents, int uid ) {
-        return addPost( title, contents, uid, null );
+        return addPost( title, contents, uid, new LinkedList<>() );
     }
 
     @Override
-    public Post addPost( String title, String contents, int uid, Integer iid ) {
+    public Post addPost( String title, String contents, int uid, List<Integer> iidList ) {
 
         // Create the post
         int pid = super.getFreeID();
-        Post tempPost = new Post( title, contents, pid, uid, iid );
+        Post tempPost = new Post( title, contents, pid, uid );
+
+        // Add the images
+        for ( int iid : iidList ) {
+            addPostImage( pid, iid );
+        }
 
         // Add the post
         super.add( tempPost.getID(), tempPost );
         return tempPost;
+
+    }
+
+    @Override
+    public void addPostImage( int pid, int iid ) {
 
     }
 

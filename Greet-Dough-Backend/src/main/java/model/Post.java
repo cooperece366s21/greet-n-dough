@@ -2,30 +2,32 @@ package model;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Post implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private final int ID;       // ID for this post
+    private final int ID;
     private int userID;
-    private Integer imageID;    // Optional field to store an image ID
+    private List<Integer> iidList;
     private String title;
     private String contents;
     private final LocalDateTime timeCreated;
 
     public Post( String title, String contents, int pid, int uid ) {
-        this( title, contents, pid, uid, null );
+        this( title, contents, pid, uid, new LinkedList<>() );
     }
 
-    public Post( String title, String contents, int pid, int uid, Integer iid ) {
-        this( title, contents, pid, uid, iid, LocalDateTime.now() );
+    public Post( String title, String contents, int pid, int uid, List<Integer> iidList ) {
+        this( title, contents, pid, uid, iidList, LocalDateTime.now() );
     }
 
-    public Post( String title, String contents, int pid, int uid, Integer iid, LocalDateTime timeCreated ) {
+    public Post( String title, String contents, int pid, int uid, List<Integer> iidList, LocalDateTime timeCreated ) {
 
         this.ID = pid;
         this.userID = uid;
-        this.imageID = iid;
+        this.iidList = iidList;
         this.title = title;
         this.contents = contents;
         this.timeCreated = timeCreated;
@@ -40,8 +42,8 @@ public class Post implements Serializable {
         return this.userID;
     }
 
-    public Integer getImageID() {
-        return this.imageID;
+    public List<Integer> getImageIDList() {
+        return this.iidList;
     }
 
     public String getTitle() {
@@ -62,21 +64,12 @@ public class Post implements Serializable {
 
     public boolean equals( Post tempPost ) {
 
-        if (    this.getID() == tempPost.getID() &&
+        return  this.getID() == tempPost.getID() &&
                 this.getUserID() == tempPost.getUserID() &&
                 this.getTitle().equals( tempPost.getTitle() ) &&
                 this.getContents().equals( tempPost.getContents() ) &&
-                this.getTime().equals( tempPost.getTime() ) ) {
-
-            // Check the parent IDs (needed b/c of potential null pointer exception)
-            if ( this.getImageID() != null && tempPost.getImageID() != null &&
-                    this.getImageID().equals( tempPost.getImageID() ) ) {
-                return true;
-            } else return this.getImageID() == null && tempPost.getImageID() == null;
-
-        }
-
-        return false;
+                this.getTime().equals( tempPost.getTime() ) &&
+                this.getImageIDList().equals( tempPost.getImageIDList() );
 
     }
 
