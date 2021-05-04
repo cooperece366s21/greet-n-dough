@@ -182,19 +182,36 @@ public class Server {
             ////////// Posts //////////
             path("/post", () -> {
 
-                // Returns post object
-                // curl localhost:5432/post/0/
-                get("/:id", handler::getPost, gson::toJson);
-
                 // Creates a new post
                 // curl -d "uid=0&contents=hello world" -X post localhost:5432/post/
                 post("", handler::createPost, gson::toJson);
 
-                put("/:id", handler::editPost, gson::toJson);
+                ////////// Reference a Post //////////
+                path("/:pid", () -> {
 
-                // Deletes post given postID
-                // curl -X delete localhost:5432/post/0
-                delete("/:id", handler::deletePost, gson::toJson);
+                    // Returns post object
+                    // curl localhost:5432/post/0
+                    get("", handler::getPost, gson::toJson);
+
+                    put("", handler::editPost, gson::toJson);
+
+                    // Deletes post given postID
+                    // curl -X delete localhost:5432/post/0
+                    delete("", handler::deletePost, gson::toJson);
+
+                    ////////// Likes //////////
+                    path("/like", () -> {
+
+                        // curl -G -d "uid=1" localhost:5432/posts/0/likes/
+                        get("", handler::getLikes, gson::toJson);
+
+                        // Like, put request
+                        // curl -d "uid=0" -X post localhost:5432/post/0/addLike/
+                        post("", handler::likePost, gson::toJson);
+
+                    });
+
+                });
 
             });
 
@@ -224,16 +241,6 @@ public class Server {
         // Returns feed if user is subscribed.
         // curl -G -d "uid=1" -X post localhost:5432/users/0/feed/
         //        get("/users/:id/feed/", handler::getFeed, gson::toJson );
-
-        // LIKES ROUTES
-        ////////////////////
-
-        // curl -G -d "uid=1" localhost:5432/posts/0/likes/
-        get("/posts/:pid/likes", handler::getLikes, gson::toJson);
-
-        // Like, put request
-        // curl -d "uid=0" -X post localhost:5432/posts/0/addLike/
-        post("/posts/:pid/likes", handler::likePost, gson::toJson);
 
         // COMMENTS ROUTES
         /////////////////////
