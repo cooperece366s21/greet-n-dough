@@ -23,7 +23,7 @@ export async function getUserID(): Promise<number> {
         return -1;
     }
 
-    const res = await fetch(`${BACKEND_URL}/auth/`, {
+    const res = await fetch(`${BACKEND_URL}/noauth/auth`, {
         method: "post",
         mode: "cors",
         headers: {
@@ -49,7 +49,7 @@ export async function getUserID(): Promise<number> {
 
 export async function register(  email:string, username:string, password:string ) {
 
-    const res = await fetch(`${BACKEND_URL}/users/`, {
+    const res = await fetch(`${BACKEND_URL}/noauth/register`, {
         method: "post",
         mode: "cors",
         headers: {
@@ -71,7 +71,7 @@ export async function login( email:string, password:string ) {
 
     // alert( JSON.stringify({ email, password } ) )
 
-    const res = await fetch(`${BACKEND_URL}/login/`, {
+    const res = await fetch(`${BACKEND_URL}/noauth/login`, {
         method: "post",
         mode: "cors",
         headers: {
@@ -96,7 +96,7 @@ export async function login( email:string, password:string ) {
 
 export async function getUser( uid:number ) {
     
-    const res = await fetch(`${BACKEND_URL}/users/${uid}/`, {
+    const res = await fetch(`${BACKEND_URL}/noauth/user/${uid}`, {
         headers: {
             "Content-Type": "application/json"
         },
@@ -117,7 +117,7 @@ export async function getUser( uid:number ) {
 
 export async function searchUser( name:string ) {
 
-    const res = await fetch( `${BACKEND_URL}//users/search/${name}/`, {
+    const res = await fetch( `${BACKEND_URL}/noauth/search/${name}`, {
         method: "get",
         mode: "cors",
         headers: {
@@ -141,8 +141,7 @@ export async function editUser(token:string|null, name:string|null, bio:string|n
     // JSON doesnt seem to like nulls being fields
     bio = bio==null ? "" : bio;
 
-
-    const res = await fetch(`${BACKEND_URL}/users/`, {
+    const res = await fetch(`${BACKEND_URL}/auth/user/edit`, {
         method: "put",
         mode: "cors",
         headers: {
@@ -169,7 +168,7 @@ function convertToCorrectUrl( dbUrl:string ) {
 
 export async function getUserFeed( cuid:number, uid:number ) {
 
-    const res = await fetch(`${BACKEND_URL}/users/${uid}/feed/`, {
+    const res = await fetch(`${BACKEND_URL}/auth/user/${uid}/feed`, {
         method: "get",
         mode: "cors",
         headers: {
@@ -207,10 +206,13 @@ export async function getUserFeed( cuid:number, uid:number ) {
 }
 
 export async function getUserProfile( uid:number ) {
+    let token = localStorage.getItem("authToken");
+    token = token==null ? "" : token;
 
-    const res = await fetch(`${BACKEND_URL}/profile/${uid}/`, {
+    const res = await fetch(`${BACKEND_URL}/auth/user/${uid}/profile`, {
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "token": token,
         },
     });
 
@@ -234,7 +236,7 @@ export async function getWallet( token:string|null ) {
 
     if ( token==null ) return (403);
 
-    const res = await fetch(`${BACKEND_URL}/wallet/`, {
+    const res = await fetch(`${BACKEND_URL}/wallet`, {
         method: "get",
         mode: "cors",
         headers: {
@@ -263,7 +265,7 @@ export async function addToWallet( token:string|null, amount:string|null ) {
 
     if ( token==null ) return (403);
 
-    const res = await fetch(`${BACKEND_URL}/wallet/add/`, {
+    const res = await fetch(`${BACKEND_URL}/wallet/add`, {
         method: "post",
         mode: "cors",
         headers: {
@@ -305,7 +307,7 @@ export async function createPost( token:string|null, title:string, contents:stri
     alert( JSON.stringify( Object.fromEntries( form.entries() ) ) );
 
 
-    const res = await fetch(`${BACKEND_URL}/posts/`, {
+    const res = await fetch(`${BACKEND_URL}/auth/post`, {
         method: "post",
         mode: "cors",
         headers: {
@@ -327,7 +329,7 @@ export async function createPost( token:string|null, title:string, contents:stri
 export async function getPost( token:string|null, pid:number ) {
     if ( token==null ) return (403);
 
-    const res = await fetch(`${BACKEND_URL}/posts/${pid}/`, {
+    const res = await fetch(`${BACKEND_URL}/auth/post/${pid}`, {
         method: "get",
         mode: "cors",
         headers: {
@@ -351,7 +353,7 @@ export async function getPost( token:string|null, pid:number ) {
 export async function editPost( token:string|null, pid:string, title:string, contents:string ) {
     if ( token==null ) return (403);
 
-    const res = await fetch(`${BACKEND_URL}/posts/`, {
+    const res = await fetch(`${BACKEND_URL}/auth/post/${pid}`, {
         method: "put",
         mode: "cors",
         headers: {
@@ -373,7 +375,7 @@ export async function deletePost( token:string|null, pid:number ) {
 
     if ( token==null ) return (403);
 
-    const res = await fetch(`${BACKEND_URL}/posts/${pid}/`, {
+    const res = await fetch(`${BACKEND_URL}auth/posts/${pid}`, {
         method: "delete",
         mode: "cors",
         headers: {
@@ -394,7 +396,7 @@ export async function addLike( token:string|null, pid:number ) {
 
     if ( token==null ) return (403);
 
-    const res = await fetch(`${BACKEND_URL}/posts/${pid}/likes/`, {
+    const res = await fetch(`${BACKEND_URL}/posts/${pid}/likes`, {
         method: "post",
         mode: "cors",
         headers: {
@@ -418,7 +420,7 @@ export async function getLikes(token: string|null, pid: number) {
 
     if ( token==null ) return (403);
 
-    const res = await fetch(`${BACKEND_URL}/posts/${pid}/likes/`, {
+    const res = await fetch(`${BACKEND_URL}/posts/${pid}/likes`, {
         method: "get",
         mode: "cors",
         headers: {
@@ -437,7 +439,7 @@ export async function makeComment( token: string|null, pid:number, contents:stri
 
     parentId = parentId==null ? -1 : parentId;
 
-    const res = await fetch(`${BACKEND_URL}/posts/comments/`, {
+    const res = await fetch(`${BACKEND_URL}/posts/comments`, {
         method: "post",
         mode: "cors",
         headers: {
