@@ -162,30 +162,6 @@ public class Handler {
     }
 
     /**
-     * The method checks if the given filename is valid.
-     *
-     * @return  true if the filename is valid; false otherwise
-     */
-    private boolean isValidImageFile( String filename, Response res ) {
-
-        String extension = ImageHandler.getFileExtension(filename);
-
-        // Check if the extension is valid
-        if ( validImageFileExtensions.contains(extension) ) {
-
-            res.status(200);
-            return true;
-
-        } else {
-
-            res.status(403);
-            return false;
-
-        }
-
-    }
-
-    /**
      * @return  a string representing a url to the profile picture if exists;
      *          an empty string ("") otherwise
      */
@@ -759,7 +735,11 @@ public class Handler {
 
     }
 
-    // ToDo: Write this
+    /**
+     *  Iterates through all images in res and adds them to ImageStore.
+     *
+     * @return  a list of image IDs representing the added images
+     */
     private List<Integer> parsePostImages( Request req, Response res, int numberOfImages ) {
 
         List<Integer> iidList = new ArrayList<>();
@@ -933,8 +913,10 @@ public class Handler {
         // Save the bytes from the request
         String pathToTempFile = saveImage( req, res, partName, partTypeName );
         if ( res.status() != 200 ) {
+
             System.err.println("Something went wrong inside saveImage()");
             return new Image("", -1, -1);
+
         }
 
         // Copy the image and delete after copying
