@@ -1,8 +1,7 @@
 *.idea/
 *target/
 *.iml
-Greet-Dough-Backend/src/main/java/store/postgres/BaseDAO.java
 Greet-Dough-Frontend/public/data/images/
 Greet-Dough-Frontend/public/data/profile_pictures/
 Greet-Dough-Frontend/public/data/temp/
-
+BaseDao.java
