@@ -119,20 +119,20 @@ public class Server {
         // No auth needed
         path("/noauth", () -> {
 
-            post("/login/", handler::login, gson::toJson);
+            post("/login", handler::login, gson::toJson);
 
             // Checks if currently logged in
-            post("/auth/", handler::tokenToID, gson::toJson);
+            post("/auth", handler::tokenToID, gson::toJson);
 
             // Register
             // Creates a new user
             // curl -H "Content-Type: application/json" --data "{"name":"Josh"}" -X post localhost:5432/users/
-            post("/users/", handler::createUser, gson::toJson);
+            post("/users", handler::createUser, gson::toJson);
 
             // Returns user given an id
             // curl localhost:5432/users/1/
             path("/user", () -> {
-                get("/:uid/", handler::getUser, gson::toJson);
+                get("/:uid", handler::getUser, gson::toJson);
             });
 
         });
@@ -158,25 +158,25 @@ public class Server {
             // Users
             path("/user", () -> {
 
-                get("/search/:name/", handler::searchUsers, gson::toJson);
+                get("/search/:name", handler::searchUsers, gson::toJson);
 
-                get("/:uid/feed/", handler::getUserFeed, gson::toJson);
+                get("/:uid/feed", handler::getUserFeed, gson::toJson);
 
-                put("/edit/", handler::editUser, gson::toJson);
+                put("/edit", handler::editUser, gson::toJson);
 
                 // Deletes user given UserID
                 // curl -X delete localhost:5432/users/1/
-                delete("/:uid/", handler::deleteUser, gson::toJson);
+                delete("/:uid", handler::deleteUser, gson::toJson);
 
 
-                post("/profilepic/", handler::uploadProfilePicture, gson::toJson);
+                post("/profilepic", handler::uploadProfilePicture, gson::toJson);
 
             });
 
         });
 
         // biography and profile picture
-        get("/profile/:uid/", handler::getUserProfile, gson::toJson);
+        get("/profile/:uid", handler::getUserProfile, gson::toJson);
 
         // USER RELATION ROUTES
         ///////////////////////
@@ -198,17 +198,17 @@ public class Server {
 
         // Returns post object
         // curl localhost:5432/posts/0/
-        get("/posts/:id/", handler::getPost, gson::toJson);
+        get("/posts/:id", handler::getPost, gson::toJson);
 
         // Creates a new post
         // curl -d "uid=0&contents=hello world" -X post localhost:5432/posts/
-        post("/posts/", handler::createPost, gson::toJson);
+        post("/posts", handler::createPost, gson::toJson);
 
-        put("/posts/", handler::editPost, gson::toJson);
+        put("/posts", handler::editPost, gson::toJson);
 
         // Deletes post given postID
         // curl -X delete localhost:5432/posts/0
-        delete("/posts/:id/", handler::deletePost, gson::toJson);
+        delete("/posts/:id", handler::deletePost, gson::toJson);
 
         // Returns feed if user is subscribed.
         // curl -G -d "uid=1" -X post localhost:5432/users/0/feed/
@@ -218,11 +218,11 @@ public class Server {
         ////////////////////
 
         // curl -G -d "uid=1" localhost:5432/posts/0/likes/
-        get("/posts/:pid/likes/", handler::getLikes, gson::toJson);
+        get("/posts/:pid/likes", handler::getLikes, gson::toJson);
 
         // Like, put request
         // curl -d "uid=0" -X post localhost:5432/posts/0/addLike/
-        post("/posts/:pid/likes/", handler::likePost, gson::toJson);
+        post("/posts/:pid/likes", handler::likePost, gson::toJson);
 
         // COMMENTS ROUTES
         /////////////////////
@@ -232,23 +232,23 @@ public class Server {
 
         // Comment, post for now, put request since we are updating something about the post??
         // curl -d "uid=1&contents=ok post!" -X post localhost:5432/posts/0/comments/
-        post("/posts/comments/", handler::createComment, gson::toJson);
+        post("/posts/comments", handler::createComment, gson::toJson);
 
         get("/wallet/", handler::getBalance, gson::toJson);
         // Upload Image, which is createPost but imageID exists
         // curl -d "userID=0&contents=hello world&imageID=0" -X post localhost:5432/posts/
         // uploadImage() will prompt user for a path
 
-        post("/wallet/add/", handler::addToBalance, gson::toJson);
+        post("/wallet/add", handler::addToBalance, gson::toJson);
 
-        post("/wallet/subtract/", handler::subtractFromBalance, gson::toJson);
+        post("/wallet/subtract", handler::subtractFromBalance, gson::toJson);
 
         // IMAGE ROUTES
 
         //        post( "/images/", handler::createImage, gson::toJson );
 
 
-        get("/images/:uid/", handler::makeGallery, gson::toJson);
+        get("/images/:uid", handler::makeGallery, gson::toJson);
 
 
     }
