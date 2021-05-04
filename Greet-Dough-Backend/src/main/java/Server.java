@@ -172,6 +172,8 @@ public class Server {
 
                     get("/feed", handler::getUserFeed, gson::toJson);
 
+                    get("/images", handler::makeGallery, gson::toJson);
+
                 });
 
                 put("/edit", handler::editUser, gson::toJson);
@@ -212,7 +214,30 @@ public class Server {
 
                     });
 
+                    ////////// Comments //////////
+                    path("/comment", () -> {
+
+                        // Comment, post for now, put request since we are updating something about the post??
+                        // curl -d "uid=1&contents=ok post!" -X post localhost:5432/posts/0/comments/
+                        post("", handler::createComment, gson::toJson);
+
+                    });
+
                 });
+
+            });
+
+            ////////// Wallet //////////
+            path("/wallet", () -> {
+
+                get("", handler::getBalance, gson::toJson);
+                // Upload Image, which is createPost but imageID exists
+                // curl -d "userID=0&contents=hello world&imageID=0" -X post localhost:5432/posts/
+                // uploadImage() will prompt user for a path
+
+                post("/add", handler::addToBalance, gson::toJson);
+
+                post("/subtract", handler::subtractFromBalance, gson::toJson);
 
             });
 
@@ -234,10 +259,6 @@ public class Server {
         //        // curl -d "uid=2" -X post localhost:5432/users/0/unfollow/
         //        post( "/users/:id/unfollow/", (req,res) -> handler.unfollow(req), gson::toJson );
 
-        // POST ROUTES
-        ////////////////////
-
-
 
         // Returns feed if user is subscribed.
         // curl -G -d "uid=1" -X post localhost:5432/users/0/feed/
@@ -248,27 +269,10 @@ public class Server {
 
         // curl -G -d "uid=1" localhost:5432/posts/0/comments/
         //        get("/posts/:postID/comments/", handler::getComments, gson::toJson);
-
-        // Comment, post for now, put request since we are updating something about the post??
-        // curl -d "uid=1&contents=ok post!" -X post localhost:5432/posts/0/comments/
-        post("/posts/comments", handler::createComment, gson::toJson);
-
-        get("/wallet", handler::getBalance, gson::toJson);
-        // Upload Image, which is createPost but imageID exists
-        // curl -d "userID=0&contents=hello world&imageID=0" -X post localhost:5432/posts/
-        // uploadImage() will prompt user for a path
-
-        post("/wallet/add", handler::addToBalance, gson::toJson);
-
-        post("/wallet/subtract", handler::subtractFromBalance, gson::toJson);
-
+        
         // IMAGE ROUTES
 
         //        post( "/images/", handler::createImage, gson::toJson );
-
-
-        get("/images/:uid", handler::makeGallery, gson::toJson);
-
 
     }
 
