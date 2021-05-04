@@ -127,7 +127,7 @@ public class Server {
             // Register
             // Creates a new user
             // curl -H "Content-Type: application/json" --data "{"name":"Josh"}" -X post localhost:5432/users/
-            post("/users", handler::createUser, gson::toJson);
+            post("/register", handler::createUser, gson::toJson);
 
             // Returns user given an id
             // curl localhost:5432/users/1/
