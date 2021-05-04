@@ -162,6 +162,30 @@ public class Handler {
     }
 
     /**
+     * The method checks if the given filename is valid.
+     *
+     * @return  true if the filename is valid; false otherwise
+     */
+    private boolean isValidImageFile( String filename, Response res ) {
+
+        String extension = ImageHandler.getFileExtension(filename);
+
+        // Check if the extension is valid
+        if ( validImageFileExtensions.contains(extension) ) {
+
+            res.status(200);
+            return true;
+
+        } else {
+
+            res.status(403);
+            return false;
+
+        }
+
+    }
+
+    /**
      * @return  a string representing a url to the profile picture if exists;
      *          an empty string ("") otherwise
      */

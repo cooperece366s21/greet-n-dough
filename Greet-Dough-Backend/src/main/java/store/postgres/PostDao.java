@@ -88,11 +88,11 @@ public interface PostDao {
     @SqlUpdate( "UPDATE posts " +
                     "SET post_title = (:new_title) " +
                     "WHERE post_id = (:post_id);")
-    void changeTitle(@Bind("post_id") int post_id, @Bind("new_title") String new_title );
+    void changeTitle(@Bind("post_id") int post_id, @Bind("new_title") String new_title);
 
     @SqlUpdate( "UPDATE posts " +
                     "SET post_contents = (:new_contents) " +
                     "WHERE post_id = (:post_id);")
-    void changeContents(@Bind("post_id") int post_id, @Bind("new_contents") String new_contents );
+    void changeContents(@Bind("post_id") int post_id, @Bind("new_contents") String new_contents);
 
 }
