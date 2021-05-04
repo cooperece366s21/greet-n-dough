@@ -775,6 +775,15 @@ public class Handler {
         int numberOfImages = Integer.parseInt( readFormField(req, "numberOfImages") );
         System.err.println( "Grabbed number of images" );
 
+        // Check the parsed items
+        if ( title.equals("") && contents.equals("") && numberOfImages == 0 ) {
+
+            System.err.println("Error: Post is empty.");
+            res.status(403);
+            return res.status();
+
+        }
+
         // Get the images if they exist
         List<Integer> iidList = parsePostImages( req, res, uid, numberOfImages );
         if ( res.status() != 200 ) {
