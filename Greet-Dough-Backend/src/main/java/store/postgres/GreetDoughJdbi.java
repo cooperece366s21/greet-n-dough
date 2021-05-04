@@ -12,10 +12,7 @@ import java.sql.Array;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class GreetDoughJdbi {
@@ -64,15 +61,16 @@ public class GreetDoughJdbi {
             LocalDateTime timeCreated = rs.getObject("time_created", LocalDateTime.class);
 
             // Convert the aggregated image_id's into a List
-            Array temp = rs.getArray("image_id_agg");
-            List<Integer> iidList;
-            if ( temp == null ) {
-                iidList = new LinkedList<>();
-            } else {
-                iidList =
-                        Arrays.stream( (Integer[]) temp.getArray() )
-                                .collect(Collectors.toCollection(LinkedList::new));
-            }
+            List<Integer> iidList = Optional.ofNullable( rs.getArray("image_id_agg") )
+                    .map(a -> {
+                        try {
+                            return Arrays.stream((Integer[]) a.getArray()).collect(Collectors.toCollection(LinkedList::new));
+                        } catch (SQLException throwables) {
+                            throwables.printStackTrace();
+                            return new LinkedList<Integer>();
+                        }
+                    }).orElseGet(LinkedList::new);
+
 
             return new Post( title, contents, pid, uid, iidList, timeCreated );
 
