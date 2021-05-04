@@ -135,6 +135,8 @@ public class Server {
                 get("/:uid", handler::getUser, gson::toJson);
             });
 
+            get("/search/:name", handler::searchUsers, gson::toJson);
+
         });
 
         // Auth
@@ -158,16 +160,20 @@ public class Server {
             // Users
             path("/user", () -> {
 
-                get("/search/:name", handler::searchUsers, gson::toJson);
+                path("/:uid", () -> {
 
-                get("/:uid/feed", handler::getUserFeed, gson::toJson);
+                    // biography and profile picture
+                    get("/profile", handler::getUserProfile, gson::toJson);
+
+                    // Deletes user given UserID
+                    // curl -X delete localhost:5432/users/1/
+                    delete("", handler::deleteUser, gson::toJson);      // Does this work?
+
+                    get("/feed", handler::getUserFeed, gson::toJson);
+
+                });
 
                 put("/edit", handler::editUser, gson::toJson);
-
-                // Deletes user given UserID
-                // curl -X delete localhost:5432/users/1/
-                delete("/:uid", handler::deleteUser, gson::toJson);
-
 
                 post("/profilepic", handler::uploadProfilePicture, gson::toJson);
 
@@ -175,8 +181,6 @@ public class Server {
 
         });
 
-        // biography and profile picture
-        get("/profile/:uid", handler::getUserProfile, gson::toJson);
 
         // USER RELATION ROUTES
         ///////////////////////
