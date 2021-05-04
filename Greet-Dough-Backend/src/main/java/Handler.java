@@ -3,7 +3,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import model.*;
 import store.model.*;
 import utility.ImageHandler;
-import utility.Pair;
 import utility.PathDefs;
 
 import java.io.IOException;
@@ -42,7 +41,7 @@ public class Handler {
 
     // Defines the accepted file extensions for images
     private static final HashSet<String> validImageFileExtensions = Stream
-                            .of(".png",".jpg")
+                            .of(".png",".jpg",".gif")
                             .collect( Collectors.toCollection(HashSet::new) );
 
     public Handler(UserStore userStore,
@@ -751,7 +750,7 @@ public class Handler {
             }
 
             iidList.add( createdImage.getID() );
-            System.err.println( "Created post: " + createdImage.getPath() );
+            System.out.println( "Created post: " + createdImage.getPath() );
 
         }
 
@@ -773,7 +772,7 @@ public class Handler {
         String title =  readFormField(req, "title");
         String contents = readFormField(req, "contents");
         int numberOfImages = Integer.parseInt( readFormField(req, "numberOfImages") );
-        System.err.println( "Grabbed number of images" );
+        System.out.println( "Grabbed number of images" );
 
         // Check the parsed items
         if ( title.equals("") && contents.equals("") && numberOfImages == 0 ) {
