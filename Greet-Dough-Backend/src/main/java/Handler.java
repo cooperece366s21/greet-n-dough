@@ -667,10 +667,14 @@ public class Handler {
         Likes tempLikes = likeStore.getLikes(pid);
         json.put( "likeCount", tempLikes.getLikeCount() );
 
-//        Integer iid = tempPost.getImageID();
-//        if ( iid != null ) {
-//            json.put("images",  imageStore.getImage(iid).getPath() );
-//        }
+        List<Integer> iidList = tempPost.getImageIDList();
+        List<String> postUrlList = new ArrayList<>();
+
+        if( iidList.size() !=0 ) {
+            for( Integer iid : iidList ) {
+                postUrlList.add( imageStore.getImage(iid).getPath() );
+            }
+        }
 
         // Shaping the comment field to be much nicer for the frontend
         LinkedList<JSONObject> comments = new LinkedList<>();
@@ -685,6 +689,7 @@ public class Handler {
         }
         
         json.put( "comments", comments.toArray() );
+        json.put( "images", postUrlList.toArray() );
 
         return json;
 
@@ -755,18 +760,16 @@ public class Handler {
     }
 
     // ToDo: Write this
-    private List<Integer> parsePostImages( Request req, Response res ) throws IOException, ServletException {
+    private List<Integer> parsePostImages( Request req, Response res, int numberOfImages ) throws IOException, ServletException {
 
-        String image = readFormField(req, "image");
+        List<Integer> iidList = new ArrayList<>();
 
-//        if ( image.equals("") ) {
-//            System.err.println("No image assigned with post");
-//        } else {
-//            Image createdImage = this.createImage( req, res, "image", "fileType" );
-//            iid = createdImage.getID();
-//        }
-
-        return null;
+        for( int i=0; i<numberOfImages; i++ ) {
+            Image createdImage = createImage( req, res, "image"+i, "imageType"+i );
+            iidList.add( createdImage.getID() );
+            System.err.println( "Created post: " + createdImage.getPath() );
+        }
+        return iidList;
 
     }
 
@@ -783,9 +786,11 @@ public class Handler {
         req.raw().setAttribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
         String title =  readFormField(req, "title");
         String contents = readFormField(req, "contents");
+        int numberOfImages = Integer.parseInt( readFormField(req, "numberOfImages") );
+        System.err.println( "Grabbed number of images" );
 
         // Get the images if they exist
-        List<Integer> iidList = parsePostImages( req, res );
+        List<Integer> iidList = parsePostImages( req, res, numberOfImages );
 
         // Shouldn't need this
         if ( !userStore.hasUser(uid) ) {

@@ -31,7 +31,7 @@ type Map = {
 type PostObject = {
     post: Post,
     likeCount : number,
-    images: string,
+    images: string[],
 }
 
 type FeedState = {
@@ -42,4 +42,8 @@ type FeedState = {
     deleteAlert: boolean,
 }
 
-export type { Post, PostObject, Time, Date, TimeCreated, Map, FeedState}
+type PostJson = {
+    map: PostObject,
+}
+
+export type { Post, PostObject, Time, Date, TimeCreated, Map, FeedState, PostJson }

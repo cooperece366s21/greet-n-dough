@@ -1,4 +1,6 @@
+import {PostJson} from "./types";
 export const BACKEND_URL = "http://localhost:5432";
+
 
 // USER API CALLS
 function getCurrentToken(): string {
@@ -166,17 +168,25 @@ export async function getUserFeed( cuid:number, uid:number ) {
         },
     });
 
-    if (res.ok) {
+    if( res.ok ) {
         return await res.json()
-            .then(body => {
-                alert(JSON.stringify(body))
-                return body;
-            });
+            .then( body => {
 
+                body.forEach( (post:PostJson, postIndex:number) => {
+                    post.map.images.forEach( (url:string, urlIndex ) => {
+                        url = "/" + url.slice(url.indexOf("data"));
+                        url = url.replaceAll("\\", "/");
+                        body[postIndex].map.images[urlIndex] = url;
+                    })
+                })
+
+                alert( JSON.stringify(body) );
+                return body;
+            })
     } else {
-        alert("ERROR GRABBING FEED: " + res.status );
-        return null;
+
     }
+
 
 }
 
@@ -261,19 +271,23 @@ export async function createPost( token:string|null, title:string, contents:stri
 
     if ( token==null ) return (403);
 
+    let numberOfFiles = pictures==null ? "0" : pictures?.length.toString();
 
     let form = new FormData();
     form.set('title', title);
     form.set('contents', contents);
+    form.set('numberOfImages', numberOfFiles);
 
-    if (pictures) {
-        let singleImage = pictures[0];
-        form.set('image', singleImage);
-        let fileType = "." + singleImage.type.slice( singleImage.type.indexOf("/")+1 );
-        form.set('fileType', fileType);
-    } else {
-        form.set('image', '');
-    }
+    let i = 0;
+    pictures?.forEach( file => {
+        form.set('image'+i, file);
+        // Shape the .type method so it works well with backend
+        form.set('imageType'+i, "." + file.type.slice( file.type.indexOf("/")+1 ));
+        i++;
+    })
+
+    alert( JSON.stringify( Object.fromEntries( form.entries() ) ) );
+
 
     const res = await fetch(`${BACKEND_URL}/posts/`, {
         method: "post",

@@ -62,20 +62,7 @@ class UserFeed extends  React.Component<any, any> {
     refreshFeed() {
         api.getUserFeed( this.state.cuid, this.state.uid)
             .then( feed =>  {
-                if( feed != null ) {
-                    feed.forEach( (i:Entry, k:number) => {
-
-                        // image url formatting so it correctly references public folder
-                        if (i.map.images != undefined) {
-                            let url:string = i.map.images;
-                            url = "/" + url.slice(url.indexOf("data"));
-                            url = url.replaceAll("\\", "/");
-                            feed[k].map.images = url;
-                        }
-
-                    });
-                    this.setState({feed: feed.reverse()});
-                }
+                this.setState({feed: feed.reverse()});
             })
     }
 
@@ -188,7 +175,7 @@ class UserFeed extends  React.Component<any, any> {
 
                     <Box>
                         <Center>
-                            { e.map.images ? <Image src={e.map.images}/> : <></>}
+                            { e.map.images[0] ? <Image src={e.map.images[0]}/> : <></>}
                         </Center>
 
                         <Text fontSize={"20px"}> {e.map.post.contents}  </Text>
@@ -220,7 +207,7 @@ class UserFeed extends  React.Component<any, any> {
                             <Text textAlign={"center"} cursor={"pointer"} borderRadius={"10px"}
                                   _hover={{background: "yellow.200"}}
                                   onClick={ () => {
-                                      if ( this.state.openComments == k ) {
+                                      if ( this.state.openComments === k ) {
                                           this.setState({openComments: -1})
                                       } else {
                                           this.setState({openComments: k});
