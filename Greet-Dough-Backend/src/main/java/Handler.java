@@ -72,28 +72,6 @@ public class Handler {
     }
 
     /////////////// PRIVATE HELPER FUNCTIONS ///////////////
-    private Pair grabUserPair( Request req ) {
-
-        int uid = Integer.parseInt( req.queryParams("uid") );
-        int targetUser = Integer.parseInt( req.params(":id") );
-
-        if ( userStore.getUser(uid) == null ) {
-
-            System.err.println("Current user " + uid + " does not exist");
-            return null;
-
-        }
-        if ( userStore.getUser(targetUser) == null ) {
-
-            System.err.println("Target user " + targetUser + " does not exist");
-            return null;
-
-        }
-
-        return new Pair(uid, targetUser);
-
-    }
-
     private int checkUserPostPerms( int uid, int pid ) {
 
         if ( !postStore.hasPost(pid) ) {
@@ -162,16 +140,14 @@ public class Handler {
     }
 
     /**
-     * The method checks if the given filename is valid.
+     * The method checks if the given file extension is valid.
      *
-     * @return  true if the filename is valid; false otherwise
+     * @return  true if the file extension is valid; false otherwise
      */
-    private boolean isValidImageFile( String filename, Response res ) {
-
-        String extension = ImageHandler.getFileExtension(filename);
+    private boolean isValidImageFile( String fileExtension, Response res ) {
 
         // Check if the extension is valid
-        if ( validImageFileExtensions.contains(extension) ) {
+        if ( validImageFileExtensions.contains(fileExtension) ) {
 
             res.status(200);
             return true;
@@ -647,7 +623,6 @@ public class Handler {
  */
 
     /////////////// POST ACTIONS ///////////////
-
     /**
      * The method combines a Post object with its corresponding
      * like count.
@@ -685,7 +660,7 @@ public class Handler {
             comments.add( tempCommentJson );
 
         }
-        
+
         json.put( "comments", comments.toArray() );
         json.put( "images", postUrlList.toArray() );
 
@@ -757,17 +732,24 @@ public class Handler {
     }
 
     /**
-     *  Iterates through all images in res and adds them to ImageStore.
+     * Iterates through all images in res and adds them to ImageStore.
      *
      * @return  a list of image IDs representing the added images
      */
-    private List<Integer> parsePostImages( Request req, Response res, int numberOfImages ) {
+    private List<Integer> parsePostImages( Request req, Response res, int uid, int numberOfImages ) throws ServletException, IOException {
 
-        List<Integer> iidList = new ArrayList<>();
+        List<Integer> iidList = new LinkedList<>();
 
         for ( int i=0; i<numberOfImages; i++ ) {
 
-            Image createdImage = createImage( req, res, "image"+i, "imageType"+i );
+            Image createdImage = createImage( req, res, uid,"image"+i, "imageType"+i );
+            if ( res.status() != 200 ) {
+
+                System.err.println("Failed to add one of the images.");
+                return iidList;
+
+            }
+
             iidList.add( createdImage.getID() );
             System.err.println( "Created post: " + createdImage.getPath() );
 
@@ -794,7 +776,10 @@ public class Handler {
         System.err.println( "Grabbed number of images" );
 
         // Get the images if they exist
-        List<Integer> iidList = parsePostImages( req, res, numberOfImages );
+        List<Integer> iidList = parsePostImages( req, res, uid, numberOfImages );
+        if ( res.status() != 200 ) {
+            return res.status();
+        }
 
         Post tempPost = postStore.addPost( title, contents, uid, iidList );
         System.out.println( gson.toJson(tempPost) );
@@ -906,11 +891,11 @@ public class Handler {
      *
      * @return  a string representing the path to the saved image
      */
-    private String saveImage( Request req, Response res, String partName, String partTypeName ) {
+    private String saveImage( Request req, Response res, String partName, String fileExtension ) {
 
         req.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
 
-        String pathToTempFile = ImageHandler.copyFromBytes( PathDefs.TEMP_DIR, req, res, partName, partTypeName );
+        String pathToTempFile = ImageHandler.copyFromBytes( PathDefs.TEMP_DIR, req, res, partName, fileExtension );
         if ( res.status() != 200 ) {
 
             System.err.println("Failed to copy the file from bytes.");
@@ -922,17 +907,21 @@ public class Handler {
 
     }
 
-    private Image createImage( Request req, Response res, String partName, String partTypeName ) {
+    /**
+     * Saves and stores the image in res under partName.
+     *
+     * @param   uid   Assumes the token has been checked already.
+     */
+    private Image createImage( Request req, Response res, int uid, String partName, String partTypeName ) throws ServletException, IOException {
 
-        // Check the token
-        String token = req.headers("token");
-        if ( !isValidToken( token, res ) ) {
-            return new Image("", -1, -1);
+        // Check the file extension
+        String fileExtension = readFormField( req, partTypeName );
+        if ( !isValidImageFile( fileExtension, res ) ) {
+            return new Image("",-1,-1);
         }
-        int uid = loginStore.getUserID(token);
 
         // Save the bytes from the request
-        String pathToTempFile = saveImage( req, res, partName, partTypeName );
+        String pathToTempFile = saveImage( req, res, partName, fileExtension );
         if ( res.status() != 200 ) {
 
             System.err.println("Something went wrong inside saveImage()");

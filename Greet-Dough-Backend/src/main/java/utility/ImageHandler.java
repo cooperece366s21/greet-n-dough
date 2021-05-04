@@ -87,11 +87,11 @@ public class ImageHandler {
      * with a random file name.
      * Sets res.status().
      *
-     * @param   destDir the directory to save the file to
-     * @return          a string representing the path to the saved file if successful;
-     *                  null otherwise
+     * @param   destDir         the directory to save the file to
+     * @return                  a string representing the path to the saved file if successful;
+     *                          null otherwise
      */
-    public static String copyFromBytes( String destDir, Request req, Response res, String partName, String partTypeName ) {
+    public static String copyFromBytes( String destDir, Request req, Response res, String partName, String fileExtension ) {
 
         // Creates the directory (and all parent directories)
         //      if it doesn't exist
@@ -99,13 +99,7 @@ public class ImageHandler {
 
         try ( InputStream is = req.raw().getPart(partName).getInputStream() ) {
 
-            // Grab bytes from FE form to figure out filetype
-            String fileType =  new String(
-                    req.raw().getPart(partTypeName).getInputStream().readAllBytes(),
-                    StandardCharsets.UTF_8
-            );
-
-            String destPath = destDir + File.separator + ImageHandler.genRandomName() + fileType;
+            String destPath = destDir + File.separator + ImageHandler.genRandomName() + fileExtension;
 
             // Creates a file to store the bytes
             new File(destPath).createNewFile();
