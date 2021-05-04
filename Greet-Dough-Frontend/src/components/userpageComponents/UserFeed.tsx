@@ -83,6 +83,7 @@ class UserFeed extends  React.Component<any, any> {
         const listFeed = feed?.map( (e,k) => (
             <>
                 <Box w={"100%"}
+                     id={"post"+k}
                      padding={"20px"}
                      borderWidth={"1px"}
                      borderTopRadius={"15px"}

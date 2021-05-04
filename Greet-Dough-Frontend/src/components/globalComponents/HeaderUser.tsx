@@ -63,14 +63,6 @@ class HeaderUser extends React.Component<any, any> {
 
     }
 
-    addToWalletWrapper(){
-        let token = localStorage.getItem("authToken");
-
-        api.addToWallet( token, this.state.addAmount)
-            .then( () => api.getWallet(token)
-                .then( newMoney => this.setState({wallet: newMoney}) ) )
-    }
-
     loggedIn() {
         return(
             <HStack marginLeft="80px">
@@ -115,7 +107,10 @@ class HeaderUser extends React.Component<any, any> {
                                         marginTop={"10px"}
                                         float={"right"}
                                         onClick={ () =>  {
-                                            this.addToWalletWrapper()
+                                            let token = localStorage.getItem("authToken");
+                                            api.addToWallet( token, this.state.addAmount)
+                                                .then( () => api.getWallet(token)
+                                                    .then( newMoney => this.setState({wallet: newMoney}) ) )
                                         }}
                                 > Add money </Button>
                             </DrawerBody>

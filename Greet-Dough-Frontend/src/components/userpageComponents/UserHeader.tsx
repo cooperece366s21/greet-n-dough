@@ -3,6 +3,7 @@ import {
     Box,
     VStack,
     HStack,
+    Avatar,
     Center,
     Input,
     Image,
@@ -115,7 +116,6 @@ class UserHeader extends React.Component<any, any> {
                 <>
 
                     <Button onClick={() => {
-                        alert("Sending api call now")
                         let token = localStorage.getItem("authToken");
 
                         api.editUser(token,  this.state.editedName,  this.state.editedBio )
@@ -165,8 +165,8 @@ class UserHeader extends React.Component<any, any> {
                 maxFileSize={5242880}
             /> :
             this.state.profilePicture ?
-                <Image src={this.state.profilePicture} height="175px" width="175px" borderRadius="full" /> :
-                <SkeletonCircle size="175px"/>
+                <Avatar src={this.state.profilePicture} bg="teal.500" size={"2xl"} /> :
+                <> </>
         }</>;
         let biography = <>{this.state.editing ?
             <Input
