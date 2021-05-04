@@ -670,13 +670,13 @@ public class Handler {
         List<Integer> iidList = tempPost.getImageIDList();
         List<String> postUrlList = new ArrayList<>();
 
-        for( Integer iid : iidList ) {
+        for ( int iid : iidList ) {
             postUrlList.add( imageStore.getImage(iid).getPath() );
         }
 
         // Shaping the comment field to be much nicer for the frontend
         LinkedList<JSONObject> comments = new LinkedList<>();
-        for( Comment comment: commentStore.getParents(pid) ) {
+        for ( Comment comment: commentStore.getParents(pid) ) {
 
             JSONObject tempCommentJson = new JSONObject(comment);
             int uid =  tempCommentJson.getInt("userID");
@@ -751,22 +751,27 @@ public class Handler {
     }
 
     private String readFormField( Request req, String partName ) throws IOException, ServletException {
+
         return new String(
                 req.raw().getPart(partName).getInputStream().readAllBytes(),
                 StandardCharsets.UTF_8
         );
+
     }
 
     // ToDo: Write this
-    private List<Integer> parsePostImages( Request req, Response res, int numberOfImages ) throws IOException, ServletException {
+    private List<Integer> parsePostImages( Request req, Response res, int numberOfImages ) {
 
         List<Integer> iidList = new ArrayList<>();
 
-        for( int i=0; i<numberOfImages; i++ ) {
+        for ( int i=0; i<numberOfImages; i++ ) {
+
             Image createdImage = createImage( req, res, "image"+i, "imageType"+i );
             iidList.add( createdImage.getID() );
             System.err.println( "Created post: " + createdImage.getPath() );
+
         }
+
         return iidList;
 
     }
@@ -789,15 +794,6 @@ public class Handler {
 
         // Get the images if they exist
         List<Integer> iidList = parsePostImages( req, res, numberOfImages );
-
-        // Shouldn't need this
-        if ( !userStore.hasUser(uid) ) {
-
-            res.status(404);
-            System.err.println("User does not exist");
-            return res.status();
-
-        }
 
         Post tempPost = postStore.addPost( title, contents, uid, iidList );
         System.out.println( gson.toJson(tempPost) );
@@ -1052,28 +1048,6 @@ public class Handler {
         return likeStore.getLikes(pid).getUserLikes();
 
     }
-
-    /*
-    public Likes getLikes( Request req, Response res ) {
-
-        res.type("application/json");
-        Properties data = gson.fromJson(req.body(), Properties.class);
-
-        // Parse the request
-        int pid = Integer.parseInt( data.getProperty("pid") );
-        int uid = Integer.parseInt( data.getProperty("uid") );
-        int status = checkUserPostPerms(uid, pid);
-        res.status(status);
-
-        if ( res.status() == 200 ) {
-            return likeStore.getLikes(pid);
-        }
-
-        System.err.println("Error code: " + res.status() );
-        return null;
-
-    }
-    */
 
     public int likePost( Request req, Response res ) {
 
