@@ -130,7 +130,7 @@ public class Server {
             post("/register", handler::createUser, gson::toJson);
 
             // Returns user given an id
-            // curl localhost:5432/users/1/
+            // curl localhost:5432/user/1/
             path("/user", () -> {
                 get("/:uid", handler::getUser, gson::toJson);
             });
@@ -157,7 +157,7 @@ public class Server {
 
             });
 
-            // Users
+            ////////// Users //////////
             path("/user", () -> {
 
                 path("/:uid", () -> {
@@ -166,7 +166,7 @@ public class Server {
                     get("/profile", handler::getUserProfile, gson::toJson);
 
                     // Deletes user given UserID
-                    // curl -X delete localhost:5432/users/1/
+                    // curl -X delete localhost:5432/user/1/
                     delete("", handler::deleteUser, gson::toJson);      // Does this work?
 
                     get("/feed", handler::getUserFeed, gson::toJson);
@@ -176,6 +176,25 @@ public class Server {
                 put("/edit", handler::editUser, gson::toJson);
 
                 post("/profilepic", handler::uploadProfilePicture, gson::toJson);
+
+            });
+
+            ////////// Posts //////////
+            path("/post", () -> {
+
+                // Returns post object
+                // curl localhost:5432/post/0/
+                get("/:id", handler::getPost, gson::toJson);
+
+                // Creates a new post
+                // curl -d "uid=0&contents=hello world" -X post localhost:5432/post/
+                post("", handler::createPost, gson::toJson);
+
+                put("/:id", handler::editPost, gson::toJson);
+
+                // Deletes post given postID
+                // curl -X delete localhost:5432/post/0
+                delete("/:id", handler::deletePost, gson::toJson);
 
             });
 
@@ -200,19 +219,7 @@ public class Server {
         // POST ROUTES
         ////////////////////
 
-        // Returns post object
-        // curl localhost:5432/posts/0/
-        get("/posts/:id", handler::getPost, gson::toJson);
 
-        // Creates a new post
-        // curl -d "uid=0&contents=hello world" -X post localhost:5432/posts/
-        post("/posts", handler::createPost, gson::toJson);
-
-        put("/posts", handler::editPost, gson::toJson);
-
-        // Deletes post given postID
-        // curl -X delete localhost:5432/posts/0
-        delete("/posts/:id", handler::deletePost, gson::toJson);
 
         // Returns feed if user is subscribed.
         // curl -G -d "uid=1" -X post localhost:5432/users/0/feed/
