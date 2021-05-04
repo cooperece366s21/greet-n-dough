@@ -11,7 +11,6 @@ import {
     Stat, StatLabel, StatNumber, StatHelpText, StatArrow, StatGroup,
 } from "@chakra-ui/react";
 import Header from "../components/globalComponents/Header";
-import TestLogin from "../components/TestLogin";
 
 function Home(){
     return(

@@ -40,7 +40,7 @@ class HeaderUser extends React.Component<any, any> {
     };
 
     componentDidMount() {
-        api.getUserID()
+        api.getCurrentUserID()
             .then( uid => {
                 this.setState( {uid: uid});
 

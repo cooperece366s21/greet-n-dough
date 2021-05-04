@@ -122,7 +122,7 @@ public class Server {
             post("/login", handler::login, gson::toJson);
 
             // Checks if currently logged in
-            post("/auth", handler::tokenToID, gson::toJson);
+            get("/tokenToId", handler::tokenToId, gson::toJson);
 
             // Register
             // Creates a new user

@@ -44,7 +44,7 @@ class UserPageWrapper extends React.Component<any, any> {
 
     componentDidMount() {
 
-        api.getUserID()
+        api.getCurrentUserID()
             .then( cuid => {
                 cuid === parseInt(String(this.state.uid)) ?
                     this.setState({hasOwnership:true, cuid:cuid}) :

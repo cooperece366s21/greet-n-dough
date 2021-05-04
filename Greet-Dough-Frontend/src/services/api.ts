@@ -16,20 +16,20 @@ export function logout() {
     window.location.replace("/");
 }
 
-export async function getUserID(): Promise<number> {
-    let authToken = getCurrentToken();
+export async function getCurrentUserID(): Promise<number> {
+    let token = getCurrentToken();
 
-    if (authToken === "") {
+    if (token === "") {
         return -1;
     }
 
-    const res = await fetch(`${BACKEND_URL}/noauth/auth`, {
-        method: "post",
+    const res = await fetch(`${BACKEND_URL}/noauth/tokenToId`, {
+        method: "get",
         mode: "cors",
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "token": token,
         },
-        body: JSON.stringify({ authToken })
     });
 
     if ( res.ok ) {
@@ -42,7 +42,6 @@ export async function getUserID(): Promise<number> {
     }
 
     else {
-        // alert( "Invalid Loggin Session" );
         return -1;
     }
 }
@@ -518,7 +517,7 @@ let exports = {
     register,
     login,
     logout,
-    getUserID,
+    getCurrentUserID,
     getUser,
     searchUser,
 

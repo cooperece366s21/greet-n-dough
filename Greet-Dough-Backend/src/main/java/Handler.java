@@ -376,13 +376,12 @@ public class Handler {
     }
 */
 
-    public String tokenToID( Request req, Response res ) {
+    public String tokenToId( Request req, Response res ) {
 
         res.type("application/json");
-        Properties data = gson.fromJson(req.body(), Properties.class);
 
         // Check the token
-        String token = data.getProperty("authToken");
+        String token = req.headers("token");
         if ( !isValidToken( token, res ) ) {
             return "";
         }
