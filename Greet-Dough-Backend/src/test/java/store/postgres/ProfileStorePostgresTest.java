@@ -4,14 +4,13 @@ import model.Profile;
 import model.User;
 import org.jdbi.v3.core.Jdbi;
 import org.junit.jupiter.api.*;
+import utility.GreetDoughJdbi;
 import utility.ResetDao;
 
 import java.io.File;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class ProfileStorePostgresTest extends ProfileStorePostgres {
 

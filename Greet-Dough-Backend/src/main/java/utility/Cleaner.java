@@ -1,10 +1,8 @@
 package utility;
 
 import org.jdbi.v3.core.Jdbi;
-import store.postgres.GreetDoughJdbi;
 import store.postgres.ImageStorePostgres;
 import store.postgres.LoginStorePostgres;
-import store.postgres.ProfileStorePostgres;
 
 /**
  * The class is used to periodically clean up the database.

@@ -4,6 +4,7 @@ import model.Post;
 import model.User;
 import org.jdbi.v3.core.Jdbi;
 import org.junit.jupiter.api.Test;
+import utility.GreetDoughJdbi;
 import utility.ResetDao;
 
 import java.util.List;

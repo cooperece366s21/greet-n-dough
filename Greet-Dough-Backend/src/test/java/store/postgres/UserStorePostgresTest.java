@@ -1,6 +1,7 @@
 package store.postgres;
 
 import model.User;
+import utility.GreetDoughJdbi;
 import utility.ResetDao;
 
 import org.jdbi.v3.core.Jdbi;

@@ -1,4 +1,4 @@
-package store.postgres;
+package utility;
 
 import model.*;
 
@@ -8,7 +8,6 @@ import org.jdbi.v3.core.statement.StatementContext;
 import org.jdbi.v3.postgres.PostgresPlugin;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 
-import java.sql.Array;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
