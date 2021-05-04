@@ -670,10 +670,8 @@ public class Handler {
         List<Integer> iidList = tempPost.getImageIDList();
         List<String> postUrlList = new ArrayList<>();
 
-        if( iidList.size() !=0 ) {
-            for( Integer iid : iidList ) {
-                postUrlList.add( imageStore.getImage(iid).getPath() );
-            }
+        for( Integer iid : iidList ) {
+            postUrlList.add( imageStore.getImage(iid).getPath() );
         }
 
         // Shaping the comment field to be much nicer for the frontend
