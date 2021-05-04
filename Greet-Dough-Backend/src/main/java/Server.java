@@ -145,6 +145,7 @@ public class Server {
             // Check the token
             before("/*", (req,res) -> {
 
+                System.err.println( req.headers() );
                 boolean authenticated = handler.checkToken( req, res );
                 System.out.println("Checked the token");
                 System.out.println( (String) req.attribute("uid") );
@@ -252,7 +253,7 @@ public class Server {
         // curl -d "uid=1&contents=ok post!" -X post localhost:5432/posts/0/comments/
         post("/posts/comments", handler::createComment, gson::toJson);
 
-        get("/wallet/", handler::getBalance, gson::toJson);
+        get("/wallet", handler::getBalance, gson::toJson);
         // Upload Image, which is createPost but imageID exists
         // curl -d "userID=0&contents=hello world&imageID=0" -X post localhost:5432/posts/
         // uploadImage() will prompt user for a path
