@@ -142,6 +142,7 @@ public class Handler {
 
         // Check the token
         String token = req.headers("token");
+        System.err.println(token);
         if ( isValidToken( token, res ) ) {
 
             // Get the uid and place it in the request
@@ -690,7 +691,7 @@ public class Handler {
      */
     public JSONObject getPost( Request req, Response res ) {
 
-        int pid = Integer.parseInt( req.params(":id") );
+        int pid = Integer.parseInt( req.params(":pid") );
 
         if ( !postStore.hasPost(pid) ) {
 
@@ -832,7 +833,7 @@ public class Handler {
         int uid = loginStore.getUserID(token);
 
         // Parse the request
-        int pid = Integer.parseInt( req.params(":id") );
+        int pid = Integer.parseInt( req.params(":pid") );
         Post tempPost = postStore.getPost(pid);
         System.out.println("uid: " + uid);
         System.out.println("pid: " + pid);
@@ -882,7 +883,7 @@ public class Handler {
         int uid = loginStore.getUserID(token);
 
         // Check if the user owns the post
-        int pid = Integer.parseInt( data.getProperty("pid") );
+        int pid = Integer.parseInt( req.params(":pid") );
         if ( !hasOwnership( uid, pid, res ) ) {
             return res.status();
         }

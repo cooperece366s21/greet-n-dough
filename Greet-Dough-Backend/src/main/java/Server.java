@@ -145,6 +145,7 @@ public class Server {
             // Check the token
             before("/*", (req,res) -> {
 
+                System.err.println( req.headers() );
                 boolean authenticated = handler.checkToken( req, res );
                 System.out.println("Checked the token");
                 System.out.println( (String) req.attribute("uid") );
@@ -184,17 +185,17 @@ public class Server {
 
                 // Returns post object
                 // curl localhost:5432/post/0/
-                get("/:id", handler::getPost, gson::toJson);
+                get("/:pid", handler::getPost, gson::toJson);
 
                 // Creates a new post
                 // curl -d "uid=0&contents=hello world" -X post localhost:5432/post/
                 post("", handler::createPost, gson::toJson);
 
-                put("/:id", handler::editPost, gson::toJson);
+                put("/:pid", handler::editPost, gson::toJson);
 
                 // Deletes post given postID
                 // curl -X delete localhost:5432/post/0
-                delete("/:id", handler::deletePost, gson::toJson);
+                delete("/:pid", handler::deletePost, gson::toJson);
 
             });
 
