@@ -52,7 +52,12 @@ public class UserStorePostgres implements UserStore {
 
     @Override
     public void deleteUser( int uid ) {
-        jdbi.useHandle( handle -> handle.attach(UserDao.class).deleteUser(uid) );
+
+        jdbi.useTransaction( handle -> {
+            handle.attach(UserDao.class).deleteUser(uid);
+            handle.attach(UserDao.class).deleteUserImages(uid);
+        });
+
     }
 
     @Override

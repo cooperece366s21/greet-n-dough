@@ -58,7 +58,7 @@ class ImageStorePostgresTest extends ImageStorePostgres {
         String contents = "first!";
         Post newPost = postStorePostgres.addPost( title, contents, newUser.getID(), iidList );
         assert ( newPost.getUserID() == newUser.getID() );
-        assert ( newPost.getImageIDList() == iidList );
+        assert ( newPost.getImageIDList().equals( iidList ) );
         assert ( newPost.getTitle().equals( title ) );
         assert ( newPost.getContents().equals( contents ) );
 
