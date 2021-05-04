@@ -98,7 +98,7 @@ class UserFeed extends  React.Component<any, any> {
                             <Text fontSize={"30px"} fontWeight={600}> { e.map.post.title } </Text>
                         </Box>
 
-                        <Box w="5%">
+                        <Box w="5%" >
                             {this.state.hasOwnership &&
                             <Button
                                 onClick={()=> window.location.replace("/edit/" + e.map.post.ID.toString() ) }>
@@ -107,7 +107,9 @@ class UserFeed extends  React.Component<any, any> {
                             }
                         </Box>
 
-                        <Box w="5%">
+                        <Box w={"10px"}/>
+
+                        <Box w="5%"  paddingRight={"20px"}>
                             {this.state.hasOwnership &&
                                 <Button
                                     onClick={ () => {
