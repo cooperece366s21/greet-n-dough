@@ -138,6 +138,8 @@ export async function searchUser( name:string ) {
 
 export async function editUser(token:string|null, name:string|null, bio:string|null ) {
     if ( token==null || name==null ) return (403);
+    // JSON doesnt seem to like nulls being fields
+    bio = bio==null ? "" : bio;
 
 
     const res = await fetch(`${BACKEND_URL}/users/`, {
@@ -154,6 +156,7 @@ export async function editUser(token:string|null, name:string|null, bio:string|n
         return 200;
     } else {
         // maybe some other code here for specific errors?
+        alert( "Error: " + res.status);
         return res.status;
     }
 }
@@ -188,10 +191,11 @@ export async function getUserFeed( cuid:number, uid:number ) {
                         body[postIndex].map.comments[cIndex].map.avatar = convertToCorrectUrl(c.map.avatar)
                     });
 
-                    post.map.comments.reverse();
+                    body[postIndex].map.comments.reverse();
 
                 })
 
+                body.reverse();
                 alert( JSON.stringify(body) );
                 return body;
             })

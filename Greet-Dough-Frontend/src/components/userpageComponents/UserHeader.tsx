@@ -20,7 +20,7 @@ import { withRouter } from 'react-router-dom';
 type UserState = {
     editing: boolean;
     exists: boolean | null;
-    hasOwnership : boolean | null;
+    hasOwnership : boolean;
 
     uid: number;
     name: string;
@@ -36,7 +36,7 @@ class UserHeader extends React.Component<any, any> {
 
     state: UserState = {
         exists: null,
-        hasOwnership: null,
+        hasOwnership: false,
         editing: false,
 
         uid: -1,
@@ -78,7 +78,7 @@ class UserHeader extends React.Component<any, any> {
         )
     }
 
-    renderUser() {
+    renderHeader() {
 
         let nameAndEditButtons = <HStack>
 
@@ -90,6 +90,15 @@ class UserHeader extends React.Component<any, any> {
                     value={this.state.editedName}
                 />
                 : <Text fontSize={'4xl'} fontWeight={500} w="80%"> {this.state.name} </Text>
+            }
+
+            { this.state.hasOwnership ?
+                <> </> :
+                <Button colorScheme={"green"}
+                        onClick={ () => alert("Follow api goes here")}
+                >
+                    Follow
+                </Button>
             }
 
             { this.state.hasOwnership && !this.state.editing ?
@@ -106,8 +115,7 @@ class UserHeader extends React.Component<any, any> {
                 <>
 
                     <Button onClick={() => {
-
-                        this.setState({editing: false});
+                        alert("Sending api call now")
                         let token = localStorage.getItem("authToken");
 
                         api.editUser(token,  this.state.editedName,  this.state.editedBio )
@@ -122,6 +130,7 @@ class UserHeader extends React.Component<any, any> {
                             })
 
                         api.uploadProfilePicture( token, this.state.uploadedPicture );
+                        this.setState({editing: false});
 
                     }}>
                         ✔
@@ -167,6 +176,7 @@ class UserHeader extends React.Component<any, any> {
             /> :
             <Text> {this.state.bio ? this.state.bio : "No biography"} </Text>
         }</>;
+
         return(
 
              <>
@@ -210,7 +220,7 @@ class UserHeader extends React.Component<any, any> {
         switch( this.state.exists ) {
 
             case true:
-                return this.renderUser();
+                return this.renderHeader();
 
             default:
                 return ( <> </> );

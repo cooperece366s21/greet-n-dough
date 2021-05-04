@@ -17,6 +17,7 @@ import {
 import api from "../../services/api";
 import {type} from "os";
 import {PostObject} from "../../services/types";
+import Comment from "./Comment";
 
 type Entry = {
     map: PostObject,
@@ -31,6 +32,7 @@ type FeedState = {
     openComments: number, // number indicates what post id to open comments for
     comment: string,
     commentingOnPost: boolean,
+    commentingNested: number,
 }
 
 class UserFeed extends  React.Component<any, any> {
@@ -44,6 +46,8 @@ class UserFeed extends  React.Component<any, any> {
         openComments: -1,
         comment: "",
         commentingOnPost: false,
+        commentingNested: -1,
+
     }
 
     constructor(props:any) {
@@ -57,73 +61,19 @@ class UserFeed extends  React.Component<any, any> {
             openComments: -1,
             comment: "",
             commentingOnPost: false,
+            commentingNested: -1,
         }
     }
 
     refreshFeed() {
         api.getUserFeed( this.state.cuid, this.state.uid)
             .then( feed =>  {
-                this.setState({feed: feed.reverse()});
+                this.setState({feed: feed});
             })
     }
 
     componentDidMount() {
         this.refreshFeed();
-    }
-
-    renderDeleteButton( pid:number ):any {
-        if (this.state.hasOwnership) {
-            return(
-                <>
-                    <Button
-                        onClick={ () => this.setState({deleteAlert: true})}
-                    >
-                        🗑
-                    </Button>
-
-                    {/* Largely the same sample code as in Chakra examples*/}
-                    <AlertDialog
-                        isOpen={ this.state.deleteAlert }
-                        onClose={ () => this.setState({deleteAlert: false})}
-                        leastDestructiveRef={ undefined }>
-                        <AlertDialogOverlay>
-                            <AlertDialogContent>
-                                <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                                    Delete Post
-                                </AlertDialogHeader>
-
-                                <AlertDialogBody>
-                                    Are you sure you want to delete this post?
-                                </AlertDialogBody>
-
-                                <AlertDialogFooter>
-
-                                    <Button onClick={ () => this.setState({deleteAlert: false})}>
-                                        Cancel
-                                    </Button>
-
-                                    <Button colorScheme="red" ml={3}
-                                            onClick={ () => {
-                                                alert(pid);
-                                                // api.deletePost(localStorage.getItem("authToken"), pid)
-                                                //     .then( () => {
-                                                //         this.refreshFeed();
-                                                //         this.setState({deleteAlert: false})
-                                                //     });
-                                            }}
-                                    >
-                                        Delete
-                                    </Button>
-
-                                </AlertDialogFooter>
-                            </AlertDialogContent>
-                        </AlertDialogOverlay>
-                    </AlertDialog>
-                </>
-            )
-        } else {
-            return( <> </> )
-        }
     }
 
     render() {
@@ -268,19 +218,46 @@ class UserFeed extends  React.Component<any, any> {
                                 </Center>
                             }
                             <Box height="40px"> </Box>
-                            { e.map.comments.map( function(c,i){
+
+                            { e.map.comments.map((c, cIndex) =>{
                                 return (
                                     <>
+
                                         <Box>
                                             <HStack color={"black"}>
                                                 <Avatar name={c.map.username} bg="teal.500" src={c.map.avatar} w="50px"/>
-                                                 <Text fontWeight={500}> { c.map.username } </Text>
+                                                 <Text fontWeight={500} marginLeft={"10px"}> { c.map.username } </Text>
                                             </HStack>
                                         </Box>
 
-                                        <Box marginLeft="75px">
-                                            <Text> {c.map.contents} </Text>
-                                        </Box>
+                                        <HStack>
+
+                                            <Box marginLeft="75px" w="75%" >
+                                                <Text> {c.map.contents} </Text>
+                                            </Box>
+
+                                            { this.state.commentingNested === cIndex ?
+                                                <>
+                                                    <Button> ✔ </Button>
+                                                    <Button onClick={ () => this.setState({commentingNested: -1})}>
+                                                        ❌
+                                                    </Button>
+                                                </> :
+                                                <Button onClick={ () => this.setState({ commentingNested: cIndex })}>
+                                                    💬
+                                                </Button>
+                                            }
+
+
+                                        </HStack>
+
+                                        { this.state.commentingNested === cIndex ?
+                                            <Textarea marginLeft="75px" w="75%" placeholder={"Type comment here..."} >
+
+                                            </Textarea>
+
+                                            : <> </>
+                                        }
 
                                     </>
                                 )

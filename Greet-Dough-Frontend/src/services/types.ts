@@ -58,6 +58,7 @@ type CommentObject = {
     avatar: string,
     userID: number,
     username: string,
+    reloadComments: boolean,
 }
 
-export type { Post, PostObject, Time, Date, TimeCreated, Map, FeedState, PostJson, CommentJson }
+export type { Post, PostObject, Time, Date, TimeCreated, Map, FeedState, PostJson, CommentJson, CommentObject }
