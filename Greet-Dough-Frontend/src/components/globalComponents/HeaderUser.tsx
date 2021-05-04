@@ -15,15 +15,16 @@ import {
     DrawerHeader,
     DrawerOverlay,
     DrawerContent,
-    DrawerCloseButton,
+    DrawerCloseButton, Avatar,
 } from "@chakra-ui/react";
 import {Link} from "react-router-dom";
 import api from "../../services/api";
 import { withRouter } from 'react-router-dom';
+import {User} from "../../services/types";
 
 type UserState = {
-    uid: number | null;
-    name: string;
+    user: User|null,
+    loggedIn: boolean|null,
     drawer: boolean;
     wallet : string | null;
     addAmount : string | null;
@@ -32,8 +33,8 @@ type UserState = {
 class HeaderUser extends React.Component<any, any> {
 
     state: UserState = {
-        uid: null,
-        name: "",
+        user: null,
+        loggedIn: null,
         drawer: false,
         wallet: "0",
         addAmount: "",
@@ -42,19 +43,21 @@ class HeaderUser extends React.Component<any, any> {
     componentDidMount() {
         api.getCurrentUserID()
             .then( uid => {
-                this.setState( {uid: uid});
 
                 if (uid!==-1) {
 
                     api.getUser(uid)
                         .then( user => {
-                            this.setState( {name: user.name} );
+                            this.setState( {user: user} );
+                            this.setState({loggedIn: true } );
                         })
 
                     api.getWallet( localStorage.getItem('authToken') )
                         .then( body => {
                             this.setState( { wallet: body})
                         })
+                } else{
+                    this.setState({loggedIn:false})
                 }
             });
 
@@ -73,13 +76,13 @@ class HeaderUser extends React.Component<any, any> {
             <HStack marginLeft="80px">
 
             {/*User Icon*/}
-            <Link to={`/user/${this.state.uid}`}>
-                <SkeletonCircle size='60px' />
+            <Link to={`/user/${this.state.user?.ID}`}>
+                <Avatar name={this.state.user?.name} bg="teal.500" src={this.state.user?.avatar} w="50px"/>
             </Link>
 
             {/*Greeting and logout V-stack*/}
                 <VStack>
-                    <Box>{this.state.name} </Box>
+                    <Box>{this.state.user?.name} </Box>
                     <Button colorScheme={'yellow'} size={"sm"}
                             _hover={{bg: 'yellow.500'}} onClick={api.logout}>
                         Logout
@@ -156,15 +159,15 @@ class HeaderUser extends React.Component<any, any> {
     }
 
     render() {
-        const { uid } = this.state;
+        let uid  = this.state.loggedIn;
 
         switch ( uid ) {
 
             case null:
                 // Waiting on API ( default state )
-                return ( <> </> );
+                return (<> </>);
 
-            case -1:
+            case false:
                 // Explicit -1 returned from API
                 return this.notLoggedIn();
 

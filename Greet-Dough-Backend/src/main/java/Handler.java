@@ -191,19 +191,27 @@ public class Handler {
     }
 
     /////////////// USER ACTIONS ///////////////
-    public String getUser( Request req, Response res ) throws JsonProcessingException {
+    public JSONObject getUser( Request req, Response res ) throws JsonProcessingException {
 
         int uid = Integer.parseInt( req.params(":uid") );
 
         if ( userStore.hasUser(uid) ) {
 
+
+            JSONObject userJSON = new JSONObject( userStore.getUser(uid) );
+
+            System.err.println("Adding avatar now...");
+
+            userJSON.put("avatar", getUrlToPFP(uid) );
+
+            System.err.println("No error :)");
             res.status(200);
-            return mapper.writeValueAsString( userStore.getUser(uid) );
+            return userJSON;
 
         } else {
 
             res.status(404);
-            return "";
+            return new JSONObject();
 
         }
     }

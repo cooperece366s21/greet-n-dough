@@ -1,4 +1,4 @@
-import {PostJson, CommentJson} from "./types";
+import {PostJson, CommentJson, User} from "./types";
 export const BACKEND_URL = "http://localhost:5432";
 
 
@@ -105,11 +105,13 @@ export async function getUser( uid:number ) {
 
         return await res.json()
             .then(body => {
-                return JSON.parse(body);
+                let user:User = body.map;
+                user.avatar = convertToCorrectUrl(user.avatar);
+                return user;
             });
 
     } else {
-        // maybe some other code here for specific errors?
+        alert("ERROR: " + res.status)
         return res.status;
     }
 }
@@ -205,13 +207,11 @@ export async function getUserFeed( cuid:number, uid:number ) {
 }
 
 export async function getUserProfile( uid:number ) {
-    let token = localStorage.getItem("authToken");
-    token = token==null ? "" : token;
+
 
     const res = await fetch(`${BACKEND_URL}/auth/user/${uid}/profile`, {
         headers: {
             "Content-Type": "application/json",
-            "token": token,
         },
     });
 

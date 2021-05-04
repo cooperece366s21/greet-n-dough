@@ -75,10 +75,13 @@ class UserPageWrapper extends React.Component<any, any> {
                                 // THIS LINE BELOW IS CRITICAL
                                 // Once you set exist to true, the userHeader component will render.
                                 // If you try to set something after this, it won't work!
-                                this.setState( {
-                                    name: user.name,
-                                    exists: true,
-                                });
+
+                                if (typeof user !== "number") {
+                                    this.setState({
+                                        name: user.name,
+                                        exists: true,
+                                    });
+                                }
 
                             } );
 

@@ -1,3 +1,22 @@
+type FeedState = {
+    cuid: number,
+    uid: number,
+    feed: PostJson[] | null,
+    hasOwnership: boolean,
+    deleteAlert: boolean,
+}
+
+type PostJson = {
+    map: PostObject,
+}
+
+type PostObject = {
+    post: Post,
+    likeCount : number,
+    images: string[],
+    comments: CommentJson[]
+}
+
 type Post = {
     ID: number,
     userID: number,
@@ -24,29 +43,6 @@ type Time = {
     nano: number,
 }
 
-type FeedState = {
-    cuid: number,
-    uid: number,
-    feed: Map[] | null,
-    hasOwnership: boolean,
-    deleteAlert: boolean,
-}
-
-type Map = {
-    map: PostObject,
-}
-
-type PostJson = {
-    map: PostObject,
-}
-
-type PostObject = {
-    post: Post,
-    likeCount : number,
-    images: string[],
-    comments: CommentJson[]
-}
-
 type CommentJson = {
     map: CommentObject,
 }
@@ -61,4 +57,10 @@ type CommentObject = {
     reloadComments: boolean,
 }
 
-export type { Post, PostObject, Time, Date, TimeCreated, Map, FeedState, PostJson, CommentJson, CommentObject }
+type User = {
+    name: string,
+    ID: number,
+    avatar: string,
+}
+
+export type { Post, PostObject, Time, Date, TimeCreated, FeedState, PostJson, CommentJson, CommentObject, User }
