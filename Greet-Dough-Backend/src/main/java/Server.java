@@ -143,18 +143,18 @@ public class Server {
         path("/auth", () -> {
 
             // Check the token
-            before("/*", (req,res) -> {
+            before((req,res) -> {
 
-//                System.err.println( req.headers() );
-//                boolean authenticated = handler.checkToken( req, res );
-//                System.out.println("Checked the token");
-//                System.out.println( (String) req.attribute("uid") );
-//                if ( !authenticated ) {
-//
-//                    System.err.println("Invalid token.");
-//                    halt(401);
-//
-//                }
+                System.err.println( req.headers() );
+                boolean authenticated = handler.checkToken( req, res );
+                System.out.println("Checked the token");
+                System.out.println( (String) req.attribute("uid") );
+                if ( !authenticated ) {
+
+                    System.err.println("Invalid token.");
+                    halt(401);
+
+                }
 
             });
 
@@ -269,7 +269,7 @@ public class Server {
 
         // curl -G -d "uid=1" localhost:5432/posts/0/comments/
         //        get("/posts/:postID/comments/", handler::getComments, gson::toJson);
-        
+
         // IMAGE ROUTES
 
         //        post( "/images/", handler::createImage, gson::toJson );
