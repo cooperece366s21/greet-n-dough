@@ -175,7 +175,9 @@ class UserFeed extends  React.Component<any, any> {
 
                     <Box>
                         <Center>
-                            { e.map.images[0] ? <Image src={e.map.images[0]}/> : <></>}
+                            { e.map.images?.map(function(url:string, i){
+                                return ( <Image src={url} /> )
+                            })}
                         </Center>
 
                         <Text fontSize={"20px"}> {e.map.post.contents}  </Text>

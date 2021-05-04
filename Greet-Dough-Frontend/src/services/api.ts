@@ -432,6 +432,7 @@ export async function makeComment( token: string|null, pid:number, contents:stri
     });
 
     if (res.ok) {
+        alert( "Comment made!" )
         return 200;
     } else {
         alert("ERROR :" +res.status);
