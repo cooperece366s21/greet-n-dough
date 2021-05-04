@@ -1116,7 +1116,7 @@ public class Handler {
 
         // Parse the request
         Properties data = gson.fromJson(req.body(), Properties.class);
-        int pid = Integer.parseInt( data.getProperty("pid") );
+        int pid = Integer.parseInt( req.params(":pid") );
         String contents = data.getProperty("contents");
         String parent = data.getProperty("parentId");
 

@@ -236,7 +236,7 @@ export async function getWallet( token:string|null ) {
 
     if ( token==null ) return (403);
 
-    const res = await fetch(`${BACKEND_URL}/wallet`, {
+    const res = await fetch(`${BACKEND_URL}/auth/wallet`, {
         method: "get",
         mode: "cors",
         headers: {
@@ -265,7 +265,7 @@ export async function addToWallet( token:string|null, amount:string|null ) {
 
     if ( token==null ) return (403);
 
-    const res = await fetch(`${BACKEND_URL}/wallet/add`, {
+    const res = await fetch(`${BACKEND_URL}/auth/wallet/add`, {
         method: "post",
         mode: "cors",
         headers: {
@@ -439,14 +439,14 @@ export async function makeComment( token: string|null, pid:number, contents:stri
 
     parentId = parentId==null ? -1 : parentId;
 
-    const res = await fetch(`${BACKEND_URL}/posts/comments`, {
+    const res = await fetch(`${BACKEND_URL}/auth/post/${pid}/comment`, {
         method: "post",
         mode: "cors",
         headers: {
             "Content-Type": "application/json",
             "token": token,
         },
-        body: JSON.stringify({ pid, contents, parentId })
+        body: JSON.stringify({ contents, parentId })
     });
 
     if (res.ok) {
