@@ -133,6 +133,9 @@ public class Server {
             // curl localhost:5432/user/1/
             path("/user", () -> {
                 get("/:uid", handler::getUser, gson::toJson);
+
+                // biography and profile picture
+                get("/:uid/profile", handler::getUserProfile, gson::toJson);
             });
 
             get("/search/:name", handler::searchUsers, gson::toJson);
@@ -163,8 +166,6 @@ public class Server {
 
                 path("/:uid", () -> {
 
-                    // biography and profile picture
-                    get("/profile", handler::getUserProfile, gson::toJson);
 
                     // Deletes user given UserID
                     // curl -X delete localhost:5432/user/1/

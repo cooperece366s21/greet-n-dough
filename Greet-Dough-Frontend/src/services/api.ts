@@ -197,7 +197,6 @@ export async function getUserFeed( cuid:number, uid:number ) {
                 })
 
                 body.reverse();
-                alert( JSON.stringify(body) );
                 return body;
             })
     } else {
