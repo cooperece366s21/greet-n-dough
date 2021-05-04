@@ -3,7 +3,7 @@ package store.postgres;
 import model.Profile;
 import model.User;
 import org.jdbi.v3.core.Jdbi;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import utility.ResetDao;
 
 import java.io.File;
@@ -17,27 +17,27 @@ class ProfileStorePostgresTest extends ProfileStorePostgres {
 
     private static final Jdbi jdbi = GreetDoughJdbi.create("jdbc:postgresql://localhost:4321/greetdough");
 
-    private final UserStorePostgres userStorePostgres;
-    private final ProfileStorePostgres profileStorePostgres;
+    private static UserStorePostgres userStorePostgres;
+    private static ImageStorePostgres imageStorePostgres;
+    private static ProfileStorePostgres profileStorePostgres;
 
-    private User newUser;
-    private final String newPath;
-    private final String newBio;
+    private static User newUser;
+    private static String newPath;
+    private static final String newBio = "Bachelors in CompE and Signals, and Masters in EE";
 
     public ProfileStorePostgresTest() {
-
         super(jdbi);
+    }
+
+    @BeforeAll
+    static void setupAll() {
+
+        // Delete all the databases (only use the relevant ones)
+        ResetDao.deleteAll(jdbi);
+
         userStorePostgres = new UserStorePostgres(jdbi);
+        imageStorePostgres = new ImageStorePostgres(jdbi);
         profileStorePostgres = new ProfileStorePostgres(jdbi);
-
-        // Used to DROP and CREATE all tables
-        ResetDao.reset(jdbi);
-
-        // Add a user
-        newUser = userStorePostgres.addUser("Vincent Zheng");
-
-        // Add a bio
-        newBio = "Bachelors in CompE and Signals, and Masters in EE";
 
         // Get local image
         FileSystem fileSys = FileSystems.getDefault();
@@ -46,6 +46,29 @@ class ProfileStorePostgresTest extends ProfileStorePostgres {
             tempPath = tempPath.getParent();
         }
         newPath = fileSys.getPath( tempPath.toString() + File.separator + "beardKoolmodo.png" ).toString();
+
+    }
+
+    @AfterAll
+    static void tearDownAll() {
+        ResetDao.reset(jdbi);
+    }
+
+    @BeforeEach
+    void setupEach() {
+
+        // Delete the databases
+        profileStorePostgres.delete();
+        imageStorePostgres.delete();
+        userStorePostgres.delete();
+
+        // Initialize the databases
+        userStorePostgres.init();
+        imageStorePostgres.init();
+        profileStorePostgres.init();
+
+        // Add a user
+        newUser = userStorePostgres.addUser("Vincent Zheng");
 
     }
 
@@ -63,9 +86,6 @@ class ProfileStorePostgresTest extends ProfileStorePostgres {
         assert ( profileStorePostgres.getProfile( newUser.getID() ).getImageID() == null );
         assert ( profileStorePostgres.getAllProfiles().size() == 1 );
 
-        // Reset the store for other tests
-        profileStorePostgres.delete();
-
     }
 
     @Test
@@ -82,25 +102,18 @@ class ProfileStorePostgresTest extends ProfileStorePostgres {
         assert ( profileStorePostgres.getProfile( newUser.getID() ).getImageID() == null );
         assert ( profileStorePostgres.getAllProfiles().size() == 1 );
 
-        // Reset the store for other tests
-        profileStorePostgres.delete();
-
     }
 
     @Test
     void testAddProfile() {
 
         // Test adding a profile
-        String newBio = "Bachelors in CompE and Signals, and Masters in EE";
         Profile newProfile = profileStorePostgres.addProfile( newUser.getID(), newBio );
 
         // Test the profile contents
         assert ( newProfile.getUserID() == newUser.getID() );
         assert ( newProfile.getBio().equals(newBio) );
         assert ( newProfile.getImageID() == null );
-
-        // Reset the store for other tests
-        profileStorePostgres.delete();
 
 }
 
@@ -116,9 +129,6 @@ class ProfileStorePostgresTest extends ProfileStorePostgres {
         // Delete the profile picture
         profileStorePostgres.deleteProfilePicture( newUser.getID() );
 
-        // Reset the store for other tests
-        profileStorePostgres.delete();
-
     }
 
     @Test
@@ -128,14 +138,11 @@ class ProfileStorePostgresTest extends ProfileStorePostgres {
         Profile newProfile = profileStorePostgres.addProfile( newUser.getID(), newBio );
 
         // Test changing the bio
-        String newBio = "github.com/Sectoooooor";
-        profileStorePostgres.changeBio( newUser.getID(), newBio );
+        String tempBio = "github.com/Sectoooooor";
+        profileStorePostgres.changeBio( newUser.getID(), tempBio );
 
         // Test the bio contents
-        assert ( profileStorePostgres.getProfile( newUser.getID() ).getBio().equals(newBio) );
-
-        // Reset the store for other tests
-        profileStorePostgres.delete();
+        assert ( profileStorePostgres.getProfile( newUser.getID() ).getBio().equals(tempBio) );
 
     }
 
