@@ -138,6 +138,24 @@ public class Handler {
 
     }
 
+    public boolean checkToken( Request req, Response res ) {
+
+        // Check the token
+        String token = req.headers("token");
+        if ( isValidToken( token, res ) ) {
+
+            // Get the uid and place it in the request
+            int uid = loginStore.getUserID(token);
+            req.attribute("uid", String.valueOf(uid) );
+            return true;
+
+        } else {
+            return false;
+        }
+
+
+    }
+
     /**
      * The method checks if the given file extension is valid.
      *

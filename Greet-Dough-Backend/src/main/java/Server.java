@@ -6,6 +6,7 @@ import store.model.*;
 import com.google.gson.Gson;
 import utility.Cleaner;
 import utility.GreetDoughJdbi;
+import utility.PathDefs;
 import utility.ResetDao;
 
 import java.util.concurrent.Executors;
@@ -35,7 +36,7 @@ public class Server {
     public static void main( String[] args ) {
 
         // root is 'src/main/resources', so put files in 'src/main/resources/public'
-        staticFiles.location("/public");
+        staticFiles.location(PathDefs.PUBLIC_DIR);
 
         initExceptionHandler((e) -> {
             System.out.println("Could not start server on port 5432");
@@ -89,6 +90,7 @@ public class Server {
         profileStore = new ProfileStorePostgres(jdbi);
 
         Handler handler = new Handler(
+
                 Server.userStore,
                 Server.postStore,
                 Server.imageStore,
@@ -100,52 +102,96 @@ public class Server {
                 Server.loginStore,
                 Server.walletStore,
                 Server.profileStore
-                );
 
-        // USER ROUTES
-        /////////////////
+            );
 
-        // Returns user given an id
-        // curl localhost:5432/users/1/
+        // Path Groups from https://sparkjava.com/documentation#path-groups
+//        path("/api", () -> {
 
-        get("/users/:uid/", handler::getUser, gson::toJson);
+//            path("/login/")
+            // curl -H "Content-Type: application/json" --data "{"email":"a@gmail.com", "password":"123"}" localhost:5432/login
+
+
+
+
+
+
+        // No auth needed
+        path("/noauth", () -> {
+
+            post("/login/", handler::login, gson::toJson);
+
+            // Checks if currently logged in
+            post("/auth/", handler::tokenToID, gson::toJson);
+
+            // Register
+            // Creates a new user
+            // curl -H "Content-Type: application/json" --data "{"name":"Josh"}" -X post localhost:5432/users/
+            post("/users/", handler::createUser, gson::toJson);
+
+            // Returns user given an id
+            // curl localhost:5432/users/1/
+            path("/user", () -> {
+                get("/:uid/", handler::getUser, gson::toJson);
+            });
+
+        });
+
+        // Auth
+        path("/auth", () -> {
+
+            // Check the token
+            before("/*", (req,res) -> {
+
+                boolean authenticated = handler.checkToken( req, res );
+                System.out.println("Checked the token");
+                System.out.println( (String) req.attribute("uid") );
+                if ( !authenticated ) {
+
+                    System.err.println("Invalid token.");
+                    halt(401);
+
+                }
+
+            });
+
+            // Users
+            path("/user", () -> {
+
+                get("/search/:name/", handler::searchUsers, gson::toJson);
+
+                get("/:uid/feed/", handler::getUserFeed, gson::toJson);
+
+                put("/edit/", handler::editUser, gson::toJson);
+
+                // Deletes user given UserID
+                // curl -X delete localhost:5432/users/1/
+                delete("/:uid/", handler::deleteUser, gson::toJson);
+
+
+                post("/profilepic/", handler::uploadProfilePicture, gson::toJson);
+
+            });
+
+        });
 
         // biography and profile picture
         get("/profile/:uid/", handler::getUserProfile, gson::toJson);
 
-        get("/users/search/:name/", handler::searchUsers, gson::toJson);
-
-        get("/users/:uid/feed/", handler::getUserFeed, gson::toJson);
-
-        put("/users/", handler::editUser, gson::toJson);
-
-        // curl -H "Content-Type: application/json" --data "{"email":"a@gmail.com", "password":"123"}" localhost:5432/login
-        post("/login/", handler::login, gson::toJson);
-
-        // Creates a new user
-        // curl -H "Content-Type: application/json" --data "{"name":"Josh"}" -X post localhost:5432/users/
-        post("/users/", handler::createUser, gson::toJson );
-
-        // Deletes user given UserID
-        // curl -X delete localhost:5432/users/1/
-        delete("/users/:id/", handler::deleteUser, gson::toJson);
-
-        post("/auth/", handler::tokenToID, gson::toJson);
-        
         // USER RELATION ROUTES
         ///////////////////////
 
         // curl -d "uid=2" -X post localhost:5432/users/0/subscribe/
-//        post( "/users/:id/subscribe/", handler::subscribe, gson::toJson );
+        //        post( "/users/:id/subscribe/", handler::subscribe, gson::toJson );
 
         // curl -d "uid=2" -X post localhost:5432/users/0/unsubscribe/
-//        post( "/users/:id/unsubscribe/", handler::unsubscribe, gson::toJson );
+        //        post( "/users/:id/unsubscribe/", handler::unsubscribe, gson::toJson );
 
-//        // curl -d "uid=2" -X post localhost:5432/users/0/follow/
-//        post( "/users/:id/follow/", (req,res) -> handler.follow(req), gson::toJson );
-//
-//        // curl -d "uid=2" -X post localhost:5432/users/0/unfollow/
-//        post( "/users/:id/unfollow/", (req,res) -> handler.unfollow(req), gson::toJson );
+        //        // curl -d "uid=2" -X post localhost:5432/users/0/follow/
+        //        post( "/users/:id/follow/", (req,res) -> handler.follow(req), gson::toJson );
+        //
+        //        // curl -d "uid=2" -X post localhost:5432/users/0/unfollow/
+        //        post( "/users/:id/unfollow/", (req,res) -> handler.unfollow(req), gson::toJson );
 
         // POST ROUTES
         ////////////////////
@@ -166,7 +212,7 @@ public class Server {
 
         // Returns feed if user is subscribed.
         // curl -G -d "uid=1" -X post localhost:5432/users/0/feed/
-//        get("/users/:id/feed/", handler::getFeed, gson::toJson );
+        //        get("/users/:id/feed/", handler::getFeed, gson::toJson );
 
         // LIKES ROUTES
         ////////////////////
@@ -182,7 +228,7 @@ public class Server {
         /////////////////////
 
         // curl -G -d "uid=1" localhost:5432/posts/0/comments/
-//        get("/posts/:postID/comments/", handler::getComments, gson::toJson);
+        //        get("/posts/:postID/comments/", handler::getComments, gson::toJson);
 
         // Comment, post for now, put request since we are updating something about the post??
         // curl -d "uid=1&contents=ok post!" -X post localhost:5432/posts/0/comments/
@@ -193,17 +239,18 @@ public class Server {
         // curl -d "userID=0&contents=hello world&imageID=0" -X post localhost:5432/posts/
         // uploadImage() will prompt user for a path
 
-        post( "/wallet/add/", handler::addToBalance, gson::toJson);
+        post("/wallet/add/", handler::addToBalance, gson::toJson);
 
-        post( "/wallet/subtract/", handler::subtractFromBalance, gson::toJson);
+        post("/wallet/subtract/", handler::subtractFromBalance, gson::toJson);
 
         // IMAGE ROUTES
 
-//        post( "/images/", handler::createImage, gson::toJson );
+        //        post( "/images/", handler::createImage, gson::toJson );
 
-        post( "/user/profilepic/", handler::uploadProfilePicture, gson::toJson);
 
-        get( "/images/:uid/", handler::makeGallery, gson::toJson );
+        get("/images/:uid/", handler::makeGallery, gson::toJson);
+
 
     }
+
 }

@@ -64,7 +64,7 @@ public class GreetDoughJdbi {
                     .map(a -> {
                         try {
                             return Arrays.stream((Integer[]) a.getArray()).collect(Collectors.toCollection(LinkedList::new));
-                        } catch (SQLException throwables) {
+                        } catch ( SQLException throwables ) {
                             throwables.printStackTrace();
                             return new LinkedList<Integer>();
                         }
