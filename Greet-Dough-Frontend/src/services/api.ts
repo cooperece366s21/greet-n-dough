@@ -173,7 +173,8 @@ export async function getUserFeed( cuid:number, uid:number ) {
         method: "get",
         mode: "cors",
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "token": getCurrentToken(),
         },
     });
 
@@ -209,7 +210,7 @@ export async function getUserFeed( cuid:number, uid:number ) {
 export async function getUserProfile( uid:number ) {
 
 
-    const res = await fetch(`${BACKEND_URL}/auth/user/${uid}/profile`, {
+    const res = await fetch(`${BACKEND_URL}/noauth/user/${uid}/profile`, {
         headers: {
             "Content-Type": "application/json",
         },
