@@ -217,23 +217,16 @@ public class Handler {
     }
 
     public JSONObject getUserProfile( Request req, Response res ) {
-        System.err.println("Reached endpoint");
 
         res.type("application/json");
         int uid = Integer.parseInt( req.params(":uid") );
 
-        System.err.println("got uid: " + uid);
-
-
         JSONObject jsonToReturn = new JSONObject();
-
-        System.err.println("forming JSON to return");
 
         jsonToReturn.put( "name", userStore.getUser(uid).getName() );
         jsonToReturn.put( "bio", profileStore.getProfile(uid).getBio() );
         jsonToReturn.put( "profilePicture", getUrlToPFP(uid) );
 
-        System.err.println("Hello?");
         return jsonToReturn;
 
     }

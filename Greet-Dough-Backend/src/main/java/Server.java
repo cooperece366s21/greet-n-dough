@@ -187,30 +187,27 @@ public class Server {
             path("/post", () -> {
 
                 // Creates a new post
-                // curl -d "uid=0&contents=hello world" -X post localhost:5432/post/
                 post("", handler::createPost, gson::toJson);
 
                 ////////// Reference a Post //////////
                 path("/:pid", () -> {
 
                     // Returns post object
-                    // curl localhost:5432/post/0
                     get("", handler::getPost, gson::toJson);
 
+                    // Edit post Object
                     put("", handler::editPost, gson::toJson);
 
-                    // Deletes post given postID
-                    // curl -X delete localhost:5432/post/0
+                    // Deletes post from pid
                     delete("", handler::deletePost, gson::toJson);
 
                     ////////// Likes //////////
                     path("/like", () -> {
 
-                        // curl -G -d "uid=1" localhost:5432/posts/0/likes/
+                        // Returns Like object
                         get("", handler::getLikes, gson::toJson);
 
-                        // Like, put request
-                        // curl -d "uid=0" -X post localhost:5432/post/0/addLike/
+                        // Likes a post
                         post("", handler::likePost, gson::toJson);
 
                     });
@@ -218,8 +215,7 @@ public class Server {
                     ////////// Comments //////////
                     path("/comment", () -> {
 
-                        // Comment, post for now, put request since we are updating something about the post??
-                        // curl -d "uid=1&contents=ok post!" -X post localhost:5432/posts/0/comments/
+                        // Comments onto a post
                         post("", handler::createComment, gson::toJson);
 
                     });
@@ -232,9 +228,6 @@ public class Server {
             path("/wallet", () -> {
 
                 get("", handler::getBalance, gson::toJson);
-                // Upload Image, which is createPost but imageID exists
-                // curl -d "userID=0&contents=hello world&imageID=0" -X post localhost:5432/posts/
-                // uploadImage() will prompt user for a path
 
                 post("/add", handler::addToBalance, gson::toJson);
 
@@ -259,21 +252,6 @@ public class Server {
         //
         //        // curl -d "uid=2" -X post localhost:5432/users/0/unfollow/
         //        post( "/users/:id/unfollow/", (req,res) -> handler.unfollow(req), gson::toJson );
-
-
-        // Returns feed if user is subscribed.
-        // curl -G -d "uid=1" -X post localhost:5432/users/0/feed/
-        //        get("/users/:id/feed/", handler::getFeed, gson::toJson );
-
-        // COMMENTS ROUTES
-        /////////////////////
-
-        // curl -G -d "uid=1" localhost:5432/posts/0/comments/
-        //        get("/posts/:postID/comments/", handler::getComments, gson::toJson);
-
-        // IMAGE ROUTES
-
-        //        post( "/images/", handler::createImage, gson::toJson );
 
     }
 
