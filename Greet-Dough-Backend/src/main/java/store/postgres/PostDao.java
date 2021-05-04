@@ -58,11 +58,12 @@ public interface PostDao {
     Boolean containsPost(@Bind("post_id") int post_id);
 
     @SqlQuery(  "SELECT * FROM posts " +
-                    "JOIN " +
+                    "LEFT JOIN " +
                         "(SELECT post_id, ARRAY_AGG(image_id) AS image_id_agg FROM post_images " +
-                        "GROUP BY post_id) AS x " +
+                        "GROUP BY post_id) " +
+                        "AS x " +
                     "USING(post_id) " +
-                    "ORDER BY post_id;")
+                    "ORDER BY user_id, post_id;")
     List<Post> getAllPosts();
 
     @SqlQuery(  "SELECT * FROM posts " +
@@ -71,8 +72,7 @@ public interface PostDao {
                         "GROUP BY post_id)" +
                         "AS x " +
                     "USING(post_id)" +
-                    "WHERE post_id=(:post_id) " +
-                    "ORDER BY post_id;")
+                    "WHERE post_id=(:post_id);")
     Optional<Post> getPost(@Bind("post_id") int post_id);
 
     @SqlQuery(  "SELECT * FROM posts " +
