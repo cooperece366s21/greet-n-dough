@@ -396,7 +396,7 @@ export async function addLike( token:string|null, pid:number ) {
 
     if ( token==null ) return (403);
 
-    const res = await fetch(`${BACKEND_URL}/posts/${pid}/likes`, {
+    const res = await fetch(`${BACKEND_URL}/auth/post/${pid}/like`, {
         method: "post",
         mode: "cors",
         headers: {
@@ -416,11 +416,11 @@ export async function addLike( token:string|null, pid:number ) {
 
 }
 
-export async function getLikes(token: string|null, pid: number) {
+export async function getLikes( token: string|null, pid: number ) {
 
     if ( token==null ) return (403);
 
-    const res = await fetch(`${BACKEND_URL}/posts/${pid}/likes`, {
+    const res = await fetch(`${BACKEND_URL}/auth/post/${pid}/like`, {
         method: "get",
         mode: "cors",
         headers: {
@@ -472,7 +472,7 @@ export async function uploadProfilePicture(token:string|null, file:File|null) {
     let fileType = "." + file.type.slice( file.type.indexOf("/")+1 );
     form.append( "fileType", fileType );
 
-    const res = await fetch(`${BACKEND_URL}/user/profilepic/`, {
+    const res = await fetch(`${BACKEND_URL}/auth/user/profilepic`, {
         method: "post",
         mode: "cors",
         headers: {
