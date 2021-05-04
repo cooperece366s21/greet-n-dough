@@ -24,16 +24,6 @@ type Time = {
     nano: number,
 }
 
-type Map = {
-    map: PostObject,
-}
-
-type PostObject = {
-    post: Post,
-    likeCount : number,
-    images: string[],
-}
-
 type FeedState = {
     cuid: number,
     uid: number,
@@ -42,8 +32,32 @@ type FeedState = {
     deleteAlert: boolean,
 }
 
+type Map = {
+    map: PostObject,
+}
+
 type PostJson = {
     map: PostObject,
 }
 
-export type { Post, PostObject, Time, Date, TimeCreated, Map, FeedState, PostJson }
+type PostObject = {
+    post: Post,
+    likeCount : number,
+    images: string[],
+    comments: CommentJson[]
+}
+
+type CommentJson = {
+    map: CommentObject,
+}
+
+type CommentObject = {
+    contents: string,
+    ID: number,
+    postID: number,
+    avatar: string,
+    userID: number,
+    username: string,
+}
+
+export type { Post, PostObject, Time, Date, TimeCreated, Map, FeedState, PostJson, CommentJson }

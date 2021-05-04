@@ -6,6 +6,7 @@ import {
     Center,
     Input,
     Divider,
+    Avatar,
     Textarea,
     Button,
     Text,
@@ -227,7 +228,7 @@ class UserFeed extends  React.Component<any, any> {
                     { this.state.openComments === k ?
                         <>
                             {this.state.commentingOnPost ?
-                                <Box borderWidth="1px" marginTop="10px"  borderTopColor="gray.300">
+                                <Box borderWidth="1px" marginTop="10px" borderColor={"white"} >
 
                                     <Textarea
                                         marginTop="5px"
@@ -235,6 +236,7 @@ class UserFeed extends  React.Component<any, any> {
                                         onChange={ (e) => this.setState({comment: e.target.value})}
 
                                     />
+                                    <Box h="20px"> </Box>
 
                                     <Box w="100%">
 
@@ -265,6 +267,24 @@ class UserFeed extends  React.Component<any, any> {
                                     </Button>
                                 </Center>
                             }
+                            <Box height="40px"> </Box>
+                            { e.map.comments.map( function(c,i){
+                                return (
+                                    <>
+                                        <Box>
+                                            <HStack color={"black"}>
+                                                <Avatar name={c.map.username} bg="teal.500" src={c.map.avatar} w="50px"/>
+                                                 <Text fontWeight={500}> { c.map.username } </Text>
+                                            </HStack>
+                                        </Box>
+
+                                        <Box marginLeft="75px">
+                                            <Text> {c.map.contents} </Text>
+                                        </Box>
+
+                                    </>
+                                )
+                            })}
                         </> : <> </>
                     }
                 </Box>

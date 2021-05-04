@@ -1,4 +1,4 @@
-import {PostJson} from "./types";
+import {PostJson, CommentJson} from "./types";
 export const BACKEND_URL = "http://localhost:5432";
 
 
@@ -158,6 +158,12 @@ export async function editUser(token:string|null, name:string|null, bio:string|n
     }
 }
 
+function convertToCorrectUrl( dbUrl:string ) {
+    dbUrl = dbUrl = "/" + dbUrl.slice(dbUrl.indexOf("data"));
+    dbUrl = dbUrl.replaceAll("\\", "/");
+    return dbUrl;
+}
+
 export async function getUserFeed( cuid:number, uid:number ) {
 
     const res = await fetch(`${BACKEND_URL}/users/${uid}/feed/`, {
@@ -173,11 +179,17 @@ export async function getUserFeed( cuid:number, uid:number ) {
             .then( body => {
 
                 body.forEach( (post:PostJson, postIndex:number) => {
+
                     post.map.images.forEach( (url:string, urlIndex ) => {
-                        url = "/" + url.slice(url.indexOf("data"));
-                        url = url.replaceAll("\\", "/");
-                        body[postIndex].map.images[urlIndex] = url;
-                    })
+                        body[postIndex].map.images[urlIndex] = convertToCorrectUrl(url);
+                    });
+
+                    post.map.comments.forEach( (c:CommentJson, cIndex:number) => {
+                        body[postIndex].map.comments[cIndex].map.avatar = convertToCorrectUrl(c.map.avatar)
+                    });
+
+                    post.map.comments.reverse();
+
                 })
 
                 alert( JSON.stringify(body) );
