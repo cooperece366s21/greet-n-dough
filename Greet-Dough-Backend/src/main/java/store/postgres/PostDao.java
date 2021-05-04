@@ -82,7 +82,7 @@ public interface PostDao {
                         "AS x " +
                     "USING(post_id)" +
                     "WHERE user_id = (:user_id) " +
-                    "ORDER BY user_id;")
+                    "ORDER BY post_id;")
     List<Post> getFeed(@Bind("user_id") int user_id);
 
     @SqlUpdate( "UPDATE posts " +

@@ -704,9 +704,6 @@ public class Handler {
         res.type("application/json");
         int uid = Integer.parseInt( req.params(":uid") );
 
-//        Properties data = gson.fromJson(req.body(), Properties.class);
-//        Integer cuid = Integer.parseInt( data.getProperty("cuid") );
-
         if ( !userStore.hasUser(uid) ) {
 
             res.status(404);
