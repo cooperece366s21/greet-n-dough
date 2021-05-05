@@ -94,6 +94,15 @@ public class Handler {
         }
 
         int uidTarget = postStore.getPost(pid).getUserID();
+
+        // Check if uidCurrent is the owner of the post
+        if ( uidCurrent == uidTarget ) {
+
+            res.status(200);
+            return true;
+
+        }
+
         List<UserTier> subscriptions = subscriptionStore.getSubscriptions(uidCurrent);
 
         // Check if uidTarget is in the list of uidCurrent's subscriptions
@@ -741,6 +750,7 @@ public class Handler {
 
         }
 
+        // ToDo: Check permissions for each post
         // Get the feed and convert each post into a JSONObject
         List<Post> feed = postStore.makeFeed(uid);
         List<JSONObject> listJSON = new LinkedList<>();
@@ -999,31 +1009,6 @@ public class Handler {
 
     }
 
-//    public List<Post> getFeed( Request req, Response res ) {
-//
-//        int uid = Integer.parseInt( req.queryParams("uid") );
-//        int tuid = Integer.parseInt( req.params(":id") );
-//        List<Integer> curSubs = subStore.getSubscriptions(uid);
-//
-//        if ( !userStore.hasUser(uid) || !userStore.hasUser(tuid) ) {
-//
-//            res.status(404);
-//            return null;
-//
-//        }
-//
-//        if ( (curSubs == null) || (!curSubs.contains(tuid)) ) {
-//
-//            System.out.println("Current user does not have permission to this feed");
-//            res.status(403);
-//            return null;
-//
-//        }
-//
-//        return postStore.makeFeed(tuid);
-//
-//    }
-
     public HashSet<Integer> getLikes( Request req, Response res ) {
 
         int uid = Integer.parseInt( req.attribute("uid") );
@@ -1056,10 +1041,10 @@ public class Handler {
 
         }
 
-        if ( !likeStore.hasUserLike(pid, uid) ) {
-            likeStore.addUserLike(pid, uid);
+        if ( !likeStore.hasUserLike( pid, uid ) ) {
+            likeStore.addUserLike( pid, uid );
         } else {
-            likeStore.deleteUserLike(pid, uid);
+            likeStore.deleteUserLike( pid, uid );
         }
 
         return res.status();
