@@ -27,8 +27,7 @@ public class Handler {
     private final PostStore postStore;
     private final ImageStore imageStore;
     private final LikeStore likeStore;
-    private final SubStore subStore;
-    private final FollowStore followStore;
+    private final SubscriptionStore subscriptionStore;
     private final CommentStore commentStore;
     private final PasswordStore passwordStore;
     private final LoginStore loginStore;
@@ -49,8 +48,7 @@ public class Handler {
                    ImageStore imageStore,
                    LikeStore likeStore,
                    CommentStore commentStore,
-                   SubStore subStore,
-                   FollowStore followStore,
+                   SubscriptionStore subscriptionStore,
                    PasswordStore passwordStore,
                    LoginStore loginStore,
                    WalletStore walletStore,
@@ -61,8 +59,7 @@ public class Handler {
         this.imageStore = imageStore;
         this.likeStore = likeStore;
         this.commentStore = commentStore;
-        this.subStore = subStore;
-        this.followStore = followStore;
+        this.subscriptionStore = subscriptionStore;
         this.passwordStore = passwordStore;
         this.loginStore = loginStore;
         this.walletStore = walletStore;
@@ -71,26 +68,48 @@ public class Handler {
     }
 
     /////////////// PRIVATE HELPER FUNCTIONS ///////////////
-    private int checkUserPostPerms( int uid, int pid ) {
+    /**
+     * Checks if {@code uidCurrent} can view the Post specified
+     * by {@code pid}. Sets res.status().
+     *
+     * @return  true if the user can view the post;
+     *          false otherwise
+     */
+    private boolean hasUserPostPerms( int uidCurrent, int pid, Response res ) {
+
+        if ( !userStore.hasUser(uidCurrent) ) {
+
+            System.err.println("User does not exist");
+            res.status(404);
+            return false;
+
+        }
 
         if ( !postStore.hasPost(pid) ) {
 
             System.err.println("Post does not exist");
-            return 404;
+            res.status(404);
+            return false;
 
         }
 
-        if ( !userStore.hasUser(uid) ) {
+        int uidTarget = postStore.getPost(pid).getUserID();
+        List<UserTier> subscriptions = subscriptionStore.getSubscriptions(uidCurrent);
 
-            System.err.println("User does not exist");
-            return 404;
+        // Check if uidTarget is in the list of uidCurrent's subscriptions
+        for ( UserTier userTier : subscriptions ) {
+
+            if ( userTier.getUserID() == uidTarget ) {
+
+                res.status(200);
+                return true;
+
+            }
 
         }
 
-        ArrayList<Integer> subs = subStore.getSubscriptions(uid);
-        int tuid = postStore.getPost(pid).getUserID();
-
-        return ( (subs != null) && (subs.contains(tuid)) ? 200 : 403 );
+        res.status(403);
+        return false;
 
     }
 
@@ -681,28 +700,28 @@ public class Handler {
 
     }
 
-    /**
-     * @return a JSONObject containing the Post object and like count
-     */
-    public JSONObject getPost( Request req, Response res ) {
-
-        int pid = Integer.parseInt( req.params(":pid") );
-
-        if ( !postStore.hasPost(pid) ) {
-
-            System.err.println("Post does not exist");
-            res.status(404);
-            return new JSONObject();
-
-        }
-
-        // Get the post and like count
-        JSONObject json = makePostJson(pid);
-
-        res.status(200);
-        return json;
-
-    }
+//    /**
+//     * @return a JSONObject containing the Post object and like count
+//     */
+//    public JSONObject getPost( Request req, Response res ) {
+//
+//        int pid = Integer.parseInt( req.params(":pid") );
+//
+//        if ( !postStore.hasPost(pid) ) {
+//
+//            System.err.println("Post does not exist");
+//            res.status(404);
+//            return new JSONObject();
+//
+//        }
+//
+//        // Get the post and like count
+//        JSONObject json = makePostJson(pid);
+//
+//        res.status(200);
+//        return json;
+//
+//    }
 
     /**
      * The method returns a JSONObject containing a list of
@@ -1012,15 +1031,10 @@ public class Handler {
         System.out.println(uid);
         System.out.println(pid);
 
-        // ToDo: Make this work with subs
-//        int status = checkUserPostPerms(uid, pid);
-//        res.status(status);
-        // Assume it works cause we dont have subs yet
-        res.status(200);
+        // Check if the user has permissions
+        if ( !hasUserPostPerms( uid, pid, res ) ) {
 
-        if ( res.status() != 200 ) {
-
-            System.err.println("Error code: " + res.status() );
+            System.err.println("User does not have permission to view the post.");
             return new HashSet<>();
 
         }
@@ -1034,21 +1048,18 @@ public class Handler {
         int uid = Integer.parseInt( req.attribute("uid") );
         int pid = Integer.parseInt( req.params(":pid") );
 
-//        int status = checkUserPostPerms(uid, pid);
-//        res.status(status);
-        // assume match for now
-        res.status(200);
+        // Check if the user has permissions
+        if ( !hasUserPostPerms( uid, pid, res ) ) {
 
-        if ( res.status() == 200 ) {
+            System.err.println("User does not have permission to view the post.");
+            return res.status();
 
-            if ( !likeStore.hasUserLike(pid, uid) ) {
-                likeStore.addUserLike(pid, uid);
-            } else {
-                likeStore.deleteUserLike(pid, uid);
-            }
+        }
 
+        if ( !likeStore.hasUserLike(pid, uid) ) {
+            likeStore.addUserLike(pid, uid);
         } else {
-            System.err.println("Error code: " + res.status());
+            likeStore.deleteUserLike(pid, uid);
         }
 
         return res.status();
@@ -1068,13 +1079,10 @@ public class Handler {
         // Frontend sends a -1 in the JSON if there is no parent id, AKA comment on main post
         Integer parentId = (Integer.parseInt(parent) != -1) ? Integer.parseInt(parent) : null;
 
-//        int status = checkUserPostPerms(uid, pid);
-//        res.status(status);
+        // Check if the user has permissions
+        if ( !hasUserPostPerms( uid, pid, res ) ) {
 
-        // Check if the status is not OK
-        if ( res.status() != 200 ) {
-
-            System.err.println("Error code: " + res.status());
+            System.err.println("User does not have permission to view the post.");
             return res.status();
 
         }
@@ -1105,17 +1113,21 @@ public class Handler {
 
     }
 
-    // havent checked permissions for this yet
     public List<Comment> getParentComments( Request req, Response res ) {
 
-        res.type("application/json");
         Properties data = gson.fromJson(req.body(), Properties.class);
+        int uid = Integer.parseInt( req.attribute("uid") );
 
         // Parse the request
         int pid = Integer.parseInt( data.getProperty("pid") );
-        int uid = Integer.parseInt( data.getProperty("uid") );
-        int status = checkUserPostPerms(uid, pid);
-        res.status(status);
+
+        // Check if the user has permissions
+        if ( !hasUserPostPerms( uid, pid, res ) ) {
+
+            System.err.println("User does not have permission to view the post.");
+            return new LinkedList<>();
+
+        }
 
         if ( res.status() != 200 ) {
 
@@ -1131,19 +1143,17 @@ public class Handler {
 
     public List<Comment> getRepliesComments( Request req, Response res ) {
 
-        res.type("application/json");
         Properties data = gson.fromJson(req.body(), Properties.class);
+        int uid = Integer.parseInt( req.attribute("uid") );
 
         // Parse the request
         int pid = Integer.parseInt( data.getProperty("pid") );
-        int uid = Integer.parseInt( data.getProperty("uid") );
         int cid = Integer.parseInt( data.getProperty("cid") );
-        int status = checkUserPostPerms(uid, pid);
-        res.status(status);
 
-        if ( res.status() != 200 ) {
+        // Check if the user has permissions
+        if ( !hasUserPostPerms( uid, pid, res ) ) {
 
-            System.err.println("Error code: " + res.status());
+            System.err.println("User does not have permission to view the post.");
             return new LinkedList<>();
 
         }

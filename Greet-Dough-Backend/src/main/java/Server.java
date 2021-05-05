@@ -26,8 +26,7 @@ public class Server {
     private static LoginStore loginStore;
     private static WalletStore walletStore;
     private static ProfileStore profileStore;
-    private static SubStore subStore;
-    private static FollowStore followStore;
+    private static SubscriptionStore subscriptionStore;
 
     private static Gson gson = new Gson();
     private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
@@ -72,6 +71,7 @@ public class Server {
         loginStore = new LoginStorePostgres(jdbi);
         walletStore = new WalletStorePostgres(jdbi);
         profileStore = new ProfileStorePostgres(jdbi);
+        subscriptionStore = new SubscriptionStorePostgres(jdbi);
 
         Handler handler = new Handler(
 
@@ -80,8 +80,7 @@ public class Server {
             Server.imageStore,
             Server.likeStore,
             Server.commentStore,
-            Server.subStore,
-            Server.followStore,
+            Server.subscriptionStore,
             Server.passwordStore,
             Server.loginStore,
             Server.walletStore,
@@ -232,7 +231,8 @@ public class Server {
                 path("/:pid", () -> {
 
                     // Returns post object
-                    get("", handler::getPost, gson::toJson);
+                    // Currently unused
+//                    get("", handler::getPost, gson::toJson);
 
                     // Edit post Object
                     put("", handler::editPost, gson::toJson);
