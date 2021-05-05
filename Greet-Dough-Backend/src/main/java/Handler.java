@@ -222,7 +222,6 @@ public class Handler {
 
     public JSONObject getUserProfile( Request req, Response res ) {
 
-        res.type("application/json");
         int uid = Integer.parseInt( req.params(":uid") );
 
         JSONObject jsonToReturn = new JSONObject();
@@ -237,7 +236,6 @@ public class Handler {
 
     public String searchUsers( Request req, Response res ) throws JsonProcessingException {
 
-        res.type("application/json");
         String name = req.params(":name");
 
         System.out.println( "Found user " + name );
@@ -251,7 +249,6 @@ public class Handler {
 
     public int createUser( Request req, Response res ) {
 
-        res.type("application/json");
         Properties data = gson.fromJson(req.body(), Properties.class);
 
         // Parse the request
@@ -306,7 +303,7 @@ public class Handler {
 
     public int deleteUser( Request req, Response res ) {
 
-        int uid = Integer.parseInt( req.params(":id") );
+        int uid = Integer.parseInt( req.attribute("uid") );
         User tempUser = userStore.getUser(uid);
 
         // Should cascade delete the posts, images, comments, wallet, etc.
@@ -334,17 +331,9 @@ public class Handler {
      */
     public int editUser( Request req, Response res ) {
 
-        res.type("application/json");
         Properties data = gson.fromJson(req.body(), Properties.class);
+        int uid = Integer.parseInt( req.attribute("uid") );
 
-        // Check the token
-        String token = req.headers("token");
-        if ( !isValidToken( token, res ) ) {
-            return res.status();
-        }
-        int uid = loginStore.getUserID(token);
-        System.out.println(token);
-        System.out.println(req.headers());
         // Parse the request
         String newName = data.getProperty("name");
         String newBio = data.getProperty("bio");
@@ -391,8 +380,6 @@ public class Handler {
 
     public String tokenToId( Request req, Response res ) {
 
-        res.type("application/json");
-
         // Check the token
         String token = req.headers("token");
         if ( !isValidToken( token, res ) ) {
@@ -412,7 +399,6 @@ public class Handler {
 
     public String login( Request req, Response res ) {
 
-        res.type("application/json");
         Properties data = gson.fromJson(req.body(), Properties.class);
 
         // Parse the request
@@ -458,14 +444,7 @@ public class Handler {
      */
     public String getBalance( Request req, Response res ) throws ArithmeticException {
 
-        res.type("application/json");
-
-        // Check the token
-        String token = req.headers("token");
-        if ( !isValidToken( token, res ) ) {
-            return "";
-        }
-        int uid = loginStore.getUserID(token);
+        int uid = Integer.parseInt( req.attribute("uid") );
 
         BigDecimal bal = walletStore.getBalance(uid);
 
@@ -730,8 +709,7 @@ public class Handler {
      */
     public List<JSONObject> getUserFeed( Request req, Response res ) {
 
-        res.type("application/json");
-        int uid = Integer.parseInt( req.params(":uid") );
+        int uid = Integer.parseInt( req.attribute("uid") );
 
         if ( !userStore.hasUser(uid) ) {
 
@@ -791,12 +769,7 @@ public class Handler {
 
     public int createPost( Request req, Response res ) throws IOException, ServletException {
 
-        // Check the token
-        String token = req.headers("token");
-        if ( !isValidToken( token, res ) ) {
-            return res.status();
-        }
-        int uid = loginStore.getUserID(token);
+        int uid = Integer.parseInt( req.attribute("uid") );
 
         // Parse the request
         req.raw().setAttribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
@@ -834,15 +807,8 @@ public class Handler {
 
     public int deletePost( Request req, Response res ) {
 
-        res.type("application/json");
-        System.out.println("Reached endpoint");
-
-        // Check the token
-        String token = req.headers("token");
-        if ( !isValidToken( token, res ) ) {
-            return res.status();
-        }
-        int uid = loginStore.getUserID(token);
+        // Get the uid
+        int uid = Integer.parseInt( req.attribute("uid") );
 
         // Parse the request
         int pid = Integer.parseInt( req.params(":pid") );
@@ -884,15 +850,8 @@ public class Handler {
      */
     public int editPost( Request req, Response res ) {
 
-        res.type("application/json");
         Properties data = gson.fromJson(req.body(), Properties.class);
-
-        // Check the token
-        String token = req.headers("token");
-        if ( !isValidToken( token, res ) ) {
-            return res.status();
-        }
-        int uid = loginStore.getUserID(token);
+        int uid = Integer.parseInt( req.attribute("uid") );
 
         // Check if the user owns the post
         int pid = Integer.parseInt( req.params(":pid") );
@@ -979,12 +938,7 @@ public class Handler {
 
     public int uploadProfilePicture( Request req, Response res ) {
 
-        // Check the token
-        String token = req.headers("token");
-        if ( !isValidToken( token, res ) ) {
-            return res.status();
-        }
-        int uid = loginStore.getUserID(token);
+        int uid = Integer.parseInt( req.attribute("uid") );
 
         // Save the bytes from the request
         String pathToTempFile = saveImage( req, res, "file", "fileType" );
@@ -1002,8 +956,7 @@ public class Handler {
 
     public List<JSONObject> makeGallery( Request req, Response res ) {
 
-        res.type("application/json");
-        int uid = Integer.parseInt( req.params(":uid") );
+        int uid = Integer.parseInt( req.attribute("uid") );
 
         if ( !userStore.hasUser(uid) ) {
 
@@ -1050,20 +1003,12 @@ public class Handler {
 
     public HashSet<Integer> getLikes( Request req, Response res ) {
 
-        res.type("application/json");
-
-        // Parse the request
+        int uid = Integer.parseInt( req.attribute("uid") );
         int pid = Integer.parseInt( req.params(":pid") );
+        System.out.println(uid);
         System.out.println(pid);
 
-        // Check the token
-        String token = req.headers("token");
-        if ( !isValidToken( token, res ) ) {
-            return new HashSet<>();
-        }
-        int uid = loginStore.getUserID(token);
-        System.out.println(uid);
-
+        // ToDo: Make this work with subs
 //        int status = checkUserPostPerms(uid, pid);
 //        res.status(status);
         // Assume it works cause we dont have subs yet
@@ -1082,17 +1027,7 @@ public class Handler {
 
     public int likePost( Request req, Response res ) {
 
-        System.out.println("Reached endpoint");
-
-        res.type("application/json");
-
-        // Check the token
-        String token = req.headers("token");
-        if ( !isValidToken( token, res ) ) {
-            return res.status();
-        }
-        int uid = loginStore.getUserID(token);
-
+        int uid = Integer.parseInt( req.attribute("uid") );
         int pid = Integer.parseInt( req.params(":pid") );
 
 //        int status = checkUserPostPerms(uid, pid);
@@ -1118,13 +1053,7 @@ public class Handler {
 
     public int createComment( Request req, Response res ) {
 
-        res.type("application/json");
-
-        String token = req.headers("token");
-        if ( !isValidToken( token, res ) ) {
-            return res.status();
-        }
-        int uid = loginStore.getUserID(token);
+        int uid = Integer.parseInt( req.attribute("uid") );
 
         // Parse the request
         Properties data = gson.fromJson(req.body(), Properties.class);

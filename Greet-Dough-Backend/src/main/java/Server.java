@@ -120,7 +120,12 @@ public class Server {
 
         });
 
-        before((req, res) -> res.header("Access-Control-Allow-Origin", "*"));
+        before((req, res) -> {
+
+            res.header("Access-Control-Allow-Origin", "*");
+            res.type("application/json");
+
+        });
 
         //////////////////// No Auth ////////////////////
         path("/noauth", () -> {
@@ -156,13 +161,16 @@ public class Server {
 
 
         //////////////////// Auth ////////////////////
+        // Ensures all requests that require authentication have a
+        //      valid token. Sets the 'uid' attribute of the request
+        //      to the uid corresponding to the token.
         path("/auth", () -> {
 
             // Check the token
             before("/*", (req, res) -> {
 
                 // Only authenticate non-OPTIONS requests
-                if ( !req.requestMethod().equals( "OPTIONS" ) ) {
+                if ( !req.requestMethod().equals("OPTIONS") ) {
 
                     boolean authenticated = handler.checkToken( req, res );
                     if ( !authenticated ) {
