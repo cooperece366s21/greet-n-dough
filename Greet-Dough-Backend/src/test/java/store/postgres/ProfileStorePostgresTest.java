@@ -29,7 +29,7 @@ class ProfileStorePostgresTest extends ProfileStorePostgres {
     }
 
     @BeforeAll
-    static void setupAll() {
+    static void setUpAll() {
 
         // Delete all the databases (only use the relevant ones)
         ResetDao.deleteAll(jdbi);
@@ -54,7 +54,7 @@ class ProfileStorePostgresTest extends ProfileStorePostgres {
     }
 
     @BeforeEach
-    void setupEach() {
+    void setUpEach() {
 
         // Delete the databases
         profileStorePostgres.delete();
