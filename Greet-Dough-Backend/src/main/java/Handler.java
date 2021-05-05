@@ -786,7 +786,7 @@ public class Handler {
     }
 
     public int createPost( Request req, Response res ) throws IOException, ServletException {
-        System.out.println("Creating post");
+
         // Check the token
         String token = req.headers("token");
         if ( !isValidToken( token, res ) ) {

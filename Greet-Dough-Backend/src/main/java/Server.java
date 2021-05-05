@@ -1,4 +1,5 @@
 import org.jdbi.v3.core.Jdbi;
+import spark.Request;
 import store.postgres.*;
 import store.relation.*;
 import store.model.*;
@@ -15,6 +16,8 @@ import java.util.concurrent.TimeUnit;
 
 import static spark.Spark.*;
 import spark.staticfiles.StaticFilesConfiguration;
+
+import javax.servlet.http.HttpServletRequest;
 
 public class Server {
 
@@ -34,10 +37,23 @@ public class Server {
     private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private static final Cleaner cleaner = new Cleaner();
 
+    // Used to debug routes
+    // From https://stackoverflow.com/a/35170195
+    private static String requestInfoToString( Request req ) {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(req.requestMethod());
+        sb.append(" " + req.url());
+        sb.append(" " + req.body());
+        return sb.toString();
+
+    }
+
     public static void main( String[] args ) {
 
         // root is 'src/main/resources', so put files in 'src/main/resources/public'
         staticFiles.location(PathDefs.PUBLIC_DIR);
+//        staticFiles.header("Access-Control-Allow-Origin", "*");
 
         initExceptionHandler((e) -> {
             System.out.println("Could not start server on port 5432");
@@ -49,33 +65,6 @@ public class Server {
         // Schedule a task to clean up the database
         // Executes every hour
         scheduler.scheduleAtFixedRate(cleaner, 0, 1, TimeUnit.HOURS);
-
-        // Copy pasted from
-        // https://gist.github.com/saeidzebardast/e375b7d17be3e0f4dddf
-        // Changes all headers from all endpoints to allow CORS, which is necessary
-        // for the front end to be able to receive the responses properly.
-        options("/*",
-                (request, response) -> {
-
-                    String accessControlRequestHeaders = request
-                            .headers("Access-Control-Request-Headers");
-                    if (accessControlRequestHeaders != null) {
-                        response.header("Access-Control-Allow-Headers",
-                                accessControlRequestHeaders);
-                    }
-
-                    String accessControlRequestMethod = request
-                            .headers("Access-Control-Request-Method");
-                    if (accessControlRequestMethod != null) {
-                        response.header("Access-Control-Allow-Methods",
-                                accessControlRequestMethod);
-                    }
-
-                    return "OK";
-                });
-
-        before((request, response) -> response.header("Access-Control-Allow-Origin", "*"));
-
 
         Jdbi jdbi = GreetDoughJdbi.create("jdbc:postgresql://localhost:4321/greetdough");
         ResetDao.reset(jdbi);
@@ -92,32 +81,53 @@ public class Server {
 
         Handler handler = new Handler(
 
-                Server.userStore,
-                Server.postStore,
-                Server.imageStore,
-                Server.likeStore,
-                Server.commentStore,
-                Server.subStore,
-                Server.followStore,
-                Server.passwordStore,
-                Server.loginStore,
-                Server.walletStore,
-                Server.profileStore
+            Server.userStore,
+            Server.postStore,
+            Server.imageStore,
+            Server.likeStore,
+            Server.commentStore,
+            Server.subStore,
+            Server.followStore,
+            Server.passwordStore,
+            Server.loginStore,
+            Server.walletStore,
+            Server.profileStore
 
-            );
+        );
 
-        // Path Groups from https://sparkjava.com/documentation#path-groups
-//        path("/api", () -> {
-
-//            path("/login/")
-            // curl -H "Content-Type: application/json" --data "{"email":"a@gmail.com", "password":"123"}" localhost:5432/login
+        before((req, res) -> {
+            System.out.println(requestInfoToString(req));
+        });
 
 
+        // Copy pasted from
+        // https://gist.github.com/saeidzebardast/e375b7d17be3e0f4dddf
+        // Changes all headers from all endpoints to allow CORS, which is necessary
+        // for the front end to be able to receive the responses properly.
+        options("/*", (req, res) -> {
 
+            System.out.println("OPTIONS request");
+            String accessControlRequestHeaders = req
+                    .headers("Access-Control-Request-Headers");
+            if (accessControlRequestHeaders != null) {
+                res.header("Access-Control-Allow-Headers",
+                        accessControlRequestHeaders);
+            }
 
+            String accessControlRequestMethod = req
+                    .headers("Access-Control-Request-Method");
+            if (accessControlRequestMethod != null) {
+                res.header("Access-Control-Allow-Methods",
+                        accessControlRequestMethod);
+            }
 
+            return "OK";
 
-        // No auth needed
+        });
+
+        before((req, res) -> res.header("Access-Control-Allow-Origin", "*"));
+
+        //////////////////// No Auth ////////////////////
         path("/noauth", () -> {
 
             post("/login", handler::login, gson::toJson);
@@ -149,24 +159,28 @@ public class Server {
 
         });
 
-        // Auth
+        //////////////////// Auth ////////////////////
         path("/auth", () -> {
 
             // Check the token
             before("/*", (req, res) -> {
 
-                System.err.println( req.headers() );
-//                boolean authenticated = handler.checkToken( req, res );
-//                System.out.println("Checked the token");
-//                System.out.println( (String) req.attribute("uid") );
-//                if ( !authenticated ) {
-//
-//                    System.err.println("Invalid token.");
-//                    halt(401);
-//
-//                } else {
-//                    System.err.println("Valid token.");
-//                }
+                // Only authenticate non-OPTIONS requests
+                if ( !req.requestMethod().equals( "OPTIONS" ) ) {
+
+                    boolean authenticated = handler.checkToken( req, res );
+                    System.out.println("Checked the token");
+                    System.out.println( (String) req.attribute("uid") );
+                    if ( !authenticated ) {
+
+                        System.err.println("Invalid token.");
+                        halt(401);
+
+                    } else {
+                        System.err.println("Valid token.");
+                    }
+
+                }
 
             });
 
@@ -268,7 +282,6 @@ public class Server {
             });
 
         });
-
 
         // USER RELATION ROUTES
         ///////////////////////
