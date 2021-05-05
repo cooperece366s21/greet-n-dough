@@ -228,7 +228,7 @@ class UserFeed extends  React.Component<any, any> {
 
                                         <Box>
                                             <HStack color={"black"}>
-                                                <Avatar name={c.map.username} bg="teal.500" src={c.map.avatar} w="50px"/>
+                                                <Avatar name={c.map.username} bg="teal.400" src={c.map.avatar} w="50px"/>
                                                  <Text fontWeight={500} marginLeft={"10px"}> { c.map.username } </Text>
                                             </HStack>
                                         </Box>
