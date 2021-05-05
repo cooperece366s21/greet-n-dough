@@ -339,7 +339,8 @@ public class Handler {
             return res.status();
         }
         int uid = loginStore.getUserID(token);
-
+        System.out.println(token);
+        System.out.println(req.headers());
         // Parse the request
         String newName = data.getProperty("name");
         String newBio = data.getProperty("bio");
@@ -785,7 +786,7 @@ public class Handler {
     }
 
     public int createPost( Request req, Response res ) throws IOException, ServletException {
-
+        System.out.println("Creating post");
         // Check the token
         String token = req.headers("token");
         if ( !isValidToken( token, res ) ) {

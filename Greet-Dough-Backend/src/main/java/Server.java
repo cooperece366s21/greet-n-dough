@@ -14,6 +14,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static spark.Spark.*;
+import spark.staticfiles.StaticFilesConfiguration;
 
 public class Server {
 
@@ -132,10 +133,16 @@ public class Server {
             // Returns user given an id
             // curl localhost:5432/user/1/
             path("/user", () -> {
-                get("/:uid", handler::getUser, gson::toJson);
 
-                // biography and profile picture
-                get("/:uid/profile", handler::getUserProfile, gson::toJson);
+                path("/:uid", () -> {
+
+                    get("", handler::getUser, gson::toJson);
+
+                    // biography and profile picture
+                    get("/profile", handler::getUserProfile, gson::toJson);
+
+                });
+
             });
 
             get("/search/:name", handler::searchUsers, gson::toJson);
@@ -146,26 +153,35 @@ public class Server {
         path("/auth", () -> {
 
             // Check the token
-            before((req,res) -> {
+            before("/*", (req, res) -> {
 
                 System.err.println( req.headers() );
-                boolean authenticated = handler.checkToken( req, res );
-                System.out.println("Checked the token");
-                System.out.println( (String) req.attribute("uid") );
-                if ( !authenticated ) {
-
-                    System.err.println("Invalid token.");
-                    halt(401);
-
-                }
+//                boolean authenticated = handler.checkToken( req, res );
+//                System.out.println("Checked the token");
+//                System.out.println( (String) req.attribute("uid") );
+//                if ( !authenticated ) {
+//
+//                    System.err.println("Invalid token.");
+//                    halt(401);
+//
+//                } else {
+//                    System.err.println("Valid token.");
+//                }
 
             });
 
             ////////// Users //////////
             path("/user", () -> {
 
-                path("/:uid", () -> {
+                before("/*", (req, res) -> {
+                    System.err.println("Route: /user/*");
+                });
 
+                before("", (req, res) -> {
+                    System.err.println("Route: /user");
+                });
+
+                path("/:uid", () -> {
 
                     // Deletes user given UserID
                     // curl -X delete localhost:5432/user/1/
@@ -185,6 +201,14 @@ public class Server {
 
             ////////// Posts //////////
             path("/post", () -> {
+
+                before("/*", (req, res) -> {
+                    System.err.println("Route: /post/*");
+                });
+
+                before("", (req, res) -> {
+                    System.err.println("Route: /post");
+                });
 
                 // Creates a new post
                 post("", handler::createPost, gson::toJson);
@@ -226,6 +250,14 @@ public class Server {
 
             ////////// Wallet //////////
             path("/wallet", () -> {
+
+                before("/*", (req, res) -> {
+                    System.err.println("Route: /wallet/*");
+                });
+
+                before("", (req, res) -> {
+                    System.err.println("Route: /wallet");
+                });
 
                 get("", handler::getBalance, gson::toJson);
 
