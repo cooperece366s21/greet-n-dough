@@ -101,7 +101,6 @@ public class Server {
         // for the front end to be able to receive the responses properly.
         options("/*", (req, res) -> {
 
-            System.out.println("OPTIONS request");
             String accessControlRequestHeaders = req
                     .headers("Access-Control-Request-Headers");
             if (accessControlRequestHeaders != null) {
