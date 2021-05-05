@@ -8,6 +8,7 @@ import {
     Input,
     Image,
     Button,
+    Stat, StatLabel, StatNumber, StatHelpText, StatArrow, StatGroup,
     Flex, Text, SkeletonCircle,
 } from "@chakra-ui/react";
 import {Link} from "react-router-dom";
@@ -81,7 +82,7 @@ class UserHeader extends React.Component<any, any> {
 
     renderHeader() {
 
-        let nameAndEditButtons = <HStack>
+        let upperHeader = <HStack>
 
 
             { this.state.editing ?
@@ -92,6 +93,12 @@ class UserHeader extends React.Component<any, any> {
                 />
                 : <Text fontSize={'4xl'} fontWeight={500} w="80%"> {this.state.name} </Text>
             }
+
+                <Stat paddingRight={"20px"}>
+                    <StatLabel> Subscribers </StatLabel>
+                    <Center> <StatNumber> 0 </StatNumber> </Center>
+                </Stat>
+
 
             { this.state.hasOwnership ?
                 <> </> :
@@ -194,7 +201,7 @@ class UserHeader extends React.Component<any, any> {
 
                          {/*UPPER TEXT CONTAINER*/}
                          <Box w="100%" h="80px">
-                             {nameAndEditButtons}
+                             {upperHeader}
                          </Box>
 
                          {/*LOWER TEXT CONTAINER*/}
