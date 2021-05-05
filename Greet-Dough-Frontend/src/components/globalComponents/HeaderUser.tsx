@@ -69,7 +69,7 @@ class HeaderUser extends React.Component<any, any> {
 
             {/*User Icon*/}
             <Link to={`/user/${this.state.user?.ID}`}>
-                <Avatar name={this.state.user?.name} bg="teal.500" src={this.state.user?.avatar} w="50px"/>
+                <Avatar name={this.state.user?.name} bg="teal.400" src={this.state.user?.avatar} w="50px"/>
             </Link>
 
             {/*Greeting and logout V-stack*/}

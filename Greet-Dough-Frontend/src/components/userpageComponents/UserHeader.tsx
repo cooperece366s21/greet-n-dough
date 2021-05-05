@@ -125,12 +125,14 @@ class UserHeader extends React.Component<any, any> {
                                     this.setState({
                                         name: this.state.editedName,
                                         bio: this.state.editedBio,
-                                    })
+                                    });
                                 }
                             })
 
-                        api.uploadProfilePicture( token, this.state.uploadedPicture );
-                        this.setState({editing: false});
+                        api.uploadProfilePicture( token, this.state.uploadedPicture )
+                            .then( () => {
+                                this.setState({editing: false});
+                            })
 
                     }}>
                         ✔
@@ -165,7 +167,7 @@ class UserHeader extends React.Component<any, any> {
                 maxFileSize={5242880}
             /> :
             this.state.profilePicture ?
-                <Avatar src={this.state.profilePicture} bg="teal.500" size={"2xl"} /> :
+                <Avatar src={this.state.profilePicture} name={this.state.name} bg="teal.400" size={"2xl"} /> :
                 <> </>
         }</>;
         let biography = <>{this.state.editing ?
