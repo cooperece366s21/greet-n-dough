@@ -41,11 +41,9 @@ public class Server {
     // From https://stackoverflow.com/a/35170195
     private static String requestInfoToString( Request req ) {
 
-        StringBuilder sb = new StringBuilder();
-        sb.append(req.requestMethod());
-        sb.append(" " + req.url());
-        sb.append(" " + req.body());
-        return sb.toString();
+        return req.requestMethod() +
+                " " + req.url() +
+                " " + req.body();
 
     }
 
@@ -95,9 +93,10 @@ public class Server {
 
         );
 
-        before((req, res) -> {
-            System.out.println(requestInfoToString(req));
-        });
+        // Display information about the request
+//        before((req, res) -> {
+//            System.out.println( requestInfoToString(req) );
+//        });
 
 
         // Copy pasted from
@@ -158,6 +157,7 @@ public class Server {
             get("/search/:name", handler::searchUsers, gson::toJson);
 
         });
+
 
         //////////////////// Auth ////////////////////
         path("/auth", () -> {

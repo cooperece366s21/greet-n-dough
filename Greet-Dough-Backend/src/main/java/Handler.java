@@ -138,14 +138,19 @@ public class Handler {
 
     }
 
+    /**
+     * The method checks if the token is valid.
+     * Adds a uid attribute to the request for later use.
+     *
+     * @return   true if the token is valid; false otherwise
+     */
     public boolean checkToken( Request req, Response res ) {
 
         // Check the token
         String token = req.headers("token");
-        System.err.println(token);
         if ( isValidToken( token, res ) ) {
 
-            // Get the uid and place it in the request
+            // Get the uid and store it in the request
             int uid = loginStore.getUserID(token);
             req.attribute("uid", String.valueOf(uid) );
             return true;
