@@ -1,7 +1,6 @@
 import org.jdbi.v3.core.Jdbi;
 import spark.Request;
 import store.postgres.*;
-import store.relation.*;
 import store.model.*;
 
 import com.google.gson.Gson;
@@ -15,9 +14,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static spark.Spark.*;
-import spark.staticfiles.StaticFilesConfiguration;
-
-import javax.servlet.http.HttpServletRequest;
 
 public class Server {
 
@@ -30,8 +26,8 @@ public class Server {
     private static LoginStore loginStore;
     private static WalletStore walletStore;
     private static ProfileStore profileStore;
-    private static SubStore subStore = new SubStoreImpl();
-    private static FollowStore followStore = new FollowStoreImpl();
+    private static SubStore subStore;
+    private static FollowStore followStore;
 
     private static Gson gson = new Gson();
     private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
