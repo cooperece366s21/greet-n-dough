@@ -12,8 +12,8 @@ public interface WalletDao {
     void deleteTable();
 
     @SqlUpdate( "CREATE TABLE IF NOT EXISTS wallet( " +
-                    "user_id INT " +                    "NOT NULL, " +
-                    "user_balance NUMERIC " +     "NOT NULL " + "DEFAULT 0, " +
+                    "user_id INT " +            "NOT NULL, " +
+                    "user_balance NUMERIC " +   "NOT NULL " + "DEFAULT 0, " +
                     "PRIMARY KEY(user_id), " +
                     "CONSTRAINT fk_user " + "FOREIGN KEY(user_id) " +
                         "REFERENCES users(user_id) " + "ON DELETE CASCADE " +
