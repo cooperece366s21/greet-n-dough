@@ -16,10 +16,10 @@ public interface SubscriptionDao {
     @SqlUpdate("CREATE TABLE IF NOT EXISTS subscriptions( " +
                     "follower_id INT " +    "NOT NULL, " +
                     "creator_id INT " +     "NOT NULL, " +
-                    "tier INT " +           "NOT NULL " + "DEFAULT 0, " +
-                    "CONSTRAINT fk_creator " + "FOREIGN KEY(creator_id) " +
+                    "tier INT " +           "NOT NULL, " +
+                    "CONSTRAINT fk_follower " + "FOREIGN KEY(follower_id) " +
                         "REFERENCES users(user_id) " + "ON DELETE CASCADE, " +
-                    "CONSTRAINT fk_follower " + "FOREIGN_KEY(follower_id) " +
+                    "CONSTRAINT fk_creator " + "FOREIGN KEY(creator_id) " +
                         "REFERENCES users(user_id) " + "ON DELETE CASCADE " +
                 ");")
     void createTable();
