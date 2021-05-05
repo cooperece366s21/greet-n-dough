@@ -1,4 +1,4 @@
-import {PostJson, CommentJson, User} from "./types";
+import {PostJson, CommentJson, UserObject, UserJson} from "./types";
 export const BACKEND_URL = "http://localhost:5432";
 
 
@@ -105,7 +105,7 @@ export async function getUser( uid:number ) {
 
         return await res.json()
             .then(body => {
-                let user:User = body.map;
+                let user:UserObject = body.map;
                 user.avatar = convertToCorrectUrl(user.avatar);
                 return user;
             });
@@ -129,7 +129,13 @@ export async function searchUser( name:string ) {
     if (res.ok) {
         return await res.json()
             .then( body => {
-                return JSON.parse(body);
+                body = body.myArrayList;
+
+                body.forEach( (user:UserJson, userIndex:number) => {
+                    body[userIndex].map.avatar = convertToCorrectUrl(user.map.avatar);
+                })
+
+                return body;
             });
     }
     else {

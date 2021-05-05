@@ -20,10 +20,10 @@ import {
 import {Link} from "react-router-dom";
 import api from "../../services/api";
 import { withRouter } from 'react-router-dom';
-import {User} from "../../services/types";
+import {UserObject} from "../../services/types";
 
 type UserState = {
-    user: User|null,
+    user: UserObject|null,
     loggedIn: boolean|null,
     drawer: boolean;
     wallet : string | null;

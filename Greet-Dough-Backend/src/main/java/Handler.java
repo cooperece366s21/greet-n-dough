@@ -204,11 +204,9 @@ public class Handler {
 
             JSONObject userJSON = new JSONObject( userStore.getUser(uid) );
 
-            System.err.println("Adding avatar now...");
 
             userJSON.put("avatar", getUrlToPFP(uid) );
 
-            System.err.println("No error :)");
             res.status(200);
             return userJSON;
 
@@ -234,16 +232,23 @@ public class Handler {
 
     }
 
-    public String searchUsers( Request req, Response res ) throws JsonProcessingException {
+    public JSONArray searchUsers( Request req, Response res ) throws JsonProcessingException {
 
         String name = req.params(":name");
 
         System.out.println( "Found user " + name );
 
-        List<User> results = userStore.searchUsers(name);
+        List<User> userList = userStore.searchUsers(name);
+        JSONArray userJSONarray = new JSONArray();
+
+        for( User user : userList ){
+            JSONObject userJSON = new JSONObject( user );
+            userJSON.put("avatar", getUrlToPFP(user.getID()) );
+            userJSONarray.put( userJSON.toMap() );
+        }
         res.status(200);
-        System.out.println( mapper.writeValueAsString(results) );
-        return mapper.writeValueAsString(results);
+
+        return userJSONarray;
 
     }
 

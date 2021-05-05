@@ -57,10 +57,13 @@ type CommentObject = {
     reloadComments: boolean,
 }
 
-type User = {
+type UserJson = {
+    map: UserObject
+}
+type UserObject = {
     name: string,
     ID: number,
     avatar: string,
 }
 
-export type { Post, PostObject, Time, Date, TimeCreated, FeedState, PostJson, CommentJson, CommentObject, User }
+export type { Post, PostObject, Time, Date, TimeCreated, FeedState, PostJson, CommentJson, CommentObject, UserObject, UserJson }

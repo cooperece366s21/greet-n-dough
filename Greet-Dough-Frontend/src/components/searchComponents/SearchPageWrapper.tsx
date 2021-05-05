@@ -5,6 +5,7 @@ import {
     Center,
     SkeletonCircle,
     HStack,
+    Avatar,
     VStack,
     Divider,
 } from "@chakra-ui/react";
@@ -14,43 +15,38 @@ import {
 } from "react-router-dom";
 
 import api from "../../services/api";
-
-
-type User = {
-    name: string,
-    id: string,
-}
+import {UserJson} from "../../services/types";
 
 type SearchState = {
     name: string,
-    results: User[] | null,
+    users: UserJson[] | null,
 
 }
 class SearchPageWrapper extends React.Component<any, any> {
 
     state: SearchState = {
         name: "",
-        results: null,
+        users: null,
     }
 
     constructor(props:any) {
         super(props);
         this.state = {
             name: props.name,
-            results: null,
+            users: null,
         }
     }
 
     componentDidMount() {
         api.searchUser(this.state.name)
             .then( users => {
-                this.setState({results: users});
+                this.setState({users: users});
             });
 
     }
 
     render() {
-        const users = this.state.results;
+        const users = this.state.users;
         const userTile = users?.map( (user) => (
 
             <>
@@ -58,14 +54,14 @@ class SearchPageWrapper extends React.Component<any, any> {
                     <HStack>
 
                         <Box w="100px" h="100px">
-                            <SkeletonCircle size="95px" />
+                            <Avatar src={user.map.avatar} name={user.map.name} bg={"teal.400"} size={"xl"}/>
                         </Box>
 
                         <Box h="100px" w="300px" >
                             <VStack>
                                 <Box w="100%" float={"left"}>
-                                    <Link to={`/user/${user.id}`}>
-                                        <Text fontSize={"20px"} fontWeight={600}> {user.name} </Text>
+                                    <Link to={`/user/${user.map.ID}`}>
+                                        <Text fontSize={"20px"} fontWeight={600}> {user.map.name} </Text>
                                     </Link>
                                 </Box>
                             </VStack>
