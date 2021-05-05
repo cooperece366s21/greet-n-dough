@@ -169,8 +169,6 @@ public class Server {
                 if ( !req.requestMethod().equals( "OPTIONS" ) ) {
 
                     boolean authenticated = handler.checkToken( req, res );
-                    System.out.println("Checked the token");
-                    System.out.println( (String) req.attribute("uid") );
                     if ( !authenticated ) {
 
                         System.err.println("Invalid token.");
