@@ -18,7 +18,16 @@ public interface SubscriptionStore {
      */
     List<UserTier> getFollowers( int uid );
 
+    /**
+     * Adds a tier 0 subscription from {@code uidCurrent} to {@code uidTarget}.
+     */
     void addSubscription( int uidCurrent, int uidTarget );
+
+    /**
+     * Adds a subscription from {@code uidCurrent} to {@code uidTarget} with
+     * the specified tier level.
+     */
+    void addSubscription( int uidCurrent, int uidTarget, int tier );
 
     void deleteSubscription( int uidCurrent, int uidTarget );
 

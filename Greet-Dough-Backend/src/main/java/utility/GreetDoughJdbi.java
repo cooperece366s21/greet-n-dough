@@ -29,6 +29,7 @@ public class GreetDoughJdbi {
         jdbi.registerRowMapper( new LikeRowMapper() );
         jdbi.registerRowMapper( new CommentRowMapper() );
         jdbi.registerRowMapper( new ProfileRowMapper() );
+        jdbi.registerRowMapper( new UserTierRowMapper() );
 
         return jdbi;
 
@@ -137,6 +138,20 @@ public class GreetDoughJdbi {
             Integer iid = rs.getObject("image_id", Integer.class);
 
             return new Profile( uid, bio, iid );
+
+        }
+
+    }
+
+    public static class UserTierRowMapper implements RowMapper<UserTier> {
+
+        @Override
+        public UserTier map( final ResultSet rs, final StatementContext ctx ) throws SQLException {
+
+            int uid = rs.getInt("user_id");
+            int tier = rs.getInt("tier");
+
+            return new UserTier( uid, tier );
 
         }
 

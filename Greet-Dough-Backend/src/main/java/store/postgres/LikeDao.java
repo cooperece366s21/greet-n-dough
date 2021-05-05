@@ -24,7 +24,7 @@ public interface LikeDao {
 
     @SqlUpdate( "INSERT INTO likes (post_id, user_id) " +
                     "VALUES (:post_id, :user_id);")
-    int addUserLike(@Bind("post_id") int post_id,
+    void addUserLike(@Bind("post_id") int post_id,
                     @Bind("user_id") int user_id);
 
     @SqlUpdate( "DELETE FROM likes " +
