@@ -120,8 +120,8 @@ class UserHeader extends React.Component<any, any> {
                     <option value={1}>Tier 1 $5</option>
                     <option value={2}>Tier 2 $10</option>
                     <option value={3}>Tier 3 $15</option>
-                    <option value={4}>Tier 2 $20</option>
-                    <option value={5}>Tier 3 $25</option>
+                    <option value={4}>Tier 4 $20</option>
+                    <option value={5}>Tier 5 $25</option>
                 </Select>
             }
 

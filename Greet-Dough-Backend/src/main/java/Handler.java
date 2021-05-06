@@ -559,9 +559,12 @@ public class Handler {
      *
      * @return a JSONObject with the Post object and like count
      */
-    private JSONObject formatPostJson(Post post ) {
+    private JSONObject formatPostJson(Post post, boolean hidden ) {
 
         int pid = post.getID();
+        if ( hidden ) {
+            post = new Post("HIDDEN", "HIDDEN", pid, post.getUserID(), post.getTier() );
+        }
 
         JSONObject json = new JSONObject();
 
@@ -580,18 +583,24 @@ public class Handler {
 
         // Shaping the comment field to be much nicer for the frontend
         LinkedList<JSONObject> comments = new LinkedList<>();
-        for ( Comment comment: commentStore.getParents(pid) ) {
 
-            JSONObject tempCommentJson = new JSONObject(comment);
-            int uid =  tempCommentJson.getInt("userID");
-            tempCommentJson.put("username", userStore.getUser(uid).getName() );
-            tempCommentJson.put("avatar", getUrlToPFP(uid) );
-            comments.add( tempCommentJson );
+        if( !hidden ) {
+
+            for (Comment comment : commentStore.getParents(pid)) {
+
+                JSONObject tempCommentJson = new JSONObject(comment);
+                int uid = tempCommentJson.getInt("userID");
+                tempCommentJson.put("username", userStore.getUser(uid).getName());
+                tempCommentJson.put("avatar", getUrlToPFP(uid));
+                comments.add(tempCommentJson);
+
+            }
 
         }
 
         json.put( "comments", comments.toArray() );
         json.put( "images", postUrlList.toArray() );
+        json.put( "hidden", hidden );
 
         return json;
 
@@ -652,28 +661,15 @@ public class Handler {
         List<Post> feed = postStore.makeFeed(uid);
 
         // Check permissions of the user and the post
-        List<Post> filteredFeed = new ArrayList<>();
-
-        if (cuid == uid) {
-            filteredFeed = feed;
-        } else {
-
-            for ( Post post: feed ){
-
-                if ( cuidTier < post.getTier() ) {
-                    Post hiddenPost = new Post(
-                            "HIDDEN", "HIDDEN", post.getID(), post.getUserID(), post.getTier()
-                    );
-                    filteredFeed.add( hiddenPost );
-                } else {
-                    filteredFeed.add( post );
-                }
-            }
-        }
 
         List<JSONObject> listJSON = new LinkedList<>();
-        for ( Post post : filteredFeed ) {
-            listJSON.add( formatPostJson( post ) );
+
+        for ( Post post : feed ){
+            if ( cuidTier < post.getTier() && cuid!=uid ) {
+                listJSON.add( formatPostJson( post, true));
+            } else {
+                listJSON.add( formatPostJson( post, false ));
+            }
         }
 
         res.status(200);
