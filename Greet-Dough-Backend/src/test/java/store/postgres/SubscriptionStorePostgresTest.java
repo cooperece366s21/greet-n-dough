@@ -66,11 +66,21 @@ class SubscriptionStorePostgresTest extends SubscriptionStorePostgres {
         List<UserTier> newUser_4_subscriptions = subscriptionStorePostgres.getSubscriptions( newUser_4.getID() );
         assert ( newUser_4_subscriptions.size() == 1 );
 
+        // Test subscribing to multiple users
+        subscriptionStorePostgres.addSubscription( newUser_2.getID(), newUser_1.getID(), 3 );
+        subscriptionStorePostgres.addSubscription( newUser_2.getID(), newUser_3.getID(), 1 );
+        subscriptionStorePostgres.addSubscription( newUser_2.getID(), newUser_4.getID(), 2 );
+        List<UserTier> newUser_2_subscriptions = subscriptionStorePostgres.getSubscriptions( newUser_2.getID() );
+        assert ( newUser_2_subscriptions.size() == 3 );
+
         // Test deleting the subscription
         //      Should delete cascade the subscribers and followers
         subscriptionStorePostgres.deleteSubscription( newUser_3.getID(), newUser_4.getID() );
         assert ( subscriptionStorePostgres.getSubscriptions( newUser_3.getID() ).isEmpty() );
-        assert ( subscriptionStorePostgres.getFollowers( newUser_4.getID() ).isEmpty() );
+
+        // Test deleting the user
+        userStorePostgres.deleteUser( newUser_1.getID() );
+        assert ( subscriptionStorePostgres.getSubscriptions( newUser_2.getID() ).size() == 2 );
 
         // Users can't subscribe to themselves (to do in handler)
 
