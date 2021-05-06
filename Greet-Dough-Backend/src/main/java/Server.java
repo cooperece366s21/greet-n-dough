@@ -46,7 +46,6 @@ public class Server {
 
         // root is 'src/main/resources', so put files in 'src/main/resources/public'
         staticFiles.location(PathDefs.PUBLIC_DIR);
-//        staticFiles.header("Access-Control-Allow-Origin", "*");
 
         initExceptionHandler((e) -> {
             System.out.println("Could not start server on port 5432");
@@ -291,6 +290,9 @@ public class Server {
             });
 
         });
+
+        // Add a newline
+        after((req,res) -> System.out.println());
 
         // USER RELATION ROUTES
         ///////////////////////

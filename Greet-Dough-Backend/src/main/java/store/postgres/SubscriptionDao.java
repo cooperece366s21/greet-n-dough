@@ -36,7 +36,8 @@ public interface SubscriptionDao {
     @SqlQuery("SELECT tier FROM subscriptions " +
                     "WHERE follower_id = (:follower_id) AND " +
                         "creator_id = (:creator_id);")
-    Optional<Integer> hasSubscription( int follower_id, int creator_id );
+    Optional<Integer> hasSubscription(@Bind("follower_id") int follower_id,
+                                      @Bind("creator_id") int creator_id);
 
     @SqlUpdate("INSERT INTO subscriptions (follower_id, creator_id, tier) " +
                     "VALUES (:follower_id, :creator_id, :tier);")
@@ -52,7 +53,7 @@ public interface SubscriptionDao {
 
     @SqlUpdate( "UPDATE subscriptions " +
                     "SET tier = (:new_tier) " +
-                    "WHERE follower_id = (:follower_id) AND" +
+                    "WHERE follower_id = (:follower_id) AND " +
                         "creator_id = (:creator_id);")
     void changeSubscription(@Bind("follower_id") int follower_id,
                             @Bind("creator_id") int creator_id,

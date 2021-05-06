@@ -52,6 +52,7 @@ public class SubscriptionHandler {
         // Check if the specified tier is valid
         if ( !Tiers.isValidTier(tierIncrease) || tierIncrease == 0 ) {
 
+            System.err.println("Error: Invalid Tier");
             res.status(404);
             return res.status();
 
