@@ -106,7 +106,7 @@ public class Handler {
         // Check if uidTarget is in the list of uidCurrent's subscriptions
         for ( UserTier userTier : subscriptions ) {
 
-            if ( userTier.getUserID() == uidTarget ) {
+            if ( userTier.getUserID() == uidTarget && userTier.getTier() >= postStore.getPost(pid).getTier() ) {
 
                 res.status(200);
                 return true;
@@ -178,7 +178,7 @@ public class Handler {
 
             // Get the uid and store it in the request
             int uid = loginStore.getUserID(token);
-            req.attribute("uid", String.valueOf(uid) );
+            req.attribute("cuid", String.valueOf(uid) );
             return true;
 
         } else {
@@ -334,7 +334,7 @@ public class Handler {
 
     public int deleteUser( Request req, Response res ) {
 
-        int uid = Integer.parseInt( req.attribute("uid") );
+        int uid = Integer.parseInt( req.attribute("cuid") );
         User tempUser = userStore.getUser(uid);
 
         // Should cascade delete the posts, images, comments, wallet, etc.
@@ -363,7 +363,7 @@ public class Handler {
     public int editUser( Request req, Response res ) {
 
         Properties data = gson.fromJson(req.body(), Properties.class);
-        int uid = Integer.parseInt( req.attribute("uid") );
+        int uid = Integer.parseInt( req.attribute("cuid") );
 
         // Parse the request
         String newName = data.getProperty("name");
@@ -475,7 +475,7 @@ public class Handler {
      */
     public String getBalance( Request req, Response res ) throws ArithmeticException {
 
-        int uid = Integer.parseInt( req.attribute("uid") );
+        int uid = Integer.parseInt( req.attribute("cuid") );
 
         BigDecimal bal = walletStore.getBalance(uid);
 
@@ -631,7 +631,7 @@ public class Handler {
      */
     public List<JSONObject> getUserFeed( Request req, Response res ) {
 
-        int cuid = Integer.parseInt( req.attribute("uid") );
+        int cuid = Integer.parseInt( req.attribute("cuid") );
         int uid = Integer.parseInt( req.params("uid") );
 
         int cuidTier = 0;
@@ -720,7 +720,7 @@ public class Handler {
 
     public int createPost( Request req, Response res ) throws IOException, ServletException {
 
-        int uid = Integer.parseInt( req.attribute("uid") );
+        int uid = Integer.parseInt( req.attribute("cuid") );
 
         // Parse the request
         req.raw().setAttribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
@@ -763,7 +763,7 @@ public class Handler {
 
     public int deletePost( Request req, Response res ) {
 
-        int uid = Integer.parseInt( req.attribute("uid") );
+        int uid = Integer.parseInt( req.attribute("cuid") );
 
         // Parse the request
         int pid = Integer.parseInt( req.params(":pid") );
@@ -841,7 +841,7 @@ public class Handler {
     public int editPost( Request req, Response res ) {
 
         Properties data = gson.fromJson(req.body(), Properties.class);
-        int uid = Integer.parseInt( req.attribute("uid") );
+        int uid = Integer.parseInt( req.attribute("cuid") );
 
         // Check if the user owns the post
         int pid = Integer.parseInt( req.params(":pid") );
@@ -950,7 +950,7 @@ public class Handler {
 
     public int uploadProfilePicture( Request req, Response res ) {
 
-        int uid = Integer.parseInt( req.attribute("uid") );
+        int uid = Integer.parseInt( req.attribute("cuid") );
 
         // Save the bytes from the request
         String pathToTempFile = saveImage( req, res, "file", "fileType" );
@@ -968,7 +968,7 @@ public class Handler {
 
     public List<JSONObject> makeGallery( Request req, Response res ) {
 
-        int uid = Integer.parseInt( req.attribute("uid") );
+        int uid = Integer.parseInt( req.attribute("cuid") );
 
         if ( !userStore.hasUser(uid) ) {
 
@@ -990,7 +990,7 @@ public class Handler {
 
     public HashSet<Integer> getLikes( Request req, Response res ) {
 
-        int uid = Integer.parseInt( req.attribute("uid") );
+        int uid = Integer.parseInt( req.attribute("cuid") );
         int pid = Integer.parseInt( req.params(":pid") );
         System.out.println(uid);
         System.out.println(pid);
@@ -1009,7 +1009,7 @@ public class Handler {
 
     public int likePost( Request req, Response res ) {
 
-        int uid = Integer.parseInt( req.attribute("uid") );
+        int uid = Integer.parseInt( req.attribute("cuid") );
         int pid = Integer.parseInt( req.params(":pid") );
 
         // Check if the user has permissions
@@ -1032,7 +1032,7 @@ public class Handler {
 
     public int createComment( Request req, Response res ) {
 
-        int uid = Integer.parseInt( req.attribute("uid") );
+        int cuid = Integer.parseInt( req.attribute("cuid") );
 
         // Parse the request
         Properties data = gson.fromJson(req.body(), Properties.class);
@@ -1044,7 +1044,7 @@ public class Handler {
         Integer parentId = (Integer.parseInt(parent) != -1) ? Integer.parseInt(parent) : null;
 
         // Check if the user has permissions
-        if ( !hasUserPostPerms( uid, pid, res ) ) {
+        if ( !hasUserPostPerms( cuid, pid, res ) ) {
 
             System.err.println("User does not have permission to view the post.");
             return res.status();
@@ -1052,7 +1052,7 @@ public class Handler {
         }
 
         if ( parentId == null ) {
-            commentStore.addComment( contents, uid, pid );
+            commentStore.addComment( contents, cuid, pid );
         } else {
 
             // Check if the desired parentId exists
@@ -1066,7 +1066,7 @@ public class Handler {
             // Checks if the desired parent comment does not also have a parent
             //      to ensure depth 1
             if ( commentStore.isParent(parentId) ) {
-                commentStore.addComment( contents, uid, pid, parentId );
+                commentStore.addComment( contents, cuid, pid, parentId );
             } else {
                 System.err.println("Error code: " + res.status());
             }
@@ -1080,7 +1080,7 @@ public class Handler {
     public List<Comment> getParentComments( Request req, Response res ) {
 
         Properties data = gson.fromJson(req.body(), Properties.class);
-        int uid = Integer.parseInt( req.attribute("uid") );
+        int uid = Integer.parseInt( req.attribute("cuid") );
 
         // Parse the request
         int pid = Integer.parseInt( data.getProperty("pid") );
@@ -1108,7 +1108,7 @@ public class Handler {
     public List<Comment> getRepliesComments( Request req, Response res ) {
 
         Properties data = gson.fromJson(req.body(), Properties.class);
-        int uid = Integer.parseInt( req.attribute("uid") );
+        int uid = Integer.parseInt( req.attribute("cuid") );
 
         // Parse the request
         int pid = Integer.parseInt( data.getProperty("pid") );

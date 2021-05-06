@@ -25,7 +25,7 @@ public class SubscriptionHandler {
     public int addSubscription( Request req, Response res ) {
 
         Properties data = gson.fromJson( req.body(), Properties.class );
-        int cuid = Integer.parseInt( req.attribute("uid").toString() );
+        int cuid = Integer.parseInt( req.attribute("cuid").toString() );
         int uid = Integer.parseInt( req.params(":uid") );
         int tier = Integer.parseInt( data.getProperty("tier") );
 
@@ -77,7 +77,7 @@ public class SubscriptionHandler {
     public int deleteSubscription( Request req, Response res ) {
 
         Properties data = gson.fromJson( req.body(), Properties.class );
-        int cuid = Integer.parseInt( req.attribute("uid").toString() );
+        int cuid = Integer.parseInt( req.attribute("cuid").toString() );
         int uid = Integer.parseInt( data.getProperty("uid") );
 
         subStore.deleteSubscription( cuid, uid );
