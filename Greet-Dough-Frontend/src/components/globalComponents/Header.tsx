@@ -66,11 +66,11 @@ class Header extends React.Component<any, any>{
                                     </Text>
                                 </Link>
 
-                                <Link to={'/feed'}>
-                                    <Text mr={20} fontWeight={500} fontSize={'2xl'}>
-                                        Feed
-                                    </Text>
-                                </Link>
+                                {/*<Link to={'/feed'}>*/}
+                                {/*    <Text mr={20} fontWeight={500} fontSize={'2xl'}>*/}
+                                {/*        Feed*/}
+                                {/*    </Text>*/}
+                                {/*</Link>*/}
 
                             </Center>
                         </Box>

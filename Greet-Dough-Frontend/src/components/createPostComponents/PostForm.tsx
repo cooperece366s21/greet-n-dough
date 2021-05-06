@@ -86,7 +86,7 @@ class PostForm extends React.Component<any, any> {
                             buttonText="Choose images"
                             onChange={ e => this.onDrop(e) }
                             imgExtension={[".jpg", ".gif", ".png", ".gif"]}
-                            maxFileSize={5242880}
+                            maxFileSize={10485760}
                         />
 
                         <Center>

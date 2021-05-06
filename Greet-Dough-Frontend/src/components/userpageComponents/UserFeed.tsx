@@ -4,20 +4,17 @@ import {
     VStack,
     HStack,
     Center,
-    Input,
     Divider,
     Avatar,
     Textarea,
     Button,
     Text,
     Image,
-    StackDivider,
-    AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogBody, AlertDialogFooter,
 } from "@chakra-ui/react";
 import api from "../../services/api";
-import {type} from "os";
+import { Carousel } from 'react-responsive-carousel';
+import "react-responsive-carousel/lib/styles/carousel.min.css";
 import {PostJson, PostObject} from "../../services/types";
-import Comment from "./Comment";
 
 type Entry = {
     map: PostObject,
@@ -129,9 +126,15 @@ class UserFeed extends  React.Component<any, any> {
 
                     <Box>
                         <Center>
+                            <Carousel dynamicHeight={true}>
                             { e.map.images?.map(function(url:string, i){
-                                return ( <Image src={url} /> )
+                                return (
+                                    <div>
+                                        <img src={url} />
+                                    </div>
+                                    )
                             })}
+                            </Carousel>
                         </Center>
 
                         <Text fontSize={"20px"}> {e.map.post.contents}  </Text>
