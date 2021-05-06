@@ -178,8 +178,6 @@ public class Server {
                         halt(401);
 
                     } else {
-                        // Set currently logged in user id "cuid"
-                        req.attribute( "cuid", loginStore.getUserID( req.headers("token") ) );
                         System.err.println("Valid token.");
                     }
 

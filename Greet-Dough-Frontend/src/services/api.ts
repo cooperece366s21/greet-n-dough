@@ -225,7 +225,6 @@ export async function getUserProfile( uid:number ) {
 
         return await res.json()
             .then(body => {
-                alert(JSON.stringify(body));
                 return body;
             });
 
