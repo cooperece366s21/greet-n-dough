@@ -206,7 +206,14 @@ public class Server {
 
                     get("/images", handler::makeGallery, gson::toJson);
 
-                });
+                    path( "/subscriptions", () -> {
+
+                        get("", subHandler::getSubscriptions, gson::toJson);
+
+                        post("", subHandler::addSubscription, gson::toJson);
+
+                        delete("", subHandler::deleteSubscription, gson::toJson);
+                    });
 
                 put("/edit", handler::editUser, gson::toJson);
 
@@ -282,14 +289,6 @@ public class Server {
                 post("/subtract", handler::subtractFromBalance, gson::toJson);
 
             });
-
-            path( "/subscription", () -> {
-
-                get("/:uid", subHandler::getSubscriptions, gson::toJson);
-
-                post("", subHandler::addSubscription, gson::toJson);
-
-                delete("", subHandler::deleteSubscription, gson::toJson);
 
             });
 
