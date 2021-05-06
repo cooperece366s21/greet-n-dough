@@ -15,13 +15,17 @@ public class TierCost {
 
     }
 
+    public static boolean isValidTier( int tier ) {
+        return (0 <= tier) && (tier <= maxTier);
+    }
+
     /**
      * @return  an int representing the cost of the specified tier;
      *          null if the tier is greater than the max tier
      */
     public static Integer getCost( int tier ) {
 
-        if ( tier > maxTier ) {
+        if ( isValidTier(tier) ) {
             return null;
         } else {
             return tiers.get(tier);
