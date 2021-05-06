@@ -196,13 +196,18 @@ export async function getUserFeed( cuid:number, uid:number ) {
 
                     post.map.comments.forEach( (c:CommentJson, cIndex:number) => {
                         body[postIndex].map.comments[cIndex].map.avatar = convertToCorrectUrl(c.map.avatar)
+
+                        c.map.children.forEach( ( cc:CommentJson, ccIndex:number) => {
+                            alert("hello?")
+                            body[postIndex].map.comments[cIndex].map.children[ccIndex].map.
+                                avatar = convertToCorrectUrl(cc.map.avatar);
+                        })
                     });
 
                     body[postIndex].map.comments.reverse();
 
                 })
 
-                alert( JSON.stringify(body) );
                 body.reverse();
                 return body;
             })
@@ -446,9 +451,11 @@ export async function getLikes( token: string|null, pid: number ) {
 
 export async function makeComment( token: string|null, pid:number, contents:string, parentId:number|null) {
     if ( token==null ) return (403);
+    if ( contents==="" ) return (404);
     parentId = parentId==null ? -1 : parentId;
 
     alert( JSON.stringify({ contents, parentId }) );
+
 
     const res = await fetch(`${BACKEND_URL}/auth/post/${pid}/comment`, {
         method: "post",

@@ -9,6 +9,7 @@ import {
     Textarea,
     Button,
     Text,
+    Spinner,
     Image,
 } from "@chakra-ui/react";
 import api from "../../services/api";
@@ -16,20 +17,17 @@ import { Carousel } from 'react-responsive-carousel';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import {CommentJson, CommentObject, PostJson, PostObject} from "../../services/types";
 
-type Entry = {
-    map: PostObject,
-}
-
 type FeedState = {
     cuid: number,
     uid: number,
-    feed: Entry[] | null,
+    feed: PostJson[] | null,
     hasOwnership: boolean,
     deleteAlert: boolean,
     openComments: number, // number indicates what post id to open comments for
     comment: string,
     commentingOnPost: boolean,
     commentingNested: number,
+    initiallyLoaded: false,
 }
 
 class UserFeed extends  React.Component<any, any> {
@@ -44,6 +42,7 @@ class UserFeed extends  React.Component<any, any> {
         comment: "",
         commentingOnPost: false,
         commentingNested: -1,
+        initiallyLoaded: false,
 
     }
 
@@ -59,42 +58,28 @@ class UserFeed extends  React.Component<any, any> {
             comment: "",
             commentingOnPost: false,
             commentingNested: -1,
+            initiallyLoaded:false,
         }
     }
 
-    refreshFeed() {
+    async refreshFeed() {
         api.getUserFeed( this.state.cuid, this.state.uid)
             .then( feed =>  {
-                this.setState({feed: feed});
+                this.setState({
+                    feed: feed,
+                    initiallyLoaded: true,
+                });
             })
     }
 
     componentDidMount() {
-        this.refreshFeed();
-    }
-
-    renderNestedComment( comment:CommentJson) {
-        return (
-            <>
-                <Box paddingLeft={"30px"}>
-                    <HStack color={"black"}>
-                        <Avatar name={comment.map.username} bg="teal.400" src={comment.map.avatar} w="50px"/>
-                        <Text fontWeight={500} marginLeft={"10px"}> { comment.map.username } </Text>
-                    </HStack>
-                </Box>
-
-                <Box marginLeft="100px" w="75%" >
-                    <Text> {comment.map.contents} </Text>
-                </Box>
-            </>
-        )
+        this.refreshFeed()
     }
 
     render() {
         const feed = this.state.feed;
 
         const listFeed = feed?.map( (post:PostJson,k) => (
-
             <>
                 <Box w={"100%"}
                      id={"post"+k}
@@ -242,7 +227,7 @@ class UserFeed extends  React.Component<any, any> {
                             }
                             <Box height="40px"> </Box>
 
-                            {/* Comment parent cp*/}
+                            {/* Render all comments here */}
                             { post.map.comments.map((cp, cpIndex) =>{
                                 return this.renderComment(cp, cpIndex)
                             })}
@@ -255,18 +240,19 @@ class UserFeed extends  React.Component<any, any> {
 
 
         return (
-            <Center w="100%" marginTop={"50px"}>
-
-            <VStack w={"60%"} >
-                { listFeed }
-            </VStack>
-
-            </Center>
+            <>
+                <Center w="100%" marginTop={"50px"}>
+                    <VStack w={"60%"}>
+                        { !this.state.initiallyLoaded && <Spinner color={"blue.400"} size={"xl"} /> }
+                        { listFeed }
+                    </VStack>
+                </Center>
+            </>
 
         )
     }
 
-    private renderComment(cp: CommentJson, cpIndex: number) {
+    renderComment(cp: CommentJson, cpIndex: number) {
         return (
             <>
 
@@ -326,6 +312,23 @@ class UserFeed extends  React.Component<any, any> {
 
             </>
         );
+    }
+
+    renderNestedComment( comment:CommentJson) {
+        return (
+            <>
+                <Box paddingLeft={"30px"}>
+                    <HStack color={"black"}>
+                        <Avatar name={comment.map.username} bg="teal.400" src={comment.map.avatar} w="50px"/>
+                        <Text fontWeight={500} marginLeft={"10px"}> { comment.map.username } </Text>
+                    </HStack>
+                </Box>
+
+                <Box marginLeft="100px" w="75%" >
+                    <Text> {comment.map.contents} </Text>
+                </Box>
+            </>
+        )
     }
 }
 
