@@ -29,17 +29,46 @@ public class SubscriptionHandler {
         int uid = Integer.parseInt( req.params(":uid") );
         int tier = Integer.parseInt( data.getProperty("tier") );
 
+        if ( cuid == uid ) {
+            res.status(404);
+            return res.status();
+        }
         if ( !Tiers.isValidTier(tier) ) {
             res.status(404);
             return res.status();
         }
 
-//        walletStore.subtractFromBalance(cuid, BigDecimal.valueOf(Tiers.getCost(tier)) );
-        System.err.println("cuid: " + cuid);
-        System.err.println("uid: " + uid);
-        System.err.println("tier: " + tier);
+        List<UserTier> currentSubscriptions = subStore.getSubscriptions(cuid);
+
+        for( UserTier sub : currentSubscriptions ) {
+            if ( sub.getUserID() == uid ) {
+
+                // User is already subscribed but is a higher tier (Dont spend money)
+                if ( sub.getTier()>tier ) {
+                    subStore.deleteSubscription(cuid, uid);
+                    subStore.addSubscription(cuid, uid, tier);
+                    // money stuff
+                    res.status(200);
+                }
+
+                // User is subscribed but is a lower tier (Spend the remainder)
+                if ( sub.getTier()<tier ) {
+                    subStore.deleteSubscription(cuid, uid);
+                    subStore.addSubscription(cuid, uid, tier);
+                    // money stuff
+                    res.status(200);
+                }
+
+                // User is subscribed but sent a request for the same subscription level?
+                if ( sub.getTier()==tier ) {
+                    res.status(200);
+                }
+                return res.status();
+            }
+        }
 
         subStore.addSubscription(cuid, uid, tier);
+        // money stuff
 
         res.status(200);
         return res.status();
