@@ -196,6 +196,10 @@ public class Server {
                     System.err.println("Route: /user");
                 });
 
+                put("/edit", handler::editUser, gson::toJson);
+
+                post("/profilepic", handler::uploadProfilePicture, gson::toJson);
+
                 path("/:uid", () -> {
 
                     // Deletes user given UserID
@@ -206,7 +210,7 @@ public class Server {
 
                     get("/images", handler::makeGallery, gson::toJson);
 
-                    path( "/subscriptions", () -> {
+                    path("/subscriptions", () -> {
 
                         get("", subHandler::getSubscriptions, gson::toJson);
 
@@ -215,9 +219,7 @@ public class Server {
                         delete("", subHandler::deleteSubscription, gson::toJson);
                     });
 
-                put("/edit", handler::editUser, gson::toJson);
-
-                post("/profilepic", handler::uploadProfilePicture, gson::toJson);
+                });
 
             });
 
@@ -287,8 +289,6 @@ public class Server {
                 post("/add", handler::addToBalance, gson::toJson);
 
                 post("/subtract", handler::subtractFromBalance, gson::toJson);
-
-            });
 
             });
 

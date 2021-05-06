@@ -4,6 +4,7 @@ import {
     VStack,
     HStack,
     Avatar,
+    Select,
     Center,
     Input,
     Image,
@@ -102,11 +103,18 @@ class UserHeader extends React.Component<any, any> {
 
             { this.state.hasOwnership ?
                 <> </> :
-                <Button colorScheme={"green"}
-                        onClick={ () => alert("Follow api goes here")}
+                <Select
+                    w={"25%"}
+                    bg={"green.300"}
+                    color={"black"}
+                    placeholder={"Subscribe"}
                 >
-                    Follow
-                </Button>
+                    <option value={"Tier 1"}>Tier 1 $5</option>
+                    <option value={"Tier 2"}>Tier 2 $10</option>
+                    <option value={"Tier 3"}>Tier 3 $15</option>
+                    <option value={"Tier 4"}>Tier 2 $20</option>
+                    <option value={"Tier 5"}>Tier 3 $25</option>
+                </Select>
             }
 
             { this.state.hasOwnership && !this.state.editing ?
