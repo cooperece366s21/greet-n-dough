@@ -89,8 +89,8 @@ public class Server {
         );
 
         SubscriptionHandler subHandler = new SubscriptionHandler(
-                Server.subscriptionStore
-        );
+                Server.subscriptionStore,
+                Server.walletStore);
 
 
         // Copy pasted from

@@ -4,17 +4,22 @@ import spark.Request;
 import spark.Response;
 import store.model.SubscriptionStore;
 import com.google.gson.Gson;
+import store.model.WalletStore;
+import utility.Tiers;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Properties;
 
 public class SubscriptionHandler {
 
     private final SubscriptionStore subStore;
+    private final WalletStore walletStore;
     private final Gson gson = new Gson();
 
-    public SubscriptionHandler(SubscriptionStore subStore) {
+    public SubscriptionHandler(SubscriptionStore subStore, WalletStore walletStore) {
         this.subStore = subStore;
+        this.walletStore = walletStore;
     }
 
     public int addSubscription( Request req, Response res ) {
@@ -24,6 +29,12 @@ public class SubscriptionHandler {
         int uid = Integer.parseInt( req.params(":uid") );
         int tier = Integer.parseInt( data.getProperty("tier") );
 
+        if ( !Tiers.isValidTier(tier) ) {
+            res.status(404);
+            return res.status();
+        }
+
+//        walletStore.subtractFromBalance(cuid, BigDecimal.valueOf(Tiers.getCost(tier)) );
         subStore.addSubscription(cuid, uid, tier);
 
         res.status(200);
