@@ -21,6 +21,7 @@ public interface PostDao {
                     "post_title TEXT " +        "NOT NULL, " +
                     "post_contents TEXT " +     "NULL, " +
                     "time_created TIMESTAMP " + "NOT NULL " + "DEFAULT NOW(), " +
+                    "tier INT " +               "NOT NULL, " +
                     "PRIMARY KEY(post_id), " +
                     "CONSTRAINT fk_user " + "FOREIGN KEY(user_id) " +
                         "REFERENCES users(user_id) " + "ON DELETE CASCADE " +
@@ -36,17 +37,24 @@ public interface PostDao {
             )
     void createTable();
 
-    @SqlUpdate( "INSERT INTO posts (user_id, post_title, post_contents) " +
-                    "VALUES (:user_id, :title, :contents);")
+    @SqlUpdate( "INSERT INTO posts (user_id, post_title, post_contents, tier) " +
+                    "VALUES (:user_id, :title, :contents, :tier);")
     @GetGeneratedKeys("post_id")
     int addPost(@Bind("title") String title,
                 @Bind("contents") String contents,
-                @Bind("user_id") int user_id);
+                @Bind("user_id") int user_id,
+                @Bind("tier") int tier);
 
     @SqlUpdate( "INSERT INTO post_images (post_id, image_id) " +
                     "VALUES (:post_id, :image_id);")
     void addPostImage(@Bind("post_id") int post_id,
                       @Bind("image_id") int image_id);
+
+    @SqlUpdate( "DELETE FROM post_images " +
+                    "WHERE post_id = (:post_id) AND " +
+                        "image_id = (:image_id);")
+    void deletePostImage(@Bind("post_id") int post_id,
+                         @Bind("image_id") int image_id);
 
     @SqlUpdate( "DELETE FROM posts " +
                     "WHERE post_id = (:post_id);")
@@ -94,5 +102,10 @@ public interface PostDao {
                     "SET post_contents = (:new_contents) " +
                     "WHERE post_id = (:post_id);")
     void changeContents(@Bind("post_id") int post_id, @Bind("new_contents") String new_contents);
+
+    @SqlUpdate( "UPDATE posts " +
+                    "SET tier = (:new_tier) " +
+                    "WHERE post_id = (:post_id);")
+    void changeTier(@Bind("post_id") int post_id, @Bind("new_tier") int newTier);
 
 }

@@ -17,6 +17,7 @@ import com.google.gson.Gson;
 import org.json.*;
 import spark.Request;
 import spark.Response;
+import utility.TierCost;
 
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletException;
@@ -35,8 +36,6 @@ public class Handler {
     private final ProfileStore profileStore;
 
     private final Gson gson = new Gson();
-    private final ObjectMapper mapper = new ObjectMapper();
-
 
     // Defines the accepted file extensions for images
     private static final HashSet<String> validImageFileExtensions = Stream
@@ -553,116 +552,6 @@ public class Handler {
         return modifyBalance( req, res, false );
     }
 
-    /////////////// USER RELATION ACTIONS ///////////////
-//    public int subscribe( Request req, Response res ) {
-//
-//        Pair userPair = this.grabUserPair(req);
-//
-//        if ( userPair == null ) {
-//
-//            res.status(404);
-//            return res.status();
-//
-//        }
-//
-//        List<Integer> curSubs = subStore.getSubscriptions(userPair.getLeft());
-//
-//        if ( curSubs != null && curSubs.contains( userPair.getRight() ) ) {
-//
-//            System.err.println("Current user already is subscribed");
-//            res.status(404);
-//            return res.status();
-//
-//        }
-//
-//        subStore.addSubscription( userPair.getLeft(), userPair.getRight() );
-//        System.out.println( "current subs: " + subStore.getSubscriptions(userPair.getLeft()) );
-//
-//        return 0;
-//
-//    }
-
-//    public int unsubscribe( Request req, Response res ) {
-//
-//        Pair userPair = this.grabUserPair(req);
-//        if ( userPair == null ) {
-//
-//            res.status(404);
-//            return res.status();
-//
-//        }
-//
-//        List<Integer> curSubs = subStore.getSubscriptions( userPair.getLeft() );
-//
-//        if ( curSubs == null ) {
-//
-//            System.err.println("User not subscribed to anyone");
-//            res.status(404);
-//            return res.status();
-//
-//        }
-//
-//        if ( !curSubs.contains(userPair.getRight()) ) {
-//            System.err.println("Current user not subscribed to target user");
-//        }
-//
-//        subStore.removeSubscription( userPair.getLeft(), userPair.getRight() );
-//        System.out.println( subStore.getSubscriptions(userPair.getRight()) );
-//        res.status(200);
-//        return 0;
-//
-//    }
-
-/*
-    public Integer follow( Request req ) {
-
-        Pair userPair = this.grabUserPair(req);
-        if ( userPair == null ) {
-            return null;
-        }
-        List<Integer> curFollows = followStore.getFollowers( userPair.getLeft() );
-
-        if ( curFollows!=null && curFollows.contains( userPair.getRight() ) ) {
-            System.out.println("Current user is already following the target user");
-            return null;
-        }
-
-        followStore.addFollower( userPair.getLeft(), userPair.getRight() );
-        IOservice.saveObject(followStore, "data/follows.txt");
-        System.out.println("Currently following: " + followStore.getFollowers( userPair.getLeft() ) );
-
-        return 0;
-
-    }
-
-    public Integer unfollow( Request req ) {
-
-        Pair userPair = this.grabUserPair(req);
-        if ( userPair == null ) {
-            return null;
-        }
-        List<Integer> curFollows = followStore.getFollowers( userPair.getLeft() );
-
-        if ( curFollows == null ) {
-            System.out.println("Current user not following anyone");
-            return null;
-        }
-
-        if ( !curFollows.contains( userPair.getRight()) ) {
-            System.out.println("Current user not following target user");
-            return null;
-        }
-
-        followStore.removeFollower( userPair.getLeft(), userPair.getRight() );
-        IOservice.saveObject(followStore, "data/follows.txt");
-        System.out.println("Currently following: " + followStore.getFollowers( userPair.getLeft() ) );
-
-        return 0;
-
-    }
-
- */
-
     /////////////// POST ACTIONS ///////////////
     /**
      * The method combines a Post object with its corresponding
@@ -709,6 +598,8 @@ public class Handler {
 
     }
 
+    // Not currently used
+    // Will need to check permissions (post tier)
 //    /**
 //     * @return a JSONObject containing the Post object and like count
 //     */
@@ -809,6 +700,7 @@ public class Handler {
         String title =  readFormField(req, "title");
         String contents = readFormField(req, "contents");
         int numberOfImages = Integer.parseInt( readFormField(req, "numberOfImages") );
+        int tier = Integer.parseInt( readFormField(req, "tier") );
         System.out.println( "Grabbed number of images" );
 
         // Check the parsed items
@@ -820,13 +712,22 @@ public class Handler {
 
         }
 
+        // Check the tier
+        if ( TierCost.isValidTier(tier) ) {
+
+            System.err.println("Error: Invalid tier");
+            res.status(403);
+            return res.status();
+
+        }
+
         // Get the images if they exist
         List<Integer> iidList = parsePostImages( req, res, uid, numberOfImages );
         if ( res.status() != 200 ) {
             return res.status();
         }
 
-        Post tempPost = postStore.addPost( title, contents, uid, iidList );
+        Post tempPost = postStore.addPost( title, contents, uid, tier, iidList );
         System.out.println( gson.toJson(tempPost) );
 
         res.status(200);
@@ -834,13 +735,8 @@ public class Handler {
 
     }
 
-    // ToDo: deletePostImage() or deleteImage()
-    // Both would be implemented by ImageStore.deleteImage()
-    // Check if user is the owner
-
     public int deletePost( Request req, Response res ) {
 
-        // Get the uid
         int uid = Integer.parseInt( req.attribute("uid") );
 
         // Parse the request
@@ -849,17 +745,17 @@ public class Handler {
         System.out.println("uid: " + uid);
         System.out.println("pid: " + pid);
 
-        // Should cascade delete the image, comments, likes, etc.
+        // Check if user has permissions
         if ( uid == tempPost.getUserID() ) {
             postStore.deletePost(pid);
         } else {
 
             res.status(403);
-            return res.status(); // because the code below will trigger
+            return res.status();
 
         }
 
-        // Checks if the post was successfully deleted
+        // Check if the post was successfully deleted
         if ( postStore.hasPost(pid) ) {
             res.status(404);
         } else {
@@ -873,6 +769,41 @@ public class Handler {
 
     }
 
+    /**
+     * Used in {@link #deletePost(Request,Response)}.
+     * Checks if {@code uid} is the owner of the image specified
+     * by {@code iid}. If so, deletes the image.
+     * Sets res.status().
+     *
+     * @return  true if successful;
+     *          false otherwise
+     */
+    private boolean deleteImage( int uid, int iid, Response res ) {
+
+        // Check if user has permissions
+        if ( uid == imageStore.getImage(iid).getUserID() ) {
+            imageStore.deleteImage(iid);
+        } else {
+
+            res.status(403);
+            return false;
+
+        }
+
+        // Check if the image was successfully deleted
+        if ( imageStore.hasImage(iid) ) {
+
+            res.status(404);
+            return false;
+
+        }
+
+        res.status(200);
+        return true;
+
+    }
+
+    // ToDo: Implement addImage() and deleteImage() here
     /**
      * The method changes the title and/or contents of the
      * specified post.
@@ -895,9 +826,11 @@ public class Handler {
         // Parse the request
         String newTitle = data.getProperty("title");
         String newContents = data.getProperty("contents");
+        String tempTier = data.getProperty("tier");
+        Integer newTier = tempTier != null ? Integer.parseInt(tempTier) : null;
 
         // Check if the request was formatted properly
-        if ( newTitle == null && newContents == null ) {
+        if ( newTitle == null && newContents == null && newTier == null ) {
 
             res.status(400);
             return res.status();
@@ -911,6 +844,26 @@ public class Handler {
         if ( newContents != null ) {
             postStore.changeContents( pid, newContents );
         }
+        if ( newTier != null ) {
+            postStore.changeTier( pid, newTier );
+        }
+
+        // Add the new images
+//        for ( int iid : imagesToAdd ) {
+//            postStore.addPostImage( pid, iid );
+//        }
+
+        // Delete the specified images
+//        for ( int iid : imagesToDelete ) {
+//
+//            if ( !deleteImage( uid, iid, res ) ) {
+//
+//                System.err.println("Failed to delete an image");
+//                return res.status();
+//
+//            }
+//
+//        }
 
         res.status(200);
         return res.status();

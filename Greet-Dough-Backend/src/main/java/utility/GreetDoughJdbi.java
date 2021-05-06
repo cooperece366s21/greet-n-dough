@@ -59,6 +59,7 @@ public class GreetDoughJdbi {
             String title = rs.getString("post_title");
             String contents = rs.getString("post_contents");
             LocalDateTime timeCreated = rs.getObject("time_created", LocalDateTime.class);
+            int tier = rs.getInt("tier");
 
             // Convert the aggregated image_id's into a List
             List<Integer> iidList = Optional.ofNullable( rs.getArray("image_id_agg") )
@@ -72,7 +73,7 @@ public class GreetDoughJdbi {
                     }).orElseGet(LinkedList::new);
 
 
-            return new Post( title, contents, pid, uid, iidList, timeCreated );
+            return new Post( title, contents, pid, uid, iidList, timeCreated, tier );
 
         }
 

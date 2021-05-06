@@ -50,14 +50,24 @@ public class PostStorePostgres implements PostStore {
 
     @Override
     public Post addPost( String title, String contents, int uid ) {
-        return addPost( title, contents, uid, new LinkedList<>() );
+        return addPost( title, contents, uid, 0 );
     }
 
     @Override
     public Post addPost( String title, String contents, int uid, List<Integer> iidList ) {
+        return addPost( title, contents, uid, 0, iidList );
+    }
+
+    @Override
+    public Post addPost( String title, String contents, int uid, int tier ) {
+        return addPost( title, contents, uid, tier, new LinkedList<>() );
+    }
+
+    @Override
+    public Post addPost( String title, String contents, int uid, int tier, List<Integer> iidList ) {
 
         // Add the post
-        int pid = jdbi.withHandle( handle -> handle.attach(PostDao.class).addPost( title, contents, uid ) );
+        int pid = jdbi.withHandle( handle -> handle.attach(PostDao.class).addPost( title, contents, uid, tier ) );
 
         // Add the images
         for ( int iid : iidList ) {
@@ -74,18 +84,28 @@ public class PostStorePostgres implements PostStore {
     }
 
     @Override
+    public void deletePostImage( int pid, int iid ) {
+        jdbi.useHandle( handle -> handle.attach(PostDao.class).deletePostImage( pid, iid ) );
+    }
+
+    @Override
     public void deletePost( int pid ) {
         jdbi.useHandle( handle -> handle.attach(PostDao.class).deletePost(pid) );
     }
 
     @Override
     public void changeTitle( int pid, String newTitle ) {
-        jdbi.useHandle( handle -> handle.attach(PostDao.class).changeTitle(pid, newTitle) );
+        jdbi.useHandle( handle -> handle.attach(PostDao.class).changeTitle( pid, newTitle ) );
     }
 
     @Override
     public void changeContents( int pid, String newContents ) {
-        jdbi.useHandle( handle -> handle.attach(PostDao.class).changeContents(pid, newContents) );
+        jdbi.useHandle( handle -> handle.attach(PostDao.class).changeContents( pid, newContents ) );
+    }
+
+    @Override
+    public void changeTier( int pid, int newTier ) {
+        jdbi.useHandle( handle -> handle.attach(PostDao.class).changeTier( pid, newTier ) );
     }
 
 }

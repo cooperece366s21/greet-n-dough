@@ -14,16 +14,17 @@ public class Post implements Serializable {
     private String title;
     private String contents;
     private final LocalDateTime timeCreated;
+    private int tier;
 
-    public Post( String title, String contents, int pid, int uid ) {
-        this( title, contents, pid, uid, new LinkedList<>() );
+    public Post( String title, String contents, int pid, int uid, int tier ) {
+        this( title, contents, pid, uid, new LinkedList<>(), tier );
     }
 
-    public Post( String title, String contents, int pid, int uid, List<Integer> iidList ) {
-        this( title, contents, pid, uid, iidList, LocalDateTime.now() );
+    public Post( String title, String contents, int pid, int uid, List<Integer> iidList, int tier ) {
+        this( title, contents, pid, uid, iidList, LocalDateTime.now(), tier );
     }
 
-    public Post( String title, String contents, int pid, int uid, List<Integer> iidList, LocalDateTime timeCreated ) {
+    public Post( String title, String contents, int pid, int uid, List<Integer> iidList, LocalDateTime timeCreated, int tier ) {
 
         this.ID = pid;
         this.userID = uid;
@@ -31,6 +32,7 @@ public class Post implements Serializable {
         this.title = title;
         this.contents = contents;
         this.timeCreated = timeCreated;
+        this.tier = tier;
 
     }
 
@@ -58,6 +60,10 @@ public class Post implements Serializable {
         return this.timeCreated;
     }
 
+    public int getTier() {
+        return this.tier;
+    }
+
     public void setContents( String contents ) {
         this.contents = contents;
     }
@@ -69,7 +75,8 @@ public class Post implements Serializable {
                 this.getTitle().equals( tempPost.getTitle() ) &&
                 this.getContents().equals( tempPost.getContents() ) &&
                 this.getTime().equals( tempPost.getTime() ) &&
-                this.getImageIDList().equals( tempPost.getImageIDList() );
+                this.getImageIDList().equals( tempPost.getImageIDList() ) &&
+                this.getTier() == tempPost.getTier();
 
     }
 
