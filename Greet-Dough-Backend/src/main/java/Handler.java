@@ -712,8 +712,7 @@ public class Handler {
         }
 
         // Check the tier
-        if ( Tiers.isValidTier(tier) ) {
-
+        if ( !Tiers.isValidTier(tier) ) {
             System.err.println("Error: Invalid tier");
             res.status(403);
             return res.status();

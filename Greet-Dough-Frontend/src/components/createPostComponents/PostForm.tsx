@@ -8,7 +8,9 @@ import {
     Input,
     Button,
     Image,
-
+    Stack,
+    RadioGroup,
+    Radio,
 } from "@chakra-ui/react";
 
 import api, {register} from "../../services/api";
@@ -19,6 +21,7 @@ type PostState = {
     contents: string;
     invalid: boolean;
     pictures: File[] | null;
+    tier: string | null,
 }
 
 class PostForm extends React.Component<any, any> {
@@ -28,6 +31,7 @@ class PostForm extends React.Component<any, any> {
         contents: "",
         invalid: false,
         pictures: null,
+        tier: null,
     }
 
     onDrop(pictures:File[]) {
@@ -40,12 +44,11 @@ class PostForm extends React.Component<any, any> {
                     onClick={ () => {
                         let token = localStorage.getItem('authToken');
 
-                        api.createPost( token, this.state.title, this.state.contents, this.state.pictures )
+                        api.createPost( token, this.state.title, this.state.contents, this.state.pictures, this.state.tier )
                             .then( res => {
                                 if (res===200) alert("Post succesful!");
                                 else alert("ERROR: " + res);
                             })
-
                     }}>
                 submit
             </Button>
@@ -74,7 +77,7 @@ class PostForm extends React.Component<any, any> {
                         />
 
                         <Center>
-                            <Text fontSize={"3xl"} fontWeight={"700"} color={"gray.500"} > Contents </Text>
+                            <Text fontSize={"3xl"} fontWeight={"700"} color={"gray.500"} > Pictures </Text>
                         </Center>
 
                         <ImageUploader
@@ -85,6 +88,30 @@ class PostForm extends React.Component<any, any> {
                             imgExtension={[".jpg", ".gif", ".png", ".gif"]}
                             maxFileSize={5242880}
                         />
+
+                        <Center>
+                            <Text fontSize={"3xl"} fontWeight={"700"} color={"gray.500"} > Select Tier </Text>
+                        </Center>
+
+                        <Center>
+                            <RadioGroup onChange={ (e) => {
+                                this.setState({tier: e});
+                            }}>
+                                <Stack spacing={4} direction="row" >
+                                    <Radio value="1" colorScheme={"green"}> 1 </Radio>
+                                    <Radio value="2" colorScheme={"green"}> 2 </Radio>
+                                    <Radio value="3" colorScheme={"green"}> 3 </Radio>
+                                    <Radio value="4" colorScheme={"green"}> 4 </Radio>
+                                    <Radio value="5" colorScheme={"green"}> 5 </Radio>
+                                </Stack>
+                        </RadioGroup>
+                        </Center>
+
+                        <Center>
+                            <Text fontSize={"3xl"} fontWeight={"700"} color={"gray.500"} paddingTop={"30px"} >
+                                Contents
+                            </Text>
+                        </Center>
 
                         <Textarea placeholder={'Type your post content here...'}
                                   height={"300px"}

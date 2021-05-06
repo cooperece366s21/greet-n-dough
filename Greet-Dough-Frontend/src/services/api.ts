@@ -290,9 +290,13 @@ export async function addToWallet( token:string|null, amount:string|null ) {
 
 // POST API CALLS
 
-export async function createPost( token:string|null, title:string, contents:string, pictures:File[]|null) {
+export async function createPost( token:string|null, title:string, contents:string, pictures:File[]|null, tier:string|null) {
 
     if ( token==null ) return (403);
+    if ( tier==null ) {
+        alert("Please select a tier!");
+        return 404;
+    }
 
     let numberOfFiles = pictures==null ? "0" : pictures?.length.toString();
 
@@ -300,6 +304,7 @@ export async function createPost( token:string|null, title:string, contents:stri
     form.set('title', title);
     form.set('contents', contents);
     form.set('numberOfImages', numberOfFiles);
+    form.set('tier', tier);
 
     let i = 0;
     pictures?.forEach( file => {
