@@ -148,6 +148,8 @@ public class Server {
                     // biography and profile picture
                     get("/profile", handler::getUserProfile, gson::toJson);
 
+                    get("/subscriptions", subHandler::getSubscriptions, gson::toJson);
+
                 });
 
             });
@@ -211,8 +213,6 @@ public class Server {
                     get("/images", handler::makeGallery, gson::toJson);
 
                     path("/subscriptions", () -> {
-
-                        get("", subHandler::getSubscriptions, gson::toJson);
 
                         post("", subHandler::addSubscription, gson::toJson);
 

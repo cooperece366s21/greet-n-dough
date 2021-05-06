@@ -523,6 +523,23 @@ export async function getAllUserImages( token:string|null, uid:number ) {
     }
 }
 
+// SUBSCRIBER API CALLS
+
+export async function getSubscribers ( uid:number ) {
+    const res = await fetch(`${BACKEND_URL}/noauth/user/${uid}/subscriptions`, {
+        method: "get",
+        mode: "cors",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+
+    res.json()
+        .then( body => {
+            alert( JSON.stringify(body) );
+        } )
+}
+
 
 let exports = {
     register,
@@ -534,6 +551,7 @@ let exports = {
 
     getUserProfile,
     editUser: editUser,
+    getSubscribers,
     getUserFeed,
 
     createPost,

@@ -29,6 +29,7 @@ type UserState = {
     name: string;
     bio: string | null;
     profilePicture: string | null;
+    subscribers: number,
 
     editedName : string;
     editedBio : string | null;
@@ -46,6 +47,7 @@ class UserHeader extends React.Component<any, any> {
         name: "",
         bio: null,
         profilePicture: null,
+        subscribers: 0,
 
         editedName: "",
         editedBio: null,
@@ -63,6 +65,8 @@ class UserHeader extends React.Component<any, any> {
             name: props.name,
             bio: props.bio,
             profilePicture: props.profilePicture,
+            subscribers: props.subscribers,
+
             editedName: "",
             editedBio: props.bio,
             uploadedPicture: null,
@@ -97,7 +101,7 @@ class UserHeader extends React.Component<any, any> {
 
                 <Stat paddingRight={"20px"}>
                     <StatLabel> Subscribers </StatLabel>
-                    <Center> <StatNumber> 0 </StatNumber> </Center>
+                    <Center> <StatNumber> {this.state.subscribers} </StatNumber> </Center>
                 </Stat>
 
 

@@ -15,6 +15,7 @@ type PassdownStates = {
     hasOwnership : boolean | null,
     bio : string | null,
     profilePicture: string | null,
+    subscribers: number,
 }
 
 class UserPageWrapper extends React.Component<any, any> {
@@ -27,6 +28,7 @@ class UserPageWrapper extends React.Component<any, any> {
         hasOwnership: null,
         bio: null,
         profilePicture: null,
+        subscribers: 0,
     }
 
     constructor(props:any) {
@@ -39,6 +41,7 @@ class UserPageWrapper extends React.Component<any, any> {
             hasOwnership: null,
             bio: null,
             profilePicture: null,
+            subscribers: 0,
         }
     }
 
@@ -76,9 +79,11 @@ class UserPageWrapper extends React.Component<any, any> {
                                 // Once you set exist to true, the userHeader component will render.
                                 // If you try to set something after this, it won't work!
 
+                                // return type is error if it is a number
                                 if (typeof user !== "number") {
                                     this.setState({
                                         name: user.name,
+                                        subscribers: res.map.subscribers,
                                         exists: true,
                                     });
                                 }
@@ -109,6 +114,7 @@ class UserPageWrapper extends React.Component<any, any> {
                     exists={this.state.exists}
                     bio={this.state.bio}
                     profilePicture={this.state.profilePicture}
+                    subscribers={this.state.subscribers}
                 />
 
                 <UserFeed

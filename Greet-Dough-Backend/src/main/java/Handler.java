@@ -251,6 +251,7 @@ public class Handler {
         jsonToReturn.put( "name", userStore.getUser(uid).getName() );
         jsonToReturn.put( "bio", profileStore.getProfile(uid).getBio() );
         jsonToReturn.put( "profilePicture", getUrlToPFP(uid) );
+        jsonToReturn.put( "subscribers", subscriptionStore.getSubscriptions(uid).size() );
 
         return jsonToReturn;
 
