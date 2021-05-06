@@ -198,7 +198,6 @@ export async function getUserFeed( cuid:number, uid:number ) {
                         body[postIndex].map.comments[cIndex].map.avatar = convertToCorrectUrl(c.map.avatar)
 
                         c.map.children.forEach( ( cc:CommentJson, ccIndex:number) => {
-                            alert("hello?")
                             body[postIndex].map.comments[cIndex].map.children[ccIndex].map.
                                 avatar = convertToCorrectUrl(cc.map.avatar);
                         })

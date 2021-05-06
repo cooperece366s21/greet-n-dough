@@ -82,7 +82,7 @@ class UserFeed extends  React.Component<any, any> {
         const listFeed = feed?.map( (post:PostJson,k) => (
             <>
                 <Box w={"100%"}
-                     id={"post"+k}
+                     id={"post" + k}
                      padding={"20px"}
                      borderWidth={"1px"}
                      borderTopRadius={"15px"}
@@ -91,150 +91,16 @@ class UserFeed extends  React.Component<any, any> {
                      borderBottomColor={"gray.500"}
                 >
 
-                    {/* Upper Region, TITLE and DELETE*/}
-                    <HStack w={"100%"}>
+                    {this.renderPostHeader(post)}
 
-                        <Box w="90%">
-                            <Text fontSize={"30px"} fontWeight={600}> { post.map.post.title } </Text>
-                        </Box>
+                    {this.renderPostContent(post)}
 
-                        <Box w="5%" >
-                            {this.state.hasOwnership &&
-                            <Button
-                                onClick={()=> window.location.replace("/edit/" + post.map.post.ID.toString() ) }>
-                                ✏
-                            </Button>
-                            }
-                        </Box>
+                    {this.renderInteractionButtons(post, k)}
 
-                        <Box w={"10px"}/>
+                    {this.renderContentField(k, post)}
 
-                        <Box w="5%"  paddingRight={"20px"}>
-                            {this.state.hasOwnership &&
-                                <Button
-                                    onClick={ () => {
-                                        api.deletePost(localStorage.getItem("authToken"), post.map.post.ID)
-                                            .then( () => this.refreshFeed() )
-                                }}>
-                                    🗑
-                                </Button>
-                            }
-                        </Box>
-
-                    </HStack>
-
-
-                    {/* CONTENT field */}
-
-                    <Box>
-                        <Center>
-                            <Carousel dynamicHeight={true}>
-                            { post.map.images?.map(function(url:string, i){
-                                return (
-                                    <div>
-                                        <img src={url} />
-                                    </div>
-                                    )
-                            })}
-                            </Carousel>
-                        </Center>
-
-                        <Text fontSize={"20px"}> {post.map.post.contents}  </Text>
-                    </Box>
-
-                    <HStack w={"100%"} marginTop={"10px"}>
-                        <Box>
-                            <Text color={"orange.400"}> Likes : { post.map.likeCount } </Text>
-                        </Box>
-                    </HStack>
-
-                    {/*  LIKES/COMMENT button field */}
-                    <HStack w={"100%"} marginTop={"10px"}>
-
-                        <Box w={"50%"} >
-                            <Text textAlign={"center"} cursor={"pointer"} borderRadius={"10px"}
-                                  _hover={{
-                                      background: "yellow.200",
-                                  }}
-                                  onClick={ () => api.addLike(localStorage.getItem("authToken"), post.map.post.ID)
-                                      .then( () => this.refreshFeed() )
-                                  }
-                            >
-                                👍 Like
-                            </Text>
-                        </Box>
-
-                        <Box w={"50%"}>
-                            <Text textAlign={"center"} cursor={"pointer"} borderRadius={"10px"}
-                                  _hover={{background: "yellow.200"}}
-                                  onClick={ () => {
-                                      if ( this.state.openComments === k ) {
-                                          this.setState({openComments: -1})
-                                      } else {
-                                          this.setState({openComments: k});
-                                      }
-
-                                  }}
-                            >
-                                💬 Open comments
-                            </Text>
-                        </Box>
-
-                    </HStack>
-
-                    {/* COMMENT field*/}
-                    { this.state.openComments === k ?
-                        <>
-                            {this.state.commentingOnPost ?
-                                <Box borderWidth="1px" marginTop="10px" borderColor={"white"} >
-
-                                    <Textarea
-                                        marginTop="5px"
-                                        placeholder={"type comment here"}
-                                        onChange={ (e) => this.setState({comment: e.target.value})}
-
-                                    />
-                                    <Box h="20px"> </Box>
-
-                                    <Box w="100%">
-
-                                        <Button float="right" colorScheme="red" marginLeft="15px"
-                                                onClick={() => this.setState({commentingOnPost: false}) } >
-                                            Cancel
-                                        </Button>
-
-                                        <Button float="right" colorScheme="green"
-                                                onClick={() => {
-                                                    api.makeComment(
-                                                        localStorage.getItem("authToken"),
-                                                        post.map.post.ID,
-                                                        this.state.comment,
-                                                        null,
-                                                    ).then( () => this.refreshFeed() );
-                                                }}>
-                                            Comment
-                                        </Button>
-
-                                    </Box>
-
-                                </Box> :
-                                <Center>
-                                    <Button marginTop="10px"
-                                            onClick={ () => this.setState({commentingOnPost: true})}>
-                                        Comment on post
-                                    </Button>
-                                </Center>
-                            }
-                            <Box height="40px"> </Box>
-
-                            {/* Render all comments here */}
-                            { post.map.comments.map((cp, cpIndex) =>{
-                                return this.renderComment(cp, cpIndex)
-                            })}
-                        </> : <> </>
-                    }
                 </Box>
-                <Divider orientation={"horizontal"} w={"100%"} h={"20px"} opacity={0} />
+                <Divider orientation={"horizontal"} w={"100%"} h={"20px"} opacity={0}/>
             </>
         ))
 
@@ -252,7 +118,154 @@ class UserFeed extends  React.Component<any, any> {
         )
     }
 
-    renderComment(cp: CommentJson, cpIndex: number) {
+    private renderPostHeader(post: PostJson) {
+        return <HStack w={"100%"}>
+
+            <Box w="90%">
+                <Text fontSize={"30px"} fontWeight={600}> {post.map.post.title} </Text>
+            </Box>
+
+            <Box w="5%">
+                {this.state.hasOwnership &&
+                <Button
+                    onClick={() => window.location.replace("/edit/" + post.map.post.ID.toString())}>
+                    ✏
+                </Button>
+                }
+            </Box>
+
+            <Box w={"10px"}/>
+
+            <Box w="5%" paddingRight={"20px"}>
+                {this.state.hasOwnership &&
+                <Button
+                    onClick={() => {
+                        api.deletePost(localStorage.getItem("authToken"), post.map.post.ID)
+                            .then(() => this.refreshFeed())
+                    }}>
+                    🗑
+                </Button>
+                }
+            </Box>
+
+        </HStack>;
+    }
+
+    private renderInteractionButtons(post: PostJson, k: number) {
+        return <HStack w={"100%"} marginTop={"10px"}>
+
+            <Box w={"50%"}>
+                <Text textAlign={"center"} cursor={"pointer"} borderRadius={"10px"}
+                      _hover={{
+                          background: "yellow.200",
+                      }}
+                      onClick={() => api.addLike(localStorage.getItem("authToken"), post.map.post.ID)
+                          .then(() => this.refreshFeed())
+                      }
+                >
+                    👍 Like
+                </Text>
+            </Box>
+
+            <Box w={"50%"}>
+                <Text textAlign={"center"} cursor={"pointer"} borderRadius={"10px"}
+                      _hover={{background: "yellow.200"}}
+                      onClick={() => {
+                          if (this.state.openComments === k) {
+                              this.setState({openComments: -1})
+                          } else {
+                              this.setState({openComments: k});
+                          }
+
+                      }}
+                >
+                    💬 Open comments
+                </Text>
+            </Box>
+
+        </HStack>;
+    }
+
+    private renderContentField(k: number, post: PostJson) {
+        return <>
+            {this.state.openComments === k ?
+                <>
+                    {this.state.commentingOnPost ?
+                        <Box borderWidth="1px" marginTop="10px" borderColor={"white"}>
+
+                            <Textarea
+                                marginTop="5px"
+                                placeholder={"type comment here"}
+                                onChange={(e) => this.setState({comment: e.target.value})}
+
+                            />
+                            <Box h="20px"> </Box>
+
+                            <Box w="100%">
+
+                                <Button float="right" colorScheme="red" marginLeft="15px"
+                                        onClick={() => this.setState({commentingOnPost: false})}>
+                                    Cancel
+                                </Button>
+
+                                <Button float="right" colorScheme="green"
+                                        onClick={() => {
+                                            api.makeComment(
+                                                localStorage.getItem("authToken"),
+                                                post.map.post.ID,
+                                                this.state.comment,
+                                                null,
+                                            ).then(() => this.refreshFeed());
+                                        }}>
+                                    Comment
+                                </Button>
+
+                            </Box>
+
+                        </Box> :
+                        <Center>
+                            <Button marginTop="10px"
+                                    onClick={() => this.setState({commentingOnPost: true})}>
+                                Comment on post
+                            </Button>
+                        </Center>
+                    }
+                    <Box height="40px"> </Box>
+
+                    {/* Render all comments here */}
+                    {post.map.comments.map((cp, cpIndex) => {
+                        return this.renderComment(cp, cpIndex)
+                    })}
+                </> : <> </>
+            }
+        </>;
+    }
+
+    private renderPostContent(post: PostJson) {
+        return <Box>
+            <Center>
+                <Carousel dynamicHeight={true}>
+                    {post.map.images?.map(function (url: string, i) {
+                        return (
+                            <div>
+                                <img src={url}/>
+                            </div>
+                        )
+                    })}
+                </Carousel>
+            </Center>
+
+            <Text fontSize={"20px"}> {post.map.post.contents}  </Text>
+
+            <HStack w={"100%"} marginTop={"10px"}>
+                <Box>
+                    <Text color={"orange.400"}> Likes : {post.map.likeCount} </Text>
+                </Box>
+            </HStack>
+        </Box>;
+    }
+
+    private renderComment(cp: CommentJson, cpIndex: number) {
         return (
             <>
 
@@ -314,7 +327,7 @@ class UserFeed extends  React.Component<any, any> {
         );
     }
 
-    renderNestedComment( comment:CommentJson) {
+    private renderNestedComment( comment:CommentJson) {
         return (
             <>
                 <Box paddingLeft={"30px"}>
