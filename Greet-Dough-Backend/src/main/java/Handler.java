@@ -559,20 +559,19 @@ public class Handler {
      *
      * @return a JSONObject with the Post object and like count
      */
-    private JSONObject makePostJson( int pid ) {
+    private JSONObject formatPostJson(Post post ) {
+
+        int pid = post.getID();
 
         JSONObject json = new JSONObject();
 
-        // Get the post
-        Post tempPost = postStore.getPost(pid);
-
-        json.put( "post", tempPost );
+        json.put( "post", post );
 
         // Get the likes
         Likes tempLikes = likeStore.getLikes(pid);
         json.put( "likeCount", tempLikes.getLikeCount() );
 
-        List<Integer> iidList = tempPost.getImageIDList();
+        List<Integer> iidList = post.getImageIDList();
         List<String> postUrlList = new ArrayList<>();
 
         for ( int iid : iidList ) {
@@ -632,7 +631,15 @@ public class Handler {
      */
     public List<JSONObject> getUserFeed( Request req, Response res ) {
 
-        int uid = Integer.parseInt( req.attribute("uid") );
+        int cuid = Integer.parseInt( req.attribute("uid") );
+        int uid = Integer.parseInt( req.params("uid") );
+
+        int cuidTier = 0;
+
+        for (UserTier sub : subscriptionStore.getSubscriptions(cuid)) {
+            if (sub.getUserID() == uid) cuidTier = sub.getTier();
+        }
+
 
         if ( !userStore.hasUser(uid) ) {
 
@@ -642,11 +649,31 @@ public class Handler {
         }
 
         // ToDo: Check permissions for each post
-        // Get the feed and convert each post into a JSONObject
         List<Post> feed = postStore.makeFeed(uid);
+
+        // Check permissions of the user and the post
+        List<Post> filteredFeed = new ArrayList<>();
+
+        if (cuid == uid) {
+            filteredFeed = feed;
+        } else {
+
+            for ( Post post: feed ){
+
+                if ( cuidTier < post.getTier() ) {
+                    Post hiddenPost = new Post(
+                            "HIDDEN", "HIDDEN", post.getID(), post.getUserID(), post.getTier()
+                    );
+                    filteredFeed.add( hiddenPost );
+                } else {
+                    filteredFeed.add( post );
+                }
+            }
+        }
+
         List<JSONObject> listJSON = new LinkedList<>();
-        for ( Post tempPost : feed ) {
-            listJSON.add( makePostJson( tempPost.getID() ) );
+        for ( Post post : filteredFeed ) {
+            listJSON.add( formatPostJson( post ) );
         }
 
         res.status(200);
