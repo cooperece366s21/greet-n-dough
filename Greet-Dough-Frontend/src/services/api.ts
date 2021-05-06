@@ -472,7 +472,7 @@ export async function makeComment( token: string|null, pid:number, contents:stri
 
 // IMAGE API CALLS
 
-export async function uploadProfilePicture(token:string|null, file:File|null) {
+export async function uploadProfilePicture( token:string|null, file:File|null) {
     if ( token==null ) return (403);
     if ( file==null ) return (403);
 
@@ -540,6 +540,23 @@ export async function getSubscribers ( uid:number ) {
         } )
 }
 
+export async function subscribeTo( uid:number, tier:number ) {
+
+    const res = await fetch(`${BACKEND_URL}/auth/user/${uid}/subscriptions`, {
+        method: "post",
+        mode: "cors",
+        headers: {
+            "Content-Type": "application/json",
+            "token": getCurrentToken(),
+        },
+        body: JSON.stringify( { tier } )
+    });
+
+    res.json()
+        .then( body => alert(JSON.stringify(body)) );
+
+}
+
 
 let exports = {
     register,
@@ -569,6 +586,8 @@ let exports = {
 
     addLike,
     getLikes,
+
+    subscribeTo,
 }
 
 export default exports

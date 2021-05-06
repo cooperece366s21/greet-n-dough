@@ -112,12 +112,16 @@ class UserHeader extends React.Component<any, any> {
                     bg={"green.300"}
                     color={"black"}
                     placeholder={"Subscribe"}
+                    onChange={ (tier) => {
+                        alert(tier.target.value);
+                        api.subscribeTo( this.state.uid, parseInt(tier.target.value) );
+                    } }
                 >
-                    <option value={"Tier 1"}>Tier 1 $5</option>
-                    <option value={"Tier 2"}>Tier 2 $10</option>
-                    <option value={"Tier 3"}>Tier 3 $15</option>
-                    <option value={"Tier 4"}>Tier 2 $20</option>
-                    <option value={"Tier 5"}>Tier 3 $25</option>
+                    <option value={1}>Tier 1 $5</option>
+                    <option value={2}>Tier 2 $10</option>
+                    <option value={3}>Tier 3 $15</option>
+                    <option value={4}>Tier 2 $20</option>
+                    <option value={5}>Tier 3 $25</option>
                 </Select>
             }
 

@@ -21,13 +21,10 @@ public class SubscriptionHandler {
 
         Properties data = gson.fromJson( req.body(), Properties.class );
         int cuid = Integer.parseInt( req.attribute("uid").toString() );
-        int uid = Integer.parseInt( data.getProperty("uid") );
+        int uid = Integer.parseInt( req.params(":uid") );
+        int tier = Integer.parseInt( data.getProperty("tier") );
 
-        // ENUM this string to a tier number
-        String tier = data.getProperty("tier");
-
-//        Do the subscription SHITE here
-//        subStore.addSubscription(cuid, uid, tier);
+        subStore.addSubscription(cuid, uid, tier);
 
         res.status(200);
         return res.status();
