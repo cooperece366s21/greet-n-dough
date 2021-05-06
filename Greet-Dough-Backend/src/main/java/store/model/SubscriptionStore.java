@@ -19,6 +19,14 @@ public interface SubscriptionStore {
     List<UserTier> getFollowers( int uid );
 
     /**
+     * Checks if {@code cuid} is subscribed to {@code tuid}.
+     *
+     * @return  the subscription tier, or null if the subscription
+     *          does not exist
+     */
+    Integer hasSubscription( int cuid, int tuid );
+
+    /**
      * Adds a tier 0 subscription from {@code cuid} to {@code tuid}.
      */
     void addSubscription( int cuid, int tuid );
@@ -30,5 +38,7 @@ public interface SubscriptionStore {
     void addSubscription( int cuid, int tuid, int tier );
 
     void deleteSubscription( int cuid, int tuid );
+
+    void changeSubscription( int cuid, int tuid, int newTier );
 
 }

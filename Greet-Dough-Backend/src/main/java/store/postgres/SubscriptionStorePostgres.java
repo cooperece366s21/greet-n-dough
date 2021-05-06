@@ -34,6 +34,11 @@ public class SubscriptionStorePostgres implements SubscriptionStore {
     }
 
     @Override
+    public Integer hasSubscription( int cuid, int tuid ) {
+        return jdbi.withHandle( handle -> handle.attach(SubscriptionDao.class).hasSubscription( cuid, tuid ) ).orElse(null);
+    }
+
+    @Override
     public void addSubscription( int cuid, int tuid ) {
         addSubscription( cuid, tuid, 0 );
     }
@@ -46,6 +51,11 @@ public class SubscriptionStorePostgres implements SubscriptionStore {
     @Override
     public void deleteSubscription( int cuid, int tuid ) {
         jdbi.useHandle( handle -> handle.attach(SubscriptionDao.class).deleteSubscription( cuid, tuid ) );
+    }
+
+    @Override
+    public void changeSubscription( int cuid, int tuid, int newTier ) {
+        jdbi.useHandle( handle -> handle.attach(SubscriptionDao.class).changeSubscription( cuid, tuid, newTier ) );
     }
 
 }

@@ -17,9 +17,11 @@ public class SubscriptionHandler {
     private final WalletStore walletStore;
     private final Gson gson = new Gson();
 
-    public SubscriptionHandler(SubscriptionStore subStore, WalletStore walletStore) {
+    public SubscriptionHandler( SubscriptionStore subStore, WalletStore walletStore ) {
+
         this.subStore = subStore;
         this.walletStore = walletStore;
+
     }
 
     public int addSubscription( Request req, Response res ) {
@@ -29,49 +31,56 @@ public class SubscriptionHandler {
         int uid = Integer.parseInt( req.params(":uid") );
         int tier = Integer.parseInt( data.getProperty("tier") );
 
+        // Check if user is attempting to subscribe to themself
         if ( cuid == uid ) {
+
             res.status(404);
             return res.status();
+
         }
-        if ( !Tiers.isValidTier(tier) ) {
+
+        Integer curTier = subStore.hasSubscription( cuid, uid );
+        int tierIncrease;
+
+        // Check how many tiers to upgrade the subscription by
+        if ( curTier == null ) {
+            tierIncrease = tier;
+        } else {
+            tierIncrease = tier - curTier;
+        }
+
+        // Check if the specified tier is valid
+        if ( !Tiers.isValidTier(tierIncrease) || tierIncrease == 0 ) {
+
             res.status(404);
             return res.status();
+
         }
 
-        List<UserTier> currentSubscriptions = subStore.getSubscriptions(cuid);
+        // Check if the user's balance is high enough to subscribe
+        BigDecimal curBal = walletStore.getBalance(cuid);
+        if ( curBal.compareTo( Tiers.getCost(tierIncrease) ) == -1 ) {
 
-        for( UserTier sub : currentSubscriptions ) {
-            if ( sub.getUserID() == uid ) {
+            System.err.println("Error: User does not have enough money to subscribe.");
+            res.status(402);
+            return res.status();
 
-                // User is already subscribed but is a higher tier (Dont spend money)
-                if ( sub.getTier()>tier ) {
-                    subStore.deleteSubscription(cuid, uid);
-                    subStore.addSubscription(cuid, uid, tier);
-                    // money stuff
-                    res.status(200);
-                }
+        } else {
 
-                // User is subscribed but is a lower tier (Spend the remainder)
-                if ( sub.getTier()<tier ) {
-                    subStore.deleteSubscription(cuid, uid);
-                    subStore.addSubscription(cuid, uid, tier);
-                    // money stuff
-                    res.status(200);
-                }
-
-                // User is subscribed but sent a request for the same subscription level?
-                if ( sub.getTier()==tier ) {
-                    res.status(200);
-                }
-                return res.status();
+            // Update the subscription
+            if ( curTier == null ) {
+                subStore.addSubscription( cuid, uid, tier );
+            } else {
+                subStore.changeSubscription( cuid, uid, tier );
             }
-        }
 
-        subStore.addSubscription(cuid, uid, tier);
-        // money stuff
+            walletStore.subtractFromBalance( cuid, Tiers.getCost(tierIncrease) );
+
+        }
 
         res.status(200);
         return res.status();
+
     }
 
     public int deleteSubscription( Request req, Response res ) {
@@ -97,16 +106,16 @@ public class SubscriptionHandler {
 
     }
 
-    // Add a route to this
-    public JSONObject getFollowers( Request req, Response res ) {
-
-        int uid = Integer.parseInt( req.params(":uid") );
-
-        List<UserTier> users = subStore.getFollowers(uid);
-
-        res.status(200);
-        return new JSONObject(users);
-
-    }
+    // Probably unneeded for now
+//    public JSONObject getFollowers( Request req, Response res ) {
+//
+//        int uid = Integer.parseInt( req.params(":uid") );
+//
+//        List<UserTier> users = subStore.getFollowers(uid);
+//
+//        res.status(200);
+//        return new JSONObject(users);
+//
+//    }
 
 }
