@@ -2,7 +2,7 @@ package utility;
 
 import java.util.HashMap;
 
-public class TierCost {
+public class Tiers {
 
     private static final HashMap<Integer,Integer> tiers = new HashMap<>();
     private static final int maxTier = 5;

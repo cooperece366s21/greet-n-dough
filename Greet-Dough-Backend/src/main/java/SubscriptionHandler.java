@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Properties;
 
 public class SubscriptionHandler {
+
     private final SubscriptionStore subStore;
     private final Gson gson = new Gson();
 
@@ -16,7 +17,7 @@ public class SubscriptionHandler {
         this.subStore = subStore;
     }
 
-    public int AddSubscription( Request req, Response res ) {
+    public int addSubscription( Request req, Response res ) {
 
         Properties data = gson.fromJson( req.body(), Properties.class );
         int cuid = Integer.parseInt( req.attribute("uid").toString() );
@@ -32,7 +33,7 @@ public class SubscriptionHandler {
         return res.status();
     }
 
-    public int DeleteSubscription( Request req, Response res ) {
+    public int deleteSubscription( Request req, Response res ) {
 
         Properties data = gson.fromJson( req.body(), Properties.class );
         int cuid = Integer.parseInt( req.attribute("uid").toString() );
@@ -44,14 +45,26 @@ public class SubscriptionHandler {
         return res.status();
     }
 
-    public JSONObject GetSubscriptions( Request req, Response res ) {
+    public JSONObject getSubscriptions( Request req, Response res ) {
+
+        int uid = Integer.parseInt( req.params(":uid") );
+
+        List<UserTier> users = subStore.getSubscriptions(uid);
+
+        res.status(200);
+        return new JSONObject(users);
+
+    }
+
+    // Add a route to this
+    public JSONObject getFollowers( Request req, Response res ) {
 
         int uid = Integer.parseInt( req.params(":uid") );
 
         List<UserTier> users = subStore.getFollowers(uid);
 
         res.status(200);
-        return new JSONObject( users );
+        return new JSONObject(users);
 
     }
 

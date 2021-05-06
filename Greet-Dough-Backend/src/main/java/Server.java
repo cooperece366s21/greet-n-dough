@@ -285,11 +285,11 @@ public class Server {
 
             path( "/subscription", () -> {
 
-                get("/:uid", subHandler::GetSubscriptions, gson::toJson);
+                get("/:uid", subHandler::getSubscriptions, gson::toJson);
 
-                post("", subHandler::AddSubscription, gson::toJson);
+                post("", subHandler::addSubscription, gson::toJson);
 
-                delete("", subHandler::DeleteSubscription, gson::toJson);
+                delete("", subHandler::deleteSubscription, gson::toJson);
 
             });
 

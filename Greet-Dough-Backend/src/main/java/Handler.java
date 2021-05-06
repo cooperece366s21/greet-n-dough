@@ -1,5 +1,4 @@
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import model.*;
 import store.model.*;
 import utility.ImageHandler;
@@ -17,7 +16,7 @@ import com.google.gson.Gson;
 import org.json.*;
 import spark.Request;
 import spark.Response;
-import utility.TierCost;
+import utility.Tiers;
 
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletException;
@@ -713,7 +712,7 @@ public class Handler {
         }
 
         // Check the tier
-        if ( TierCost.isValidTier(tier) ) {
+        if ( Tiers.isValidTier(tier) ) {
 
             System.err.println("Error: Invalid tier");
             res.status(403);
