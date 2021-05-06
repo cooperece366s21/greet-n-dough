@@ -88,10 +88,9 @@ public class Server {
 
         );
 
-        // Display information about the request
-//        before((req, res) -> {
-//            System.out.println( requestInfoToString(req) );
-//        });
+        SubscriptionHandler subHandler = new SubscriptionHandler(
+                Server.subscriptionStore
+        );
 
 
         // Copy pasted from
@@ -177,6 +176,8 @@ public class Server {
                         halt(401);
 
                     } else {
+                        // Set currently logged in user id "cuid"
+                        req.attribute( "cuid", loginStore.getUserID( req.headers("token") ) );
                         System.err.println("Valid token.");
                     }
 
@@ -279,6 +280,16 @@ public class Server {
                 post("/add", handler::addToBalance, gson::toJson);
 
                 post("/subtract", handler::subtractFromBalance, gson::toJson);
+
+            });
+
+            path( "/subscription", () -> {
+
+                get("/:uid", subHandler::GetSubscriptions, gson::toJson);
+
+                post("", subHandler::AddSubscription, gson::toJson);
+
+                delete("", subHandler::DeleteSubscription, gson::toJson);
 
             });
 
