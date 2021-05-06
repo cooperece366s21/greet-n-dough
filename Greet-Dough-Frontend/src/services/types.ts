@@ -15,6 +15,7 @@ type PostObject = {
     likeCount : number,
     images: string[],
     comments: CommentJson[]
+    hidden: boolean,
 }
 
 type Post = {

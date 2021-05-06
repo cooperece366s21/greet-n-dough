@@ -16,7 +16,7 @@ import {
 } from "@chakra-ui/react";
 import api from "../../services/api";
 import {type} from "os";
-import {PostObject} from "../../services/types";
+import {PostJson, PostObject} from "../../services/types";
 import Comment from "./Comment";
 
 type Entry = {
@@ -79,8 +79,8 @@ class UserFeed extends  React.Component<any, any> {
     render() {
         const feed = this.state.feed;
 
+        const listFeed = feed?.map( (e:PostJson,k) => (
 
-        const listFeed = feed?.map( (e,k) => (
             <>
                 <Box w={"100%"}
                      id={"post"+k}

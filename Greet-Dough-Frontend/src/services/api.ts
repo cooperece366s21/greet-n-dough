@@ -202,6 +202,7 @@ export async function getUserFeed( cuid:number, uid:number ) {
 
                 })
 
+                alert( JSON.stringify(body) );
                 body.reverse();
                 return body;
             })
@@ -384,7 +385,7 @@ export async function deletePost( token:string|null, pid:number ) {
 
     if ( token==null ) return (403);
 
-    const res = await fetch(`${BACKEND_URL}auth/posts/${pid}`, {
+    const res = await fetch(`${BACKEND_URL}/auth/post/${pid}`, {
         method: "delete",
         mode: "cors",
         headers: {

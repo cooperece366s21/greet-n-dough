@@ -563,7 +563,7 @@ public class Handler {
 
         int pid = post.getID();
         if ( hidden ) {
-            post = new Post("HIDDEN", "HIDDEN", pid, post.getUserID(), post.getTier() );
+            post = new Post("Post is hidden (tier " + post.getTier() + ")", "...", pid, post.getUserID(), post.getTier() );
         }
 
         JSONObject json = new JSONObject();
