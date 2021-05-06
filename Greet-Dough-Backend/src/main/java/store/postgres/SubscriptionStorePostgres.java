@@ -34,18 +34,18 @@ public class SubscriptionStorePostgres implements SubscriptionStore {
     }
 
     @Override
-    public void addSubscription( int uidCurrent, int uidTarget ) {
-        addSubscription( uidCurrent, uidTarget, 0 );
+    public void addSubscription( int cuid, int tuid ) {
+        addSubscription( cuid, tuid, 0 );
     }
 
     @Override
-    public void addSubscription( int uidCurrent, int uidTarget, int tier ) {
-        jdbi.useHandle( handle -> handle.attach(SubscriptionDao.class).addSubscription( uidCurrent, uidTarget, tier ) );
+    public void addSubscription( int cuid, int tuid, int tier ) {
+        jdbi.useHandle( handle -> handle.attach(SubscriptionDao.class).addSubscription( cuid, tuid, tier ) );
     }
 
     @Override
-    public void deleteSubscription( int uidCurrent, int uidTarget ) {
-        jdbi.useHandle( handle -> handle.attach(SubscriptionDao.class).deleteSubscription( uidCurrent, uidTarget ) );
+    public void deleteSubscription( int cuid, int tuid ) {
+        jdbi.useHandle( handle -> handle.attach(SubscriptionDao.class).deleteSubscription( cuid, tuid ) );
     }
 
 }
