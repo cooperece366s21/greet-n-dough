@@ -35,6 +35,10 @@ public class SubscriptionHandler {
         }
 
 //        walletStore.subtractFromBalance(cuid, BigDecimal.valueOf(Tiers.getCost(tier)) );
+        System.err.println("cuid: " + cuid);
+        System.err.println("uid: " + uid);
+        System.err.println("tier: " + tier);
+
         subStore.addSubscription(cuid, uid, tier);
 
         res.status(200);
