@@ -446,8 +446,9 @@ export async function getLikes( token: string|null, pid: number ) {
 
 export async function makeComment( token: string|null, pid:number, contents:string, parentId:number|null) {
     if ( token==null ) return (403);
-
     parentId = parentId==null ? -1 : parentId;
+
+    alert( JSON.stringify({ contents, parentId }) );
 
     const res = await fetch(`${BACKEND_URL}/auth/post/${pid}/comment`, {
         method: "post",

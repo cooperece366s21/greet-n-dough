@@ -204,7 +204,7 @@ public class Server {
 
                     // Deletes user given UserID
                     // curl -X delete localhost:5432/user/1/
-                    delete("", handler::deleteUser, gson::toJson);      // Does this work?
+                    delete("", handler::deleteUser, gson::toJson);
 
                     get("/feed", handler::getUserFeed, gson::toJson);
 

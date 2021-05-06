@@ -56,6 +56,7 @@ type CommentObject = {
     userID: number,
     username: string,
     reloadComments: boolean,
+    children: CommentJson[],
 }
 
 type UserJson = {

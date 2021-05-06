@@ -586,13 +586,31 @@ public class Handler {
 
         if( !hidden ) {
 
-            for (Comment comment : commentStore.getParents(pid)) {
+            for ( Comment comment : commentStore.getParents(pid) ) {
 
-                JSONObject tempCommentJson = new JSONObject(comment);
-                int uid = tempCommentJson.getInt("userID");
-                tempCommentJson.put("username", userStore.getUser(uid).getName());
-                tempCommentJson.put("avatar", getUrlToPFP(uid));
-                comments.add(tempCommentJson);
+                JSONObject parentComment = new JSONObject(comment);
+                int uid = parentComment.getInt("userID");
+                parentComment.put( "username", userStore.getUser(uid).getName() );
+                parentComment.put( "avatar", getUrlToPFP(uid) );
+
+                System.err.println("Grabbing replies");
+                List<Comment> children = commentStore.getReplies( comment.getID() );
+                System.err.println("Grabbed replies");
+
+                LinkedList<JSONObject> childComments = new LinkedList<>();
+                for ( Comment child : children ) {
+
+                    System.err.println("Iterating through children");
+
+                    JSONObject childComment = new JSONObject(child);
+                    int childUid = childComment.getInt("userID");
+                    childComment.put( "username", userStore.getUser(childUid).getName() );
+                    childComment.put( "avatar", getUrlToPFP(childUid) );
+                    childComments.add(childComment);
+                }
+
+                parentComment.put("children", childComments.toArray());
+                comments.add(parentComment);
 
             }
 
@@ -1053,7 +1071,6 @@ public class Handler {
 
             // Check if the desired parentId exists
             if ( !commentStore.hasComment(parentId) ) {
-
                 res.status(404);
                 return res.status();
 
