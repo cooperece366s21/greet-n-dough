@@ -72,9 +72,9 @@ public class Handler {
      * @return  true if the user can view the post;
      *          false otherwise
      */
-    private boolean hasUserPostPerms( int uidCurrent, int pid, Response res ) {
+    private boolean hasUserPostPerms( int cuid, int pid, Response res ) {
 
-        if ( !userStore.hasUser(uidCurrent) ) {
+        if ( !userStore.hasUser(cuid) ) {
 
             System.err.println("User does not exist");
             res.status(404);
@@ -90,22 +90,22 @@ public class Handler {
 
         }
 
-        int uidTarget = postStore.getPost(pid).getUserID();
+        int tuid = postStore.getPost(pid).getUserID();
 
         // Check if uidCurrent is the owner of the post
-        if ( uidCurrent == uidTarget ) {
+        if ( cuid == tuid ) {
 
             res.status(200);
             return true;
 
         }
 
-        List<UserTier> subscriptions = subscriptionStore.getSubscriptions(uidCurrent);
+        List<UserTier> subscriptions = subscriptionStore.getSubscriptions(cuid);
 
         // Check if uidTarget is in the list of uidCurrent's subscriptions
         for ( UserTier userTier : subscriptions ) {
 
-            if ( userTier.getUserID() == uidTarget && userTier.getTier() >= postStore.getPost(pid).getTier() ) {
+            if ( userTier.getUserID() == tuid && userTier.getTier() >= postStore.getPost(pid).getTier() ) {
 
                 res.status(200);
                 return true;
