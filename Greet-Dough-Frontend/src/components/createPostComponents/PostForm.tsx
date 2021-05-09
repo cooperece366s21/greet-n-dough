@@ -8,9 +8,9 @@ import {
     Input,
     Button,
     Image,
+    CheckboxGroup,
     Stack,
-    RadioGroup,
-    Radio,
+    RadioGroup, Radio,
 } from "@chakra-ui/react";
 
 import api, {register} from "../../services/api";
@@ -21,7 +21,7 @@ type PostState = {
     contents: string;
     invalid: boolean;
     pictures: File[] | null;
-    tier: string | null,
+    tier: number | null,
 }
 
 class PostForm extends React.Component<any, any> {
@@ -97,13 +97,30 @@ class PostForm extends React.Component<any, any> {
                             <RadioGroup onChange={ (e) => {
                                 this.setState({tier: e});
                             }}>
+                                <CheckboxGroup>
                                 <Stack spacing={4} direction="row" >
-                                    <Radio value="1" colorScheme={"green"}> 1 </Radio>
-                                    <Radio value="2" colorScheme={"green"}> 2 </Radio>
-                                    <Radio value="3" colorScheme={"green"}> 3 </Radio>
-                                    <Radio value="4" colorScheme={"green"}> 4 </Radio>
-                                    <Radio value="5" colorScheme={"green"}> 5 </Radio>
+                                    {this.state.tier === 1 ?
+                                        <Radio value="1" isInvalid colorScheme={"red"}> 1 </Radio> :
+                                        <Radio value="1" colorScheme={"red"}> 1 </Radio>
+                                    }
+                                    {this.state.tier === 2 ?
+                                        <Radio value="2" isInvalid colorScheme={"red"}> 2 </Radio> :
+                                        <Radio value="2" colorScheme={"red"}> 2 </Radio>
+                                    }
+                                    {this.state.tier === 3 ?
+                                        <Radio value="3" isInvalid colorScheme={"red"}> 3 </Radio> :
+                                        <Radio value="3" colorScheme={"red"}> 3 </Radio>
+                                    }
+                                    {this.state.tier === 4 ?
+                                        <Radio value="4" isInvalid colorScheme={"red"}> 4 </Radio> :
+                                        <Radio value="4" colorScheme={"red"}> 4 </Radio>
+                                    }
+                                    {this.state.tier === 5 ?
+                                        <Radio value="5" isInvalid colorScheme={"red"}> 5 </Radio> :
+                                        <Radio value="5" colorScheme={"red"}> 5 </Radio>
+                                    }
                                 </Stack>
+                                </CheckboxGroup>
                         </RadioGroup>
                         </Center>
 

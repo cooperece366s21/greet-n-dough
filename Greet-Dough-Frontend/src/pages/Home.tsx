@@ -111,11 +111,11 @@ function Home(){
             <Center>
                 <Box w={'70%'} mt={30} mb={30}>
                     <Center>
-                        <Link to={'/register'}>
+                        <a href={"/register"}>
                             <Button colorScheme={'yellow'} fontSize={'3xl'} paddingBlock={7} >
                                 Register Today!
                             </Button>
-                        </Link>
+                        </a>
 
                     </Center>
                 </Box>

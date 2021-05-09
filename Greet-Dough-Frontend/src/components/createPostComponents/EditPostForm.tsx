@@ -50,8 +50,9 @@ class EditPostForm extends PostForm{
         api.getPost( localStorage.getItem("authToken"), parseInt(this.state.pid) )
             .then( body => {
                 this.setState({
-                    title: body.post.title,
-                    contents: body.post.contents,
+                    title: body.title,
+                    contents: body.contents,
+                    tier: body.tier,
                 })
             })
     }

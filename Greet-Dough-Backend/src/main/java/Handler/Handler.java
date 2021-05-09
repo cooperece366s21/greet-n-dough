@@ -392,6 +392,20 @@ public class Handler {
 
     }
 
+    public JSONObject getPost( Request req, Response res ) {
+        System.err.println("Reached endpoint");
+        int cuid =  Integer.parseInt( req.attribute( "cuid" ) );
+        int pid = Integer.parseInt( req.params(":pid") );
+        Post post = postStore.getPost( pid );
+
+        if ( cuid != post.getUserID() ) {
+            res.status(403);
+            return new JSONObject();
+        }
+
+        return new JSONObject( post );
+    }
+
     public int deletePost( Request req, Response res ) {
 
         int uid = Integer.parseInt( req.attribute("cuid") );
