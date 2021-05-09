@@ -1,18 +1,17 @@
+import Handler.*;
 import org.jdbi.v3.core.Jdbi;
 import spark.Request;
 import store.postgres.*;
 import store.model.*;
-
-import com.google.gson.Gson;
 import utility.Cleaner;
 import utility.GreetDoughJdbi;
 import utility.PathDefs;
-import utility.ResetDao;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import com.google.gson.Gson;
 import static spark.Spark.*;
 
 public class Server {
@@ -59,7 +58,7 @@ public class Server {
         scheduler.scheduleAtFixedRate(cleaner, 0, 1, TimeUnit.HOURS);
 
         Jdbi jdbi = GreetDoughJdbi.create("jdbc:postgresql://localhost:4321/greetdough");
-        ResetDao.reset(jdbi);
+//        ResetDao.reset(jdbi);
 
         userStore = new UserStorePostgres(jdbi);
         postStore = new PostStorePostgres(jdbi);
@@ -72,8 +71,12 @@ public class Server {
         profileStore = new ProfileStorePostgres(jdbi);
         subscriptionStore = new SubscriptionStorePostgres(jdbi);
 
-        Handler handler = new Handler(
+        UtilityHandler utilityHandler = new UtilityHandler(
+                Server.profileStore,
+                Server.imageStore
+        );
 
+        Handler handler = new Handler(
             Server.userStore,
             Server.postStore,
             Server.imageStore,
@@ -83,17 +86,26 @@ public class Server {
             Server.passwordStore,
             Server.loginStore,
             Server.walletStore,
-            Server.profileStore
+            Server.profileStore,
+            utilityHandler
+        );
 
+        UserHandler userHandler = new UserHandler(
+            Server.userStore,
+            Server.subscriptionStore,
+            Server.walletStore,
+            Server.profileStore,
+            Server.passwordStore,
+            utilityHandler
         );
 
         SubscriptionHandler subHandler = new SubscriptionHandler(
-                Server.subscriptionStore,
-                Server.walletStore
+            Server.subscriptionStore,
+            Server.walletStore
         );
 
         WalletHandler walletHandler = new WalletHandler(
-                Server.walletStore
+            Server.walletStore
         );
 
         // Copy pasted from
@@ -138,7 +150,7 @@ public class Server {
             // Register
             // Creates a new user
             // curl -H "Content-Type: application/json" --data "{"name":"Josh"}" -X post localhost:5432/users/
-            post("/register", handler::createUser, gson::toJson);
+            post("/register", userHandler::createUser, gson::toJson);
 
             // Returns user given an id
             // curl localhost:5432/user/1/
@@ -146,10 +158,10 @@ public class Server {
 
                 path("/:uid", () -> {
 
-                    get("", handler::getUser, gson::toJson);
+                    get("", userHandler::getUser, gson::toJson);
 
                     // biography and profile picture
-                    get("/profile", handler::getUserProfile, gson::toJson);
+                    get("/profile", userHandler::getUserProfile, gson::toJson);
 
                     get("/subscriptions", subHandler::getSubscriptions, gson::toJson);
 
@@ -157,7 +169,7 @@ public class Server {
 
             });
 
-            get("/search/:name", handler::searchUsers, gson::toJson);
+            get("/search/:name", userHandler::searchUsers, gson::toJson);
 
         });
 
@@ -199,7 +211,7 @@ public class Server {
                     System.err.println("Route: /user");
                 });
 
-                put("/edit", handler::editUser, gson::toJson);
+                put("/edit", userHandler::editUser, gson::toJson);
 
                 post("/profilepic", handler::uploadProfilePicture, gson::toJson);
 
@@ -207,7 +219,7 @@ public class Server {
 
                     // Deletes user given UserID
                     // curl -X delete localhost:5432/user/1/
-                    delete("", handler::deleteUser, gson::toJson);
+                    delete("", userHandler::deleteUser, gson::toJson);
 
                     get("/feed", handler::getUserFeed, gson::toJson);
 
@@ -297,21 +309,6 @@ public class Server {
 
         // Add a newline
         after((req,res) -> System.out.println());
-
-        // USER RELATION ROUTES
-        ///////////////////////
-
-        // curl -d "uid=2" -X post localhost:5432/users/0/subscribe/
-        //        post( "/users/:id/subscribe/", handler::subscribe, gson::toJson );
-
-        // curl -d "uid=2" -X post localhost:5432/users/0/unsubscribe/
-        //        post( "/users/:id/unsubscribe/", handler::unsubscribe, gson::toJson );
-
-        //        // curl -d "uid=2" -X post localhost:5432/users/0/follow/
-        //        post( "/users/:id/follow/", (req,res) -> handler.follow(req), gson::toJson );
-        //
-        //        // curl -d "uid=2" -X post localhost:5432/users/0/unfollow/
-        //        post( "/users/:id/unfollow/", (req,res) -> handler.unfollow(req), gson::toJson );
 
     }
 

@@ -1,3 +1,5 @@
+package Handler;
+
 import store.model.WalletStore;
 
 import com.google.gson.Gson;

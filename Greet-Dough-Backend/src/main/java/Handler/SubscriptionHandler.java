@@ -1,3 +1,5 @@
+package Handler;
+
 import model.UserTier;
 import store.model.SubscriptionStore;
 import store.model.WalletStore;
