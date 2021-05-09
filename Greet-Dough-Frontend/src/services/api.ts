@@ -355,7 +355,11 @@ export async function getPost( token:string|null, pid:number ) {
     if ( res.ok ) {
         return await res.json()
             .then( body => {
-                alert( JSON.stringify(body.map) );
+
+                body.map.urls.forEach( (url:string, i:number) => {
+                    body.map.urls[i] = convertToCorrectUrl(url);
+                });
+
                 return body.map;
             })
 

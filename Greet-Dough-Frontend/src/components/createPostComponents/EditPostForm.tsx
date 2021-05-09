@@ -12,7 +12,7 @@ import {
 
 import api, {register} from "../../services/api";
 import PostForm from "./PostForm";
-import {PostObject} from "../../services/types"
+import {PostObject, UploadedImage} from "../../services/types"
 
 type PostState = {
     title: string;
@@ -21,6 +21,9 @@ type PostState = {
     pid: string;
     pictures: File[] | null;
     tier: null;
+    loadedImages: UploadedImage[] | null;
+    deleted : number[];
+
 }
 
 class EditPostForm extends PostForm{
@@ -32,6 +35,8 @@ class EditPostForm extends PostForm{
         pid: "",
         pictures: null,
         tier: null,
+        loadedImages: null,
+        deleted: [],
     }
 
     constructor(props:any) {
@@ -43,16 +48,29 @@ class EditPostForm extends PostForm{
             pid: props.pid,
             pictures: null,
             tier: null,
+            loadedImages: null,
+            deleted: [],
         }
     }
 
     componentDidMount() {
         api.getPost( localStorage.getItem("authToken"), parseInt(this.state.pid) )
             .then( body => {
+                var images:UploadedImage[] = [];
+
+                body.urls.forEach( (url:string, k:number) => {
+                    let image:UploadedImage = {
+                        url: url,
+                        id: body.imageIDList.myArrayList[k],
+                    }
+                    images.push( image );
+                } )
+
                 this.setState({
                     title: body.title,
                     contents: body.contents,
                     tier: body.tier,
+                    loadedImages: images,
                 })
             })
     }

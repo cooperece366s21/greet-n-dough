@@ -62,10 +62,18 @@ type CommentObject = {
 type UserJson = {
     map: UserObject
 }
+
 type UserObject = {
     name: string,
     ID: number,
     avatar: string,
 }
 
-export type { Post, PostObject, Time, Date, TimeCreated, FeedState, PostJson, CommentJson, CommentObject, UserObject, UserJson }
+type UploadedImage = {
+    url: string,
+    id: number,
+}
+
+export type { Post, PostObject, Time, Date, TimeCreated,
+    FeedState, PostJson, CommentJson, CommentObject,
+    UserObject, UserJson, UploadedImage }

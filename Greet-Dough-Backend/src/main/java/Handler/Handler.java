@@ -340,7 +340,6 @@ public class Handler {
 
     public JSONObject getPost( Request req, Response res ) {
 
-        System.err.println("Reached endpoint");
         int cuid =  Integer.parseInt( req.attribute( "cuid" ) );
         int pid = Integer.parseInt( req.params(":pid") );
 
@@ -359,9 +358,16 @@ public class Handler {
             return new JSONObject();
 
         }
+        JSONObject postJSON = new JSONObject(post);
+        List<String> urls = new ArrayList<>();
+
+        for ( Integer iid : post.getImageIDList() ) {
+            urls.add( imageStore.getImage(iid).getPath() );
+        }
+        postJSON.put("urls", urls.toArray());
 
         res.status(200);
-        return new JSONObject(post);
+        return postJSON;
 
     }
 
