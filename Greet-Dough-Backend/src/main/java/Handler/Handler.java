@@ -9,8 +9,6 @@ import utility.Tiers;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import com.google.gson.Gson;
 import org.json.*;
@@ -32,11 +30,6 @@ public class Handler {
     private final UtilityHandler utilityHandler;
 
     private final Gson gson = new Gson();
-
-    // Defines the accepted file extensions for images
-    private static final HashSet<String> validImageFileExtensions = Stream
-                            .of(".png",".jpg",".gif")
-                            .collect( Collectors.toCollection(HashSet::new) );
 
     public Handler(UserStore userStore,
                    PostStore postStore,
@@ -130,28 +123,6 @@ public class Handler {
 
             res.status(200);
             return true;
-
-        }
-
-    }
-
-    /**
-     * The method checks if the given file extension is valid.
-     *
-     * @return  true if the file extension is valid; false otherwise
-     */
-    private boolean isValidImageFile( String fileExtension, Response res ) {
-
-        // Check if the extension is valid
-        if ( validImageFileExtensions.contains(fileExtension) ) {
-
-            res.status(200);
-            return true;
-
-        } else {
-
-            res.status(403);
-            return false;
 
         }
 
@@ -393,17 +364,21 @@ public class Handler {
     }
 
     public JSONObject getPost( Request req, Response res ) {
+
         System.err.println("Reached endpoint");
         int cuid =  Integer.parseInt( req.attribute( "cuid" ) );
         int pid = Integer.parseInt( req.params(":pid") );
-        Post post = postStore.getPost( pid );
 
+        Post post = postStore.getPost(pid);
         if ( cuid != post.getUserID() ) {
+
             res.status(403);
             return new JSONObject();
+
         }
 
-        return new JSONObject( post );
+        return new JSONObject(post);
+
     }
 
     public int deletePost( Request req, Response res ) {
@@ -571,7 +546,7 @@ public class Handler {
 
         // Check the file extension
         String fileExtension = readFormField( req, partTypeName );
-        if ( !isValidImageFile( fileExtension, res ) ) {
+        if ( !utilityHandler.isValidImageFile( fileExtension, res ) ) {
             return new Image("",-1,-1);
         }
 
