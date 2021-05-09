@@ -457,7 +457,20 @@ public class Handler {
 
         BigDecimal bal = walletStore.getBalance(uid);
 
-        return bal != null ? bal.setScale(2, RoundingMode.UNNECESSARY).toString() : "";
+        if ( bal == null ) {
+
+            res.status(404);
+            return "";
+
+        } else {
+
+            // Set bal to 2 decimal places
+            bal = bal.setScale(2, RoundingMode.UNNECESSARY);
+
+            res.status(200);
+            return bal.toString();
+
+        }
 
     }
 
