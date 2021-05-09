@@ -553,17 +553,17 @@ public class Handler {
     private JSONObject formatPostJson( Post post, boolean hidden ) {
 
         int pid = post.getID();
+
+        // Creates a dummy post
         if ( hidden ) {
-            post = new Post("Post is hidden (tier " + post.getTier() + ")", "...", pid, post.getUserID(), post.getTier() );
+            post = new Post("This post is hidden :(",
+                        "Subscribe at tier " + post.getTier() + " to see!",
+                            pid, post.getUserID(), post.getTier() );
         }
 
         JSONObject json = new JSONObject();
 
         json.put( "post", post );
-
-        // Get the likes
-        Likes tempLikes = likeStore.getLikes(pid);
-        json.put( "likeCount", tempLikes.getLikeCount() );
 
         List<Integer> iidList = post.getImageIDList();
         List<String> postUrlList = new ArrayList<>();
@@ -575,7 +575,7 @@ public class Handler {
         // Shaping the comment field to be much nicer for the frontend
         LinkedList<JSONObject> comments = new LinkedList<>();
 
-        if( !hidden ) {
+        if ( !hidden ) {
 
             for ( Comment comment : commentStore.getParents(pid) ) {
 
@@ -607,6 +607,10 @@ public class Handler {
             }
 
         }
+
+        // Get the likes
+        String likeCount = hidden ? "?" : String.valueOf( likeStore.getLikes(pid).getLikeCount() );
+        json.put( "likeCount", likeCount );
 
         json.put( "comments", comments.toArray() );
         json.put( "images", postUrlList.toArray() );
