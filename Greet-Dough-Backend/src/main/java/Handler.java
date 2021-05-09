@@ -5,8 +5,6 @@ import utility.ImageHandler;
 import utility.PathDefs;
 
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -989,57 +987,38 @@ public class Handler {
 
     }
 
-    public List<Comment> getParentComments( Request req, Response res ) {
+    /**
+     * Post owner cannot delete their own comment for now.
+     */
+    public int deleteComment( Request req, Response res ) {
 
         Properties data = gson.fromJson(req.body(), Properties.class);
         int uid = Integer.parseInt( req.attribute("cuid") );
 
         // Parse the request
-        int pid = Integer.parseInt( data.getProperty("pid") );
-
-        // Check if the user has permissions
-        if ( !hasUserPostPerms( uid, pid, res ) ) {
-
-            System.err.println("User does not have permission to view the post.");
-            return new LinkedList<>();
-
-        }
-
-        if ( res.status() != 200 ) {
-
-            System.err.println("Error code: " + res.status());
-            return new LinkedList<>();
-
-        }
-
-        return commentStore.getParents(pid);
-
-
-    }
-
-    public List<Comment> getRepliesComments( Request req, Response res ) {
-
-        Properties data = gson.fromJson(req.body(), Properties.class);
-        int uid = Integer.parseInt( req.attribute("cuid") );
-
-        // Parse the request
-        int pid = Integer.parseInt( data.getProperty("pid") );
         int cid = Integer.parseInt( data.getProperty("cid") );
 
-        // Check if the user has permissions
-        if ( !hasUserPostPerms( uid, pid, res ) ) {
+        Comment tempComment = commentStore.getComment(cid);
 
-            System.err.println("User does not have permission to view the post.");
-            return new LinkedList<>();
+        // Check if the user owns the comment
+        if ( tempComment.getUserID() == uid ) {
 
+            commentStore.deleteComment(cid);
+            res.status(200);
+
+        } else {
+            res.status(403);
         }
 
-        return commentStore.getReplies(cid);
+        // Check if the comment was successfully deleted
+        if ( commentStore.hasComment(cid) ) {
+            res.status(404);
+        } else {
 
-    }
+            System.out.println( gson.toJson(tempComment) );
+            res.status(200);
 
-    // Currently not implemented
-    public int deleteComment( Request req, Response res ) {
+        }
 
         return res.status();
 
