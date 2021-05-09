@@ -1,6 +1,9 @@
 package store.postgres;
 
 import model.User;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import utility.GreetDoughJdbi;
 import utility.ResetDao;
 
@@ -15,21 +18,51 @@ class WalletStorePostgresTest extends WalletStorePostgres {
 
     private static final Jdbi jdbi = GreetDoughJdbi.create("jdbc:postgresql://localhost:4321/greetdough");
 
+    private static UserStorePostgres userStorePostgres;
+    private static WalletStorePostgres walletStorePostgres;
+
+    private static User steve;
+    private static User juan;
+
     public WalletStorePostgresTest() {
         super(jdbi);
     }
 
-    @Test
-    void test() {
+    @BeforeAll
+    static void setUpAll() {
 
-        UserStorePostgres userStorePostgres = new UserStorePostgres(jdbi);
-        WalletStorePostgres walletStorePostgres = new WalletStorePostgres(jdbi);
+        // Delete all the databases (only use the relevant ones)
+        ResetDao.deleteAll(jdbi);
 
-        // Used to DROP and CREATE all tables
+        userStorePostgres = new UserStorePostgres(jdbi);
+        walletStorePostgres = new WalletStorePostgres(jdbi);
+
+    }
+
+    @AfterAll
+    static void tearDownAll() {
         ResetDao.reset(jdbi);
+    }
 
-        User steve = userStorePostgres.addUser("Steve Ree");
-        User juan = userStorePostgres.addUser("Juan Lam");
+    @BeforeEach
+    void setUpEach() {
+
+        // Delete the databases
+        walletStorePostgres.delete();
+        userStorePostgres.delete();
+
+        // Initialize the databases
+        userStorePostgres.init();
+        walletStorePostgres.init();
+
+        // Add users
+        steve = userStorePostgres.addUser("Steve Ree");
+        juan = userStorePostgres.addUser("Juan Lam");
+
+    }
+
+    @Test
+    void testAddUser() {
 
         // Test retrieving an invalid user
         assertNull( walletStorePostgres.getBalance( steve.getID() ) );
@@ -43,10 +76,24 @@ class WalletStorePostgresTest extends WalletStorePostgres {
         assert ( walletStorePostgres.getBalance( juan.getID() ).compareTo( new BigDecimal("10.50") ) == 0 );
         assertNull( walletStorePostgres.getBalance(-1) );                                      // Should be null b/c user doesn't exist
 
+    }
+
+    @Test
+    void testStripTrailingZeros() {
+
         // Test .stripTrailingZeros()
         BigDecimal amount = new BigDecimal("150000");
         amount = amount.stripTrailingZeros();
         assertFalse( amount.compareTo(BigDecimal.ZERO) != 1 || amount.scale() > 2 );
+
+    }
+
+    @Test
+    void testChangeBalance() {
+
+        // Add users
+        walletStorePostgres.addUser( steve.getID() );
+        walletStorePostgres.addUser( juan.getID(), new BigDecimal("10.50") );
 
         // Test changing balances
         walletStorePostgres.addToBalance( steve.getID(), new BigDecimal("1.005") );
