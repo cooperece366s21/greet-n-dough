@@ -387,28 +387,6 @@ public class Handler {
 
     }
 
-    // Need to properly map profile fields to JSONObject
-/*
-    public JSONObject getProfile ( Request req, Response res ) throws JsonProcessingException {
-
-        //res.type("application/json");
-        //Properties data = gson.fromJson(req.body(), Properties.class);
-
-        //int uid = Integer.parseInt( data.getProperty("uid") );
-
-        int uid = Integer.parseInt( req.params(":uid") );
-
-        Profile tempProfile = profileStore.getProfile(uid);
-
-        JSONObject tempJSON = new JSONObject();
-        tempJSON.put("profile",tempProfile);
-
-        res.status(200);
-        return tempJSON;
-
-    }
-*/
-
     public String tokenToId( Request req, Response res ) {
 
         // Check the token
@@ -559,7 +537,7 @@ public class Handler {
      *
      * @return a JSONObject with the Post object and like count
      */
-    private JSONObject formatPostJson(Post post, boolean hidden ) {
+    private JSONObject formatPostJson( Post post, boolean hidden ) {
 
         int pid = post.getID();
         if ( hidden ) {
@@ -607,6 +585,7 @@ public class Handler {
                     childComment.put( "username", userStore.getUser(childUid).getName() );
                     childComment.put( "avatar", getUrlToPFP(childUid) );
                     childComments.add(childComment);
+
                 }
 
                 parentComment.put("children", childComments.toArray());
@@ -661,13 +640,6 @@ public class Handler {
         int cuid = Integer.parseInt( req.attribute("cuid") );
         int uid = Integer.parseInt( req.params("uid") );
 
-        int cuidTier = 0;
-
-        for (UserTier sub : subscriptionStore.getSubscriptions(cuid)) {
-            if (sub.getUserID() == uid) cuidTier = sub.getTier();
-        }
-
-
         if ( !userStore.hasUser(uid) ) {
 
             res.status(404);
@@ -675,19 +647,33 @@ public class Handler {
 
         }
 
-        // ToDo: Check permissions for each post
         List<Post> feed = postStore.makeFeed(uid);
-
-        // Check permissions of the user and the post
-
         List<JSONObject> listJSON = new LinkedList<>();
 
-        for ( Post post : feed ){
-            if ( cuidTier < post.getTier() && cuid!=uid ) {
-                listJSON.add( formatPostJson( post, true));
-            } else {
-                listJSON.add( formatPostJson( post, false ));
+        // Check if the user is retrieving their own feed
+        if ( cuid == uid ) {
+
+            for ( Post post : feed ) {
+                listJSON.add( formatPostJson( post, false ) );
             }
+
+            return listJSON;
+
+        }
+
+        // Check if the user has permissions
+        Integer temp = subscriptionStore.hasSubscription( cuid, uid );
+        int tier = (temp == null) ? -1 : temp;
+
+        // Check permissions of the user and the post
+        for ( Post post : feed ) {
+
+            if ( tier < post.getTier() ) {
+                listJSON.add( formatPostJson( post, true) );
+            } else {
+                listJSON.add( formatPostJson( post, false ) );
+            }
+
         }
 
         res.status(200);
