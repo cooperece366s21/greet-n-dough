@@ -365,17 +365,17 @@ export async function getPost( token:string|null, pid:number ) {
 
 }
 
-export async function editPost( token:string|null, pid:string, title:string, contents:string ) {
-    if ( token==null ) return (403);
+export async function editPost( pid:string, title:string, contents:string, tier:number|null ) {
+    if ( tier== null ) return (404);
 
     const res = await fetch(`${BACKEND_URL}/auth/post/${pid}`, {
         method: "put",
         mode: "cors",
         headers: {
             "Content-Type": "application/json",
-            "token": token,
+            "token": getCurrentToken(),
         },
-        body: JSON.stringify({ pid, title, contents })
+        body: JSON.stringify({ pid, title, contents, tier })
     });
 
     if ( res.ok ) {

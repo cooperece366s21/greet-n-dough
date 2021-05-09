@@ -62,10 +62,10 @@ class EditPostForm extends PostForm{
             <Button colorScheme={"green"}
                     onClick={ () => {
                         api.editPost(
-                            localStorage.getItem("authToken"),
                             this.state.pid,
                             this.state.title,
-                            this.state.contents
+                            this.state.contents,
+                            this.state.tier,
                         ).then( res => {
                             if(res===200){
                                 alert("Edit successful!");
