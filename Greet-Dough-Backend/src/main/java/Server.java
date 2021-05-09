@@ -253,8 +253,8 @@ public class Server {
                 path("/:pid", () -> {
 
                     // Returns post object
-                    // Currently unused
-//                    get("", handler::getPost, gson::toJson);
+
+                    get("", handler::getPost, gson::toJson);
 
                     // Edit post Object
                     put("", handler::editPost, gson::toJson);
