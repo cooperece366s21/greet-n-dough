@@ -51,9 +51,10 @@ public class SubscriptionHandler {
         } else {
             tierIncrease = tier - curTier;
         }
+        boolean upgrading = tierIncrease > 0;
 
         // Check if the specified tier is valid
-        if ( !Tiers.isValidTier(tierIncrease) || tierIncrease == 0 ) {
+        if ( !Tiers.isValidTier(tier) || tierIncrease == 0 ) {
 
             System.err.println("Error: Invalid Tier");
             res.status(404);
@@ -63,7 +64,7 @@ public class SubscriptionHandler {
 
         // Check if the user's balance is high enough to subscribe
         BigDecimal curBal = walletStore.getBalance(cuid);
-        if ( curBal.compareTo( Tiers.getCost(tierIncrease) ) == -1 ) {
+        if ( upgrading && ( curBal.compareTo( Tiers.getCost(tierIncrease) ) == -1 ) ) {
 
             System.err.println("Error: User does not have enough money to subscribe.");
             res.status(402);
@@ -77,8 +78,9 @@ public class SubscriptionHandler {
             } else {
                 subStore.changeSubscription( cuid, uid, tier );
             }
-
-            walletStore.subtractFromBalance( cuid, Tiers.getCost(tierIncrease) );
+            if ( upgrading ) {
+                walletStore.subtractFromBalance( cuid, Tiers.getCost(tierIncrease) );
+            }
 
         }
 
@@ -110,16 +112,5 @@ public class SubscriptionHandler {
 
     }
 
-    // Probably unneeded for now
-//    public JSONObject getFollowers( Request req, Response res ) {
-//
-//        int uid = Integer.parseInt( req.params(":uid") );
-//
-//        List<UserTier> users = subStore.getFollowers(uid);
-//
-//        res.status(200);
-//        return new JSONObject(users);
-//
-//    }
 
 }

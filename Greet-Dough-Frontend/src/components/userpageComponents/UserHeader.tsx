@@ -113,8 +113,19 @@ class UserHeader extends React.Component<any, any> {
                     color={"black"}
                     placeholder={"Subscribe"}
                     onChange={ (tier) => {
-                        alert(tier.target.value);
-                        api.subscribeTo( this.state.uid, parseInt(tier.target.value) );
+                        api.subscribeTo( this.state.uid, parseInt(tier.target.value) )
+                            // then refresh
+                            .then( (res) => {
+                                if (res===200) {
+                                    window.location.href = ("/user/" + this.state.uid)
+                                }
+                                else if ( res === 402 ) {
+                                    alert(" Insufficient funds! ")
+                                }
+                                else if ( res === 404 ) {
+                                    alert(" Something happened in the backend! ");
+                                }
+                            });
                     } }
                 >
                     <option value={1}>Tier 1 $5</option>
@@ -239,7 +250,6 @@ class UserHeader extends React.Component<any, any> {
 
          )
      }
-
 
     render() {
         switch( this.state.exists ) {

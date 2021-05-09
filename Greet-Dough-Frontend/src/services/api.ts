@@ -574,8 +574,11 @@ export async function subscribeTo( uid:number, tier:number ) {
         body: JSON.stringify( { tier } )
     });
 
-    res.json()
-        .then( body => alert(JSON.stringify(body)) );
+    if (res.ok) {
+        return 200;
+    } else {
+        return res.status;
+    }
 
 }
 
