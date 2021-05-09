@@ -205,31 +205,6 @@ public class Handler {
 
     }
 
-    // Not currently used
-    // Will need to check permissions (post tier)
-//    /**
-//     * @return a JSONObject containing the Post object and like count
-//     */
-//    public JSONObject getPost( Request req, Response res ) {
-//
-//        int pid = Integer.parseInt( req.params(":pid") );
-//
-//        if ( !postStore.hasPost(pid) ) {
-//
-//            System.err.println("Post does not exist");
-//            res.status(404);
-//            return new JSONObject();
-//
-//        }
-//
-//        // Get the post and like count
-//        JSONObject json = makePostJson(pid);
-//
-//        res.status(200);
-//        return json;
-//
-//    }
-
     /**
      * The method returns a JSONObject containing a list of
      * JSONObjects that contain the Post object and like count.
@@ -369,6 +344,14 @@ public class Handler {
         int cuid =  Integer.parseInt( req.attribute( "cuid" ) );
         int pid = Integer.parseInt( req.params(":pid") );
 
+        if ( !postStore.hasPost(pid) ) {
+
+            System.err.println("Post does not exist");
+            res.status(404);
+            return new JSONObject();
+
+        }
+
         Post post = postStore.getPost(pid);
         if ( cuid != post.getUserID() ) {
 
@@ -377,6 +360,7 @@ public class Handler {
 
         }
 
+        res.status(200);
         return new JSONObject(post);
 
     }
