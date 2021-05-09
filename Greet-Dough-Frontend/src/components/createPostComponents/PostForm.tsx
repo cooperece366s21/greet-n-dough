@@ -17,7 +17,8 @@ import {
 import api, {register} from "../../services/api";
 import {UploadedImage} from "../../services/types";
 import ImageUploader from "react-images-upload";
-import {exists} from "fs";
+import {css, style} from "glamor";
+import {toast, ToastContainer} from "react-toastify";
 
 type PostState = {
     title: string;
@@ -46,15 +47,26 @@ class PostForm extends React.Component<any, any> {
     }
 
     renderSubmitButton(){
+        const goodPost = () => toast.success("Post created!",
+            { style:{ backgroundColor:"#5da356"} }
+            );
+
+        const selectATier = () => toast.error("Please select a tier!");
+        const writeATitle = () => toast.error("Please write a title!");
+        const otherErrors = (res:number) => toast.error("Post could not be created! " +  res );
+
         return(
             <Button colorScheme={"green"}
                     onClick={ () => {
                         let token = localStorage.getItem('authToken');
 
+                        if ( this.state.title==="" ) { writeATitle(); return; }
+                        if ( this.state.tier==null ) { selectATier(); return; }
+
                         api.createPost( token, this.state.title, this.state.contents, this.state.pictures, this.state.tier )
                             .then( res => {
-                                if (res===200) alert("Post succesful!");
-                                else alert("ERROR: " + res);
+                                if (res===200) goodPost();
+                                else otherErrors(res);
                             })
                     }}>
                 submit
@@ -158,7 +170,20 @@ class PostForm extends React.Component<any, any> {
 
         return (
             <>
+                <ToastContainer
+                    position="bottom-right"
+                    autoClose={5000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                />
+
                 <Center>
+
 
                     <Box w="50%" borderWidth={"0px"}>
 

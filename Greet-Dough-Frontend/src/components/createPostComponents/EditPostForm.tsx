@@ -13,6 +13,7 @@ import {
 import api, {register} from "../../services/api";
 import PostForm from "./PostForm";
 import {PostObject, UploadedImage} from "../../services/types"
+import {toast} from "react-toastify";
 
 type PostState = {
     title: string;
@@ -76,9 +77,20 @@ class EditPostForm extends PostForm{
     }
 
     renderSubmitButton(){
+        const editGood = () => toast.success("Post edited!",
+            { style:{ backgroundColor:"#5da356"} }
+        );
+        const editBad = () => toast.error("Could not edit the post!");
+        const selectATier = () => toast.error("Please select a tier!");
+        const writeATitle = () => toast.error("Please write a title!");
+
         return(
             <Button colorScheme={"green"}
                     onClick={ () => {
+
+                        if ( this.state.title==="" ) { writeATitle(); return; }
+                        if ( this.state.tier==null ) { selectATier(); return; }
+
                         api.editPost(
                             this.state.pid,
                             this.state.title,
@@ -88,7 +100,9 @@ class EditPostForm extends PostForm{
                             this.state.deleted,
                         ).then( res => {
                             if(res===200){
-                                alert("Edit successful!");
+                                editGood();
+                            } else{
+                                editBad();
                             }
                         })
                     }}>
@@ -97,6 +111,7 @@ class EditPostForm extends PostForm{
         )
     }
     render(){
+
         return super.render();
     }
 }

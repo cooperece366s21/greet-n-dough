@@ -111,7 +111,6 @@ export async function getUser( uid:number ) {
             });
 
     } else {
-        alert("ERROR: " + res.status)
         return res.status;
     }
 }
@@ -139,7 +138,7 @@ export async function searchUser( name:string ) {
             });
     }
     else {
-        alert("ERROR GRABBING FEED: " + res.status);
+        return 404;
     }
 }
 
@@ -316,16 +315,12 @@ export async function createPost( token:string|null, title:string, contents:stri
 
     if ( token==null ) return (403);
     if ( tier==null ) {
-        alert("Please select a tier!");
         return 404;
     }
 
     let numberOfFiles = pictures==null ? "0" : pictures?.length.toString();
 
     let form = formPost( title, contents, pictures, tier);
-
-    alert( JSON.stringify( Object.fromEntries( form.entries() ) ) );
-
 
     const res = await fetch(`${BACKEND_URL}/auth/post`, {
         method: "post",
@@ -400,24 +395,21 @@ export async function editPost( pid:string, title:string, contents:string, pictu
     }
 }
 
-export async function deletePost( token:string|null, pid:number ) {
-
-    if ( token==null ) return (403);
+export async function deletePost(pid:number ) {
 
     const res = await fetch(`${BACKEND_URL}/auth/post/${pid}`, {
         method: "delete",
         mode: "cors",
         headers: {
             "Content-Type": "application/json",
-            "token": token,
+            "token": getCurrentToken(),
         },
     });
 
     if ( res.ok ) {
-        alert("Succesfully deleted");
         return 200;
     } else{
-        alert("ERROR: " + res.status );
+        return res.status;
     }
 }
 
@@ -515,10 +507,8 @@ export async function uploadProfilePicture( token:string|null, file:File|null) {
     });
 
     if (res.ok){
-        alert('Upload good');
         return 200;
     } else{
-        alert('Upload bad');
         return res.status;
     }
 

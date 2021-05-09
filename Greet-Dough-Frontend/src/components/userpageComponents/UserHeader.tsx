@@ -1,4 +1,6 @@
 import React from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import {
     Box,
     VStack,
@@ -13,7 +15,7 @@ import {
     Flex, Text, SkeletonCircle,
 } from "@chakra-ui/react";
 import {Link} from "react-router-dom";
-import api from "../../services/api";
+import api, {uploadProfilePicture} from "../../services/api";
 import CreatePostButton from "../createPostComponents/CreatePostButton";
 import ImageUploader from "react-images-upload";
 
@@ -24,6 +26,7 @@ type UserState = {
     editing: boolean;
     exists: boolean | null;
     hasOwnership : boolean;
+    tierText : string;
 
     uid: number;
     name: string;
@@ -42,6 +45,7 @@ class UserHeader extends React.Component<any, any> {
         exists: null,
         hasOwnership: false,
         editing: false,
+        tierText : "Subscribe",
 
         uid: -1,
         name: "",
@@ -60,6 +64,7 @@ class UserHeader extends React.Component<any, any> {
             exists: props.exists,
             hasOwnership: props.hasOwnership,
             editing: false,
+            tierText: "Subscribe",
 
             uid: props.uid,
             name: props.name,
@@ -86,7 +91,23 @@ class UserHeader extends React.Component<any, any> {
     }
 
     renderHeader() {
+        const editGood = () => toast.success("Edit was successful!",
+            { style:{ backgroundColor:"#5da356"} }
+        );
 
+        const editBad = () => toast.error(" Edit could not be made! ");
+
+        const pictureUploadGood = () => toast.success("Profile picture was successfully uploaded!",
+            { style:{ backgroundColor:"#5da356"} }
+        );
+
+        const pictureUploadBad = () => toast.error( "Picture could not be uploaded! ");
+
+        const noMoney = () => toast.error("Insufficient funds!");
+
+        const tooManyImages = () => toast.error("Please remove the extra images!");
+
+        const badResponse = (res:number) => toast.error("Error: " + res);
         let upperHeader = <HStack>
 
 
@@ -111,19 +132,18 @@ class UserHeader extends React.Component<any, any> {
                     w={"25%"}
                     bg={"green.300"}
                     color={"black"}
-                    placeholder={"Subscribe"}
+                    placeholder={this.state.tierText}
                     onChange={ (tier) => {
                         api.subscribeTo( this.state.uid, parseInt(tier.target.value) )
-                            // then refresh
                             .then( (res) => {
                                 if (res===200) {
                                     window.location.href = ("/user/" + this.state.uid)
                                 }
                                 else if ( res === 402 ) {
-                                    alert(" Insufficient funds! ")
+                                    return noMoney();
                                 }
-                                else if ( res === 404 ) {
-                                    alert(" Something happened in the backend! ");
+                                else {
+                                    return badResponse(res);
                                 }
                             });
                     } }
@@ -154,18 +174,25 @@ class UserHeader extends React.Component<any, any> {
 
                         api.editUser(token,  this.state.editedName,  this.state.editedBio )
                             .then( res => {
-                                if(res===200){
-                                    // As to not need to refresh to see changes
+                                if (res===200) {
+                                    editGood();
                                     this.setState({
                                         name: this.state.editedName,
                                         bio: this.state.editedBio,
                                     });
+                                } else {
+                                    editBad();
                                 }
                             })
 
                         api.uploadProfilePicture( token, this.state.uploadedPicture )
-                            .then( () => {
+                            .then( (res) => {
                                 this.setState({editing: false});
+                                if (res=200) {
+                                    pictureUploadGood();
+                                } else {
+                                    pictureUploadBad();
+                                }
                             })
 
                     }}>
@@ -181,6 +208,7 @@ class UserHeader extends React.Component<any, any> {
             }
 
         </HStack>;
+
         let profilePicture = <>
 
             {this.state.editing ?
@@ -191,7 +219,7 @@ class UserHeader extends React.Component<any, any> {
                 onChange={e => {
 
                     if (e.length !== 1) {
-                        alert("Remove some files");
+                        tooManyImages();
                         return;
                     }
                     this.onDrop(e[0]);
@@ -252,10 +280,27 @@ class UserHeader extends React.Component<any, any> {
      }
 
     render() {
+
         switch( this.state.exists ) {
 
             case true:
-                return this.renderHeader();
+                return (
+                    <>
+                        <ToastContainer
+                            position="bottom-right"
+                            autoClose={5000}
+                            hideProgressBar={false}
+                            newestOnTop={false}
+                            closeOnClick
+                            rtl={false}
+                            pauseOnFocusLoss
+                            draggable
+                            pauseOnHover
+                        />
+                        {this.renderHeader()}
+                    </>
+                )
+            ;
 
             default:
                 return ( <> </> );

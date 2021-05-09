@@ -16,6 +16,7 @@ import api from "../../services/api";
 import { Carousel } from 'react-responsive-carousel';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import {CommentJson, CommentObject, PostJson, PostObject} from "../../services/types";
+import {toast, ToastContainer} from "react-toastify";
 
 type FeedState = {
     cuid: number,
@@ -107,6 +108,18 @@ class UserFeed extends  React.Component<any, any> {
 
         return (
             <>
+                <ToastContainer
+                    position="bottom-right"
+                    autoClose={5000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                />
+
                 <Center w="100%" marginTop={"50px"}>
                     <VStack w={"60%"}>
                         { !this.state.initiallyLoaded && <Spinner color={"blue.400"} size={"xl"} /> }
@@ -119,6 +132,12 @@ class UserFeed extends  React.Component<any, any> {
     }
 
     private renderPostHeader(post: PostJson) {
+        const deleteGood = () => toast.success("Post deleted!",
+            { style:{ backgroundColor:"#5da356"} }
+        );
+
+        const deleteBad = () => toast.error("Could not delete post!");
+
         return <HStack w={"100%"}>
 
             <Box w="90%">
@@ -140,8 +159,13 @@ class UserFeed extends  React.Component<any, any> {
                 {this.state.hasOwnership &&
                 <Button
                     onClick={() => {
-                        api.deletePost(localStorage.getItem("authToken"), post.map.post.ID)
-                            .then(() => this.refreshFeed())
+                        api.deletePost(post.map.post.ID)
+                            .then( (res) => {
+                                if (res===200) {
+                                    deleteGood();
+                                    this.refreshFeed();
+                                } else { deleteBad() }
+                            })
                     }}>
                     🗑
                 </Button>

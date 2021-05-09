@@ -11,6 +11,7 @@ import {
 import {Link} from "react-router-dom";
 import {login} from "../../services/api";
 import { withRouter } from 'react-router-dom';
+import {toast, ToastContainer} from "react-toastify";
 
 class LoginForm extends React.Component<any, any>{
 
@@ -23,12 +24,13 @@ class LoginForm extends React.Component<any, any>{
 
     async loginWrapper( email:string, password:string ){
         let res = await login( email, password )
+        const badLogin = () => toast.error("Incorrect login credentials!")
+
         if ( res === 200 ) {
-            // alert("Successful log in");
             this.props.history.push('/');
         } else {
-            alert("Response: " + JSON.stringify(res) );
             this.setState( {invalid: true});
+            badLogin();
         }
     }
 
@@ -36,6 +38,18 @@ class LoginForm extends React.Component<any, any>{
         return(
 
             <Center>
+
+                <ToastContainer
+                    position="bottom-right"
+                    autoClose={5000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                />
 
                 <Box w={'30%'} bg={'white'} >
 
