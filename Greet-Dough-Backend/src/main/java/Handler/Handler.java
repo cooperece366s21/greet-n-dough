@@ -30,7 +30,6 @@ public class Handler {
     private final CommentStore commentStore;
     private final PasswordStore passwordStore;
     private final LoginStore loginStore;
-    private final WalletStore walletStore;
     private final ProfileStore profileStore;
     private final UtilityHandler utilityHandler;
 
@@ -49,7 +48,6 @@ public class Handler {
                    SubscriptionStore subscriptionStore,
                    PasswordStore passwordStore,
                    LoginStore loginStore,
-                   WalletStore walletStore,
                    ProfileStore profileStore,
                    UtilityHandler utilityHandler) {
 
@@ -61,7 +59,6 @@ public class Handler {
         this.subscriptionStore = subscriptionStore;
         this.passwordStore = passwordStore;
         this.loginStore = loginStore;
-        this.walletStore = walletStore;
         this.profileStore = profileStore;
         this.utilityHandler = utilityHandler;
 

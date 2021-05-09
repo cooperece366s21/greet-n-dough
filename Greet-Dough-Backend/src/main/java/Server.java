@@ -85,7 +85,6 @@ public class Server {
             Server.subscriptionStore,
             Server.passwordStore,
             Server.loginStore,
-            Server.walletStore,
             Server.profileStore,
             utilityHandler
         );
