@@ -9,8 +9,6 @@ import utility.Tiers;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import com.google.gson.Gson;
 import org.json.*;
@@ -28,17 +26,10 @@ public class Handler {
     private final LikeStore likeStore;
     private final SubscriptionStore subscriptionStore;
     private final CommentStore commentStore;
-    private final PasswordStore passwordStore;
-    private final LoginStore loginStore;
     private final ProfileStore profileStore;
     private final UtilityHandler utilityHandler;
 
     private final Gson gson = new Gson();
-
-    // Defines the accepted file extensions for images
-    private static final HashSet<String> validImageFileExtensions = Stream
-                            .of(".png",".jpg",".gif")
-                            .collect( Collectors.toCollection(HashSet::new) );
 
     public Handler(UserStore userStore,
                    PostStore postStore,
@@ -46,8 +37,6 @@ public class Handler {
                    LikeStore likeStore,
                    CommentStore commentStore,
                    SubscriptionStore subscriptionStore,
-                   PasswordStore passwordStore,
-                   LoginStore loginStore,
                    ProfileStore profileStore,
                    UtilityHandler utilityHandler) {
 
@@ -57,8 +46,6 @@ public class Handler {
         this.likeStore = likeStore;
         this.commentStore = commentStore;
         this.subscriptionStore = subscriptionStore;
-        this.passwordStore = passwordStore;
-        this.loginStore = loginStore;
         this.profileStore = profileStore;
         this.utilityHandler = utilityHandler;
 
@@ -141,126 +128,6 @@ public class Handler {
 
     }
 
-    /**
-     * The method checks if the token is valid.
-     * Sets res.status().
-     *
-     * @return   true if the token is valid; false otherwise
-     */
-    private boolean isValidToken( String token, Response res ) {
-
-        if ( loginStore.hasSession(token) ) {
-
-            res.status(200);
-            return true;
-
-        } else {
-
-            res.status(401);
-            return false;
-
-        }
-
-    }
-
-    /**
-     * The method checks if the token is valid.
-     * Adds a uid attribute to the request for later use.
-     *
-     * @return   true if the token is valid; false otherwise
-     */
-    public boolean checkToken( Request req, Response res ) {
-
-        // Check the token
-        String token = req.headers("token");
-        if ( isValidToken( token, res ) ) {
-
-            // Get the uid and store it in the request
-            int uid = loginStore.getUserID(token);
-            req.attribute("cuid", String.valueOf(uid) );
-            return true;
-
-        } else {
-            return false;
-        }
-
-
-    }
-
-    /**
-     * The method checks if the given file extension is valid.
-     *
-     * @return  true if the file extension is valid; false otherwise
-     */
-    private boolean isValidImageFile( String fileExtension, Response res ) {
-
-        // Check if the extension is valid
-        if ( validImageFileExtensions.contains(fileExtension) ) {
-
-            res.status(200);
-            return true;
-
-        } else {
-
-            res.status(403);
-            return false;
-
-        }
-
-    }
-
-    public String tokenToId( Request req, Response res ) {
-
-        // Check the token
-        String token = req.headers("token");
-        if ( !isValidToken( token, res ) ) {
-            return "";
-        }
-        int uid = loginStore.getUserID(token);
-
-        // Not sure if this body part is required, since we are returning uid?
-        JSONObject uidJSON = new JSONObject();
-        uidJSON.put("uid", uid);
-        res.body( uidJSON.toString() );
-
-        res.status(200);
-        return res.body();
-
-    }
-
-    public String login( Request req, Response res ) {
-
-        Properties data = gson.fromJson(req.body(), Properties.class);
-
-        // Parse the request
-        String email = data.getProperty("email");
-        String password = data.getProperty("password");
-
-        System.out.println("Logging in: " + email + ", " + password);
-
-        // Check if login was successful
-        Integer uid = passwordStore.getUserID(email, password);
-        if ( uid == null ) {
-
-            res.status(403);
-            System.err.println("Unsuccessful login!");
-            return "";
-
-        }
-
-        System.out.println(uid + " Logged in!");
-
-        String cookie = loginStore.addSession(uid);
-        JSONObject cookieJSON = new JSONObject();
-        cookieJSON.put("authToken", cookie);
-        res.body( cookieJSON.toString() );
-
-        System.out.println( res.body() );
-        res.status(200);
-        return res.body();
-
-    }
-
     /////////////// POST ACTIONS ///////////////
     /**
      * The method combines a Post object with its corresponding
@@ -337,31 +204,6 @@ public class Handler {
         return json;
 
     }
-
-    // Not currently used
-    // Will need to check permissions (post tier)
-//    /**
-//     * @return a JSONObject containing the Post object and like count
-//     */
-//    public JSONObject getPost( Request req, Response res ) {
-//
-//        int pid = Integer.parseInt( req.params(":pid") );
-//
-//        if ( !postStore.hasPost(pid) ) {
-//
-//            System.err.println("Post does not exist");
-//            res.status(404);
-//            return new JSONObject();
-//
-//        }
-//
-//        // Get the post and like count
-//        JSONObject json = makePostJson(pid);
-//
-//        res.status(200);
-//        return json;
-//
-//    }
 
     /**
      * The method returns a JSONObject containing a list of
@@ -497,17 +339,30 @@ public class Handler {
     }
 
     public JSONObject getPost( Request req, Response res ) {
+
         System.err.println("Reached endpoint");
         int cuid =  Integer.parseInt( req.attribute( "cuid" ) );
         int pid = Integer.parseInt( req.params(":pid") );
-        Post post = postStore.getPost( pid );
 
-        if ( cuid != post.getUserID() ) {
-            res.status(403);
+        if ( !postStore.hasPost(pid) ) {
+
+            System.err.println("Post does not exist");
+            res.status(404);
             return new JSONObject();
+
         }
 
-        return new JSONObject( post );
+        Post post = postStore.getPost(pid);
+        if ( cuid != post.getUserID() ) {
+
+            res.status(403);
+            return new JSONObject();
+
+        }
+
+        res.status(200);
+        return new JSONObject(post);
+
     }
 
     public int deletePost( Request req, Response res ) {
@@ -675,7 +530,7 @@ public class Handler {
 
         // Check the file extension
         String fileExtension = readFormField( req, partTypeName );
-        if ( !isValidImageFile( fileExtension, res ) ) {
+        if ( !utilityHandler.isValidImageFile( fileExtension, res ) ) {
             return new Image("",-1,-1);
         }
 

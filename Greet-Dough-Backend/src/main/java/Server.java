@@ -6,12 +6,14 @@ import store.model.*;
 import utility.Cleaner;
 import utility.GreetDoughJdbi;
 import utility.PathDefs;
+import utility.ResetDao;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import com.google.gson.Gson;
+
 import static spark.Spark.*;
 
 public class Server {
@@ -58,7 +60,7 @@ public class Server {
         scheduler.scheduleAtFixedRate(cleaner, 0, 1, TimeUnit.HOURS);
 
         Jdbi jdbi = GreetDoughJdbi.create("jdbc:postgresql://localhost:4321/greetdough");
-//        ResetDao.reset(jdbi);
+        ResetDao.reset(jdbi);
 
         userStore = new UserStorePostgres(jdbi);
         postStore = new PostStorePostgres(jdbi);
@@ -72,8 +74,13 @@ public class Server {
         subscriptionStore = new SubscriptionStorePostgres(jdbi);
 
         UtilityHandler utilityHandler = new UtilityHandler(
-                Server.profileStore,
-                Server.imageStore
+            Server.profileStore,
+            Server.imageStore
+        );
+
+        LoginHandler loginHandler = new LoginHandler(
+            Server.loginStore,
+            Server.passwordStore
         );
 
         Handler handler = new Handler(
@@ -83,8 +90,6 @@ public class Server {
             Server.likeStore,
             Server.commentStore,
             Server.subscriptionStore,
-            Server.passwordStore,
-            Server.loginStore,
             Server.profileStore,
             utilityHandler
         );
@@ -141,10 +146,10 @@ public class Server {
         //////////////////// No Auth ////////////////////
         path("/noauth", () -> {
 
-            post("/login", handler::login, gson::toJson);
+            post("/login", loginHandler::login, gson::toJson);
 
             // Checks if currently logged in
-            get("/tokenToId", handler::tokenToId, gson::toJson);
+            get("/tokenToId", loginHandler::tokenToId, gson::toJson);
 
             // Register
             // Creates a new user
@@ -185,7 +190,7 @@ public class Server {
                 // Only authenticate non-OPTIONS requests
                 if ( !req.requestMethod().equals("OPTIONS") ) {
 
-                    boolean authenticated = handler.checkToken( req, res );
+                    boolean authenticated = loginHandler.checkToken( req, res );
                     if ( !authenticated ) {
 
                         System.err.println("Invalid token.");
