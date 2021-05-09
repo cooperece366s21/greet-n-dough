@@ -293,6 +293,24 @@ export async function addToWallet( token:string|null, amount:string|null ) {
 }
 
 // POST API CALLS
+function formPost( title:string, contents:string, pictures:File[]|null, tier:number ) {
+    let form = new FormData();
+    let numberOfFiles = pictures==null ? "0" : pictures?.length.toString();
+
+    form.set('title', title);
+    form.set('contents', contents);
+    form.set('numberOfImages', numberOfFiles);
+    form.set('tier', tier.toString());
+
+    let i = 0;
+    pictures?.forEach( file => {
+        form.set('image'+i, file);
+        form.set('imageType'+i, "." + file.type.slice( file.type.indexOf("/")+1 ));
+        i++;
+    })
+
+    return form;
+}
 
 export async function createPost( token:string|null, title:string, contents:string, pictures:File[]|null, tier:number|null) {
 
@@ -304,19 +322,7 @@ export async function createPost( token:string|null, title:string, contents:stri
 
     let numberOfFiles = pictures==null ? "0" : pictures?.length.toString();
 
-    let form = new FormData();
-    form.set('title', title);
-    form.set('contents', contents);
-    form.set('numberOfImages', numberOfFiles);
-    form.set('tier', tier.toString());
-
-    let i = 0;
-    pictures?.forEach( file => {
-        form.set('image'+i, file);
-        // Shape the .type method so it works well with backend
-        form.set('imageType'+i, "." + file.type.slice( file.type.indexOf("/")+1 ));
-        i++;
-    })
+    let form = formPost( title, contents, pictures, tier);
 
     alert( JSON.stringify( Object.fromEntries( form.entries() ) ) );
 
@@ -369,17 +375,20 @@ export async function getPost( token:string|null, pid:number ) {
 
 }
 
-export async function editPost( pid:string, title:string, contents:string, tier:number|null ) {
+export async function editPost( pid:string, title:string, contents:string, pictures:File[]|null, tier:number|null, deleted:number[] ) {
     if ( tier== null ) return (404);
 
+    let form = formPost( title, contents, pictures, tier);
+    form.set("deleted", deleted.toString());
+    
     const res = await fetch(`${BACKEND_URL}/auth/post/${pid}`, {
         method: "put",
         mode: "cors",
         headers: {
-            "Content-Type": "application/json",
+            "enctype": "multipart/form-data",
             "token": getCurrentToken(),
         },
-        body: JSON.stringify({ pid, title, contents, tier })
+        body: form,
     });
 
     if ( res.ok ) {

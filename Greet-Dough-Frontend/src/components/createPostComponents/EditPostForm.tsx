@@ -83,7 +83,9 @@ class EditPostForm extends PostForm{
                             this.state.pid,
                             this.state.title,
                             this.state.contents,
+                            this.state.pictures,
                             this.state.tier,
+                            this.state.deleted,
                         ).then( res => {
                             if(res===200){
                                 alert("Edit successful!");
