@@ -89,8 +89,12 @@ public class Server {
 
         SubscriptionHandler subHandler = new SubscriptionHandler(
                 Server.subscriptionStore,
-                Server.walletStore);
+                Server.walletStore
+        );
 
+        WalletHandler walletHandler = new WalletHandler(
+                Server.walletStore
+        );
 
         // Copy pasted from
         // https://gist.github.com/saeidzebardast/e375b7d17be3e0f4dddf
@@ -281,11 +285,11 @@ public class Server {
                     System.err.println("Route: /wallet");
                 });
 
-                get("", handler::getBalance, gson::toJson);
+                get("", walletHandler::getBalance, gson::toJson);
 
-                post("/add", handler::addToBalance, gson::toJson);
+                post("/add", walletHandler::addToBalance, gson::toJson);
 
-                post("/subtract", handler::subtractFromBalance, gson::toJson);
+                post("/subtract", walletHandler::subtractFromBalance, gson::toJson);
 
             });
 

@@ -1,11 +1,12 @@
 import model.UserTier;
+import store.model.SubscriptionStore;
+import store.model.WalletStore;
+import utility.Tiers;
+
 import org.json.JSONObject;
 import spark.Request;
 import spark.Response;
-import store.model.SubscriptionStore;
 import com.google.gson.Gson;
-import store.model.WalletStore;
-import utility.Tiers;
 
 import java.math.BigDecimal;
 import java.util.List;
