@@ -6,12 +6,14 @@ import store.model.*;
 import utility.Cleaner;
 import utility.GreetDoughJdbi;
 import utility.PathDefs;
+import utility.ResetDao;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import com.google.gson.Gson;
+
 import static spark.Spark.*;
 
 public class Server {
@@ -58,7 +60,7 @@ public class Server {
         scheduler.scheduleAtFixedRate(cleaner, 0, 1, TimeUnit.HOURS);
 
         Jdbi jdbi = GreetDoughJdbi.create("jdbc:postgresql://localhost:4321/greetdough");
-//        ResetDao.reset(jdbi);
+        ResetDao.reset(jdbi);
 
         userStore = new UserStorePostgres(jdbi);
         postStore = new PostStorePostgres(jdbi);
