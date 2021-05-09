@@ -379,8 +379,8 @@ export async function editPost( pid:string, title:string, contents:string, pictu
     if ( tier== null ) return (404);
 
     let form = formPost( title, contents, pictures, tier);
-    form.set("deleted", deleted.toString());
-    
+    form.set("iidToDelete", deleted.toString());
+
     const res = await fetch(`${BACKEND_URL}/auth/post/${pid}`, {
         method: "put",
         mode: "cors",
@@ -395,6 +395,7 @@ export async function editPost( pid:string, title:string, contents:string, pictu
         return 200;
     } else {
         // maybe some other code here for specific errors?
+        alert(res.status);
         return res.status;
     }
 }

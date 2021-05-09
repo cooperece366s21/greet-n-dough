@@ -305,7 +305,6 @@ public class Handler {
         String contents = readFormField(req, "contents");
         int numberOfImages = Integer.parseInt( readFormField(req, "numberOfImages") );
         int tier = Integer.parseInt( readFormField(req, "tier") );
-        System.out.println( "Grabbed number of images" );
 
         // Check the parsed items
         if ( title.equals("") && contents.equals("") && numberOfImages == 0 ) {
@@ -331,7 +330,6 @@ public class Handler {
         }
 
         Post tempPost = postStore.addPost( title, contents, uid, tier, iidList );
-        System.out.println( gson.toJson(tempPost) );
 
         res.status(200);
         return res.status();
@@ -448,58 +446,56 @@ public class Handler {
      *                  optionally includes the new title or new contents
      *                  of the post
      */
-    public int editPost( Request req, Response res ) {
-
-        Properties data = gson.fromJson(req.body(), Properties.class);
-        int uid = Integer.parseInt( req.attribute("cuid") );
+    public int editPost( Request req, Response res ) throws IOException, ServletException {
 
         // Check if the user owns the post
+        int uid = Integer.parseInt( req.attribute("cuid") );
         int pid = Integer.parseInt( req.params(":pid") );
         if ( !hasOwnership( uid, pid, res ) ) {
             return res.status();
         }
 
         // Parse the request
-        String newTitle = data.getProperty("title");
-        String newContents = data.getProperty("contents");
-        String tempTier = data.getProperty("tier");
-        Integer newTier = tempTier != null ? Integer.parseInt(tempTier) : null;
+        req.raw().setAttribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
+
+        String newTitle = readFormField(req, "title");
+        String newContents = readFormField(req, "contents");
+        String tempTier = readFormField(req, "tier");
+        Integer newTier = !tempTier.equals("") ? Integer.parseInt(tempTier) : null;
 
         // Check if the request was formatted properly
-        if ( newTitle == null && newContents == null && newTier == null ) {
+        if (newTitle.equals("") || newTier == null) {
 
             res.status(400);
             return res.status();
 
         }
 
-        // Change the desired fields
-        if ( newTitle != null ) {
-            postStore.changeTitle( pid, newTitle );
-        }
-        if ( newContents != null ) {
-            postStore.changeContents( pid, newContents );
-        }
-        if ( newTier != null ) {
-            postStore.changeTier( pid, newTier );
+        postStore.changeTitle( pid, newTitle );
+        postStore.changeTier( pid, newTier );
+        postStore.changeContents( pid, newContents );
+
+        // Add new images
+        // **** Note these postStore functions return a void !
+        int numberOfImages = Integer.parseInt( readFormField(req, "numberOfImages") );
+        List<Integer> iidToAdd = parsePostImages( req, res, uid, numberOfImages );
+        for ( int iid : iidToAdd ) {
+            postStore.addPostImage( pid, iid );
         }
 
-        // Add the new images
-//        for ( int iid : imagesToAdd ) {
-//            postStore.addPostImage( pid, iid );
-//        }
+        // Delete selected images
+        List<Integer> iidToDelete = new ArrayList<>();
+        if ( !readFormField(req, "iidToDelete").equals("")) {
+            for (String iid : readFormField(req, "iidToDelete").split(",")) {
+                iidToDelete.add(Integer.parseInt(iid));
+            }
+        }
 
-        // Delete the specified images
-//        for ( int iid : imagesToDelete ) {
-//
-//            if ( !deleteImage( uid, iid, res ) ) {
-//
-//                System.err.println("Failed to delete an image");
-//                return res.status();
-//
-//            }
-//
-//        }
+        for ( int iid : iidToDelete ) {
+            if ( imageStore.hasImage(iid) ) {
+                postStore.deletePostImage(pid, iid);
+            }
+        }
 
         res.status(200);
         return res.status();
