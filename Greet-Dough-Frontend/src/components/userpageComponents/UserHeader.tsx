@@ -185,15 +185,17 @@ class UserHeader extends React.Component<any, any> {
                                 }
                             })
 
-                        api.uploadProfilePicture( token, this.state.uploadedPicture )
-                            .then( (res) => {
-                                this.setState({editing: false});
-                                if (res=200) {
-                                    pictureUploadGood();
-                                } else {
-                                    pictureUploadBad();
-                                }
-                            })
+                        if ( this.state.uploadedPicture != null) {
+                            api.uploadProfilePicture(token, this.state.uploadedPicture)
+                                .then((res) => {
+                                    this.setState({editing: false});
+                                    if (res == 200) {
+                                        pictureUploadGood();
+                                    } else {
+                                        pictureUploadBad();
+                                    }
+                                })
+                        }
 
                     }}>
                         ✔

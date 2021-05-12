@@ -268,11 +268,11 @@ class UserFeed extends  React.Component<any, any> {
     private renderPostContent(post: PostJson) {
         return <Box>
             <Center>
-                <Carousel dynamicHeight={true}>
+                <Carousel dynamicHeight={true} width={"500px"} >
                     {post.map.images?.map(function (url: string, i) {
                         return (
                             <div>
-                                <img src={url}/>
+                                <Image src={url} boxSize={"500px"} fit={"contain"} />
                             </div>
                         )
                     })}
