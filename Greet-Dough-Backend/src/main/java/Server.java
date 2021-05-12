@@ -1,4 +1,4 @@
-import Handler.*;
+import handler.*;
 import org.jdbi.v3.core.Jdbi;
 import spark.Request;
 import store.postgres.*;

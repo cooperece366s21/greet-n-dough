@@ -1,4 +1,4 @@
-package Handler;
+package handler;
 
 import model.UserTier;
 import store.model.SubscriptionStore;

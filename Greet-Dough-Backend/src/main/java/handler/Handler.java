@@ -1,4 +1,4 @@
-package Handler;
+package handler;
 
 import model.*;
 import store.model.*;
