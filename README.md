@@ -1,4 +1,4 @@
-# Lee-Ko
+# greet-n-dough
 
 **Team Lee-Ko**: <br>
 Brian Doan, Derek Lee, Steven Lee, Thodori Kapouranis
